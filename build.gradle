@@ -3,12 +3,14 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'java-library'
+	// 需要这个插件才能激活 mainClassName 配置
 	id 'application'
 }
 
 group = 'com.magicliang'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+// 需要这个配置才能让 gradlew build 通过
 mainClassName = 'com.magicliang.domaindriventransactionsys.DomainDrivenTransactionSysApplication'
 
 configurations {
