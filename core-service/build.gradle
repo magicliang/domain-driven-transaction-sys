@@ -2,7 +2,7 @@ dependencies {
     implementation project(":core-model")
 }
 
-tasks.bootJar {
+bootJar {
     enabled = false
 }
 
