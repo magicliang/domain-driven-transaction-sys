@@ -1,0 +1,17 @@
+dependencies {
+    // compile（api）：这种是我们最常用的方式，使用该方式依赖的库将会参与编译和打包。也就是最简单的 depency
+    implementation project(":biz-shared")
+    implementation project(":common-service-facade")
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+}
+
+tasks.bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = true
+}

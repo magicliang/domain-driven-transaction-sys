@@ -1,0 +1,14 @@
+dependencies {
+    implementation project(":common-util")
+    implementation project(":common-service-integration")
+    implementation project(":common-dal")
+}
+
+tasks.bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+

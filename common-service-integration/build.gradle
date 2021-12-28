@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(":common-util")
+}
+
+tasks.bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
+}
