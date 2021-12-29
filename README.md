@@ -2,10 +2,16 @@
 
 一个领域驱动设计的交易系统的例子
 
+## how to build it
+
+`./gradlew clean build -x test --stacktrace`
+
 # 架构解说
+
 ## 经典 gradle 架构
 
 application
+
 - src
 - main
 - test

@@ -1,3 +1,4 @@
+// Spring boot 的最新官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/
 plugins {
 	id 'org.springframework.boot' version '2.6.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -25,6 +26,7 @@ ext {
 }
 
 dependencies {
+	// 非官方版本的 starter 列表：https://www.javatpoint.com/spring-boot-starters
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -65,6 +67,8 @@ subprojects {
 		// 一般的依赖则使用 scope 别名来引用
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'org.projectlombok:lombok'
+		// 让所有的子模块都拥有基本的 spring 依赖
+		implementation 'org.springframework.boot:spring-boot-starter'
 		testImplementation 'io.projectreactor:reactor-test'
 
 		testImplementation('org.springframework.boot:spring-boot-starter-test') {
