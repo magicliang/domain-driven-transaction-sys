@@ -20,6 +20,8 @@ public class AlipayReqParam {
      * 出资账户
      * 为了防止IEEE 754 标准相关的Number 浮点数溢出，先使用 String 替代
      * 在内层转化为 BO 的时候要仔细注意转化的过程里的 NumberFormatException
+     *
+     * @see {@link https://github.com/camsong/blog/issues/9}
      */
     private String fromAccount;
 

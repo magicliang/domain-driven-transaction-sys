@@ -17,6 +17,7 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * date: 2021-12-29 12:13
  */
 public class DbUtils {
+
     /**
      * 私有构造器
      */

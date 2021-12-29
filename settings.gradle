@@ -1,7 +1,7 @@
 // 类似 maven 里面的 parent 和 module 段
 rootProject.name = 'domain-driven-transaction-sys'
 
-// 子模块列表
+// 子模块列表，多模块的开源项目应该参考：https://spring.io/guides/gs/multi-module/
 include 'biz-service-impl'
 include 'biz-shared'
 include 'common-dal'
