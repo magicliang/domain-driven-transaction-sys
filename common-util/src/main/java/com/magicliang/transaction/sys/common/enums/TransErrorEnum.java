@@ -3,7 +3,7 @@ package com.magicliang.transaction.sys.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.magicliang.transaction.sys.common.enums.InsTransErrorMiddleTypeEnum.*;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -180,19 +180,19 @@ public enum TransErrorEnum {
     LEAF_ID_GENERATION_BIZ_ERROR(SECOND_BIZ, "00001", "leaf id 生成业务错误", true),
 
     /**
-     * 0010300002，付款平台付款可重试业务错误
+     * 0010300002，支付系统付款可重试业务错误
      */
-    PAYMENT_PLATFORM_BIZ_ERROR(SECOND_BIZ, "00002", "付款平台付款可重试业务错误", true),
+    PAYMENT_PLATFORM_BIZ_ERROR(SECOND_BIZ, "00002", "支付系统付款可重试业务错误", true),
 
     /**
-     * 0010300004，付款平台付款可重试业务错误
+     * 0010300004，支付系统付款可重试业务错误
      */
-    PAYMENT_PLATFORM_BIZ_RETRYABLE_ERROR(SECOND_BIZ, "00004", "付款平台付款可重试业务错误", true),
+    PAYMENT_PLATFORM_BIZ_RETRYABLE_ERROR(SECOND_BIZ, "00004", "支付系统付款可重试业务错误", true),
 
     /**
-     * 0010300005，付款平台付款错误的任务 id
+     * 0010300005，支付系统付款错误的任务 id
      */
-    PAYMENT_PLATFORM_INVALID_TASK_ID_ERROR(SECOND_BIZ, "00005", "付款平台付款错误的任务 id", true),
+    PAYMENT_PLATFORM_INVALID_TASK_ID_ERROR(SECOND_BIZ, "00005", "支付系统付款错误的任务 id", true),
 
     /**
      * 0010300006，调用远程 mthrift 错误
@@ -210,19 +210,19 @@ public enum TransErrorEnum {
     INVALID_DISTRIBUTE_LOCK_EXPIRATION_ERROR(SECOND_BIZ, "00008", "不正确的分布式锁超时时间", false),
 
     /**
-     * 0010300009，商家钱包付款可重试业务错误
+     * 0010300009，B端钱包付款可重试业务错误
      */
-    M_WALLET_BIZ_ERROR(SECOND_BIZ, "00009", "商家钱包付款可重试业务错误", true),
+    M_WALLET_BIZ_ERROR(SECOND_BIZ, "00009", "B端钱包付款可重试业务错误", true),
 
     /**
-     * 0010300010，商家钱包付款非法状态
+     * 0010300010，B端钱包付款非法状态
      */
-    M_WALLET_INVALID_STATUS(SECOND_BIZ, "00010", "商家钱包付款非法状态", false),
+    M_WALLET_INVALID_STATUS(SECOND_BIZ, "00010", "B端钱包付款非法状态", false),
 
     /**
-     * 0010300011，付款平台任务状态错误
+     * 0010300011，支付系统任务状态错误
      */
-    PAYMENT_PLATFORM_INVALID_TASK_STATUS_ERROR(SECOND_BIZ, "00011", "付款平台任务状态错误", false),
+    PAYMENT_PLATFORM_INVALID_TASK_STATUS_ERROR(SECOND_BIZ, "00011", "支付系统任务状态错误", false),
 
     // ---------------------------- 第二方系统错误，如：0010400001 ----------------------------
 
@@ -265,7 +265,7 @@ public enum TransErrorEnum {
     /**
      * 错误类型
      */
-    private final InsTransErrorMiddleTypeEnum middleType;
+    private final TransErrorMiddleTypeEnum middleType;
 
     /**
      * 具体错误码
@@ -306,7 +306,7 @@ public enum TransErrorEnum {
      * @return 合成的错误码
      */
     public String getSynthesizedErrorCode() {
-        return InsSysConfigEnum.TRANS_CORE.getCode() +
+        return TransSysConfigEnum.TRANS_CORE.getCode() +
                 middleType.getCode() +
                 errorCode;
     }

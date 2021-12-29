@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Getter
 @RequiredArgsConstructor
-public enum InsSysConfigEnum {
+public enum TransSysConfigEnum {
 
     /**
      * 本系统，交易核心
@@ -50,11 +50,11 @@ public enum InsSysConfigEnum {
      * @param code 枚举类型码
      * @return 枚举
      */
-    public static InsSysConfigEnum getByCode(String code) {
+    public static TransSysConfigEnum getByCode(String code) {
         if (null == code) {
             return null;
         }
-        for (InsSysConfigEnum value : InsSysConfigEnum.values()) {
+        for (TransSysConfigEnum value : TransSysConfigEnum.values()) {
             if (value.getCode().equals(code)) {
                 return value;
             }
@@ -68,11 +68,11 @@ public enum InsSysConfigEnum {
      * @param desc 枚举类型描述
      * @return 枚举
      */
-    public static InsSysConfigEnum getByDesc(String desc) {
+    public static TransSysConfigEnum getByDesc(String desc) {
         if (StringUtils.isBlank(desc)) {
             return null;
         }
-        for (InsSysConfigEnum value : InsSysConfigEnum.values()) {
+        for (TransSysConfigEnum value : TransSysConfigEnum.values()) {
             if (value.getDesc().equals(desc)) {
                 return value;
             }

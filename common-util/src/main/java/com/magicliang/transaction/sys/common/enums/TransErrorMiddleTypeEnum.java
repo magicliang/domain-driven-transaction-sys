@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum InsTransErrorMiddleTypeEnum {
+public enum TransErrorMiddleTypeEnum {
 
     /**
      * 本系统业务错误
@@ -63,11 +63,11 @@ public enum InsTransErrorMiddleTypeEnum {
      * @param code 枚举类型码
      * @return 枚举
      */
-    public static InsTransErrorMiddleTypeEnum getByCode(String code) {
+    public static TransErrorMiddleTypeEnum getByCode(String code) {
         if (null == code) {
             return null;
         }
-        for (InsTransErrorMiddleTypeEnum value : InsTransErrorMiddleTypeEnum.values()) {
+        for (TransErrorMiddleTypeEnum value : TransErrorMiddleTypeEnum.values()) {
             if (value.getCode().equals(code)) {
                 return value;
             }
