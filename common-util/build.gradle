@@ -3,6 +3,10 @@ dependencies {
     implementation 'com.google.guava:guava:31.0.1-jre'
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    // 注意，collections 和 commons-lang3 是不一样的 lib
+    // https://mvnrepository.com/artifact/commons-collections/commons-collections
+    implementation 'commons-collections:commons-collections:3.2.2'
+
 }
 
 bootJar {

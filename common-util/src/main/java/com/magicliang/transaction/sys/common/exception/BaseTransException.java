@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * project name: domain-driven-transaction-sys
  * <p>
- * description: 交易异常
+ * description: 交易异常，这是一个基于不同错误码的异常和监控基础设计
  *
  * @author magicliang
  * <p>
