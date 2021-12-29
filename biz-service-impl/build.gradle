@@ -8,6 +8,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-devtools'
 }
 
+// 这个名字是插件的函数的名字，也是 task，特定的插件的 task 名字是不一样的
 bootJar {
     enabled = true
 }
