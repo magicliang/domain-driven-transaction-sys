@@ -6,12 +6,18 @@ dependencies {
     // 注意，collections 和 commons-lang3 是不一样的 lib
     // https://mvnrepository.com/artifact/commons-collections/commons-collections
     implementation 'commons-collections:commons-collections:3.2.2'
-
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
-
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.1'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+    implementation 'org.apache.httpcomponents:httpcore:4.4.15'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
+    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/fluent-hc
+    implementation 'org.apache.httpcomponents:fluent-hc:4.5.13'
 }
 
 bootJar {
