@@ -1,7 +1,7 @@
 package com.magicliang.transaction.sys.common.constant;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
  * <p>
  * date: 2021-12-30 17:05
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class DbErrorCode extends ErrorCode {
 
     /**
