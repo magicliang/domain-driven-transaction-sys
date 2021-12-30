@@ -1,10 +1,14 @@
 package com.magicliang.transaction.sys.common.service.integration.delegate.alipay.impl;
 
+import com.magicliang.transaction.sys.common.exception.BaseTransException;
 import com.magicliang.transaction.sys.common.service.integration.delegate.alipay.IAlipayDelegate;
 import com.magicliang.transaction.sys.common.service.integration.dto.AlipayReqParam;
 import com.magicliang.transaction.sys.common.service.integration.dto.AlipayResDto;
+import com.magicliang.transaction.sys.common.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.PAYMENT_PLATFORM_BIZ_ERROR;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -41,12 +45,11 @@ public class AlipayDelegateImpl implements IAlipayDelegate {
         // 3. 真请求流程
         AlipayResDto ret = null;
         try {
-
+//            return AlipayResDto.Builder.buildFailureResult(signRes.getTaskId(), signRes.getErrorCode(), signRes.getErrorMessage());
         } finally {
-            log.info("");
+            log.info("{}, {}", JsonUtils.toJson(param), JsonUtils.toJson(ret));
         }
 
-
-        return null;
+        throw new BaseTransException(PAYMENT_PLATFORM_BIZ_ERROR, "付款平台付款错误，invalid res：");
     }
 }
