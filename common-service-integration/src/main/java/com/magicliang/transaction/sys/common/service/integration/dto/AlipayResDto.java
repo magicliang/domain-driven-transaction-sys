@@ -2,6 +2,7 @@ package com.magicliang.transaction.sys.common.service.integration.dto;
 
 import com.magicliang.transaction.sys.common.enums.AliPayResultStatusEnum;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -13,6 +14,8 @@ import lombok.Data;
  * date: 2021-12-29 12:30
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AlipayResDto {
 
     /**

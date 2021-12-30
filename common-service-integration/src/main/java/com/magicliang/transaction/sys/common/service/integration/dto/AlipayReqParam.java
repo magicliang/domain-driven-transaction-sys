@@ -1,7 +1,9 @@
 package com.magicliang.transaction.sys.common.service.integration.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -14,6 +16,8 @@ import lombok.Data;
  */
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AlipayReqParam {
 
     /**
