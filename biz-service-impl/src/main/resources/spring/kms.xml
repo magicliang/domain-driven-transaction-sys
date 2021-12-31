@@ -1,0 +1,9 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       default-lazy-init="false" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       		http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="privateKey" class="com.magicliang.transaction.sys.core.factory.StringValue">
+        <property name="name" value="privateKey"/>
+        <property name="value" value="123"/>
+    </bean>
+</beans>

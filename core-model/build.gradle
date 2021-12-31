@@ -1,7 +1,7 @@
 dependencies {
-    implementation project(":common-util")
-    implementation project(":common-service-integration")
-    implementation project(":common-dal")
+    api project(":common-util")
+    api project(":common-service-integration")
+    api project(":common-dal")
 }
 
 bootJar {

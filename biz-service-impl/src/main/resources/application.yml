@@ -1,0 +1,71 @@
+spring:
+  profiles:
+    # todo 实现跨环境的 profile 配置
+    active: "@active-profile@"
+
+# 日志配置文件位置，默认的时候使用最严厉的 online配置，而不是松散的 offline 配置
+logging:
+  config: classpath:log4j2/log4j2-online.xml
+
+common:
+  # 对外开放的服务端口
+  servicePort: 8411
+  # 交易分布式锁的默认时长，单位为秒
+  lockExpiration: 10
+  mockMode: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+common:
+  env: test
+
+# 日志配置文件位置
+logging:
+  # todo：记得加入软链接配置
+  config: classpath:log4j2/log4j2-local.xml
+  # 只有线下的配置才可以在 logging 配置里面打印 debug 的 mybatis 的 sql 日志
+  level.mapperpackagepath: debug # 打印mybatis的sql日志
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+common:
+  env: dev
+
+# 日志配置文件位置
+logging:
+  config: classpath:log4j2/log4j2-offline.xml
+  level.mapperpackagepath: debug # 打印mybatis的sql日志
+---
+spring:
+  config:
+    activate:
+      on-profile:test
+
+common:
+  env: test
+  # mockMode: true
+
+# 日志配置文件位置
+logging:
+  config: classpath:log4j2/log4j2-offline.xml
+  level.mapperpackagepath: debug # 打印mybatis的sql日志
+---
+spring:
+  config:
+    activate:
+      on-profile: staging
+common:
+  env: staging
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+common:
+  env: prod
