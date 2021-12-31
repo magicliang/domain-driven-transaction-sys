@@ -37,7 +37,7 @@ public class TransPayOrderEntity extends BaseEntity {
     private String sysCode;
 
     /**
-     * 业务识别码，上游系统必填
+     * 业务标识码，上游系统必填
      */
     private String bizIdentifyNo;
 
@@ -149,6 +149,8 @@ public class TransPayOrderEntity extends BaseEntity {
      * @see TransEnvEnum
      */
     private Short env;
+
+    // -------------------------------------------------- 聚合根附属对象的分割线 --------------------------------------------------
 
     /**
      * 子订单

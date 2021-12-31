@@ -28,6 +28,11 @@ public class TransRequestEntity extends BaseEntity {
     private Long payOrderNo;
 
     /**
+     * 业务标识码，上游系统必填
+     */
+    private String bizIdentifyNo;
+
+    /**
      * 请求类型
      *
      * @see TransRequestTypeEnum
