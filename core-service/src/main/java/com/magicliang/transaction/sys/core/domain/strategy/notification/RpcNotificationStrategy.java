@@ -88,9 +88,6 @@ public class RpcNotificationStrategy extends BaseStrategy implements DomainStrat
         AssertUtils.assertNotEmpty(uriParts, INVALID_NOTIFY_URI, "invalid notify uri：" + notifyUri);
         AssertUtils.assertEquals(2, uriParts.size(), INVALID_NOTIFY_URI, "invalid notify uri：" + notifyUri);
 
-        String appKey = uriParts.get(0);
-        String remotePort = uriParts.get(1);
-
         // 依据请求的优先级进行排序
         notifyRequests.sort(Comparator.comparing(TransRequestEntity::getRequestType));
         notifyRequests.forEach((notifyRequest) -> {

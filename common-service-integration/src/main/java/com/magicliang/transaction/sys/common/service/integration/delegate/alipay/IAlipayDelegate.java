@@ -25,5 +25,5 @@ public interface IAlipayDelegate {
      * 一般转账接口都需要考虑跨支付通道支付时的鉴权和回调问题
      * 用鉴权签名防止请求被篡改，在清结算和支付领域的标准做法
      */
-    AlipayResDto standardPay(final AlipayReqParam param, final String signatureKey, final String notifyUri);
+    AlipayResDto standardPay(final AlipayReqParam param, final String signatureKey);
 }

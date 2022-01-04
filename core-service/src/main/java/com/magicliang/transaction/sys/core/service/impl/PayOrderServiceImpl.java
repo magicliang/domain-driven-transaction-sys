@@ -48,7 +48,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
     /**
      * 轻量级填充支付订单领域模型
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 支付订单领域模型
      */
@@ -79,7 +79,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
     /**
      * 填充支付订单领域模型，只要不满足模型实体完整性约束，立刻返回空值
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 支付订单领域模型
      */

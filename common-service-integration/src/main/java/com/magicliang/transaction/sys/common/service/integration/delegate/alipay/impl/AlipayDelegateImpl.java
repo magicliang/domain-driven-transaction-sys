@@ -32,14 +32,13 @@ public class AlipayDelegateImpl implements IAlipayDelegate {
      *
      * @param param        转账参数
      * @param signatureKey 签名密钥
-     * @param notifyUri    回调 uri
      * @return 转账结果
      * @see {@link 一个链接}
      * 一般转账接口都需要考虑跨支付通道支付时的鉴权和回调问题
      * 用鉴权签名防止请求被篡改，在清结算和支付领域的标准做法
      */
     @Override
-    public AlipayResDto standardPay(AlipayReqParam param, String signatureKey, String notifyUri) {
+    public AlipayResDto standardPay(AlipayReqParam param, String signatureKey) {
         // 1. 校验参数，使用 AssertUtils
         // 2. 构造并签名请求
         // 3. 真请求流程
