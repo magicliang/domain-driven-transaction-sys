@@ -41,6 +41,9 @@ public class TransTransactionContextFactory extends ContextFactory {
      * 这里这个工厂方法里允许多态变化的只有 Request 和 model
      * 不同的平台能力/商业产品可能产生不同的 Request 和 model
      *
+     * 暂时每产生一个新的子类可以产生一个新的工厂方法
+     * 也可以产生一个新的子类
+     *
      * @return 交易上下文实例
      */
 //    @SuppressWarnings("unchecked")

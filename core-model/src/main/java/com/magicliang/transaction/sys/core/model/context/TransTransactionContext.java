@@ -8,6 +8,7 @@ import com.magicliang.transaction.sys.core.model.response.acceptance.AcceptanceR
 import com.magicliang.transaction.sys.core.model.response.idgeneration.IdGenerationResponse;
 import com.magicliang.transaction.sys.core.model.response.notification.NotificationResponse;
 import com.magicliang.transaction.sys.core.model.response.payment.PaymentResponse;
+import lombok.Data;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -19,6 +20,7 @@ import com.magicliang.transaction.sys.core.model.response.payment.PaymentRespons
  * <p>
  * date: 2021-12-31 17:42
  */
+@Data
 public class TransTransactionContext<R, T extends TransactionModel> {
 
     /**
