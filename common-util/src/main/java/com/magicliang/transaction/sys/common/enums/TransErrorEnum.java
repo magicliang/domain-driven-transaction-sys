@@ -195,9 +195,9 @@ public enum TransErrorEnum {
     PAYMENT_PLATFORM_INVALID_TASK_ID_ERROR(SECOND_BIZ, "00005", "支付系统付款错误的任务 id", true),
 
     /**
-     * 0010300006，调用远程 mthrift 错误
+     * 0010300006，rpc 调用错误
      */
-    INVOKE_REMOTE_MT_THRIFT_ERROR(SECOND_BIZ, "00006", "调用远程 mthrift 错误", true),
+    INVOKE_RPC_ERROR(SECOND_BIZ, "00006", "rpc 调用错误", true),
 
     /**
      * 0010300007，不正确的分布式锁键
