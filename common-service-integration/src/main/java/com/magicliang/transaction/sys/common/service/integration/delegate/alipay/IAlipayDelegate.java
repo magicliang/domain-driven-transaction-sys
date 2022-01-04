@@ -1,7 +1,7 @@
 package com.magicliang.transaction.sys.common.service.integration.delegate.alipay;
 
-import com.magicliang.transaction.sys.common.service.integration.dto.AlipayReqParam;
-import com.magicliang.transaction.sys.common.service.integration.dto.AlipayResDto;
+import com.magicliang.transaction.sys.common.service.integration.param.AlipayReqParam;
+import com.magicliang.transaction.sys.common.service.integration.param.AlipayResDto;
 
 /**
  * project name: domain-driven-transaction-sys

@@ -1,4 +1,4 @@
-package com.magicliang.transaction.sys.common.service.integration.dto;
+package com.magicliang.transaction.sys.common.service.integration.param;
 
 import com.magicliang.transaction.sys.common.enums.AliPayResultStatusEnum;
 import lombok.AllArgsConstructor;

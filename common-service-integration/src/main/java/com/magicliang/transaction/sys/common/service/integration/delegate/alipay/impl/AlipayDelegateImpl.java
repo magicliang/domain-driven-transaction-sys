@@ -2,8 +2,8 @@ package com.magicliang.transaction.sys.common.service.integration.delegate.alipa
 
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
 import com.magicliang.transaction.sys.common.service.integration.delegate.alipay.IAlipayDelegate;
-import com.magicliang.transaction.sys.common.service.integration.dto.AlipayReqParam;
-import com.magicliang.transaction.sys.common.service.integration.dto.AlipayResDto;
+import com.magicliang.transaction.sys.common.service.integration.param.AlipayReqParam;
+import com.magicliang.transaction.sys.common.service.integration.param.AlipayResDto;
 import com.magicliang.transaction.sys.common.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
