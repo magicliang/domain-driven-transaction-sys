@@ -53,8 +53,11 @@ public class TransTransactionContextFactory extends ContextFactory {
         // 如果映射表为空，则初始化映射表
         if (null == realContextHolder) {
             realContextHolder = new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE);
+            // 此处其实不用并发隔离，因为 realContextHolder 是线程封闭的局部变量，而本线程的 set 只会 set 在本线程的 ThreadLocal 里
             getContextHolder().set(realContextHolder);
         }
+        // 此时再取值，无论如何都取得出来
+        realContextHolder = getContextHolder().get();
         // 如果 context 为空，则初始化 context
         TransTransactionContext<R, T> realContext;
         Object mapValue = realContextHolder.get(STANDARD_TRANSACTION_CONTEXT_KEY);

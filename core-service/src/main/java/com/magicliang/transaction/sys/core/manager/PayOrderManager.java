@@ -27,14 +27,6 @@ public interface PayOrderManager {
     List<TransPayOrderPo> queryPayOrders(final List<Long> payOrderNos);
 
     /**
-     * 根据支付订单号列表查询钱袋宝子订单列表
-     *
-     * @param payOrderNos 支付订单号列表
-     * @return 钱袋宝子订单列表
-     */
-    List<TransAlipaySubOrderPo> queryQdbSubOrders(List<Long> payOrderNos);
-
-    /**
      * 根据支付订单号列表查询通道请求列表
      *
      * @param payOrderNos 支付订单号列表
@@ -43,9 +35,9 @@ public interface PayOrderManager {
     List<TransRequestWithBLOBPo> queryNotificationRequests(List<Long> payOrderNos);
 
     /**
-     * 根据业务识别码 + 业务唯一标识 查询支付订单
+     * 根据业务标识码 + 业务唯一标识 查询支付订单
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 支付订单
      */
@@ -94,12 +86,20 @@ public interface PayOrderManager {
     List<TransRequestWithBLOBPo> queryUnsentNotifications(int batchSize, int env);
 
     /**
-     * 根据支付订单号查询钱袋宝子订单
+     * 根据支付订单号查询支付宝子订单
      *
      * @param payOrderNo 支付订单号
      * @return 子订单列表
      */
     List<TransAlipaySubOrderPo> queryAlipaySubOrder(final Long payOrderNo);
+
+    /**
+     * 根据支付订单号查询支付宝子订单
+     *
+     * @param payOrderNos 支付订单号列表
+     * @return 子订单列表
+     */
+    List<TransAlipaySubOrderPo> queryAlipaySubOrder(final List<Long> payOrderNos);
 
     /**
      * 根据支付订单号查询支付请求
@@ -121,12 +121,12 @@ public interface PayOrderManager {
     /**
      * 插入支付订单和支付请求
      *
-     * @param payOrder    支付订单
-     * @param request     支付请求
-     * @param qdbSuborder 钱袋宝子订单
+     * @param payOrder       支付订单
+     * @param request        支付请求
+     * @param alipaySuborder 支付宝子订单
      * @return 支付结果
      */
-    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo request, final TransAlipaySubOrderPo qdbSuborder);
+    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo request, final TransAlipaySubOrderPo alipaySuborder);
 
     /**
      * 插入支付订单和支付请求

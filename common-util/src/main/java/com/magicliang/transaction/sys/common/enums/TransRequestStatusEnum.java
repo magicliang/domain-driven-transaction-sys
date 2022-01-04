@@ -15,6 +15,7 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 交易请求状态枚举
+ * 状态机的本质是有些任务有了结果，需要记录“不可逆的副作用和影响”
  *
  * @author magicliang
  * <p>

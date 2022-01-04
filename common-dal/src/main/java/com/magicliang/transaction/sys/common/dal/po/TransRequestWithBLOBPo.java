@@ -6,6 +6,7 @@ import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestTypeEnum;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -17,6 +18,11 @@ import java.util.Date;
  * date: 2022-01-04 14:11
  */
 public class TransRequestWithBLOBPo {
+
+    /**
+     * 自增物理主键，单表唯一
+     */
+    private Long id;
 
     /**
      * 引用支付订单号，业务主键，全局唯一
@@ -370,5 +376,58 @@ public class TransRequestWithBLOBPo {
      */
     public void setEnv(Short env) {
         this.env = env;
+    }
+
+    /**
+     * get the value of id
+     *
+     * @return the value of id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * set the value of the id
+     *
+     * @param id the value of id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransRequestWithBLOBPo)) return false;
+        TransRequestWithBLOBPo that = (TransRequestWithBLOBPo) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getPayOrderNo(), that.getPayOrderNo()) && Objects.equals(getBizIdentifyNo(), that.getBizIdentifyNo()) && Objects.equals(getRequestType(), that.getRequestType()) && Objects.equals(getBizUniqueNo(), that.getBizUniqueNo()) && Objects.equals(getRetryCount(), that.getRetryCount()) && Objects.equals(getRequestAddr(), that.getRequestAddr()) && Objects.equals(getStatus(), that.getStatus()) && Objects.equals(getGmtNextExecution(), that.getGmtNextExecution()) && Objects.equals(getGmtLastExecution(), that.getGmtLastExecution()) && Objects.equals(getRequestParams(), that.getRequestParams()) && Objects.equals(getRequestResponse(), that.getRequestResponse()) && Objects.equals(getCallbackParams(), that.getCallbackParams()) && Objects.equals(getRequestException(), that.getRequestException()) && Objects.equals(getCloseReason(), that.getCloseReason()) && Objects.equals(getEnv(), that.getEnv());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getPayOrderNo(), getBizIdentifyNo(), getRequestType(), getBizUniqueNo(), getRetryCount(), getRequestAddr(), getStatus(), getGmtNextExecution(), getGmtLastExecution(), getRequestParams(), getRequestResponse(), getCallbackParams(), getRequestException(), getCloseReason(), getEnv());
+    }
+
+    @Override
+    public String toString() {
+        return "TransRequestWithBLOBPo{" +
+                "id=" + id +
+                ", payOrderNo=" + payOrderNo +
+                ", bizIdentifyNo='" + bizIdentifyNo + '\'' +
+                ", requestType=" + requestType +
+                ", bizUniqueNo='" + bizUniqueNo + '\'' +
+                ", retryCount=" + retryCount +
+                ", requestAddr='" + requestAddr + '\'' +
+                ", status=" + status +
+                ", gmtNextExecution=" + gmtNextExecution +
+                ", gmtLastExecution=" + gmtLastExecution +
+                ", requestParams='" + requestParams + '\'' +
+                ", requestResponse='" + requestResponse + '\'' +
+                ", callbackParams='" + callbackParams + '\'' +
+                ", requestException='" + requestException + '\'' +
+                ", closeReason=" + closeReason +
+                ", env=" + env +
+                '}';
     }
 }

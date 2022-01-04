@@ -20,6 +20,11 @@ import java.util.Objects;
 public class TransPayOrderPo {
 
     /**
+     * 物理主键，单表唯一
+     */
+    private Long id;
+
+    /**
      * 支付订单号，业务主键，全局唯一
      */
     private Long payOrderNo;
@@ -560,23 +565,42 @@ public class TransPayOrderPo {
         this.env = env;
     }
 
+    /**
+     * get the value of id
+     *
+     * @return the value of id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * set the value of the id
+     *
+     * @param id the value of id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TransPayOrderPo)) return false;
         TransPayOrderPo that = (TransPayOrderPo) o;
-        return Objects.equals(getPayOrderNo(), that.getPayOrderNo()) && Objects.equals(getSysCode(), that.getSysCode()) && Objects.equals(getBizIdentifyNo(), that.getBizIdentifyNo()) && Objects.equals(getBizUniqueNo(), that.getBizUniqueNo()) && Objects.equals(getMoney(), that.getMoney()) && Objects.equals(getAccountingEntry(), that.getAccountingEntry()) && Objects.equals(getGmtAcceptedTime(), that.getGmtAcceptedTime()) && Objects.equals(getGmtPaymentBeginTime(), that.getGmtPaymentBeginTime()) && Objects.equals(getGmtPaymentSuccessTime(), that.getGmtPaymentSuccessTime()) && Objects.equals(getGmtPaymentFailureTime(), that.getGmtPaymentFailureTime()) && Objects.equals(getGmtPaymentClosedTime(), that.getGmtPaymentClosedTime()) && Objects.equals(getGmtPaymentBouncedTime(), that.getGmtPaymentBouncedTime()) && Objects.equals(getStatus(), that.getStatus()) && Objects.equals(getVersion(), that.getVersion()) && Objects.equals(getMemo(), that.getMemo()) && Objects.equals(getChannelPaymentTraceNo(), that.getChannelPaymentTraceNo()) && Objects.equals(getChannelDishonorTraceNo(), that.getChannelDishonorTraceNo()) && Objects.equals(getChannelErrorCode(), that.getChannelErrorCode()) && Objects.equals(getBusinessEntity(), that.getBusinessEntity()) && Objects.equals(getNotifyUri(), that.getNotifyUri()) && Objects.equals(getExtendInfo(), that.getExtendInfo()) && Objects.equals(getBizInfo(), that.getBizInfo()) && Objects.equals(getEnv(), that.getEnv());
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getPayOrderNo(), that.getPayOrderNo()) && Objects.equals(getSysCode(), that.getSysCode()) && Objects.equals(getBizIdentifyNo(), that.getBizIdentifyNo()) && Objects.equals(getBizUniqueNo(), that.getBizUniqueNo()) && Objects.equals(getMoney(), that.getMoney()) && Objects.equals(getAccountingEntry(), that.getAccountingEntry()) && Objects.equals(getGmtAcceptedTime(), that.getGmtAcceptedTime()) && Objects.equals(getGmtPaymentBeginTime(), that.getGmtPaymentBeginTime()) && Objects.equals(getGmtPaymentSuccessTime(), that.getGmtPaymentSuccessTime()) && Objects.equals(getGmtPaymentFailureTime(), that.getGmtPaymentFailureTime()) && Objects.equals(getGmtPaymentClosedTime(), that.getGmtPaymentClosedTime()) && Objects.equals(getGmtPaymentBouncedTime(), that.getGmtPaymentBouncedTime()) && Objects.equals(getStatus(), that.getStatus()) && Objects.equals(getVersion(), that.getVersion()) && Objects.equals(getMemo(), that.getMemo()) && Objects.equals(getChannelPaymentTraceNo(), that.getChannelPaymentTraceNo()) && Objects.equals(getChannelDishonorTraceNo(), that.getChannelDishonorTraceNo()) && Objects.equals(getChannelErrorCode(), that.getChannelErrorCode()) && Objects.equals(getBusinessEntity(), that.getBusinessEntity()) && Objects.equals(getNotifyUri(), that.getNotifyUri()) && Objects.equals(getExtendInfo(), that.getExtendInfo()) && Objects.equals(getBizInfo(), that.getBizInfo()) && Objects.equals(getEnv(), that.getEnv());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPayOrderNo(), getSysCode(), getBizIdentifyNo(), getBizUniqueNo(), getMoney(), getAccountingEntry(), getGmtAcceptedTime(), getGmtPaymentBeginTime(), getGmtPaymentSuccessTime(), getGmtPaymentFailureTime(), getGmtPaymentClosedTime(), getGmtPaymentBouncedTime(), getStatus(), getVersion(), getMemo(), getChannelPaymentTraceNo(), getChannelDishonorTraceNo(), getChannelErrorCode(), getBusinessEntity(), getNotifyUri(), getExtendInfo(), getBizInfo(), getEnv());
+        return Objects.hash(getId(), getPayOrderNo(), getSysCode(), getBizIdentifyNo(), getBizUniqueNo(), getMoney(), getAccountingEntry(), getGmtAcceptedTime(), getGmtPaymentBeginTime(), getGmtPaymentSuccessTime(), getGmtPaymentFailureTime(), getGmtPaymentClosedTime(), getGmtPaymentBouncedTime(), getStatus(), getVersion(), getMemo(), getChannelPaymentTraceNo(), getChannelDishonorTraceNo(), getChannelErrorCode(), getBusinessEntity(), getNotifyUri(), getExtendInfo(), getBizInfo(), getEnv());
     }
 
     @Override
     public String toString() {
         return "TransPayOrderPo{" +
-                "payOrderNo=" + payOrderNo +
+                "id=" + id +
+                ", payOrderNo=" + payOrderNo +
                 ", sysCode='" + sysCode + '\'' +
                 ", bizIdentifyNo='" + bizIdentifyNo + '\'' +
                 ", bizUniqueNo='" + bizUniqueNo + '\'' +

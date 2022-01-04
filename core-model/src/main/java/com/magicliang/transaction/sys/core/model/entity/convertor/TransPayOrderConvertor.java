@@ -14,12 +14,12 @@ import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
  * <p>
  * date: 2021-12-31 16:36
  */
-public class InsPayOrderConvertor {
+public class TransPayOrderConvertor {
 
     /**
      * 私有构造器
      */
-    private InsPayOrderConvertor() {
+    private TransPayOrderConvertor() {
         throw new UnsupportedOperationException();
     }
 
@@ -27,10 +27,10 @@ public class InsPayOrderConvertor {
      * 从领域模型转化为持久层对象
      * 注意，所有的非 insert 的 update 流程在调用 toPo 之前必须调用 PayOrderHelper.updatePayOrder
      *
-     * @param insPayOrderEntity 领域模型
+     * @param transPayOrderEntity 领域模型
      * @return 持久层对象
      */
-    public static TransPayOrderPo toPo(TransPayOrderEntity insPayOrderEntity) {
+    public static TransPayOrderPo toPo(TransPayOrderEntity transPayOrderEntity) {
         return null;
     }
 
@@ -52,9 +52,9 @@ public class InsPayOrderConvertor {
      * @return 领域模型实体
      */
     public static TransPayOrderEntity toDomainEntity(final TransPayOrderPo payOrder, final TransAlipaySubOrderPo subOrder) {
-        TransPayOrderEntity insPayOrderEntity = toDomainEntity(payOrder);
-        insPayOrderEntity.setSubOrder(TransAlipaySubOrderConvertor.toDomainEntity(subOrder));
-        return insPayOrderEntity;
+        TransPayOrderEntity transPayOrderEntity = toDomainEntity(payOrder);
+        transPayOrderEntity.setSubOrder(TransAlipaySubOrderConvertor.toDomainEntity(subOrder));
+        return transPayOrderEntity;
     }
 
 }
