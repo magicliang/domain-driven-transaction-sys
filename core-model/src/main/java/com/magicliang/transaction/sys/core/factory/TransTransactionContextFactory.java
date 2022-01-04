@@ -61,7 +61,8 @@ public class TransTransactionContextFactory extends ContextFactory {
             realContext = (TransTransactionContext<R, T>) mapValue;
         } else {
             // 在这里要慎重地使用懒人模式，在多线程里只 new 和 put 一个新的全局上下文，所以要引入 double-check 的下半部分
-            synchronized (realContextHolder) {
+            // 用 key 来表达锁相关性也是一个方法
+            synchronized (STANDARD_TRANSACTION_CONTEXT_KEY) {
                 mapValue = realContextHolder.get(STANDARD_TRANSACTION_CONTEXT_KEY);
                 if (mapValue instanceof TransTransactionContext) {
                     // 如果服务已经在其他线程里启动过了，此处直接返回
