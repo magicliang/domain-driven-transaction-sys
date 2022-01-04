@@ -7,6 +7,7 @@ import lombok.Data;
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 基础交易模型
+ * 一个领域的主交易模型到底应不应该因为平台产品的变动而变动，有待探讨
  *
  * @author magicliang
  * <p>

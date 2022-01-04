@@ -8,6 +8,7 @@ import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 支付订单转换器
+ * 因为静态方法不易被继承和覆写，所以不适合泛型化
  *
  * @author magicliang
  * <p>
@@ -44,10 +45,10 @@ public class InsPayOrderConvertor {
     }
 
     /**
-     * 转换支付订单 + 钱袋宝支付子订单持久层对象到领域模型实体，本方法包含子订单
+     * 转换支付订单 + 支付宝支付子订单持久层对象到领域模型实体，本方法包含子订单
      *
      * @param payOrder 支付订单持久层对象
-     * @param subOrder 钱袋宝支付子订单持久层对象
+     * @param subOrder 支付宝支付子订单持久层对象
      * @return 领域模型实体
      */
     public static TransPayOrderEntity toDomainEntity(final TransPayOrderPo payOrder, final TransAlipaySubOrderPo subOrder) {
