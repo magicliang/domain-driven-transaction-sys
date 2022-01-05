@@ -37,7 +37,7 @@ public class TransAlipaySubOrderPo {
     /**
      * 目标支付宝账户
      */
-    private String aliPayAccount;
+    private String toAliPayAccount;
 
     /**
      * get the value of id
@@ -112,21 +112,21 @@ public class TransAlipaySubOrderPo {
     }
 
     /**
-     * get the value of aliPayAccount
+     * get the value of toAliPayAccount
      *
-     * @return the value of aliPayAccount
+     * @return the value of toAliPayAccount
      */
-    public String getAliPayAccount() {
-        return aliPayAccount;
+    public String getToAliPayAccount() {
+        return toAliPayAccount;
     }
 
     /**
-     * set the value of the aliPayAccount
+     * set the value of the toAliPayAccount
      *
-     * @param aliPayAccount the value of aliPayAccount
+     * @param toAliPayAccount the value of toAliPayAccount
      */
-    public void setAliPayAccount(String aliPayAccount) {
-        this.aliPayAccount = aliPayAccount;
+    public void setToAliPayAccount(String toAliPayAccount) {
+        this.toAliPayAccount = toAliPayAccount;
     }
 
     @Override
@@ -134,12 +134,12 @@ public class TransAlipaySubOrderPo {
         if (this == o) return true;
         if (!(o instanceof TransAlipaySubOrderPo)) return false;
         TransAlipaySubOrderPo that = (TransAlipaySubOrderPo) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getGmtCreated(), that.getGmtCreated()) && Objects.equals(getGmtModified(), that.getGmtModified()) && Objects.equals(getPayOrderNo(), that.getPayOrderNo()) && Objects.equals(getAliPayAccount(), that.getAliPayAccount());
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getGmtCreated(), that.getGmtCreated()) && Objects.equals(getGmtModified(), that.getGmtModified()) && Objects.equals(getPayOrderNo(), that.getPayOrderNo()) && Objects.equals(getToAliPayAccount(), that.getToAliPayAccount());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getGmtCreated(), getGmtModified(), getPayOrderNo(), getAliPayAccount());
+        return Objects.hash(getId(), getGmtCreated(), getGmtModified(), getPayOrderNo(), getToAliPayAccount());
     }
 
     @Override
@@ -149,7 +149,7 @@ public class TransAlipaySubOrderPo {
                 ", gmtCreated=" + gmtCreated +
                 ", gmtModified=" + gmtModified +
                 ", payOrderNo=" + payOrderNo +
-                ", aliPayAccount='" + aliPayAccount + '\'' +
+                ", toAliPayAccount='" + toAliPayAccount + '\'' +
                 '}';
     }
 }

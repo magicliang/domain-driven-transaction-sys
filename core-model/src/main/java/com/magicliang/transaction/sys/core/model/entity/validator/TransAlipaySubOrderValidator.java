@@ -29,7 +29,7 @@ public class TransAlipaySubOrderValidator {
      * @param subOrder 支付订单
      */
     public static void validateBeforeInsert(TransAlipaySubOrderEntity subOrder) {
-        AssertUtils.assertNotBlank(subOrder.getAliPayAccount(), INVALID_SUB_ORDER_ERROR, "invalid aliPayAccount:" + subOrder);
+        AssertUtils.assertNotBlank(subOrder.getToAliPayAccount(), INVALID_SUB_ORDER_ERROR, "invalid toAliPayAccount:" + subOrder);
         // 其他差异化校验
     }
 }
