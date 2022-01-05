@@ -331,7 +331,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
             return Collections.emptyList();
         }
         // 否则，开始翻页
-        List<T> results = Lists.newArrayListWithCapacity((int) totalSize);
+        List<T> results = Lists.newArrayListWithCapacity(Math.toIntExact(totalSize));
         // 向上取整计算总页数
         int pageCount = (int) Math.ceil((double) totalSize / batchSize);
         // 迭代翻页

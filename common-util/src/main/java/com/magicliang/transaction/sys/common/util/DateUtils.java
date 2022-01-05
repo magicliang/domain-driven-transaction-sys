@@ -681,7 +681,7 @@ public class DateUtils {
     }
 
     public static int differentDaysByMillisecond(long startTime, long afterTime) {
-        int days = (int) ((afterTime - startTime) / (1000 * 3600 * 24)) + 1;
+        int days = Math.toIntExact(((afterTime - startTime) / (1000 * 3600 * 24))) + 1;
         return days;
     }
 
