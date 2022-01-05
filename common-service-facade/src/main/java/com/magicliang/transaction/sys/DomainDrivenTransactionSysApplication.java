@@ -1,4 +1,4 @@
-package com.magicliang.transaction.sys.biz.service.impl;
+package com.magicliang.transaction.sys;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
