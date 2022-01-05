@@ -17,6 +17,11 @@ public class IntegrationConstant {
     public static final String UTF8 = "UTF-8";
 
     /**
+     * 本应用的 leaf key
+     */
+    public static final String LEAF_KEY = "financial.trans.payorderno";
+
+    /**
      * 私有构造器
      */
     private IntegrationConstant() {

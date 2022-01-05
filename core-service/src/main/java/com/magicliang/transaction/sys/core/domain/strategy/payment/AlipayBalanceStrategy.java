@@ -1,6 +1,5 @@
 package com.magicliang.transaction.sys.core.domain.strategy.payment;
 
-import com.magicliang.transaction.sys.common.dal.po.TransAlipaySubOrderPo;
 import com.magicliang.transaction.sys.common.enums.AliPayResultStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
@@ -12,7 +11,6 @@ import com.magicliang.transaction.sys.core.domain.enums.PaymentStrategyEnum;
 import com.magicliang.transaction.sys.core.model.entity.TransAlipaySubOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
-import com.magicliang.transaction.sys.core.model.entity.TransSubOrderEntity;
 import com.magicliang.transaction.sys.core.model.request.payment.PaymentRequest;
 import com.magicliang.transaction.sys.core.model.response.payment.PaymentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +101,7 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
         payRequest.setRequestResponse(JsonUtils.toJson(res));
         Date now = new Date();
         if (AliPayResultStatusEnum.SUCCESS == AliPayResultStatusEnum.getByCode(res.getStatus())) {
-            // 钱包系统资金转账流水号
+            // 钱包系统资金转账流水号，mock
             Long fundSerialNo = 55596L;
             // 更新领域响应
             paymentResponse.setChannelPaymentTraceNo("" + fundSerialNo);
