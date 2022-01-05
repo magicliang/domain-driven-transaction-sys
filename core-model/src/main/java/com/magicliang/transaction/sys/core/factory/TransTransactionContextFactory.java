@@ -23,6 +23,15 @@ public class TransTransactionContextFactory extends ContextFactory {
     private static final String STANDARD_TRANSACTION_CONTEXT_KEY = "StandardTransactionContext";
 
     /**
+     * 锁映射表
+     */
+    private static final Map<String, Object> LOCK_MAP = new ConcurrentHashMap<>();
+
+    static {
+        LOCK_MAP.put(STANDARD_TRANSACTION_CONTEXT_KEY, new Object());
+    }
+
+    /**
      * 私有构造器
      */
     private TransTransactionContextFactory() {
@@ -46,7 +55,7 @@ public class TransTransactionContextFactory extends ContextFactory {
      *
      * @return 交易上下文实例
      */
-//    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public static <R, T extends TransactionModel> TransTransactionContext<R, T> getStandardTransactionContext() {
         // 1. 获取当前上下文的映射表
         Map<String, Object> realContextHolder = getContextHolder().get();
@@ -63,17 +72,16 @@ public class TransTransactionContextFactory extends ContextFactory {
         Object mapValue = realContextHolder.get(STANDARD_TRANSACTION_CONTEXT_KEY);
         // instanceof 包含 != null 的检查
         if (mapValue instanceof TransTransactionContext) {
-            // 1. 如果持有这个上下文的类型是InsTransactionContext，直接 type casting，一般情况下这里不会发生类型的错误-由 key 和类型的绑定决定了此处的行为必然如此
-            // 警告点
+            // 警告点：所有容器转成特定泛型类型的容器必然产生这种警告点，这种警告逻辑的正确性只能由put get 的逻辑设计保证
             realContext = (TransTransactionContext<R, T>) mapValue;
         } else {
             // 在这里要慎重地使用懒人模式，在多线程里只 new 和 put 一个新的全局上下文，所以要引入 double-check 的下半部分
             // 用 key 来表达锁相关性也是一个方法，最小限度地确定了锁的范围-专门为了本场景设计的锁对象是锁定范围最小的
-            synchronized (STANDARD_TRANSACTION_CONTEXT_KEY) {
+            synchronized (LOCK_MAP.get(STANDARD_TRANSACTION_CONTEXT_KEY)) {
                 mapValue = realContextHolder.get(STANDARD_TRANSACTION_CONTEXT_KEY);
                 if (mapValue instanceof TransTransactionContext) {
                     // 如果服务已经在其他线程里启动过了，此处直接返回
-                    // 警告点
+                    // 警告点：所有容器转成特定泛型类型的容器必然产生这种警告点，这种警告逻辑的正确性只能由put get 的逻辑设计保证
                     return (TransTransactionContext<R, T>) mapValue;
                 }
                 // 2. 否则使用标准类型覆盖原有 value

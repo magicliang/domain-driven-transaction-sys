@@ -2,10 +2,6 @@ dependencies {
     // compile（api）：这种是我们最常用的方式，使用该方式依赖的库将会参与编译和打包。也就是最简单的 dependency
     api project(":biz-shared")
     api project(":common-service-facade")
-
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-devtools'
 }
 
 // 这个名字是插件的函数的名字，也是 task，特定的插件的 task 名字是不一样的
