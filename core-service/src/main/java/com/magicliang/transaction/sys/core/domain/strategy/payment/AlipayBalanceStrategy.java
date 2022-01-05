@@ -54,7 +54,7 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
     public void execute(final PaymentRequest paymentRequest, final PaymentResponse paymentResponse) {
         TransPayOrderEntity payOrder = paymentRequest.getInsPayOrder();
         TransAlipaySubOrderEntity subOrder = (TransAlipaySubOrderEntity) payOrder.getSubOrder();
-        final AlipayReqParam param = buildTransferToQdbBalanceReqParam(payOrder, subOrder);
+        final AlipayReqParam param = buildTransferToAlipayBalanceReqParam(payOrder, subOrder);
 
         // 记录请求参数
         final TransRequestEntity payRequest = payOrder.getPaymentRequest();
@@ -84,7 +84,7 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
      * @param subOrder 支付子订单
      * @return 支付宝余额请求参数
      */
-    private AlipayReqParam buildTransferToQdbBalanceReqParam(final TransPayOrderEntity payOrder, final TransAlipaySubOrderEntity subOrder) {
+    private AlipayReqParam buildTransferToAlipayBalanceReqParam(final TransPayOrderEntity payOrder, final TransAlipaySubOrderEntity subOrder) {
         AlipayReqParam param = new AlipayReqParam();
         return param;
     }

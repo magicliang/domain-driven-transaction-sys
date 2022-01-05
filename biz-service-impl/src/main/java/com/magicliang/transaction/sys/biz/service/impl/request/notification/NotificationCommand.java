@@ -26,7 +26,7 @@ public class NotificationCommand extends HandlerRequest {
 
     /**
      * 外部提供的支付订单，如果外部提供了支付订单，则直接使用这个支付订单填充交易模型
-     * 否则，使用支付订单号/业务识别码进行支付
+     * 否则，使用支付订单号/业务标识码进行支付
      */
     private TransPayOrderEntity payOrder;
 

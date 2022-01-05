@@ -25,12 +25,12 @@ public abstract class HandlerRequest implements IIdentifiableType<OperationEnum>
     private String sysCode;
 
     /**
-     * 业务识别码，上游系统必填
+     * 业务标识码，上游系统必填
      */
     private String bizIdentifyNo;
 
     /**
-     * 上游业务号，语义同 out_biz_no，与业务识别码联合后，必须全局唯一，可以作为分表键，上游系统必填
+     * 上游业务号，语义同 out_biz_no，与业务标识码联合后，必须全局唯一，可以作为分表键，上游系统必填
      */
     private String bizUniqueNo;
 
