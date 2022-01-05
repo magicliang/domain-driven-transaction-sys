@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.core.manager.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.magicliang.transaction.sys.common.dal.po.TransAlipaySubOrderPo;
 import com.magicliang.transaction.sys.common.dal.po.TransPayOrderPo;
@@ -295,7 +296,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
         final int size = payOrderNos.size();
         List<T> result = Lists.newArrayListWithCapacity(size);
 
-        // 向上取整计算总页数
+        // 向上取整计算总页数，此处不能用 Math.toIntExact
         int pageCount = (int) Math.ceil((double) size / DEFAULT_BATCH);
         // 迭代翻页
         IntStream.rangeClosed(1, pageCount).forEachOrdered(pageIndex -> {
@@ -335,7 +336,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
         int pageCount = (int) Math.ceil((double) totalSize / batchSize);
         // 迭代翻页
         IntStream.rangeClosed(1, pageCount).forEachOrdered(pageIndex -> {
-//            PageHelper.startPage(pageIndex, batchSize);
+            PageHelper.startPage(pageIndex, batchSize);
             results.addAll(new ArrayList<>(resultSupplier.get()));
         });
         return results;
