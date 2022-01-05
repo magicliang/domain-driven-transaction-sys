@@ -94,7 +94,7 @@ public class NotificationActivity extends BaseActivity<NotificationRequest, Noti
         NotificationRequest notificationRequest = context.getNotificationRequest();
         TransactionModel model = context.getModel();
         final TransPayOrderEntity payOrder = model.getPayOrder();
-        notificationRequest.setInsPayOrder(payOrder);
+        notificationRequest.setTransPayOrder(payOrder);
 
         // 本活动只涉及通知请求，不涉及支付订单，只更新通知请求
         assembleRequestBeforeNotification(payOrder);

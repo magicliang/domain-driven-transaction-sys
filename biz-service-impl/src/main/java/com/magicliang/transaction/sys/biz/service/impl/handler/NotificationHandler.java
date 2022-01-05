@@ -70,7 +70,7 @@ public class NotificationHandler extends BaseHandler<NotificationCommand, Transa
     /**
      * 填充全模型
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 全领域模型
      */
@@ -105,7 +105,7 @@ public class NotificationHandler extends BaseHandler<NotificationCommand, Transa
             }
             transactionModel.setPayOrder(payOrder);
         } else {
-            // 业务识别码
+            // 业务标识码
             String bizIdentifyNo = command.getBizIdentifyNo();
             // 业务唯一标识
             String bizUniqueNo = command.getBizUniqueNo();

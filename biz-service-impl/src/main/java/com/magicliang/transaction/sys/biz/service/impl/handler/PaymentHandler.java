@@ -70,7 +70,7 @@ public class PaymentHandler extends BaseHandler<PaymentCommand, TransactionModel
     /**
      * 填充全模型
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 全领域模型
      */
@@ -108,7 +108,7 @@ public class PaymentHandler extends BaseHandler<PaymentCommand, TransactionModel
         } else {
             // 否则按部就班查询整个领域模型
 
-            // 业务识别码
+            // 业务标识码
             String bizIdentifyNo = command.getBizIdentifyNo();
             // 业务唯一标识
             String bizUniqueNo = command.getBizUniqueNo();

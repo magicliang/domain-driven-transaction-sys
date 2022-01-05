@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * project name: domain-driven-transaction-sys
  * <p>
- * description:
+ * description: 回调门面实现
  *
  * @author magicliang
  * <p>

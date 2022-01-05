@@ -57,7 +57,7 @@ public class SyncAcceptanceStrategy extends BaseStrategy implements DomainStrate
      */
     @Override
     public void execute(final AcceptanceRequest acceptanceRequest, final AcceptanceResponse acceptanceResponse) {
-        TransPayOrderEntity payOrder = acceptanceRequest.getInsPayOrder();
+        TransPayOrderEntity payOrder = acceptanceRequest.getTransPayOrder();
         TransSubOrderEntity subOrder = payOrder.getSubOrder();
         TransRequestEntity paymentRequest = payOrder.getPaymentRequest();
 

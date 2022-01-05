@@ -99,7 +99,7 @@ public class PaymentActivity extends BaseActivity<PaymentRequest, PaymentRespons
         assemblePayOrderBeforePay(payOrder);
         // 更新支付请求
         assemblePaymentRequestBeforePay(payOrder);
-        paymentRequest.setInsPayOrder(payOrder);
+        paymentRequest.setTransPayOrder(payOrder);
 
         return paymentRequest;
     }

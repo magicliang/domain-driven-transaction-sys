@@ -19,5 +19,5 @@ public class AcceptanceRequest implements IRequest {
     /**
      * 支付订单
      */
-    private TransPayOrderEntity insPayOrder;
+    private TransPayOrderEntity transPayOrder;
 }

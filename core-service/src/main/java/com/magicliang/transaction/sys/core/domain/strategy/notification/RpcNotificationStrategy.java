@@ -75,7 +75,7 @@ public class RpcNotificationStrategy extends BaseStrategy implements DomainStrat
      */
     @Override
     public void execute(final NotificationRequest notificationRequest, final NotificationResponse notificationResponse) {
-        TransPayOrderEntity payOrder = notificationRequest.getInsPayOrder();
+        TransPayOrderEntity payOrder = notificationRequest.getTransPayOrder();
         List<TransRequestEntity> notifyRequests = PayOrderHelper.getUnsentNotificationRequests(payOrder);
         if (CollectionUtils.isEmpty(notifyRequests)) {
             return;

@@ -101,7 +101,7 @@ public class AcceptanceActivity extends BaseActivity<AcceptanceRequest, Acceptan
         final TransPayOrderEntity payOrder = model.getPayOrder();
         assemblePayOrder(payOrder);
         assemblePaymentRequest(payOrder);
-        request.setInsPayOrder(payOrder);
+        request.setTransPayOrder(payOrder);
         return request;
     }
 

@@ -52,7 +52,7 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
      */
     @Override
     public void execute(final PaymentRequest paymentRequest, final PaymentResponse paymentResponse) {
-        TransPayOrderEntity payOrder = paymentRequest.getInsPayOrder();
+        TransPayOrderEntity payOrder = paymentRequest.getTransPayOrder();
         TransAlipaySubOrderEntity subOrder = (TransAlipaySubOrderEntity) payOrder.getSubOrder();
         final AlipayReqParam param = buildTransferToAlipayBalanceReqParam(payOrder, subOrder);
 

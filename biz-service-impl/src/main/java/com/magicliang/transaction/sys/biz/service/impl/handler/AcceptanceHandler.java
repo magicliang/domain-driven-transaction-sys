@@ -74,7 +74,7 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
     /**
      * 填充全模型
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 全领域模型
      */
@@ -98,7 +98,7 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
      */
     private void populateModel(final TransTransactionContext<AcceptanceCommand, TransactionModel> context) {
         AcceptanceCommand command = context.getRequest();
-        // 业务识别码
+        // 业务标识码
         String bizIdentifyNo = command.getBizIdentifyNo();
         // 业务唯一标识
         String bizUniqueNo = command.getBizUniqueNo();
@@ -141,24 +141,24 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
      */
     private TransPayOrderEntity generatePayOrder(final AcceptanceCommand command) {
         Date now = new Date();
-        TransPayOrderEntity insPayOrderEntity = new TransPayOrderEntity();
-        insPayOrderEntity.setSysCode(command.getSysCode());
-        insPayOrderEntity.setBizIdentifyNo(command.getBizIdentifyNo());
-        insPayOrderEntity.setBizUniqueNo(command.getBizUniqueNo());
-        insPayOrderEntity.setMoney(command.getMoney());
+        TransPayOrderEntity transPayOrdtraerEntity = new TransPayOrderEntity();
+        transPayOrdtraerEntity.setSysCode(command.getSysCode());
+        transPayOrdtraerEntity.setBizIdentifyNo(command.getBizIdentifyNo());
+        transPayOrdtraerEntity.setBizUniqueNo(command.getBizUniqueNo());
+        transPayOrdtraerEntity.setMoney(command.getMoney());
         // 上游可以指定支付通道类型 todo
 
-        insPayOrderEntity.setAccountingEntry(command.getAccountingEntry());
-        insPayOrderEntity.setMemo(command.getMemo());
-        insPayOrderEntity.setBusinessEntity(command.getBusinessEntity());
+        transPayOrdtraerEntity.setAccountingEntry(command.getAccountingEntry());
+        transPayOrdtraerEntity.setMemo(command.getMemo());
+        transPayOrdtraerEntity.setBusinessEntity(command.getBusinessEntity());
 
-        insPayOrderEntity.setNotifyUri(command.getNotifyUri());
-        insPayOrderEntity.setExtendInfo(command.getExtendInfo());
-        insPayOrderEntity.setBizInfo(command.getBizInfo());
+        transPayOrdtraerEntity.setNotifyUri(command.getNotifyUri());
+        transPayOrdtraerEntity.setExtendInfo(command.getExtendInfo());
+        transPayOrdtraerEntity.setBizInfo(command.getBizInfo());
 
-        insPayOrderEntity.setSubOrder(generateSubOrder(command, now));
-        insPayOrderEntity.setPaymentRequest(generatePayRequest(insPayOrderEntity));
-        return insPayOrderEntity;
+        transPayOrdtraerEntity.setSubOrder(generateSubOrder(command, now));
+        transPayOrdtraerEntity.setPaymentRequest(generatePayRequest(transPayOrdtraerEntity));
+        return transPayOrdtraerEntity;
     }
 
     /**
@@ -170,19 +170,19 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
      */
     private TransSubOrderEntity generateSubOrder(final AcceptanceCommand command, final Date date) {
         if (command instanceof AlipayAcceptanceCommand) {
-            return generateQdbSubOrder((AlipayAcceptanceCommand) command, date);
+            return generateAlipaySubOrder((AlipayAcceptanceCommand) command, date);
         }
         return null;
     }
 
     /**
-     * 由原始请求生成钱袋宝余额支付子订单
+     * 由原始请求生成支付宝余额支付子订单
      *
      * @param command 原始请求
      * @param date    业务日期
      * @return 支付子订单
      */
-    private TransSubOrderEntity generateQdbSubOrder(final AlipayAcceptanceCommand command, final Date date) {
+    private TransSubOrderEntity generateAlipaySubOrder(final AlipayAcceptanceCommand command, final Date date) {
         TransSubOrderEntity subOrder = AlipayAcceptanceCommandConvertor.toDomainEntity(command);
         subOrder.setGmtCreated(date);
         subOrder.setGmtModified(date);

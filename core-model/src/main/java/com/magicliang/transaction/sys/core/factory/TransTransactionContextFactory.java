@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TransTransactionContextFactory extends ContextFactory {
 
     /**
-     * InsTransactionContext key
+     * StandardTransactionContext key
      */
     private static final String STANDARD_TRANSACTION_CONTEXT_KEY = "StandardTransactionContext";
 

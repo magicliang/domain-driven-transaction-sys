@@ -74,7 +74,7 @@ public class CallbackHandler extends BaseHandler<CallbackCommand, TransactionMod
     /**
      * 填充全模型
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 全领域模型
      */
@@ -97,11 +97,11 @@ public class CallbackHandler extends BaseHandler<CallbackCommand, TransactionMod
      */
     private void populateModel(final TransTransactionContext<CallbackCommand, TransactionModel> context) {
         CallbackCommand command = context.getRequest();
-        // 业务识别码
+        // 业务标识码
         String bizIdentifyNo = command.getBizIdentifyNo();
         // 业务唯一标识
         String bizUniqueNo = command.getBizUniqueNo();
-        // 填充全模型。注意，回调的时候上游业务系统不一定知道 payorderno，所以这里实际上是强依赖于业务识别码和业务号的。
+        // 填充全模型。注意，回调的时候上游业务系统不一定知道 payorderno，所以这里实际上是强依赖于业务标识码和业务号的。
         TransactionModel transactionModel = populateNecessaryModel(bizIdentifyNo, bizUniqueNo);
         // 模型必须填充成功，否则接下来的流程无法执行
         AssertUtils.assertNotNull(transactionModel, INVALID_MODEL_ERROR, "invalid transactionModel: " + transactionModel);

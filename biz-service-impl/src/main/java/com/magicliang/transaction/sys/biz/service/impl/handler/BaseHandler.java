@@ -173,7 +173,7 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
     /**
      * 填充全模型，不同的处理器的全模型定义不一样
      *
-     * @param bizIdentifyNo 业务识别码
+     * @param bizIdentifyNo 业务标识码
      * @param bizUniqueNo   业务唯一标识
      * @return 全领域模型
      */
