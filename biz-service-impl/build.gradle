@@ -6,7 +6,7 @@ dependencies {
 
 // 这个名字是插件的函数的名字，也是 task，特定的插件的 task 名字是不一样的
 bootJar {
-    enabled = true
+    enabled = false
 }
 
 jar {
