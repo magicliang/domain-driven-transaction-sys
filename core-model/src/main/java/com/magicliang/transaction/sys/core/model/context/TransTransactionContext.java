@@ -37,6 +37,11 @@ public class TransTransactionContext<R, T extends TransactionModel> {
     private R request;
 
     /**
+     * 业务身份
+     */
+    private BizIdentity bizIdentity;
+
+    /**
      * 交易模型
      */
     private T model;
