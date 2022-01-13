@@ -54,6 +54,54 @@ public class JsonUtils {
      */
     private static final ObjectMapper OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES = new ObjectMapper();
 
+    /**
+     * 将Java对象转成Json，默认约束规则JsonInclude.Include.NON_EMPTY
+     * 注意，原始的字符串 123 序列化后会变成 "123"
+     *
+     * @param object     原始对象
+     * @param include    序列化的包含参数
+     * @param jsonCached 是否激活 cache
+     * @return 序列化后字符串
+     */
+    private static String toJson(Object object, JsonInclude.Include include, boolean jsonCached) {
+        if (object == null) {
+            return "";
+        }
+        ObjectMapper objectMapper;
+        if (include == null || include == JsonInclude.Include.NON_EMPTY) {
+            if (jsonCached) {
+                objectMapper = OBJECT_MAPPER_INCLUDE_NONEMPTY;
+            } else {
+                objectMapper = OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE;
+            }
+        } else if (include == JsonInclude.Include.ALWAYS) {
+            if (jsonCached) {
+                objectMapper = OBJECT_MAPPER_INCLUDE_ALWAYS;
+            } else {
+                objectMapper = OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE;
+            }
+        } else {
+            final String cacheKey = include + "-" + jsonCached;
+            objectMapper = MAPPER_CACHE.get(cacheKey);
+            if (null == objectMapper) {
+                objectMapper = new ObjectMapper();
+                objectMapper.setSerializationInclusion(include);
+                if (!jsonCached) {
+                    objectMapper.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
+                }
+                MAPPER_CACHE.put(cacheKey, objectMapper);
+            }
+        }
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (IOException e) {
+            log.error(JSON_EXCEPTION_MSG, e);
+        }
+        return "";
+    }
+
+    public static final String JSON_EXCEPTION_MSG = JSON_EXCEPTION_MSG;
+
     private static Map<String, ObjectMapper> MAPPER_CACHE = new ConcurrentHashMap<>();
 
     static {
@@ -131,52 +179,6 @@ public class JsonUtils {
     }
 
     /**
-     * 将Java对象转成Json，默认约束规则JsonInclude.Include.NON_EMPTY
-     * 注意，原始的字符串 123 序列化后会变成 "123"
-     *
-     * @param object     原始对象
-     * @param include    序列化的包含参数
-     * @param jsonCached 是否激活 cache
-     * @return 序列化后字符串
-     */
-    private static String toJson(Object object, JsonInclude.Include include, boolean jsonCached) {
-        if (object == null) {
-            return "";
-        }
-        ObjectMapper objectMapper;
-        if (include == null || include == JsonInclude.Include.NON_EMPTY) {
-            if (jsonCached) {
-                objectMapper = OBJECT_MAPPER_INCLUDE_NONEMPTY;
-            } else {
-                objectMapper = OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE;
-            }
-        } else if (include == JsonInclude.Include.ALWAYS) {
-            if (jsonCached) {
-                objectMapper = OBJECT_MAPPER_INCLUDE_ALWAYS;
-            } else {
-                objectMapper = OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE;
-            }
-        } else {
-            final String cacheKey = include.toString() + "-" + jsonCached;
-            objectMapper = MAPPER_CACHE.get(cacheKey);
-            if (null == objectMapper) {
-                objectMapper = new ObjectMapper();
-                objectMapper.setSerializationInclusion(include);
-                if (!jsonCached) {
-                    objectMapper.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
-                }
-                MAPPER_CACHE.put(cacheKey, objectMapper);
-            }
-        }
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (IOException e) {
-            log.error("JSON转换异常", e);
-        }
-        return "";
-    }
-
-    /**
      * 转换成小写下划线类型
      *
      * @param json  原始 json 字符串
@@ -188,11 +190,10 @@ public class JsonUtils {
         if (StringUtils.isEmpty(json)) {
             return null;
         }
-        ObjectMapper objectMapper = OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES;
         try {
-            return objectMapper.readValue(json, clazz);
+            return OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.readValue(json, clazz);
         } catch (IOException e) {
-            log.error("JSON转换异常", e);
+            log.error(JSON_EXCEPTION_MSG, e);
         }
         return null;
     }
@@ -212,7 +213,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER_INCLUDE_ALWAYS.readValue(json, clazz);
         } catch (IOException e) {
-            log.error("JSON转换异常", e);
+            log.error(JSON_EXCEPTION_MSG, e);
         }
         return null;
     }
@@ -233,21 +234,9 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER_INCLUDE_ALWAYS.readValue(json, javaType);
         } catch (IOException e) {
-            log.error("JSON转换异常", e);
+            log.error(JSON_EXCEPTION_MSG, e);
         }
         return null;
-    }
-
-    /**
-     * 获取泛型的Collection Type
-     *
-     * @param collectionClass 泛型的Collection
-     * @param elementClasses  类对象
-     * @return JavaType Java类型
-     */
-    private static JavaType getCollectionType(Class<?> collectionClass, Class<?>... elementClasses) {
-        return OBJECT_MAPPER_INCLUDE_ALWAYS.getTypeFactory()
-                .constructParametricType(collectionClass, elementClasses);
     }
 
     /**
@@ -269,8 +258,22 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(json, javaType);
         } catch (IOException e) {
-            log.error("JSON转换异常", e);
+            log.error(JSON_EXCEPTION_MSG, e);
         }
         return null;
     }
+
+    /**
+     * 获取泛型的Collection Type
+     *
+     * @param collectionClass 泛型的Collection
+     * @param elementClasses  类对象
+     * @return JavaType Java类型
+     */
+    private static JavaType getCollectionType(Class<?> collectionClass, Class<?>... elementClasses) {
+        return OBJECT_MAPPER_INCLUDE_ALWAYS.getTypeFactory()
+                .constructParametricType(collectionClass, elementClasses);
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.magicliang.transaction.sys.common.exception;
 import com.magicliang.transaction.sys.common.constant.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class BizException extends RuntimeException {
 
