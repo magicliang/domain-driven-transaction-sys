@@ -1,4 +1,7 @@
 dependencies {
+    // 引入基础设施包
+    api 'com.magicliang:common-concurrent-starter:1.0.0-SNAPSHOT'
+
     // api 可以传递间接依赖（是 compile 的别名），implementation 不可以（这是为了封装一些 InternalLibrary），所以 implementation执行起来快一些：https://www.jianshu.com/p/dd932f951137
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api 'com.google.guava:guava:31.0.1-jre'

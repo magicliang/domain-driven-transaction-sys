@@ -18,6 +18,10 @@ configurations {
 }
 
 repositories {
+	// 参考：https://bbs.huaweicloud.com/blogs/257878
+	maven { url "https://maven.aliyun.com/repository/public" }
+	maven { url "https://repo.huaweicloud.com/repository/maven" }
+	mavenLocal()
 	mavenCentral()
 }
 
