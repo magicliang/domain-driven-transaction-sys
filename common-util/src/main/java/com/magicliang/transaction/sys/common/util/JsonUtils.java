@@ -100,7 +100,7 @@ public class JsonUtils {
         return "";
     }
 
-    public static final String JSON_EXCEPTION_MSG = JSON_EXCEPTION_MSG;
+    public static final String JSON_EXCEPTION_MSG = "反序列化失败";
 
     private static Map<String, ObjectMapper> MAPPER_CACHE = new ConcurrentHashMap<>();
 

@@ -65,6 +65,8 @@ subprojects {
 
 	repositories {
 		mavenCentral()
+		// 要在本地编译自己的 jar 包，需要引入这个依赖
+		mavenLocal()
 	}
 	// 标准地为子项目引入依赖的方式
 	dependencies {
