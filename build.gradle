@@ -1,6 +1,7 @@
 // Spring boot 的最新官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/
 plugins {
-	id 'org.springframework.boot' version '2.6.2'
+	id 'org.springframework.boot' version '2.6.3'
+	// 这两个版本是如何搭配的，是 initializr 决定的吗？
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'java-library'
@@ -15,6 +16,9 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+//	all*.exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+	all*.exclude module : 'spring-boot-starter-logging'
+//	all*.exclude group:'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
 repositories {
@@ -26,6 +30,7 @@ repositories {
 }
 
 ext {
+	// spring cloud 和 spring boot 的版本兼容性见：https://start.spring.io/actuator/info
 	set('springCloudVersion', "2021.0.0")
 }
 
@@ -63,6 +68,12 @@ subprojects {
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 
+	configurations {
+//		all*.exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+		all*.exclude module : 'spring-boot-starter-logging'
+//		all*.exclude group:'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
+
 	repositories {
 		mavenCentral()
 		// 要在本地编译自己的 jar 包，需要引入这个依赖
@@ -75,6 +86,7 @@ subprojects {
 		annotationProcessor 'org.projectlombok:lombok'
 		// 让所有的子模块都拥有基本的 spring 依赖
 		implementation 'org.springframework.boot:spring-boot-starter'
+		implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 		testImplementation 'io.projectreactor:reactor-test'
 
 		testImplementation('org.springframework.boot:spring-boot-starter-test') {

@@ -65,3 +65,6 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
+
+# 任意日志输出
+out/
