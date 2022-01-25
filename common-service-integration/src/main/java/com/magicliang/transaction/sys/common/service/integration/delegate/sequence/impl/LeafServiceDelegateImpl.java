@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.common.service.integration.delegate.sequence.impl;
 
+import com.google.common.collect.Lists;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
 import com.magicliang.transaction.sys.common.service.integration.delegate.sequence.ILeafServiceDelegate;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
@@ -61,16 +62,18 @@ public class LeafServiceDelegateImpl implements ILeafServiceDelegate {
         int retryTime = 0;
         while (++retryTime <= INVOKE_RETRY_TIME) {
             try {
+                List<Long> ids = Lists.newArrayList();
                 // 生成 results
+//                List<Long> ids = new ArrayList<>(results.size());
 //                AssertUtils.assertNotEmpty(results, LEAF_ID_GENERATION_BIZ_ERROR, "leaf id生成异常, 结果为空");
 //                List<Long> ids = new ArrayList<>(results.size());
 //                for (Result result : results) {
 //                    AssertUtils.assertEquals(Status.SUCCESS, result.getStatus(), LEAF_ID_GENERATION_BIZ_ERROR, "leaf id生成异常, 异常码:" + result.getId());
 //                    ids.add(result.getId());
 //                }
-//                return ids;
+                return ids;
             } catch (RuntimeException e) {
-                throwTexception(retryTime, e);
+                throwException(retryTime, e);
             } catch (Exception e) {
                 throw new BaseTransException(e, LEAF_ID_GENERATION_BIZ_ERROR, "leaf id 生成异常");
             }
@@ -84,7 +87,7 @@ public class LeafServiceDelegateImpl implements ILeafServiceDelegate {
      * @param retryTime 已重试次数
      * @param e         捕获的异常
      */
-    private void throwTexception(final int retryTime, final Exception e) {
+    private void throwException(final int retryTime, final Exception e) {
         if (e.getMessage() != null) {
             // 1. 超时，继续执行
             if (e.getMessage().contains(TIMEOUT)) {
