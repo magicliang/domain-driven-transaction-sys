@@ -31,7 +31,7 @@ public class AcceptanceCommand extends HandlerRequest {
      *
      * @see TransFundAccountingEntryTypeEnum
      */
-    private Short accountingEntry;
+    private Integer accountingEntry;
 
     /**
      * 支付备注，上游系统选填
