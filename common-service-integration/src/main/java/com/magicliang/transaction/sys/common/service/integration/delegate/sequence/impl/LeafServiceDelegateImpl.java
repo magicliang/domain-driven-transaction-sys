@@ -3,6 +3,8 @@ package com.magicliang.transaction.sys.common.service.integration.delegate.seque
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
 import com.magicliang.transaction.sys.common.service.integration.delegate.sequence.ILeafServiceDelegate;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * <p>
  * date: 2021-12-30 17:45
  */
+@Slf4j
+@Component
 public class LeafServiceDelegateImpl implements ILeafServiceDelegate {
 
     /**

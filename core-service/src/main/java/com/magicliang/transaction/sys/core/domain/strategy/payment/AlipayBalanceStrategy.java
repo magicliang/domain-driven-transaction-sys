@@ -13,7 +13,9 @@ import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.request.payment.PaymentRequest;
 import com.magicliang.transaction.sys.core.model.response.payment.PaymentResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -26,6 +28,8 @@ import java.util.Date;
  * <p>
  * date: 2022-01-04 20:22
  */
+@Slf4j
+@Component
 public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
 
     /**
