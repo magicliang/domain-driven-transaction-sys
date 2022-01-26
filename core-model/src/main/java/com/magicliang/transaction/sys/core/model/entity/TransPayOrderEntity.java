@@ -1,9 +1,6 @@
 package com.magicliang.transaction.sys.core.model.entity;
 
-import com.magicliang.transaction.sys.common.enums.TransEnvEnum;
-import com.magicliang.transaction.sys.common.enums.TransFundAccountingEntryTypeEnum;
-import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
-import com.magicliang.transaction.sys.common.enums.TransSysConfigEnum;
+import com.magicliang.transaction.sys.common.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -52,11 +49,25 @@ public class TransPayOrderEntity extends BaseEntity {
     private Long money;
 
     /**
+     * 支付通道类型，1 支付宝 2 微信支付
+     *
+     * @see TransUnderlyingPayChannelTypeEnum
+     */
+    private Integer payChannelType;
+
+    /**
+     * 目标账户类型，1 银行卡 2 账户余额
+     *
+     * @see TransTargetAccountTypeEnum
+     */
+    private Integer targetAccountType;
+
+    /**
      * 会计账目条目 1 借 debit 2 贷 credit，上游系统必填
      *
      * @see TransFundAccountingEntryTypeEnum
      */
-    private Short accountingEntry;
+    private Integer accountingEntry;
 
     /**
      * 受理时间
