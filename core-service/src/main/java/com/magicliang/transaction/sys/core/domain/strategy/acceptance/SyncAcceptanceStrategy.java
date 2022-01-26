@@ -1,8 +1,8 @@
 package com.magicliang.transaction.sys.core.domain.strategy.acceptance;
 
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransAlipaySubOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransRequestWithBLOBPo;
 import com.magicliang.transaction.sys.core.domain.enums.AcceptanceStrategyEnum;
 import com.magicliang.transaction.sys.core.domain.strategy.BaseStrategy;
 import com.magicliang.transaction.sys.core.domain.strategy.DomainStrategy;
@@ -62,7 +62,7 @@ public class SyncAcceptanceStrategy extends BaseStrategy implements DomainStrate
         TransRequestEntity paymentRequest = payOrder.getPaymentRequest();
 
         TransPayOrderPo payOrderPo = TransPayOrderConvertor.toPo(payOrder);
-        TransChannelRequestPoWithBLOBs paymentRequestPo = TransRequestConvertor.toPo(paymentRequest);
+        TransRequestWithBLOBPo paymentRequestPo = TransRequestConvertor.toPo(paymentRequest);
 
         // 在一个事务里插入三条记录，不漏不重地生成子实体
         if (subOrder instanceof TransAlipaySubOrderEntity) {

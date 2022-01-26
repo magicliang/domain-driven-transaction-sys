@@ -1,6 +1,6 @@
 package com.magicliang.transaction.sys.core.model.entity.convertor;
 
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
+import com.magicliang.transaction.sys.common.dal.po.TransRequestWithBLOBPo;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 
 /**
@@ -27,7 +27,7 @@ public class TransRequestConvertor {
      * @param request 领域模型
      * @return 持久层对象
      */
-    public static TransChannelRequestPoWithBLOBs toPo(TransRequestEntity request) {
+    public static TransRequestWithBLOBPo toPo(TransRequestEntity request) {
         return null;
     }
 
@@ -37,7 +37,7 @@ public class TransRequestConvertor {
      * @param request 持久层对象
      * @return 领域模型
      */
-    public static TransRequestEntity toDomainEntity(TransChannelRequestPoWithBLOBs request) {
+    public static TransRequestEntity toDomainEntity(TransRequestWithBLOBPo request) {
         return null;
     }
 }

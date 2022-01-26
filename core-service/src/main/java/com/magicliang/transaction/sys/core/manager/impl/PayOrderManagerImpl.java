@@ -2,9 +2,9 @@ package com.magicliang.transaction.sys.core.manager.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransAlipaySubOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransRequestWithBLOBPo;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -100,7 +100,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 未完成的支付请求列表
      */
     @Override
-    public List<TransChannelRequestPoWithBLOBs> queryUnpaidPaymentRequest(final int batchSize, final int env) {
+    public List<TransRequestWithBLOBPo> queryUnpaidPaymentRequest(final int batchSize, final int env) {
         return Collections.emptyList();
     }
 
@@ -122,7 +122,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 未发送的通知请求列表
      */
     @Override
-    public List<TransChannelRequestPoWithBLOBs> queryUnsentNotifications(final int batchSize, final int env) {
+    public List<TransRequestWithBLOBPo> queryUnsentNotifications(final int batchSize, final int env) {
         return Collections.emptyList();
     }
 
@@ -155,7 +155,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 支付请求列表
      */
     @Override
-    public List<TransChannelRequestPoWithBLOBs> queryPaymentRequest(final Long payOrderNo) {
+    public List<TransRequestWithBLOBPo> queryPaymentRequest(final Long payOrderNo) {
         return Collections.emptyList();
     }
 
@@ -166,7 +166,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 支付通知列表
      */
     @Override
-    public List<TransChannelRequestPoWithBLOBs> queryNotificationRequest(final Long payOrderNo) {
+    public List<TransRequestWithBLOBPo> queryNotificationRequest(final Long payOrderNo) {
         return Collections.emptyList();
     }
 
@@ -179,7 +179,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 支付结果
      */
     @Override
-    public boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request, final TransAlipaySubOrderPo alipaySuborder) {
+    public boolean insertPayOrder(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo request, final TransAlipaySubOrderPo alipaySuborder) {
         return true;
     }
 
@@ -191,7 +191,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 支付结果
      */
     @Override
-    public boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request) {
+    public boolean insertPayOrder(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo request) {
         // 先插入前导对象，再插入聚合根、再插入子对象，让所有起到幂等、和唯一性约束的模型先插入数据库中
         return true;
     }
@@ -205,8 +205,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 支付结果
      */
     @Override
-    public boolean insertNotificationAndUpdatePayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs payRequest,
-                                                       final TransChannelRequestPoWithBLOBs notificationRequest) {
+    public boolean insertNotificationAndUpdatePayOrder(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo payRequest,
+                                                       final TransRequestWithBLOBPo notificationRequest) {
         if (updatePayOrderAndRequest(payOrder, payRequest)) {
             return insertRequest(notificationRequest);
         }
@@ -220,7 +220,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 插入结果
      */
     @Override
-    public boolean insertRequest(final TransChannelRequestPoWithBLOBs notificationRequest) {
+    public boolean insertRequest(final TransRequestWithBLOBPo notificationRequest) {
 //        int retR = requestMapper.insertSelective(notificationRequest);
 //        DbUtils.checkDbInsertExpectedOne(retR, notificationRequest);
         return true;
@@ -234,7 +234,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 支付结果
      */
     @Override
-    public boolean updatePayOrderAndRequest(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request) {
+    public boolean updatePayOrderAndRequest(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo request) {
         if (updatePayOrder(payOrder)) {
             return updateChannelRequest(request);
         }
@@ -266,7 +266,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 更新结果
      */
     @Override
-    public boolean updateChannelRequest(final TransChannelRequestPoWithBLOBs request) {
+    public boolean updateChannelRequest(final TransRequestWithBLOBPo request) {
         return true;
     }
 
@@ -277,7 +277,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @return 通道请求列表
      */
     @Override
-    public List<TransChannelRequestPoWithBLOBs> queryNotificationRequests(List<Long> payOrderNos) {
+    public List<TransRequestWithBLOBPo> queryNotificationRequests(List<Long> payOrderNos) {
         return Collections.emptyList();
     }
 

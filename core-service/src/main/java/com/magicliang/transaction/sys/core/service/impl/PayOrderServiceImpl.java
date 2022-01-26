@@ -1,9 +1,9 @@
 package com.magicliang.transaction.sys.core.service.impl;
 
 import com.magicliang.transaction.sys.common.constant.TimeConstant;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransAlipaySubOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransRequestWithBLOBPo;
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
@@ -155,7 +155,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
      */
     @Override
     public List<TransRequestEntity> populateUnpaidRequest(final int batchSize, final int env) {
-        List<TransChannelRequestPoWithBLOBs> requests = payOrderManager.queryUnpaidPaymentRequest(batchSize, env);
+        List<TransRequestWithBLOBPo> requests = payOrderManager.queryUnpaidPaymentRequest(batchSize, env);
         return requests
                 .stream()
                 .map(TransRequestConvertor::toDomainEntity)
@@ -181,7 +181,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
      */
     @Override
     public List<TransRequestEntity> populateUnSentNotifications(final int batchSize, final int env) {
-        List<TransChannelRequestPoWithBLOBs> requests = payOrderManager.queryUnsentNotifications(batchSize, env);
+        List<TransRequestWithBLOBPo> requests = payOrderManager.queryUnsentNotifications(batchSize, env);
         return requests
                 .stream()
                 .map(TransRequestConvertor::toDomainEntity)
@@ -224,7 +224,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
     @Override
     public void populatePaymentRequest(final TransPayOrderEntity payOrderEntity) {
         final Long payOrderNo = payOrderEntity.getPayOrderNo();
-        List<TransChannelRequestPoWithBLOBs> paymentRequests = payOrderManager.queryPaymentRequest(payOrderNo);
+        List<TransRequestWithBLOBPo> paymentRequests = payOrderManager.queryPaymentRequest(payOrderNo);
         AssertUtils.assertSingletonCollection(paymentRequests, INVALID_PAYMENT_REQUEST_ERROR, INVALID_PAYMENT_REQUEST_ERROR.getErrorMsg());
         payOrderEntity.setPaymentRequest(TransRequestConvertor.toDomainEntity(paymentRequests.get(0)));
     }
@@ -237,7 +237,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
     @Override
     public void populateNotificationRequest(final TransPayOrderEntity payOrderEntity) {
         final Long payOrderNo = payOrderEntity.getPayOrderNo();
-        List<TransChannelRequestPoWithBLOBs> notificationRequests = payOrderManager.queryNotificationRequest(payOrderNo);
+        List<TransRequestWithBLOBPo> notificationRequests = payOrderManager.queryNotificationRequest(payOrderNo);
         AssertUtils.assertNotEmpty(notificationRequests, INVALID_PAYMENT_REQUEST_ERROR, INVALID_PAYMENT_REQUEST_ERROR.getErrorMsg());
         payOrderEntity.setNotificationRequests(notificationRequests.stream().map(TransRequestConvertor::toDomainEntity).collect(Collectors.toCollection(ArrayList::new)));
     }
@@ -316,8 +316,8 @@ public class PayOrderServiceImpl implements IPayOrderService {
                                                        final TransRequestEntity payRequest,
                                                        final TransRequestEntity notificationRequest) {
         final TransPayOrderPo payOrderPo = TransPayOrderConvertor.toPo(payOrder);
-        final TransChannelRequestPoWithBLOBs payRequestPo = TransRequestConvertor.toPo(payRequest);
-        final TransChannelRequestPoWithBLOBs notificationRequestPo = TransRequestConvertor.toPo(notificationRequest);
+        final TransRequestWithBLOBPo payRequestPo = TransRequestConvertor.toPo(payRequest);
+        final TransRequestWithBLOBPo notificationRequestPo = TransRequestConvertor.toPo(notificationRequest);
         boolean result = payOrderManager.insertNotificationAndUpdatePayOrder(payOrderPo,
                 payRequestPo,
                 notificationRequestPo);

@@ -1,7 +1,7 @@
 package com.magicliang.transaction.sys.core.model.entity.convertor;
 
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransAlipaySubOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransPayOrderPo;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 
 /**

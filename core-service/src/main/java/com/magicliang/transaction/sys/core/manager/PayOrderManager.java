@@ -1,8 +1,8 @@
 package com.magicliang.transaction.sys.core.manager;
 
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransAlipaySubOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.po.TransRequestWithBLOBPo;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public interface PayOrderManager {
      * @param payOrderNos 支付订单号列表
      * @return 通道请求列表
      */
-    List<TransChannelRequestPoWithBLOBs> queryNotificationRequests(List<Long> payOrderNos);
+    List<TransRequestWithBLOBPo> queryNotificationRequests(List<Long> payOrderNos);
 
     /**
      * 根据业务标识码 + 业务唯一标识 查询支付订单
@@ -67,7 +67,7 @@ public interface PayOrderManager {
      * @param env       环境
      * @return 未完成的支付请求列表
      */
-    List<TransChannelRequestPoWithBLOBs> queryUnpaidPaymentRequest(int batchSize, int env);
+    List<TransRequestWithBLOBPo> queryUnpaidPaymentRequest(int batchSize, int env);
 
     /**
      * 获取当前所有未发送通知的数量
@@ -83,7 +83,7 @@ public interface PayOrderManager {
      * @param env       环境
      * @return 未发送的通知请求列表
      */
-    List<TransChannelRequestPoWithBLOBs> queryUnsentNotifications(int batchSize, int env);
+    List<TransRequestWithBLOBPo> queryUnsentNotifications(int batchSize, int env);
 
     /**
      * 根据支付订单号查询支付宝子订单
@@ -107,7 +107,7 @@ public interface PayOrderManager {
      * @param payOrderNo 支付订单号
      * @return 支付请求列表
      */
-    List<TransChannelRequestPoWithBLOBs> queryPaymentRequest(final Long payOrderNo);
+    List<TransRequestWithBLOBPo> queryPaymentRequest(final Long payOrderNo);
 
 
     /**
@@ -116,7 +116,7 @@ public interface PayOrderManager {
      * @param payOrderNo 支付订单号
      * @return 支付通知列表
      */
-    List<TransChannelRequestPoWithBLOBs> queryNotificationRequest(final Long payOrderNo);
+    List<TransRequestWithBLOBPo> queryNotificationRequest(final Long payOrderNo);
 
     /**
      * 插入支付订单和支付请求
@@ -126,7 +126,7 @@ public interface PayOrderManager {
      * @param alipaySuborder 支付宝子订单
      * @return 支付结果
      */
-    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request, final TransAlipaySubOrderPo alipaySuborder);
+    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo request, final TransAlipaySubOrderPo alipaySuborder);
 
     /**
      * 插入支付订单和支付请求
@@ -135,7 +135,7 @@ public interface PayOrderManager {
      * @param request  支付请求
      * @return 支付结果
      */
-    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request);
+    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransRequestWithBLOBPo request);
 
     /**
      * 在一个事务里更新支付订单和支付请求
@@ -145,8 +145,8 @@ public interface PayOrderManager {
      * @param notificationRequest 通知请求
      * @return 支付结果
      */
-    boolean insertNotificationAndUpdatePayOrder(TransPayOrderPo payOrder, TransChannelRequestPoWithBLOBs payRequest,
-                                                TransChannelRequestPoWithBLOBs notificationRequest);
+    boolean insertNotificationAndUpdatePayOrder(TransPayOrderPo payOrder, TransRequestWithBLOBPo payRequest,
+                                                TransRequestWithBLOBPo notificationRequest);
 
     /**
      * 插入支付通道请求
@@ -154,7 +154,7 @@ public interface PayOrderManager {
      * @param notificationRequest 待插入请求
      * @return 插入结果
      */
-    boolean insertRequest(TransChannelRequestPoWithBLOBs notificationRequest);
+    boolean insertRequest(TransRequestWithBLOBPo notificationRequest);
 
     /**
      * 在一个事务里更新支付订单和支付请求
@@ -163,7 +163,7 @@ public interface PayOrderManager {
      * @param request  支付请求
      * @return 支付结果
      */
-    boolean updatePayOrderAndRequest(TransPayOrderPo payOrder, TransChannelRequestPoWithBLOBs request);
+    boolean updatePayOrderAndRequest(TransPayOrderPo payOrder, TransRequestWithBLOBPo request);
 
     /**
      * 更新支付订单，在更新过程中对比并增加版本
@@ -179,5 +179,5 @@ public interface PayOrderManager {
      * @param request 通道请求
      * @return 更新结果
      */
-    boolean updateChannelRequest(TransChannelRequestPoWithBLOBs request);
+    boolean updateChannelRequest(TransRequestWithBLOBPo request);
 }
