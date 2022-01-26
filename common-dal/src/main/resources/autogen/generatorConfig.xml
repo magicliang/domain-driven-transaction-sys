@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="MybatisGenerator" targetRuntime="MyBatis3">
+
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
+
+        <commentGenerator>
+            <property name="suppressDate" value="false"/>
+            <property name="suppressAllComments" value="false"/>
+            <property name="javaFileEncoding" value="UTF-8"/>
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <!--load from properties 替换为申请的数据库地址、用户名、密码-->
+        <jdbcConnection driverClass="${jdbcDriverClass}"
+                        connectionURL="${jdbcUrl}"
+                        userId="${jdbcUsername}"
+                        password="${jdbcPassword}">
+        </jdbcConnection>
+
+
+        <!--        <jdbcConnection driverClass="com.mysql.jdbc.Driver"-->
+        <!--                        connectionURL="jdbc:mysql://localhost:3306/trans_db"-->
+        <!--                        userId="root"-->
+        <!--                        password="123456">-->
+        <!--        </jdbcConnection>-->
+
+
+        <!--load targetProject from properties-->
+        <javaModelGenerator targetPackage="com.magicliang.transaction.sys.common.dal.mybatis.po"
+                            targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--load targetProject from properties-->
+        <javaClientGenerator type="ANNOTATEDMAPPER"
+                             targetPackage="com.magicliang.transaction.sys.common.dal.mybatis.mapper"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="tb_trans_pay_order" domainObjectName="TransPayOrderPo">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="tb_trans_bank_card_suborder" domainObjectName="TransBankCardSubOrderPo">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="tb_trans_alipay_suborder" domainObjectName="TransAlipaySubOrderPo">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+        <table tableName="tb_trans_channel_request" domainObjectName="TransChannelRequestPo">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+    </context>
+</generatorConfiguration>
