@@ -68,3 +68,5 @@ gradle-app.setting
 
 # 任意日志输出
 out/
+
+.jpb/

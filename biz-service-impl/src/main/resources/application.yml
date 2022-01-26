@@ -19,6 +19,9 @@ endpoints:
   sensitive: false
   docs:
     enabled: true
+
+server:
+  port: 8502
 ---
 spring:
   config:
