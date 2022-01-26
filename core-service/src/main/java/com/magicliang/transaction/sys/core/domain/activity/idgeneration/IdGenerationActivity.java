@@ -13,9 +13,7 @@ import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransSubOrderEntity;
 import com.magicliang.transaction.sys.core.model.request.idgeneration.IdGenerationRequest;
 import com.magicliang.transaction.sys.core.model.response.idgeneration.IdGenerationResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -30,8 +28,6 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * <p>
  * date: 2022-01-05 12:01
  */
-@Slf4j
-@Component
 public class IdGenerationActivity extends BaseActivity<IdGenerationRequest, IdGenerationResponse, IdGenerationStrategyEnum> {
 
     /**
