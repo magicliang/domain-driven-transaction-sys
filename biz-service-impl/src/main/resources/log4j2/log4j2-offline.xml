@@ -47,6 +47,9 @@
             <AppenderRef ref="biz-log-appender"/>
         </logger>
 
-        <logger name="org.springframework.beans.factory.support" level="error" additivity="false"/>
+        <logger name="org.springframework" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+            <AppenderRef ref="biz-log-appender"/>
+        </logger>
     </Loggers>
 </Configuration>
