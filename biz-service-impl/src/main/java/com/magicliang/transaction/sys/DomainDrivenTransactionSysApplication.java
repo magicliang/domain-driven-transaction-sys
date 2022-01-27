@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
@@ -16,6 +15,8 @@ import javax.annotation.PreDestroy;
 /**
  * 程序主入口类
  * 如果没有 exclude = DataSourceAutoConfiguration.class，则会报错：
+ *
+ * 使用 h2 这类数据源需要使用 DataSourceAutoConfiguration，使用 xml 或者 DataSourceConfig 则需要 exclude = DataSourceAutoConfiguration.class
  * ***************************
  * APPLICATION FAILED TO START
  * ***************************
@@ -37,7 +38,8 @@ import javax.annotation.PreDestroy;
  * Process finished with exit code 0
  */
 @Slf4j
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+//@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication
 @EnableTransactionManagement
 @PropertySource(value = {
 		"classpath:META-INF/conf/application.properties"

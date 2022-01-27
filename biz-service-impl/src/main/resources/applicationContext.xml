@@ -3,7 +3,7 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     <!-- 把 Spring 的 xml 配置全部加载进来 -->
-    <import resource="classpath*:spring/kms.xml"/>
+    <import resource="classpath*:spring/*.xml"/>
     <!--    激活 aop 配置，此处是个废话配置-->
     <aop:config/>
     <!-- 引入待扫描的包名 -->

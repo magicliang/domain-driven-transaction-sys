@@ -1,8 +1,31 @@
+application:
+  name: com.magicliang.transaction.sys
+
 spring:
   profiles:
     # Spring 的 Profile 机制是为了隔离不同环境中的配置，参考：https://docs.spring.io/spring-boot/docs/2.6.2/reference/html/features.html#features.profiles
     # active: "@active-profile@"
     active: test
+  # 数据库配置
+  datasource:
+    # 默认就是hikari，可缺省
+    # type: com.zaxxer.hikari.HikariDataSource
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: DatebookHikariCP
+      minimum-idle: 5
+      maximum-pool-size: 30
+      max-lifetime: 1800000
+      connection-timeout: 1000
+#      username: root
+#      password: 123456
+
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true
+  #  config-location: classpath:mybatis-config.xml
+  type-aliases-package: package com.magicliang.transaction.sys.common.dal.mybatis.po
+#  type-handlers-package: com.example.typehandler
 
 # 日志配置文件位置，默认的时候使用最严厉的 online配置，而不是松散的 offline 配置
 logging:
@@ -57,12 +80,25 @@ spring:
       on-profile: test
   datasource:
     # 纯内存的 db 如下
-    url: jdbc:h2:file:/data/demo
     username: sa
     password: password
     driverClassName: org.h2.Driver
+    url: jdbc:h2:file:/data/demo
+  # 参考：https://www.cnblogs.com/april-chen/p/11459322.html
+  h2:
+    console.enabled: true
+  #    master:
+  #      # 注意，整合多数据源时如果使用springboot默认的数据库连接池 Hikari，指定连接数据使用的是 jdbc-url 而不是 url 属性
+  #      jdbc-url: jdbc:mysql://localhost:3306/test1?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false
+  #      username: root
+  #      password: 123456
+  #      driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+  sql:
+    init:
+      schema-locations: classpath:sql/schema.ddl
+      data-locations: classpath:sql/data.sql
 
 common:
   env: test

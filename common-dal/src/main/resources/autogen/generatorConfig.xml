@@ -22,7 +22,7 @@
                         password="${jdbcPassword}">
         </jdbcConnection>
 
-
+<!--        实参形式-->
         <!--        <jdbcConnection driverClass="com.mysql.jdbc.Driver"-->
         <!--                        connectionURL="jdbc:mysql://localhost:3306/trans_db"-->
         <!--                        userId="root"-->
