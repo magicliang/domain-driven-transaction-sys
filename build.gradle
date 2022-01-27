@@ -10,8 +10,8 @@ plugins {
 group = 'com.magicliang'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
-// 需要这个配置才能让 gradlew build 通过
 
+// 需要这个配置才能让 gradlew build 通过
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -34,6 +34,7 @@ ext {
 
 dependencies {
 	// 非官方版本的 starter 列表：https://www.javatpoint.com/spring-boot-starters
+	// 这些依赖列在这里，不会影响 subProjects，其一般用处是，列出潜在的 starter 依赖列表
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -85,8 +86,8 @@ subprojects {
 		annotationProcessor 'org.projectlombok:lombok'
 		// 让所有的子模块都拥有基本的 spring 依赖
 		implementation 'org.springframework.boot:spring-boot-starter'
+		// 这个依赖让底层能够拥有 log4j2，但并不去掉 logback 的影响
 		implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-		testImplementation 'io.projectreactor:reactor-test'
 
 		testImplementation('org.springframework.boot:spring-boot-starter-test') {
 //					exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
