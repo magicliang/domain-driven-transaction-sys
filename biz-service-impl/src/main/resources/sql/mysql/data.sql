@@ -1,0 +1,1 @@
+-- This is a good way to seed the database for testing or initialization purposes.
