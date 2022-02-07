@@ -1,6 +1,5 @@
 package com.magicliang.transaction.sys;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,11 +11,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PreDestroy;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 程序主入口类
  * 如果没有 exclude = DataSourceAutoConfiguration.class，则会报错：
  *
- * 使用 h2 这类数据源需要使用 DataSourceAutoConfiguration，使用 xml 或者 DataSourceConfig 则需要 exclude = DataSourceAutoConfiguration.class
+ * 使用 h2 这类数据源，如果使用自动配置数据源需要使用 DataSourceAutoConfiguration，使用 xml 或者 DataSourceConfig 则需要 exclude = DataSourceAutoConfiguration.class
+ *
+ * 如果企图使用自动配置数据源，而自动配置数据源不完备，则会报以下错：
+ *
  * ***************************
  * APPLICATION FAILED TO START
  * ***************************

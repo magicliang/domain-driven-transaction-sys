@@ -10,7 +10,7 @@
     <Appenders>
         <!--这个输出控制台的配置-->
         <Console name="Console" target="SYSTEM_OUT">
-            <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
+            <!-- 控制台只输出level及【以上】级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
             <!-- ThresholdFilter是临界值过滤器，过滤掉低于指定临界值的日志。当日志级别等于或高于临界值时，过滤器返回NEUTRAL；当日志级别低于临界值时，日志会被拒绝。-->
             <!-- http://51gjie.com/javaweb/1117.html -->
             <!-- 这是在 appender 端进行根据级别的过滤 -->
