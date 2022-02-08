@@ -49,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
  * Process finished with exit code 0
  */
 @Slf4j
-//@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+// @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @SpringBootApplication
 @EnableTransactionManagement
 @PropertySource(value = {

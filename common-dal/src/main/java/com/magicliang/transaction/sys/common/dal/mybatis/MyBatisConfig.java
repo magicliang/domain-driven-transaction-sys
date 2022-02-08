@@ -5,6 +5,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 
@@ -30,6 +31,7 @@ public class MyBatisConfig {
      *
      * @return masterDataSource
      */
+    @Profile("local-mysql-dev")
     @Bean(name = "masterDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.master")
     @Primary
@@ -43,6 +45,7 @@ public class MyBatisConfig {
      *
      * @return slaveDataSource
      */
+    @Profile("local-mysql-dev")
     @Bean(name = "slaveDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.slave1")
     public DataSource slaveDataSource() {
