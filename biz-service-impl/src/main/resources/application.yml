@@ -77,6 +77,13 @@ spring:
       # 如果有必要使用xml配置数据源的话，使用 kms 的 bean reference 来管理 password
       password: 12345678
       pool-name: master-pool
+    slave1:
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_slave?characterEncoding=utf-8&serverTimezone=GMT%2B8&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      # 如果有必要使用xml配置数据源的话，使用 kms 的 bean reference 来管理 password
+      password: 12345678
+      pool-name: slave-pool
 common:
   env: dev
 # 日志配置文件位置

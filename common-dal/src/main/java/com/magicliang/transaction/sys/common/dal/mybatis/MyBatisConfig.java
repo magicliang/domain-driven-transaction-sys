@@ -23,12 +23,34 @@ import javax.sql.DataSource;
 // @MapperScan("com.magicliang.transaction.sys.common.dal.mybatis.mapper")
 public class MyBatisConfig {
 
+    /**
+     * 主库数据源
+     * 这是 org.springframework.boot.jdbc 数据源的配置方法，如果使用 druid 之类的配置，还是选用 xml配置更好
+     * 这个 bean 不依赖于 dynamic-datasource-spring-boot-starter
+     *
+     * @return masterDataSource
+     */
     @Bean(name = "masterDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.master")
     @Primary
     public DataSource masterDataSource() {
+        // 打印 context 能够打印出 masterDataSource
         return DataSourceBuilder.create().build();
     }
+
+    /**
+     * 从库数据源
+     *
+     * @return slaveDataSource
+     */
+    @Bean(name = "slaveDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.slave1")
+    public DataSource slaveDataSource() {
+        // 打印 context 能够打印出 masterDataSource
+        return DataSourceBuilder.create().build();
+    }
+
+    // 严格注意：如果使用了sharding中间件，需要保证 mybatis 的 SqlSessionFactory 和 DataSourceTransactionManager 使用同一个最抽象的数据源
 
     // 程序化地装配 SqlSessionFactory -> SqlSessionTemplate -> DataSourceTransactionManager 的做法
 
