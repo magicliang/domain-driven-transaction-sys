@@ -6,7 +6,7 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <!-- 指定mybatis全局配置文件的位置 -->
         <property name="configLocation" value="classpath:mybatis/mybatis.xml"></property>
-        <!-- 在这里直接引用 yaml 中配置的数据源即可 -->
+        <!-- 在这里需要引用一个数据源，如果使用了 autoconfiguration，则这里直接引用 yaml 中配置的数据源；否则考虑引入一些其他场景下生成的 bean -->
         <property name="dataSource" ref="dataSource"></property>
         <!-- 指定mybatis，mapper文件的位置 -->
         <!--        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>-->
