@@ -1,4 +1,4 @@
-package com.magicliang.transaction.sys.common.dal.mybatis;
+package com.magicliang.transaction.sys.common.dal.datasource;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -22,7 +22,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 // @MapperScan("com.magicliang.transaction.sys.common.dal.mybatis.mapper")
-public class MyBatisConfig {
+public class DataSourceConfig {
 
     /**
      * 主库数据源
@@ -32,7 +32,7 @@ public class MyBatisConfig {
      * @return masterDataSource
      */
     @Profile("local-mysql-dev")
-    @Bean(name = "masterDataSource")
+    @Bean(name = "masterDataSource", destroyMethod = "close")
     @ConfigurationProperties(prefix = "spring.datasource.master")
     @Primary
     public DataSource masterDataSource() {
@@ -46,9 +46,9 @@ public class MyBatisConfig {
      * @return slaveDataSource
      */
     @Profile("local-mysql-dev")
-    @Bean(name = "slaveDataSource")
+    @Bean(name = "slaveDataSource1", destroyMethod = "close")
     @ConfigurationProperties(prefix = "spring.datasource.slave1")
-    public DataSource slaveDataSource() {
+    public DataSource slaveDataSource1() {
         // 打印 context 能够打印出 masterDataSource
         return DataSourceBuilder.create().build();
     }
