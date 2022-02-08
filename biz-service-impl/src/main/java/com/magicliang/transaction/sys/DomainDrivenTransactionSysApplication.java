@@ -1,13 +1,20 @@
 package com.magicliang.transaction.sys;
 
+import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoMapper;
+import com.magicliang.transaction.sys.core.manager.PayOrderManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.util.Arrays;
 
 import javax.annotation.PreDestroy;
 
@@ -69,9 +76,21 @@ public class DomainDrivenTransactionSysApplication {
 	@Order(value = 1)
 	static class ConnectionInitializer implements CommandLineRunner {
 
+		@Autowired
+		private ApplicationContext applicationContext;
+
+		@Autowired
+		private TransPayOrderPoMapper testMapper;
+
+		@Autowired
+		private PayOrderManager payOrderManager;
+
 		@Override
 		public void run(String... args) throws Exception {
 			log.info(">>>>>>>>>>>>>>> Service is up, beginning to initialize datastore connection <<<<<<<<<<<<<");
+			// 旗舰版的 idea 的facet 里可以开启 spring 的facet，可以更好地观测 spring beans
+			log.info("all beans：" + Arrays.asList(applicationContext.getBeanDefinitionNames()));
+			// 否则只能把 spring beans 注入进来，查看 bean 的调试视图，看看有没有可能看到正确的注入结果
 		}
 
 	}

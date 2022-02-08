@@ -31,6 +31,8 @@ dependencies {
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
     // TODO：这个以后要升级
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.1'
+    // TODO：暂时引入苞米豆的依赖
+    implementation 'com.baomidou:dynamic-datasource-spring-boot-starter:3.5.0'
 
     // 第二类依赖 MyBatis
     // https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper
@@ -38,7 +40,6 @@ dependencies {
 
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'
-
 }
 
 bootJar {

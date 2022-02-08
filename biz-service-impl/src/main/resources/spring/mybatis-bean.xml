@@ -7,20 +7,23 @@
         <!-- 指定mybatis全局配置文件的位置 -->
         <property name="configLocation" value="classpath:mybatis/mybatis.xml"></property>
         <!-- 在这里需要引用一个数据源，如果使用了 autoconfiguration，则这里直接引用 yaml 中配置的数据源；否则考虑引入一些其他场景下生成的 bean -->
-        <property name="dataSource" ref="dataSource"></property>
+        <property name="dataSource" ref="masterDataSource"></property>
         <!-- 指定mybatis，mapper文件的位置 -->
         <!--        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>-->
     </bean>
 
-    <!-- 配置扫描器，将mybatis接口的实现加入到ioc容器中，这个配置可以被 yaml 的配置替代 -->
-    <!--    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">-->
-    <!--        &lt;!&ndash;扫描所有dao接口的实现，加入到ioc容器中 &ndash;&gt;-->
-    <!--        <property name="basePackage" value="com.magicliang.transaction.sys.common.dal.mybatis.mapper"></property>-->
-    <!--    </bean>-->
+    <!-- 配置扫描器，将mybatis接口的实现加入到ioc容器中，这个配置可以被 yaml 的配置替代，但 xml 其实更加能够帮我们拿捏bean，使用暂时先用这个配置亦可，它和 @MapperScan 互斥-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--扫描所有dao接口的实现，加入到ioc容器中 -->
+        <property name="basePackage"
+                  value="com.magicliang.transaction.sys.common.dal.mybatis.mapper"></property>
+    </bean>
 
     <!-- 配置一个可以执行批量的sqlSession -->
-    <!--    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">-->
-    <!--        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>-->
-    <!--        <constructor-arg name="executorType" value="BATCH"></constructor-arg>-->
-    <!--    </bean>-->
+    <!-- SqlSessionTemplate是SqlSession的实现类，如其名，是sqlSession模板，有了SqlSessionTemplate，我们就能用来执行Dao层的Sql语句。说了这么多，其实关键就一点，SqlSessionTmplate是SqlSession的实现类， -->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+        <!--   SIMPLE, REUSE, BATCH，数据密集型的交易系统直接选 BATCH 能够应对的情况最多 -->
+        <constructor-arg name="executorType" value="BATCH"></constructor-arg>
+    </bean>
 </beans>
