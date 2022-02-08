@@ -3,7 +3,10 @@ package com.magicliang.transaction.sys.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.*;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SECOND_BIZ;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SECOND_SYS;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SELF_BIZ;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SELF_SYS;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -164,6 +167,16 @@ public enum TransErrorEnum {
      * 0010100029，不正确的通知请求状态
      */
     INVALID_CHANNEL_REQUEST_STATUS_ERROR(SELF_BIZ, "00029", "不正确的通知请求状态", false),
+
+    /**
+     * 0010100030，不正确的嵌入式db端口配置
+     */
+    INVALID_EMBEDDED_DB_PORT_ERROR(SELF_BIZ, "00030", "不正确的嵌入式 DB 端口配置", false),
+
+    /**
+     * 0010100031，无法启动嵌入式 DB
+     */
+    UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR(SELF_BIZ, "00031", "无法启动嵌入式 DB", false),
 
     // ---------------------------- 本系统系统错误，如：0010200001 ----------------------------
 

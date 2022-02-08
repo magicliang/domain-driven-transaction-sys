@@ -5,23 +5,30 @@ spring:
   profiles:
     # Spring 的 Profile 机制是为了隔离不同环境中的配置，参考：https://docs.spring.io/spring-boot/docs/2.6.2/reference/html/features.html#features.profiles
     # active: "@active-profile@"
-    active: local-mysql-dev
+    active: local-mariadb4j-dev
   # 数据库配置
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      # see: Gradle: ch.vorburger.mariaDB4j:mariaDB4j-springboot:2.4.0 spring.factories
+      - ch.vorburger.mariadb4j.springboot.autoconfigure.MariaDB4jSpringConfiguration
+      - ch.vorburger.mariadb4j.springboot.autoconfigure.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration
   datasource:
+    # 无法指定数据源的名称
+    # name: masterDataSource
     # 默认就是hikari，可缺省
     # type: com.zaxxer.hikari.HikariDataSource
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    # driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: DomainDrivenTransacionSysHikariCP
       minimum-idle: 5
       maximum-pool-size: 30
       max-lifetime: 1800000
       connection-timeout: 1000
-#      username: root
+      #      username: root
 #      password: 123456
+      connectionTestQuery: SELECT 1
 
 mybatis:
   configuration:
@@ -67,18 +74,51 @@ logging:
 spring:
   config:
     activate:
+      on-profile: local-mariadb4j-dev
+  datasource:
+    # 如果要配置多数据源，则需要考虑在 datasource 里配置嵌套对象。
+    master:
+      schemaName: test_master
+      port: 3306
+      userName: root
+      password: 12345678
+      driver-class-name: org.mariadb.jdbc.Driver
+    slave1:
+      schemaName: test_slave
+      port: 3306
+      userName: root
+      password: 12345678
+      driver-class-name: org.mariadb.jdbc.Driver
+
+  # mariaDB4j 的配置，对单数据源可以这么配置
+  # mariaDB4j:
+  #Setting to blank will put db into a tmp directory and recreate every test run
+  # dataDir:
+  #Default is 3306, so using 3307 just in case it is already running on this machine
+  # port: 3307
+  # databaseName: man_opph_collector
+common:
+  env: dev
+# 日志配置文件位置
+logging:
+  config: classpath:log4j2/log4j2-offline.xml
+  level.mapperpackagepath: debug # 打印mybatis的sql日志
+---
+spring:
+  config:
+    activate:
       on-profile: local-mysql-dev
   datasource:
     # 如果要配置多数据源，则需要考虑在 datasource 里配置嵌套对象。
     master:
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_master?characterEncoding=utf-8&serverTimezone=GMT%2B8&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_master?characterEncoding=utf-8&serverTimezone=GMT%2B8&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true&useDynamicCharsetInfo=false
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       # 如果有必要使用xml配置数据源的话，使用 kms 的 bean reference 来管理 password
       password: 12345678
       pool-name: master-pool
     slave1:
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_slave?characterEncoding=utf-8&serverTimezone=GMT%2B8&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_slave?characterEncoding=utf-8&serverTimezone=GMT%2B8&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true&useDynamicCharsetInfo=false
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       # 如果有必要使用xml配置数据源的话，使用 kms 的 bean reference 来管理 password
@@ -100,12 +140,14 @@ spring:
   autoconfigure:
     exclude:
       # 全局配置里排除了自动配置的数据源，这里做一个空排除作为 override，就可以继续使用 h2 数据源了
-      -
+      - ch.vorburger.mariadb4j.springboot.autoconfigure.MariaDB4jSpringConfiguration
+      - ch.vorburger.mariadb4j.springboot.autoconfigure.DataSourceAutoConfiguration
   datasource:
     # 纯内存的 db 如下
     username: sa
     password: pppp12345
     driverClassName: org.h2.Driver
+    # to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL
     # 文件模式
     # url: jdbc:h2:file:~/test;mode=mysql
     # 内存模式

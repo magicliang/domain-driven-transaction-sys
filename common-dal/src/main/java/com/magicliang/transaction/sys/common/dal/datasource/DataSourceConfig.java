@@ -32,10 +32,10 @@ public class DataSourceConfig {
      * @return masterDataSource
      */
     @Profile("local-mysql-dev")
-    @Bean(name = "masterDataSource", destroyMethod = "close")
+    @Bean(name = "dataSource", destroyMethod = "close")
     @ConfigurationProperties(prefix = "spring.datasource.master")
     @Primary
-    public DataSource masterDataSource() {
+    public DataSource dataSource() {
         // 打印 context 能够打印出 masterDataSource
         return DataSourceBuilder.create().build();
     }
@@ -49,7 +49,6 @@ public class DataSourceConfig {
     @Bean(name = "slaveDataSource1", destroyMethod = "close")
     @ConfigurationProperties(prefix = "spring.datasource.slave1")
     public DataSource slaveDataSource1() {
-        // 打印 context 能够打印出 masterDataSource
         return DataSourceBuilder.create().build();
     }
 

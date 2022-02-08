@@ -7,7 +7,8 @@
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource">
-            <ref bean="masterDataSource"/>
+            <!-- spring autoconfiguration 的数据源名称缺省是 dataSource -->
+            <ref bean="dataSource"/>
         </property>
     </bean>
 </beans>
