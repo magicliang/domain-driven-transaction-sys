@@ -53,6 +53,8 @@ public class EmbeddedMariaDbConfig {
             // Create our database with default root user and no password
             DB db = mariaDB4jSpringService.getDB();
             db.createDB(databaseName, userName, password);
+            final String schemaLocations = environment.getProperty("spring.sql.init.schema-locations");
+            db.source(schemaLocations, userName, password, databaseName);
         } catch (ManagedProcessException e) {
             log.error("unable to init test database");
             throw new BaseTransException(e, UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR);
@@ -66,6 +68,16 @@ public class EmbeddedMariaDbConfig {
                 .url(url)
                 .driverClassName(driverClassName)
                 .build();
+
+//        HikariConfig hikariConfig = new HikariConfig();
+//        hikariConfig.setPassword(userName);
+//        hikariConfig.setPassword(password);
+//        hikariConfig.setDriverClassName(driverClassName);
+//        hikariConfig.setJdbcUrl(url);
+//        // HikariDataSource 继承自 HikariConfig，这样构建数据源也没问题
+//        HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
+
+//        return hikariDataSource;
     }
 
     @Bean(name = "slaveDataSource1", destroyMethod = "close")
@@ -83,6 +95,14 @@ public class EmbeddedMariaDbConfig {
             // Create our database with default root user and no password
             DB db = mariaDB4jSpringService.getDB();
             db.createDB(databaseName, userName, password);
+            final String schemaLocations = environment.getProperty("spring.sql.init.schema-locations");
+            /*
+             * datasource:
+             *   hikari:
+             *     # 如果引入了 mariadb4j，就要在这里指定 schema 初始化策略，schema 不再自动生成
+             *     initialization-mode: always
+             */
+            db.source(schemaLocations, userName, password, databaseName);
         } catch (ManagedProcessException e) {
             log.error("unable to init test database");
             throw new BaseTransException(e, UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR);

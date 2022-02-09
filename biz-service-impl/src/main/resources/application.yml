@@ -27,8 +27,15 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 1000
       #      username: root
-#      password: 123456
+      #      password: 123456
       connectionTestQuery: SELECT 1
+  jpa:
+    # 打印sql
+    show-sql: false
+    # h2 并不强依赖 jpa，这里姑且配一下
+    hibernate:
+      # 为了让 hibernate 的自动schema创建被禁用，只使用 spring 的 script-based initialization，要把 ddl-auto 给禁用
+      ddl-auto: none
 
 mybatis:
   configuration:
@@ -84,6 +91,7 @@ spring:
       password: 12345678
       driver-class-name: org.mariadb.jdbc.Driver
     slave1:
+      # 如果要使用逻辑分库，后缀名可以变也可以不变
       schemaName: test_slave1
       port: 4307
       userName: root
@@ -96,10 +104,11 @@ spring:
   #Default is 3306, so using 3307 just in case it is already running on this machine
   # port: 3307
   # databaseName: man_opph_collector
-#    sql:
-#      init:
-#        schema-locations: classpath:sql/h2/schema*.ddl
-#        data-locations: classpath:sql/h2/data.sql
+  sql:
+    init:
+      # InputStream from = getClass().getClassLoader().getResourceAsStream(resource); 不需要 ddl classpath: 前缀
+      schema-locations: sql/mysql/schema.ddl
+      data-locations: sql/mysql/data.sql
 
 common:
   env: dev
@@ -151,13 +160,13 @@ spring:
     username: sa
     password: pppp12345
     driverClassName: org.h2.Driver
-    # to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL
+    # to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL ;INIT=runscript from 'classpath:/db.sql'
     # 文件模式
     # url: jdbc:h2:file:~/test;mode=mysql
     # 内存模式
     url: jdbc:h2:mem:~/test;mode=mysql
     # 这两个配置在不如 sql.init 的子属性更新
-    # schema: classpath:sql/schema.ddl.bak
+    # schema: classpath:sql/schema.ddl
     # data:  classpath:sql/data.sql
     # 纯内存 db 的 url
     # url: jdbc:h2:mem:mydb
@@ -183,8 +192,6 @@ spring:
     # h2 并不强依赖 jpa，这里姑且配一下
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-    # 为了让 hibernate 的自动schema创建被禁用，只使用 spring 的 script-based initialization，要把 ddl-auto 给禁用
-    ddl-auto: none
     # 混合使用 hibernate 的 schema change 和 spring 的 schema initialization：This will ensure, that after Hibernate schema creation is performed then additionally schema.sql is read for any additional schema changes and data.sql is executed to populate the database.
     # defer-datasource-initialization: true
   sql:
