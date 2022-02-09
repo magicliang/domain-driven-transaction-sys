@@ -66,7 +66,7 @@ public class DomainDrivenTransactionSysApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DomainDrivenTransactionSysApplication.class, args);
 		// 让主日志可以得到程序启动的标志点
-		log.info("服务启动成功！");
+		log.info("服务启动成功！you are welcome!");
 	}
 
 	/**

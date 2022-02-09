@@ -68,11 +68,45 @@ public class EmbeddedMariaDbConfig {
                 .build();
     }
 
-
-    @Bean(name = "masterMariaDB4jSpringService", destroyMethod = "stop")
+    @Bean(name = "slaveDataSource1", destroyMethod = "close")
     @Profile("local-mariadb4j-dev")
     @Primary
-    public MariaDB4jSpringService getMariaDB4jSpringService() {
+    public DataSource slaveDataSource1() {
+        Environment environment = applicationContext.getEnvironment();
+
+        final String databaseName = environment.getProperty("spring.datasource.slave1.schemaName");
+        final String userName = environment.getProperty("spring.datasource.slave1.userName");
+        final String password = environment.getProperty("spring.datasource.slave1.password");
+        final String driverClassName = environment.getProperty("spring.datasource.slave1.driver-class-name");
+        MariaDB4jSpringService mariaDB4jSpringService = applicationContext.getBean("getSlaveMariaDB4jSpringService1", MariaDB4jSpringService.class);
+        try {
+            // Create our database with default root user and no password
+            DB db = mariaDB4jSpringService.getDB();
+            db.createDB(databaseName, userName, password);
+        } catch (ManagedProcessException e) {
+            log.error("unable to init test database");
+            throw new BaseTransException(e, UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR);
+        }
+        DBConfigurationBuilder config = mariaDB4jSpringService.getConfiguration();
+        String url = config.getURL(databaseName);
+        return DataSourceBuilder
+                .create()
+                .username(userName)
+                .password(password)
+                .url(url)
+                .driverClassName(driverClassName)
+                .build();
+    }
+
+    /**
+     * MariaDB4jSpringService 实现了 LifeCycle 钩子，不用配 destroyMethod 也可以让 db 正常退出
+     *
+     * @return masterMariaDB4jSpringService
+     */
+    @Bean(name = "masterMariaDB4jSpringService")
+    @Profile("local-mariadb4j-dev")
+    @Primary
+    public MariaDB4jSpringService getMasterMariaDB4jSpringService() {
         Environment environment = applicationContext.getEnvironment();
         final String port = environment.getProperty("spring.datasource.master.port");
         // 生成一个局部的、临时的 mariaDB4jSpringService，只为托管一个嵌入式 DB
@@ -85,11 +119,25 @@ public class EmbeddedMariaDbConfig {
         return mariaDB4jSpringService;
     }
 
-//    @Bean(name = "slaveDataSource1", destroyMethod = "close")
-//    public DataSource slaveDataSource1() {
-//        final String databaseName = applicationContext.getEnvironment().getProperty("spring.datasource.slave1.schemaName");
-//        mariaDB4j(databaseName);
-//        return DataSourceBuilder.create().build();
-//    }
+    /**
+     * slave1MariaDB4jSpringService
+     *
+     * @return slave1MariaDB4jSpringService
+     */
+    @Bean(name = "getSlaveMariaDB4jSpringService1")
+    @Profile("local-mariadb4j-dev")
+    @Primary
+    public MariaDB4jSpringService getSlaveMariaDB4jSpringService1() {
+        Environment environment = applicationContext.getEnvironment();
+        final String port = environment.getProperty("spring.datasource.slave1.port");
+        // 生成一个局部的、临时的 mariaDB4jSpringService，只为托管一个嵌入式 DB
+        if (StringUtils.isBlank(port)) {
+            throw new BaseTransException(INVALID_EMBEDDED_DB_PORT_ERROR, INVALID_EMBEDDED_DB_PORT_ERROR.getErrorMsg() + port);
+        }
+        MariaDB4jSpringService mariaDB4jSpringService = new MariaDB4jSpringService();
+        mariaDB4jSpringService.setDefaultPort(Integer.parseInt(port));
+        // 这个bean start 以后会启动安装和调用 mariadb4j 的功能，有时候需要启动 openssl：brew install rbenv/tap/openssl@1.0 && ln -sfn /usr/local/Cellar/openssl@1.0/1.0.2t /usr/local/opt/openssl
+        return mariaDB4jSpringService;
+    }
 
 }
