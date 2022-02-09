@@ -25,7 +25,9 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.UNABLE_
 
 /**
  * 只在 mariadb4j 这个profile下面使用的数据源
- * 参考：{@link https://github.com/vorburger/MariaDB4j/blob/master/mariaDB4j/src/test/java/ch/vorburger/mariadb4j/tests/MariaDB4jSampleTutorialTest.java}
+ * 参考：
+ * 1. {@link https://github.com/vorburger/MariaDB4j/blob/master/mariaDB4j/src/test/java/ch/vorburger/mariadb4j/tests/MariaDB4jSampleTutorialTest.java}
+ * 2. {@link https://objectpartners.com/2017/06/19/using-mariadb4j-for-a-spring-boot-embedded-database/}
  *
  * @author liangchuan
  */
@@ -79,6 +81,7 @@ public class EmbeddedMariaDbConfig {
         }
         MariaDB4jSpringService mariaDB4jSpringService = new MariaDB4jSpringService();
         mariaDB4jSpringService.setDefaultPort(Integer.parseInt(port));
+        // 这个bean start 以后会启动安装和调用 mariadb4j 的功能，有时候需要启动 openssl：brew install rbenv/tap/openssl@1.0 && ln -sfn /usr/local/Cellar/openssl@1.0/1.0.2t /usr/local/opt/openssl
         return mariaDB4jSpringService;
     }
 

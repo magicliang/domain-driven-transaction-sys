@@ -79,13 +79,13 @@ spring:
     # 如果要配置多数据源，则需要考虑在 datasource 里配置嵌套对象。
     master:
       schemaName: test_master
-      port: 3306
+      port: 4306
       userName: root
       password: 12345678
       driver-class-name: org.mariadb.jdbc.Driver
     slave1:
       schemaName: test_slave
-      port: 3306
+      port: 4307
       userName: root
       password: 12345678
       driver-class-name: org.mariadb.jdbc.Driver
