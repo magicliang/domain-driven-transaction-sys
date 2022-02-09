@@ -49,3 +49,7 @@ application
     - settings.gradle
     - build.gradle
     - gradle.properties
+
+# 如何修复gradle运行问题
+
+![如何修复gradle运行问题](如何修复gradle运行问题.png)

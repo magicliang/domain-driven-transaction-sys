@@ -89,7 +89,6 @@ spring:
       userName: root
       password: 12345678
       driver-class-name: org.mariadb.jdbc.Driver
-
   # mariaDB4j 的配置，对单数据源可以这么配置
   # mariaDB4j:
   #Setting to blank will put db into a tmp directory and recreate every test run
@@ -97,6 +96,11 @@ spring:
   #Default is 3306, so using 3307 just in case it is already running on this machine
   # port: 3307
   # databaseName: man_opph_collector
+#    sql:
+#      init:
+#        schema-locations: classpath:sql/h2/schema*.ddl
+#        data-locations: classpath:sql/h2/data.sql
+
 common:
   env: dev
 # 日志配置文件位置

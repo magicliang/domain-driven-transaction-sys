@@ -108,3 +108,17 @@ bootJar {
 tasks.withType(JavaCompile) {
 	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
+
+//// Configuring the wrapper, the old way (gradle < 4.8 )
+//// see https://docs.gradle.org/4.4/userguide/gradle_wrapper.html#sec:wrapper_generation
+//task wrapper(type: Wrapper) {
+//	gradleVersion = '4.4'
+//	distributionType = Wrapper.DistributionType.BIN
+//}
+
+// Configuring the wrapper, the new way (since Gradle 4.8)
+// see https://docs.gradle.org/current/userguide/gradle_wrapper.html#customizing_wrapper
+wrapper {
+	gradleVersion = '7.4'
+	distributionType = Wrapper.DistributionType.BIN
+}
