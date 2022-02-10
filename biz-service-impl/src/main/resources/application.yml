@@ -124,14 +124,14 @@ spring:
   datasource:
     # 如果要配置多数据源，则需要考虑在 datasource 里配置嵌套对象。
     master:
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_master?characterEncoding=utf-8&serverTimezone=GMT%2B8&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true&useDynamicCharsetInfo=false
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_master?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=true&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true&useDynamicCharsetInfo=false
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       # 如果有必要使用xml配置数据源的话，使用 kms 的 bean reference 来管理 password
       password: 12345678
       pool-name: master-pool
     slave1:
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_slave?characterEncoding=utf-8&serverTimezone=GMT%2B8&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true&useDynamicCharsetInfo=false
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/test_slave?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=true&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=1000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=3000&maxRows=0&useUnicode=true&useDynamicCharsetInfo=false
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       # 如果有必要使用xml配置数据源的话，使用 kms 的 bean reference 来管理 password
