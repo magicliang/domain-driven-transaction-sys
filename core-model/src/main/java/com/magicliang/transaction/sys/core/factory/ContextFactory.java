@@ -1,5 +1,7 @@
 package com.magicliang.transaction.sys.core.factory;
 
+import org.springframework.core.NamedInheritableThreadLocal;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,7 +32,7 @@ public abstract class ContextFactory {
      * 上下文是一个线程隔离的 ConcurrentHashMap，应对各种线程池的交接
      * holder 的存在，起到了线程安全地持有和隔离 map 的作用
      */
-    private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = InheritableThreadLocal.withInitial(() -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
+    private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = NamedInheritableThreadLocal.withInitial(() -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
 
     /**
      * 清理本线程上下文的内容
