@@ -31,6 +31,8 @@ public abstract class ContextFactory {
      * <p>
      * 上下文是一个线程隔离的 ConcurrentHashMap，应对各种线程池的交接
      * holder 的存在，起到了线程安全地持有和隔离 map 的作用
+     * <p>
+     * 类似的容器还有 Spring 的 RequestContextHolder、TransactionSynchronizationManager、LocaleContextHolder
      */
     private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = NamedInheritableThreadLocal.withInitial(() -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
 
