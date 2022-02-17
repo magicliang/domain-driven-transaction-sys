@@ -42,7 +42,8 @@ public abstract class ContextFactory {
          * 在某些场景下，子线程可能越过本上下文获取 context 里的信息，会最终导致上下文越来越臃肿，引发最终的 fgc，所以如果有必要：
          * 1. 每个子线程使用context里的对象的时候必须显式地透过 context。
          * 2. 不能在本对象内持有句柄。
-         * 3. 如果有必要，本 context 的清理需要逐层深入-这取决于 context 是否有明确的显式结构
+         * 3. 如果有必要，本 context 的清理需要逐层深入-这取决于 context 是否有明确的显式结构。
+         * 4. 子线程在使用另一个 InheritableThreadLocal，却不知道自己该主动 clear 什么别的数据，也会造成内存泄漏。
          */
 
         // 彻底清理对 map 的引用所能引用到的句柄
