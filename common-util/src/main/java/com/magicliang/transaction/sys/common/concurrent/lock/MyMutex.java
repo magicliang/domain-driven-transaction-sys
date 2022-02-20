@@ -36,7 +36,7 @@ public class MyMutex implements Lock {
      */
     @Override
     public void lock() {
-        sync.tryAcquire(1);
+        sync.acquire(1);
     }
 
     /**
