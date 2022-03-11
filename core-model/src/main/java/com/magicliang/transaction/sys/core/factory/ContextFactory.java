@@ -1,5 +1,7 @@
 package com.magicliang.transaction.sys.core.factory;
 
+import org.springframework.core.NamedInheritableThreadLocal;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,18 +31,32 @@ public abstract class ContextFactory {
      * <p>
      * 上下文是一个线程隔离的 ConcurrentHashMap，应对各种线程池的交接
      * holder 的存在，起到了线程安全地持有和隔离 map 的作用
+     * <p>
+     * 类似的容器还有 Spring 的 RequestContextHolder、TransactionSynchronizationManager、LocaleContextHolder
+     * <p>
+     * ThreadLocal 本质上是 ThreadLocalVar
      */
-    private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = InheritableThreadLocal.withInitial(() -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
+    private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = NamedInheritableThreadLocal.withInitial(() -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
 
     /**
      * 清理本线程上下文的内容
      */
     public static void clear() {
         final Map<String, Object> context = CONTEXT_HOLDER.get();
+
+        /*
+         * 在某些场景下，子线程可能越过本上下文获取 context 里的信息，会最终导致上下文越来越臃肿，引发最终的 fgc，所以如果有必要：
+         * 1. 每个子线程使用context里的对象的时候必须显式地透过 context。
+         * 2. 不能在本对象内持有句柄。
+         * 3. 如果有必要，本 context 的清理需要逐层深入-这取决于 context 是否有明确的显式结构。
+         * 4. 子线程在使用另一个 InheritableThreadLocal，却不知道自己该主动 clear 什么别的数据，也会造成内存泄漏。
+         */
+
         // 彻底清理对 map 的引用所能引用到的句柄
         if (null != context) {
             context.clear();
         }
+
         // 然后剥离本 holder 的引用
         CONTEXT_HOLDER.remove();
     }

@@ -44,6 +44,8 @@ import java.util.Arrays;
  * <p>
  * <p>
  * Process finished with exit code 0
+ *
+ * 有些项目里用配置 @ConfigurationProperties("spring.datasource  来驱动自动数据源配置，详情还是要看 DataSourceAutoConfiguration 类内部
  */
 @Slf4j
 // @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
