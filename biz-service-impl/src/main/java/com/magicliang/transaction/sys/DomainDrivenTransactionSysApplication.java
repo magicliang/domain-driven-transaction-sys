@@ -2,7 +2,7 @@ package com.magicliang.transaction.sys;
 
 import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoMapper;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,11 +14,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.Arrays;
-
 import javax.annotation.PreDestroy;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
 
 /**
  * 程序主入口类
@@ -87,6 +84,7 @@ public class DomainDrivenTransactionSysApplication {
 
 		@Override
 		public void run(String... args) throws Exception {
+			// 如果冷启动需要考虑网络加速问题，可以参考：https://blog.csdn.net/lxyoucan/article/details/111138711
 			log.info(">>>>>>>>>>>>>>> Service is up, beginning to initialize datastore connection <<<<<<<<<<<<<");
 			// 旗舰版的 idea 的facet 里可以开启 spring 的facet，可以更好地观测 spring beans
 			log.info("all beans：" + Arrays.asList(applicationContext.getBeanDefinitionNames()));
