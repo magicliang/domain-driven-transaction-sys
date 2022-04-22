@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class JdkNativeProxyInvocationHandlerTest {
 
+    /**
+     * 如果是遗留项目要引用 vintage 的测试注解，否则引用 jupiter 的测试注解更好
+     */
     @Test
     public void testHandler() {
         TestInterface testInterface = new TestInterface() {
