@@ -1,8 +1,10 @@
 # domain-driven-transaction-sys
 
-一个领域驱动设计的交易系统的例子
+**一个领域驱动设计的交易系统的例子**
 
-TODO：一个留给我自己的问题：我到底要不要让这个服务构造成一个 k8s 的微服务，要不要把所有最佳实践引入这个开源项目里来？ TODO：
+TODO：一个留给我自己的问题：我到底要不要让这个服务构造成一个 k8s 的微服务，要不要把所有最佳实践引入这个开源项目里来？
+
+TODO：
 
 1. 梳理 gradle task。
 2. 实现一个 Spring WebFlux 的 reactor controller。
