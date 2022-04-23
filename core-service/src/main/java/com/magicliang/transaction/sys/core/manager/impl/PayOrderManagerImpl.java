@@ -21,6 +21,7 @@ import java.util.stream.IntStream;
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 支付订单管理器，带有事务管理功能
+ * FIXME：修复这个问题
  *
  * @author magicliang
  * <p>
