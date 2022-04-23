@@ -49,6 +49,7 @@ public class NotificationFacadeImpl extends AbstractConcurrentFacade implements 
 
     /**
      * 查询并发送全部未完成通知
+     * IMPORTANT：如果这个翻页的功能是对外暴露的接口，接口在使用参数以前一定要做好页数的校验
      *
      * @param unSentNotificationQuery 未完成通知
      * @return 操作结果

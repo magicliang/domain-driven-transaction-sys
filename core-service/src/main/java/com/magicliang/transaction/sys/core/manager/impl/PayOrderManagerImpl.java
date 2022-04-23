@@ -2,11 +2,13 @@ package com.magicliang.transaction.sys.core.manager.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoMapper;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +41,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
     /**
      * payOrderMapper
      */
-//    @Autowired
-//    private PayOrderMapper payOrderMapper;
+    @Autowired
+    private TransPayOrderPoMapper payOrderMapper;
 
     /**
      * 根据支付订单号列表查询支付订单
