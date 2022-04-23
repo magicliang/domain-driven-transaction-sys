@@ -52,10 +52,24 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     @Override
     public List<TransPayOrderPo> queryPayOrders(final List<Long> payOrderNos) {
+        if (CollectionUtils.isEmpty(payOrderNos)) {
+            return Lists.newArrayList();
+        }
         /*
          * 翻页查询的秘诀：每次只查询一批特别小的页，每次翻页的上限一定要小，避免：1. 单个查询时间太久，导致 innodb 的工作被阻塞 2. 单个连接被单个事务占用太久
          * 实现分页逻辑和非分页逻辑的分离，然后把非分页逻辑装进分页闭包里。
          */
+        // 另一种不优雅的做法是 payOrderNos/DEFAULT_BATCH 向下取整得到总页数 pages，for( page = 0; page < pages + 1; page++) { for(i = 0 + page * DEFAULT_BATCH; i< (page + 1 ) * DEFAULT_BATCH && i < totalCount); i++ }
+        List<List<Long>> partition = Lists.partition(payOrderNos, DEFAULT_BATCH);
+//        partition.stream().map((subPayOrderNos) -> {
+//
+//        })
+
+
+        // 1. 确定分多少页
+        // 2. 一页一页地查找，注意最后一页
+
+
         return Collections.emptyList();
     }
 
