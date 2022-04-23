@@ -61,3 +61,7 @@ application
 # 如何修复gradle运行问题
 
 ![如何修复gradle运行问题](如何修复gradle运行问题.png)
+
+# Sofa 分层的涵义
+
+![sofa分层](sofa分层.png)
