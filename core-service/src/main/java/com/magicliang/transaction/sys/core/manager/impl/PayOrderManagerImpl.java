@@ -306,7 +306,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     private <T> List<T> partitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
-            return Lists.newArrayList();
+            return Collections.emptyList();
         }
         final int size = payOrderNos.size();
         List<T> result = Lists.newArrayListWithCapacity(size);
@@ -344,7 +344,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
     private <T> List<T> paginationQueryInPageHelper(final long totalSize, final int batchSize, Supplier<List<T>> resultSupplier) {
         // 查询条件不合法，则返回空列表
         if (totalSize <= 0 || batchSize <= 0) {
-            return Lists.newArrayList();
+            return Collections.emptyList();
         }
         // 否则，开始翻页
         List<T> results = Lists.newArrayListWithCapacity(Math.toIntExact(totalSize));
@@ -368,7 +368,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     private <T> List<T> guavaPartitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
-            return Lists.newArrayList();
+            return Collections.emptyList();
         }
         /*
          * 翻页查询的秘诀：每次只查询一批特别小的页，每次翻页的上限一定要小，避免：1. 单个查询时间太久，导致 innodb 的工作被阻塞 2. 单个连接被单个事务占用太久
