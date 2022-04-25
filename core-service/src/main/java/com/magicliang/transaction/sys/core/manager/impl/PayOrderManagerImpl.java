@@ -434,6 +434,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
         TransPayOrderPoExample.Criteria criteria = example.createCriteria();
         criteria.andStatusIn(TransPayOrderStatusEnum.UNPAID_STATUS_VALUE);
         criteria.andEnvEqualTo(env);
+        // FIXME：这个方法不够好，再议！
         // 这个排序强依赖于 gmt_modified 也有索引这一点，而且索引并不一定能够帮助我们加速，如果有必要我们也可以指定时间来获取查询范围
         example.setOrderByClause("gmt_modified asc");
         return example;
