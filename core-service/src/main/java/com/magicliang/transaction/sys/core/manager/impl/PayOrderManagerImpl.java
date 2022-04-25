@@ -60,8 +60,6 @@ public class PayOrderManagerImpl implements PayOrderManager {
 
         // 1. 确定分多少页
         // 2. 一页一页地查找，注意最后一页
-
-
         return Collections.emptyList();
     }
 
@@ -292,13 +290,14 @@ public class PayOrderManagerImpl implements PayOrderManager {
 
     /**
      * 根据支付订单号来查询特定类型的结果
+     * 分区查询，这样每次查询的时候输入大小可控
      *
      * @param payOrderNos 支付订单号列表
      * @param query       查询语句
      * @param <T>         返回值类型
      * @return 特定类型的结果
      */
-    private <T> List<T> paginationQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
+    private <T> List<T> partitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
             return Lists.newArrayList();
         }
@@ -360,7 +359,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param <T>         返回值类型
      * @return 分页查询结果
      */
-    private <T> List<T> partitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
+    private <T> List<T> guavaPartitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
             return Lists.newArrayList();
         }
