@@ -6,6 +6,7 @@ import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoM
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPoExample;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +54,12 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     @Override
     public List<TransPayOrderPo> queryPayOrders(final List<Long> payOrderNos) {
-        if (CollectionUtils.isEmpty(payOrderNos)) {
-            return Lists.newArrayList();
-        }
-
-
-        // 1. 确定分多少页
-        // 2. 一页一页地查找，注意最后一页
-        return Collections.emptyList();
+        return guavaPartitionQueryByPayOrderNos(payOrderNos, (nos) -> {
+            TransPayOrderPoExample example = new TransPayOrderPoExample();
+            TransPayOrderPoExample.Criteria criteria = example.createCriteria();
+            criteria.andPayOrderNoIn(nos);
+            return payOrderMapper.selectByExample(example);
+        });
     }
 
     /**
@@ -72,7 +71,15 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     @Override
     public TransPayOrderPo queryPayOrder(final String bizIdentifyNo, final String bizUniqueNo) {
-        return null;
+        TransPayOrderPoExample example = new TransPayOrderPoExample();
+        TransPayOrderPoExample.Criteria criteria = example.createCriteria();
+        criteria.andBizIdentifyNoEqualTo(bizIdentifyNo);
+        criteria.andBizUniqueNoEqualTo(bizUniqueNo);
+        List<TransPayOrderPo> transPayOrderPos = payOrderMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(transPayOrderPos)) {
+            return null;
+        }
+        return transPayOrderPos.get(0);
     }
 
     /**
@@ -297,7 +304,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param <T>         返回值类型
      * @return 特定类型的结果
      */
-    private <T> List<T> partitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
+    private <T> List<T> partitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
             return Lists.newArrayList();
         }
@@ -334,7 +341,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param resultSupplier 查询回调
      * @return 分页查询结果
      */
-    private <T> List<T> paginationQuery(final long totalSize, final int batchSize, Supplier<List<T>> resultSupplier) {
+    private <T> List<T> paginationQueryInPageHelper(final long totalSize, final int batchSize, Supplier<List<T>> resultSupplier) {
         // 查询条件不合法，则返回空列表
         if (totalSize <= 0 || batchSize <= 0) {
             return Lists.newArrayList();
@@ -359,7 +366,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param <T>         返回值类型
      * @return 分页查询结果
      */
-    private <T> List<T> guavaPartitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
+    private <T> List<T> guavaPartitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
             return Lists.newArrayList();
         }
@@ -370,6 +377,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
          * 另一种不优雅的做法是 payOrderNos/DEFAULT_BATCH 向下取整得到总页数 pages，for( page = 0; page < pages + 1; page++) { for(i = 0 + page * DEFAULT_BATCH; i< (page + 1 ) * DEFAULT_BATCH && i < totalCount); i++ }
          */
         List<List<Long>> partition = Lists.partition(payOrderNos, DEFAULT_BATCH);
+        // 先分区查询，再 flatMap 和 collect，如果这个地方性能不好，就直接 foreach addAll可能会性能会更好
         return partition.stream().map((subPayOrderNos) -> query.apply(subPayOrderNos))
                 .flatMap(pList -> pList.stream())
                 .collect(Collectors.toList());
@@ -428,6 +436,6 @@ public class PayOrderManagerImpl implements PayOrderManager {
      *
      * @param <T> 特定类型的结果
      */
-    private static interface QueryByPayOrderNos<T> extends Function<List<Long>, T> {
+    private static interface QueryByLongList<T> extends Function<List<Long>, T> {
     }
 }
