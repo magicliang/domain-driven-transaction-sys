@@ -7,6 +7,7 @@ import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderP
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPoExample;
+import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -37,6 +39,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
 
     /**
      * 缺省批次大小，用于 in 之类的查询时，每次 in 不超过 1000 个值
+     * 这个内部准备的尺寸大小可以有效地保护 MySQL
      */
     private static final int DEFAULT_BATCH = 1000;
 
@@ -54,7 +57,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     @Override
     public List<TransPayOrderPo> queryPayOrders(final List<Long> payOrderNos) {
-        return guavaPartitionQueryByPayOrderNos(payOrderNos, (nos) -> {
+        // 防御性编程：单一的大列表查询要做好分区查询，甚至并行查询的准备
+        return partitionQuery(payOrderNos, (nos) -> {
             TransPayOrderPoExample example = new TransPayOrderPoExample();
             TransPayOrderPoExample.Criteria criteria = example.createCriteria();
             criteria.andPayOrderNoIn(nos);
@@ -77,6 +81,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
         criteria.andBizUniqueNoEqualTo(bizUniqueNo);
         List<TransPayOrderPo> transPayOrderPos = payOrderMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(transPayOrderPos)) {
+            // 根据阿里代码规范，检查空值是上游的责任，对于 Po 类型的模型，我们最好直接使用 null 而不是空对象了
             return null;
         }
         return transPayOrderPos.get(0);
@@ -93,7 +98,14 @@ public class PayOrderManagerImpl implements PayOrderManager {
     @Override
     public List<TransPayOrderPo> queryUnpaidPayOrder(final int batchSize, final int env) {
         // 对于状态等可能查出空列表或者大量数据的场景，要先 count，然后再翻页查询。所以设计这种复杂查询要仔细评估潜在数据量的变化，底层的 ORM 框架的返回结果的缺省行为、通过正交组合和分步处理来生成兼容性查询框架
-        return Collections.emptyList();
+        TransPayOrderPoExample example = new TransPayOrderPoExample();
+        TransPayOrderPoExample.Criteria criteria = example.createCriteria();
+        criteria.andStatusIn(TransPayOrderStatusEnum.UNPAID_STATUS_VALUE);
+        long count = payOrderMapper.countByExample(example);
+        if (count <= 0) {
+            return Collections.emptyList();
+        }
+        return paginationQuery(count, batchSize, () -> payOrderMapper.selectByExample(example));
     }
 
     /**
@@ -341,7 +353,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param resultSupplier 查询回调
      * @return 分页查询结果
      */
-    private <T> List<T> paginationQueryInPageHelper(final long totalSize, final int batchSize, Supplier<List<T>> resultSupplier) {
+    private <T> List<T> paginationQuery(final long totalSize, final int batchSize, Supplier<List<T>> resultSupplier) {
         // 查询条件不合法，则返回空列表
         if (totalSize <= 0 || batchSize <= 0) {
             return Collections.emptyList();
@@ -352,6 +364,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
         int pageCount = (int) Math.ceil((double) totalSize / batchSize);
         // 迭代翻页
         IntStream.rangeClosed(1, pageCount).forEachOrdered(pageIndex -> {
+            // 这个查询是有缺陷的，如果 pageIndex 很大，最后一次查询的结果可能要在 sort buffer 里面存储和丢弃非常多的临时数据，甚至引发文件排序，解决这个问题的方法是不允许总的翻页数过多
             PageHelper.startPage(pageIndex, batchSize);
             results.addAll(new ArrayList<>(resultSupplier.get()));
         });
@@ -366,7 +379,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param <T>         返回值类型
      * @return 分页查询结果
      */
-    private <T> List<T> guavaPartitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
+    private <T> List<T> partitionQuery(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
             return Collections.emptyList();
         }
@@ -378,8 +391,9 @@ public class PayOrderManagerImpl implements PayOrderManager {
          */
         List<List<Long>> partition = Lists.partition(payOrderNos, DEFAULT_BATCH);
         // 先分区查询，再 flatMap 和 collect，如果这个地方性能不好，就直接 foreach addAll可能会性能会更好
-        return partition.stream().map((subPayOrderNos) -> query.apply(subPayOrderNos))
-                .flatMap(pList -> pList.stream())
+        // 如果有必要，这里加一个线程池，并行化 Stream 查询
+        return partition.stream().map(query::apply)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 

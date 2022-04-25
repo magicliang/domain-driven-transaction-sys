@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAY_ORDER_STATUS_ERROR;
 
@@ -59,6 +61,16 @@ public enum TransPayOrderStatusEnum {
     BOUNCED(6, "bounced"),
 
     ;
+
+    /**
+     * 未支付状态
+     */
+    private static final Set<TransPayOrderStatusEnum> UNPAID_STATUS = EnumSet.of(INIT, PENDING);
+
+    /**
+     * 未支付状态枚举值
+     */
+    public static final List<Integer> UNPAID_STATUS_VALUE = UNPAID_STATUS.stream().map(TransPayOrderStatusEnum::getCode).collect(Collectors.toList());
 
     /**
      * 坏的终态
