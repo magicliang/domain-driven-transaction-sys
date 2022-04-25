@@ -65,7 +65,7 @@ CREATE TABLE `tb_trans_pay_order`
     -- 不要使用长列作索引，尤其是 text 和 blob
     UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`) COMMENT '唯一索引，每个支付单只能拥有唯一的支付单号',
     UNIQUE KEY `uniq_biz_request` (`biz_unique_no`, `biz_identify_no`) COMMENT '唯一索引，每种支付业务类型每个业务单只能有唯一的支付订单',
-    KEY `idx_status_modified` (`status`, `gmt_modified`) COMMENT '查询索引，注意数据规模较大时区分度不高，慎用，如果有必要一定要加上查询时间约束查询范围。如果有可能还是借助小的从表来进行状态查询'
+    KEY `idx_status_modified` (`status`, `gmt_modified`) COMMENT '查询索引，注意数据规模较大时区分度不高，慎用，，如果有可能一定要加上查询时间约束查询范围。如果有可能还是借助小的从表来进行状态查询。如果按照时间排序很可能触发回表进入 sort buffer'
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付订单，领域聚合根';
 -- utf8mb4 四字节才能容纳完整 utf8 字符集，COLLATE 意味着特定的排序算法
 -- AUTO_INCREMENT 不用配太大，制造数据空洞

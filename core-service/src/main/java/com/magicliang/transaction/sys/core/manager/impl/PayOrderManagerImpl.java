@@ -434,8 +434,11 @@ public class PayOrderManagerImpl implements PayOrderManager {
         TransPayOrderPoExample.Criteria criteria = example.createCriteria();
         criteria.andStatusIn(TransPayOrderStatusEnum.UNPAID_STATUS_VALUE);
         criteria.andEnvEqualTo(env);
-        // FIXME：这个方法不够好，再议！
-        // 这个排序强依赖于 gmt_modified 也有索引这一点，而且索引并不一定能够帮助我们加速，如果有必要我们也可以指定时间来获取查询范围
+        /*
+         * 索引的数据顺序和索引在查找中的排列顺序一致则获得二星。因为查找排序顺序是先按照 status 取数据，再按照时间排序，时间在status里查到的数据未必是有序的，所以把 gmt_modified 加入联合索引里无助于加速，如果有可能加速，就是托了二级索引里有数据无需回表查主索引再进入排序缓冲区的福
+         * 这个地方如果有很强的性能要求，只能寄望于 UNPAID_STATUS_VALUE 相关的数据量非常小，发送索引跳跃的概率小
+         * 虽然没有办法利用索引加速排序，但此处加上一个排序列还是有必要的，防止待支付订单饥饿
+         */
         example.setOrderByClause("gmt_modified asc");
         return example;
     }
