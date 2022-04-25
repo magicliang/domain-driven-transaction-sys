@@ -17,13 +17,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 支付订单管理器，带有事务管理功能
- * FIXME：修复这个问题
+ * FIXME：补完这个类
  *
  * @author magicliang
  * <p>
@@ -55,15 +56,6 @@ public class PayOrderManagerImpl implements PayOrderManager {
         if (CollectionUtils.isEmpty(payOrderNos)) {
             return Lists.newArrayList();
         }
-        /*
-         * 翻页查询的秘诀：每次只查询一批特别小的页，每次翻页的上限一定要小，避免：1. 单个查询时间太久，导致 innodb 的工作被阻塞 2. 单个连接被单个事务占用太久
-         * 实现分页逻辑和非分页逻辑的分离，然后把非分页逻辑装进分页闭包里。
-         */
-        // 另一种不优雅的做法是 payOrderNos/DEFAULT_BATCH 向下取整得到总页数 pages，for( page = 0; page < pages + 1; page++) { for(i = 0 + page * DEFAULT_BATCH; i< (page + 1 ) * DEFAULT_BATCH && i < totalCount); i++ }
-        List<List<Long>> partition = Lists.partition(payOrderNos, DEFAULT_BATCH);
-//        partition.stream().map((subPayOrderNos) -> {
-//
-//        })
 
 
         // 1. 确定分多少页
@@ -308,7 +300,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     private <T> List<T> paginationQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
         if (CollectionUtils.isEmpty(payOrderNos)) {
-            return Collections.emptyList();
+            return Lists.newArrayList();
         }
         final int size = payOrderNos.size();
         List<T> result = Lists.newArrayListWithCapacity(size);
@@ -336,6 +328,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
 
     /**
      * 根据特定条件分页查询
+     * 注意这里做的查询是把 totalSize 里的所有页都查过去一遍
      *
      * @param totalSize      总大小
      * @param batchSize      批大小
@@ -345,7 +338,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
     private <T> List<T> paginationQuery(final long totalSize, final int batchSize, Supplier<List<T>> resultSupplier) {
         // 查询条件不合法，则返回空列表
         if (totalSize <= 0 || batchSize <= 0) {
-            return Collections.emptyList();
+            return Lists.newArrayList();
         }
         // 否则，开始翻页
         List<T> results = Lists.newArrayListWithCapacity(Math.toIntExact(totalSize));
@@ -357,6 +350,30 @@ public class PayOrderManagerImpl implements PayOrderManager {
             results.addAll(new ArrayList<>(resultSupplier.get()));
         });
         return results;
+    }
+
+    /**
+     * 根据分区函数执行基于 payOrderNos 的分页查询
+     *
+     * @param payOrderNos 支付订单号列表
+     * @param query       查询语句
+     * @param <T>         返回值类型
+     * @return 分页查询结果
+     */
+    private <T> List<T> partitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByPayOrderNos<List<T>> query) {
+        if (CollectionUtils.isEmpty(payOrderNos)) {
+            return Lists.newArrayList();
+        }
+        /*
+         * 翻页查询的秘诀：每次只查询一批特别小的页，每次翻页的上限一定要小，避免：1. 单个查询时间太久，导致 innodb 的工作被阻塞 2. 单个连接被单个事务占用太久
+         * 实现分页逻辑和非分页逻辑的分离，然后把非分页逻辑装进分页闭包里。
+         *
+         * 另一种不优雅的做法是 payOrderNos/DEFAULT_BATCH 向下取整得到总页数 pages，for( page = 0; page < pages + 1; page++) { for(i = 0 + page * DEFAULT_BATCH; i< (page + 1 ) * DEFAULT_BATCH && i < totalCount); i++ }
+         */
+        List<List<Long>> partition = Lists.partition(payOrderNos, DEFAULT_BATCH);
+        return partition.stream().map((subPayOrderNos) -> query.apply(subPayOrderNos))
+                .flatMap(pList -> pList.stream())
+                .collect(Collectors.toList());
     }
 
     /**
