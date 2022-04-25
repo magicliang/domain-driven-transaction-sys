@@ -29,30 +29,59 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class JsonUtils {
 
+    public static final String JSON_EXCEPTION_MSG = "反序列化失败";
     /**
      * 没有排除任何字段的映射器
      */
     private static final ObjectMapper OBJECT_MAPPER_INCLUDE_ALWAYS = new ObjectMapper();
-
     /**
      * 排除任何有 empty、blank 语义的字段的映射器
      */
     private static final ObjectMapper OBJECT_MAPPER_INCLUDE_NONEMPTY = new ObjectMapper();
-
     /**
      * 没有排除任何字段的映射器的禁用缓存版本
      */
     private static final ObjectMapper OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE = new ObjectMapper();
-
     /**
      * 排除任何有 empty、blank 语义的字段的映射器的禁用缓存版本
      */
     private static final ObjectMapper OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE = new ObjectMapper();
-
     /**
      * 序列化为 a_b 小写下划线形式的映射器
      */
     private static final ObjectMapper OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES = new ObjectMapper();
+    private static Map<String, ObjectMapper> MAPPER_CACHE = new ConcurrentHashMap<>();
+
+    static {
+        // 默认开启缓存
+
+        // 先关闭反序列化失败，这样可以提高 util 的兼容性
+        OBJECT_MAPPER_INCLUDE_ALWAYS.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        // 只包含非空字段。最严厉的选项，会排除空字符串、null 和 []
+        OBJECT_MAPPER_INCLUDE_NONEMPTY.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        OBJECT_MAPPER_INCLUDE_NONEMPTY.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        // 关闭缓存的ObjectMapper。这个 disable 虽然 deprecated 了，但因为取不到原生的 factory，所以暂且继续用
+        OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
+
+        // 只包含非空字段，且关闭缓存
+        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        // 在本 mapper 上禁用线程局部缓存，这样对性能可能不好，但会对 gc 好，也防止内存泄漏：https://github.com/fasterxml/jackson-core/issues/189
+        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
+
+        // 序列化为 a_b 小写下划线形式
+        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+    /**
+     * 私有构造器
+     */
+    private JsonUtils() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * 将Java对象转成Json，默认约束规则JsonInclude.Include.NON_EMPTY
@@ -98,41 +127,6 @@ public class JsonUtils {
             log.error(JSON_EXCEPTION_MSG, e);
         }
         return "";
-    }
-
-    public static final String JSON_EXCEPTION_MSG = "反序列化失败";
-
-    private static Map<String, ObjectMapper> MAPPER_CACHE = new ConcurrentHashMap<>();
-
-    static {
-        // 默认开启缓存
-
-        // 先关闭反序列化失败，这样可以提高 util 的兼容性
-        OBJECT_MAPPER_INCLUDE_ALWAYS.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        // 只包含非空字段。最严厉的选项，会排除空字符串、null 和 []
-        OBJECT_MAPPER_INCLUDE_NONEMPTY.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-        OBJECT_MAPPER_INCLUDE_NONEMPTY.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        // 关闭缓存的ObjectMapper。这个 disable 虽然 deprecated 了，但因为取不到原生的 factory，所以暂且继续用
-        OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
-
-        // 只包含非空字段，且关闭缓存
-        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        // 在本 mapper 上禁用线程局部缓存，这样对性能可能不好，但会对 gc 好，也防止内存泄漏：https://github.com/fasterxml/jackson-core/issues/189
-        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
-
-        // 序列化为 a_b 小写下划线形式
-        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
-    /**
-     * 私有构造器
-     */
-    private JsonUtils() {
-        throw new UnsupportedOperationException();
     }
 
     /**

@@ -12,19 +12,18 @@ package com.magicliang.transaction.sys.common.constant;
 public class ErrorConstant {
 
     /**
+     * 不正确的旧状态
+     */
+    public static final String INVALID_OLD_STATUS = "invalid oldStatus：";
+    /**
+     * 不正确的新状态
+     */
+    public static final String INVALID_NEW_STATUS = "invalid newStatus：";
+
+    /**
      * 私有构造器
      */
     private ErrorConstant() {
         throw new UnsupportedOperationException();
     }
-
-    /**
-     * 不正确的旧状态
-     */
-    public static final String INVALID_OLD_STATUS = "invalid oldStatus：";
-
-    /**
-     * 不正确的新状态
-     */
-    public static final String INVALID_NEW_STATUS = "invalid newStatus：";
 }

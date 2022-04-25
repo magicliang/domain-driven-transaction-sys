@@ -1,11 +1,14 @@
 # Read Me First
+
 The following was discovered as part of building this project:
 
-* The original package name 'com.magicliang.domain-driven-transaction-sys' is invalid and this project uses 'com.magicliang.domaindriventransactionsys' instead.
+* The original package name 'com.magicliang.domain-driven-transaction-sys' is invalid and this project uses '
+  com.magicliang.domaindriventransactionsys' instead.
 
 # Getting Started
 
 ### Reference Documentation
+
 For further reference, please consider the following sections:
 
 * [Official Gradle documentation](https://docs.gradle.org)
@@ -18,6 +21,7 @@ For further reference, please consider the following sections:
 * [Resilience4J](https://cloud.spring.io/spring-cloud-static/spring-cloud-circuitbreaker/current/reference/html)
 
 ### Guides
+
 The following guides illustrate how to use some features concretely:
 
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
@@ -25,6 +29,7 @@ The following guides illustrate how to use some features concretely:
 * [Building a RESTful Web Service with Spring Boot Actuator](https://spring.io/guides/gs/actuator-service/)
 
 ### Additional Links
+
 These additional references should also help you:
 
 * [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)

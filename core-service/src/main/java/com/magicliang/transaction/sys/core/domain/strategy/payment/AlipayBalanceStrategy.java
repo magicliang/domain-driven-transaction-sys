@@ -69,7 +69,7 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
 
         try {
             // 使用私钥为请求签名并支付
-            final AlipayResDto res = alipayDelegate.standardPay(param , kmsConfig.getPrivateKey());
+            final AlipayResDto res = alipayDelegate.standardPay(param, kmsConfig.getPrivateKey());
             // 记录响应
             recordRes(paymentResponse, payOrder, payRequest, res);
         } catch (BaseTransException ex) {

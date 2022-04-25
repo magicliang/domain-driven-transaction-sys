@@ -1,7 +1,11 @@
 package com.magicliang.transaction.sys.common.dal.datasource;
 
+import ch.vorburger.exec.ManagedProcessException;
+import ch.vorburger.mariadb4j.DB;
+import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -13,12 +17,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-
-import ch.vorburger.exec.ManagedProcessException;
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
-import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
-import lombok.extern.slf4j.Slf4j;
 
 import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_EMBEDDED_DB_PORT_ERROR;
 import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR;

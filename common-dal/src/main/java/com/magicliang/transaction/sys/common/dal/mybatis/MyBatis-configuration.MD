@@ -22,8 +22,7 @@ create schema test_master;
 create schema test_slave;
 ```
 
-3. init datasource bean，见 application.yml 里的配置，这些配置必须配合 Java Config 使用（基于 Spring xml
-   的配置稍微麻烦，本次先不使用了）。
+3. init datasource bean，见 application.yml 里的配置，这些配置必须配合 Java Config 使用（基于 Spring xml 的配置稍微麻烦，本次先不使用了）。
 4. 需要在xml里配置齐这三样东西`SqlSessionFactory -> SqlSessionTemplate -> DataSourceTransactionManager`。其中
    DataSourceTransactionManager 是主管事务环绕拦截器的管理器，如果它使用的数据源和 mybatis的数据源不一致，则可能出现无事务的问题。
 

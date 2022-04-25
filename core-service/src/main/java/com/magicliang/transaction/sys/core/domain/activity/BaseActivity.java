@@ -37,6 +37,7 @@ public abstract class BaseActivity<R extends IRequest, S extends IResponse, E ex
     /**
      * 活动执行，唯一的 public method
      * TODO：这里这个泛型的 ？？应该加以充分的解释
+     *
      * @param context 交易上下文
      */
     public void execute(TransTransactionContext<?, ? extends TransactionModel> context) {

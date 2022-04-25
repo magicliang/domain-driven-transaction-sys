@@ -11,6 +11,6 @@ CREATE TABLE `tb_trans_pay_order`
     -- 所有字段先考虑 not null，text/blob/json/geometry 类型除外
     -- 每个表必须带上的三个字段
     -- 一张表必须只有一个 AUTO_INCREMENT
-    `id`                        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (`id`)
 );

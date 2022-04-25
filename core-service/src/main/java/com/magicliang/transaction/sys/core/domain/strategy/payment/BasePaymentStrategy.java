@@ -4,7 +4,6 @@ import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
 import com.magicliang.transaction.sys.core.config.CommonConfig;
-import com.magicliang.transaction.sys.core.config.DynamicConfig;
 import com.magicliang.transaction.sys.core.config.KmsConfig;
 import com.magicliang.transaction.sys.core.domain.enums.PaymentStrategyEnum;
 import com.magicliang.transaction.sys.core.domain.strategy.BaseStrategy;

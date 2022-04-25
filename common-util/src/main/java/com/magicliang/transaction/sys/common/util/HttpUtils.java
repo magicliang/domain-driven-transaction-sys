@@ -49,33 +49,28 @@ public class HttpUtils {
 
 
     /**
-     * 私有构造器
-     */
-    private HttpUtils() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * 连接超时时间60s
      */
     public static final int CONNECTION_TIMEOUT_MS = 60000;
-
     /**
      * 读取数据超时时间 60s
      */
     public static final int SO_TIMEOUT_MS = 60000;
-
     /**
      * httpclient读取内容时使用的字符集
      */
     public static final String CONTENT_CHARSET = "utf-8";
     public static final String CONTENT_CHARSET_GBK = "gbk";
-
     public static final String CONTENT_TYPE_JSON_CHARSET = "application/json;charset=" + CONTENT_CHARSET;
-
     public static final Charset UTF_8 = Charset.forName(CONTENT_CHARSET);
-
     public static final Charset GBK = Charset.forName(CONTENT_CHARSET_GBK);
+
+    /**
+     * 私有构造器
+     */
+    private HttpUtils() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * 简单get调用

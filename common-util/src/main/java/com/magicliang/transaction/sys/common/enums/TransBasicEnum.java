@@ -41,7 +41,17 @@ public enum TransBasicEnum {
     }
 
     /**
+     * 枚举类型码
+     */
+    private final Integer code;
+    /**
+     * 枚举类型描述
+     */
+    private final String desc;
+
+    /**
      * 通过枚举类型码获取枚举
+     *
      * @param code 枚举类型码
      * @return 枚举
      */
@@ -66,14 +76,4 @@ public enum TransBasicEnum {
         }
         return null;
     }
-
-    /**
-     * 枚举类型码
-     */
-    private final Integer code;
-
-    /**
-     * 枚举类型描述
-     */
-    private final String desc;
 }

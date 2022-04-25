@@ -3,10 +3,7 @@ package com.magicliang.transaction.sys.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SECOND_BIZ;
-import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SECOND_SYS;
-import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SELF_BIZ;
-import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SELF_SYS;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
