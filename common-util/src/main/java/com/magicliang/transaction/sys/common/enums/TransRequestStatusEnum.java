@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_CHANNEL_REQUEST_STATUS_ERROR;
 
@@ -52,6 +54,17 @@ public enum TransRequestStatusEnum {
     CLOSED(5, "closed"),
 
     ;
+
+    /**
+     * 未支付状态
+     */
+    private static final Set<TransRequestStatusEnum> UNPAID_STATUS = EnumSet.of(INIT, PENDING, FAILED);
+
+    /**
+     * 未支付状态枚举值
+     */
+    public static final List<Integer> UNPAID_STATUS_VALUE = UNPAID_STATUS.stream().map(TransRequestStatusEnum::getCode).collect(Collectors.toList());
+
 
     /**
      * 终态集合

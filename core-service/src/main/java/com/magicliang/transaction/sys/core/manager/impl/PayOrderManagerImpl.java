@@ -2,12 +2,11 @@ package com.magicliang.transaction.sys.core.manager.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransChannelRequestPoMapper;
 import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoMapper;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPoExample;
+import com.magicliang.transaction.sys.common.dal.mybatis.po.*;
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
+import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
     /**
      * 缺省批次大小，用于 in 之类的查询时，每次 in 不超过 1000 个值
      * 这个内部准备的尺寸大小可以有效地保护 MySQL
+     * 如果有必要，可以动态配置化这个值
      */
     private static final int DEFAULT_BATCH = 1000;
 
@@ -48,6 +48,12 @@ public class PayOrderManagerImpl implements PayOrderManager {
      */
     @Autowired
     private TransPayOrderPoMapper payOrderMapper;
+
+    /**
+     * requestPoMapper
+     */
+    @Autowired
+    private TransChannelRequestPoMapper requestPoMapper;
 
     /**
      * 根据支付订单号列表查询支付订单
@@ -88,19 +94,22 @@ public class PayOrderManagerImpl implements PayOrderManager {
     }
 
     /**
+     * 本方法已废弃
+     * <p>
      * 查询特定环境、全部的未完成的支付订单。
      * 因为这个查询可能查出大量数据，所以实现上使用了分页查询方法，为了查出全部的数据，将先查出总的数量，分多次查询全部数据。
+     * <p>
+     * 这种任务、订单类查询一定要区分环境！
      *
      * @param batchSize 每次查询的批次大小
      * @param env       环境
      * @return 未完成的支付订单列表
      */
+    @Deprecated
     @Override
     public List<TransPayOrderPo> queryUnpaidPayOrder(final int batchSize, final int env) {
         // 对于状态等可能查出空列表或者大量数据的场景，要先 count，然后再翻页查询。所以设计这种复杂查询要仔细评估潜在数据量的变化，底层的 ORM 框架的返回结果的缺省行为、通过正交组合和分步处理来生成兼容性查询框架
-        TransPayOrderPoExample example = new TransPayOrderPoExample();
-        TransPayOrderPoExample.Criteria criteria = example.createCriteria();
-        criteria.andStatusIn(TransPayOrderStatusEnum.UNPAID_STATUS_VALUE);
+        TransPayOrderPoExample example = createUnpaidPayOrderExample(env);
         long count = payOrderMapper.countByExample(example);
         if (count <= 0) {
             return Collections.emptyList();
@@ -109,13 +118,30 @@ public class PayOrderManagerImpl implements PayOrderManager {
     }
 
     /**
+     * 查询特定环境、最重要（通常是创建时间最早的订单）一批订单未完成的支付订单。
+     * 因为限制了批次大小，
+     * <p>
+     * 这种任务、订单类查询一定要区分环境！
+     *
+     * @param env 环境
+     * @return
+     */
+    public List<TransPayOrderPo> queryTopBatchUnpaidPayOrder(final int env) {
+        TransPayOrderPoExample example = createUnpaidPayOrderExample(env);
+        return paginationQuery(DEFAULT_BATCH, DEFAULT_BATCH, () -> payOrderMapper.selectByExample(example));
+    }
+
+
+    /**
      * 获取当前所有未支付请求的数量
      *
+     * @param env 环境
      * @return 当前所有未支付请求的数量
      */
     @Override
-    public long countUnPaidRequests() {
-        return 0;
+    public long countUnPaidRequests(final int env) {
+        TransChannelRequestPoExample unPaidRequestExample = createUnPaidRequestExample(env);
+        return requestPoMapper.countByExample(unPaidRequestExample);
     }
 
     /**
@@ -348,12 +374,12 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 根据特定条件分页查询
      * 注意这里做的查询是把 totalSize 里的所有页都查过去一遍
      *
-     * @param totalSize      总大小
-     * @param batchSize      批大小
-     * @param resultSupplier 查询回调
+     * @param totalSize 总大小
+     * @param batchSize 批大小
+     * @param query     查询回调
      * @return 分页查询结果
      */
-    private <T> List<T> paginationQuery(final long totalSize, final int batchSize, Supplier<List<T>> resultSupplier) {
+    private <T> List<T> paginationQuery(final long totalSize, final int batchSize, Supplier<List<T>> query) {
         // 查询条件不合法，则返回空列表
         if (totalSize <= 0 || batchSize <= 0) {
             return Collections.emptyList();
@@ -366,7 +392,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
         IntStream.rangeClosed(1, pageCount).forEachOrdered(pageIndex -> {
             // 这个查询是有缺陷的，如果 pageIndex 很大，最后一次查询的结果可能要在 sort buffer 里面存储和丢弃非常多的临时数据，甚至引发文件排序，解决这个问题的方法是不允许总的翻页数过多
             PageHelper.startPage(pageIndex, batchSize);
-            results.addAll(new ArrayList<>(resultSupplier.get()));
+            results.addAll(new ArrayList<>(query.get()));
         });
         return results;
     }
@@ -374,22 +400,22 @@ public class PayOrderManagerImpl implements PayOrderManager {
     /**
      * 根据分区函数执行基于 payOrderNos 的分页查询
      *
-     * @param payOrderNos 支付订单号列表
-     * @param query       查询语句
-     * @param <T>         返回值类型
+     * @param longList 支付订单号列表
+     * @param query    查询语句
+     * @param <T>      返回值类型
      * @return 分页查询结果
      */
-    private <T> List<T> partitionQuery(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
-        if (CollectionUtils.isEmpty(payOrderNos)) {
+    private <T> List<T> partitionQuery(final List<Long> longList, QueryByLongList<List<T>> query) {
+        if (CollectionUtils.isEmpty(longList)) {
             return Collections.emptyList();
         }
         /*
          * 翻页查询的秘诀：每次只查询一批特别小的页，每次翻页的上限一定要小，避免：1. 单个查询时间太久，导致 innodb 的工作被阻塞 2. 单个连接被单个事务占用太久
          * 实现分页逻辑和非分页逻辑的分离，然后把非分页逻辑装进分页闭包里。
          *
-         * 另一种不优雅的做法是 payOrderNos/DEFAULT_BATCH 向下取整得到总页数 pages，for( page = 0; page < pages + 1; page++) { for(i = 0 + page * DEFAULT_BATCH; i< (page + 1 ) * DEFAULT_BATCH && i < totalCount); i++ }
+         * 另一种不优雅的做法是 longList/DEFAULT_BATCH 向上取整得到总页数 pages，for( page = 0; page < pages; page++) { for(i = 0 + (page - 1) * DEFAULT_BATCH; i< page * DEFAULT_BATCH && i < totalCount); i++ }
          */
-        List<List<Long>> partition = Lists.partition(payOrderNos, DEFAULT_BATCH);
+        List<List<Long>> partition = Lists.partition(longList, DEFAULT_BATCH);
         // 先分区查询，再 flatMap 和 collect，如果这个地方性能不好，就直接 foreach addAll可能会性能会更好
         // 如果有必要，这里加一个线程池，并行化 Stream 查询
         return partition.stream().map(query::apply)
@@ -398,11 +424,33 @@ public class PayOrderManagerImpl implements PayOrderManager {
     }
 
     /**
-     * 创建查询所有的未支付请求列表的查询条件
+     * 查询未支付订单的 example
      *
+     * @param env 环境枚举值
+     * @return 未支付订单的 example
+     */
+    private TransPayOrderPoExample createUnpaidPayOrderExample(int env) {
+        TransPayOrderPoExample example = new TransPayOrderPoExample();
+        TransPayOrderPoExample.Criteria criteria = example.createCriteria();
+        criteria.andStatusIn(TransPayOrderStatusEnum.UNPAID_STATUS_VALUE);
+        criteria.andEnvEqualTo(env);
+        // 这个排序强依赖于 gmt_modified 也有索引这一点，而且索引并不一定能够帮助我们加速，如果有必要我们也可以指定时间来获取查询范围
+        example.setOrderByClause("gmt_modified asc");
+        return example;
+    }
+
+    /**
+     * 创建查询所有的未支付请求列表的查询条件
+     * 三大任务查询约束条件：状态、时间、环境
+     *
+     * @param env 环境
      * @return 查询所有的未支付请求列表的查询条件
      */
-    private Object createUnPaidRequestExample() {
+    private TransChannelRequestPoExample createUnPaidRequestExample(final int env) {
+        TransChannelRequestPoExample example = new TransChannelRequestPoExample();
+        TransChannelRequestPoExample.Criteria criteria = example.createCriteria();
+        criteria.andStatusIn(TransRequestStatusEnum.UNPAID_STATUS_VALUE);
+        criteria.andEnvEqualTo(env);
         // 生成基础 example
         // 指定状态和时间
         return null;

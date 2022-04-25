@@ -56,9 +56,10 @@ public interface PayOrderManager {
     /**
      * 获取当前所有未支付请求的数量
      *
+     * @param env 环境
      * @return 当前所有未支付请求的数量
      */
-    long countUnPaidRequests();
+    long countUnPaidRequests(int env);
 
     /**
      * 查询特定环境、全部的未完成的支付请求

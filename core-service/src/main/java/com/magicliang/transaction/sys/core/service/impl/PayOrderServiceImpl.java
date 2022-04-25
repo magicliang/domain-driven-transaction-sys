@@ -143,7 +143,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
      */
     @Override
     public long countUnPaidRequests() {
-        return payOrderManager.countUnPaidRequests();
+        return payOrderManager.countUnPaidRequests(1);
     }
 
     /**
