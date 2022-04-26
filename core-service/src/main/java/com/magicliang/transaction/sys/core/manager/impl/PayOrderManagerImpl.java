@@ -435,7 +435,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
         criteria.andStatusIn(TransPayOrderStatusEnum.UNPAID_STATUS_VALUE);
         criteria.andEnvEqualTo(env);
         /*
-         * 索引的数据顺序和索引在查找中的排列顺序一致则获得二星。因为查找排序顺序是先按照 status 取数据，再按照时间排序，时间在status里查到的数据未必是有序的，所以把 gmt_modified 加入联合索引里无助于加速，如果有可能加速，就是托了二级索引里有数据无需回表查主索引再进入排序缓冲区的福
+         * 索引的数据顺序和索引在查找中的排列顺序一致则获得二星。因为查找排序顺序是先按照 status 取数据，再按照时间排序，时间在status里查到的数据未必是有序的，所以把 gmt_modified 加入联合索引里无助于
+         * 用搜索即排序加速，如果有可能加速，就是托了二级索引里有数据无需回表查主索引再进入排序缓冲区的福（使用把所有的select 和 order by 都扔进 sort buffer的方式工作）。
          * 这个地方如果有很强的性能要求，只能寄望于 UNPAID_STATUS_VALUE 相关的数据量非常小，发送索引跳跃的概率小
          * 虽然没有办法利用索引加速排序，但此处加上一个排序列还是有必要的，防止待支付订单饥饿
          */
