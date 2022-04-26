@@ -69,6 +69,7 @@ CREATE TABLE `tb_trans_pay_order`
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付订单，领域聚合根';
 -- utf8mb4 四字节才能容纳完整 utf8 字符集，COLLATE 意味着特定的排序算法
 -- AUTO_INCREMENT 不用配太大，制造数据空洞
+-- 同一个库允许不同的表使用不同的 engin，不同的 engine 会得到不同的表空间文件
 
 DROP TABLE IF EXISTS `tb_trans_bank_card_suborder`;
 CREATE TABLE `tb_trans_bank_card_suborder`
