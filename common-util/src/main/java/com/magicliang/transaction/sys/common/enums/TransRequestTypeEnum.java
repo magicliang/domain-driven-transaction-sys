@@ -4,6 +4,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * project name: domain-driven-transaction-sys
  * <p>
@@ -32,6 +37,16 @@ public enum TransRequestTypeEnum {
      */
     BOUNCED_NOTIFICATION(3, "bounced_notification"),
     ;
+
+    /**
+     * 通知类型枚举列表
+     */
+    private static final Set<TransRequestTypeEnum> NOTIFICATION_TYPE = EnumSet.of(BASIC_NOTIFICATION, BOUNCED_NOTIFICATION);
+
+    /**
+     * 通知类型枚举值列表
+     */
+    public static final List<Integer> NOTIFICATION_TYPE_VALUE = NOTIFICATION_TYPE.stream().map(TransRequestTypeEnum::getCode).collect(Collectors.toList());
 
     /**
      * 枚举类型码

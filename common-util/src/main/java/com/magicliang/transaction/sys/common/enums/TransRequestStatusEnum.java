@@ -56,14 +56,14 @@ public enum TransRequestStatusEnum {
     ;
 
     /**
-     * 未支付状态
+     * 非请求终态状态枚举列表
      */
-    private static final Set<TransRequestStatusEnum> UNPAID_STATUS = EnumSet.of(INIT, PENDING, FAILED);
+    private static final Set<TransRequestStatusEnum> UNSENT_STATUS = EnumSet.of(INIT, PENDING, FAILED);
 
     /**
-     * 未支付状态枚举值
+     * 非请求终态状态枚举值列表
      */
-    public static final List<Integer> UNPAID_STATUS_VALUE = UNPAID_STATUS.stream().map(TransRequestStatusEnum::getCode).collect(Collectors.toList());
+    public static final List<Integer> UNSENT_STATUS_VALUE = UNSENT_STATUS.stream().map(TransRequestStatusEnum::getCode).collect(Collectors.toList());
 
 
     /**

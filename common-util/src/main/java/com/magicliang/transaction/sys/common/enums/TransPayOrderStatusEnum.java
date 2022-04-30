@@ -63,12 +63,12 @@ public enum TransPayOrderStatusEnum {
     ;
 
     /**
-     * 未支付状态
+     * 未支付状态枚举列表
      */
     private static final Set<TransPayOrderStatusEnum> UNPAID_STATUS = EnumSet.of(INIT, PENDING);
 
     /**
-     * 未支付状态枚举值
+     * 未支付状态枚举值列表
      */
     public static final List<Integer> UNPAID_STATUS_VALUE = UNPAID_STATUS.stream().map(TransPayOrderStatusEnum::getCode).collect(Collectors.toList());
 

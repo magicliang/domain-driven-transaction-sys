@@ -457,7 +457,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
     private TransChannelRequestPoExample createUnPaidRequestExample(final int env) {
         TransChannelRequestPoExample example = new TransChannelRequestPoExample();
         TransChannelRequestPoExample.Criteria criteria = example.createCriteria();
-        criteria.andStatusIn(TransRequestStatusEnum.UNPAID_STATUS_VALUE);
+        criteria.andStatusIn(TransRequestStatusEnum.UNSENT_STATUS_VALUE);
         criteria.andRequestTypeEqualTo(TransRequestTypeEnum.PAYMENT.getCode());
         criteria.andEnvEqualTo(env);
         // 先不指定排序列和 limit
@@ -469,10 +469,14 @@ public class PayOrderManagerImpl implements PayOrderManager {
      *
      * @return 未发送的通知请求列表的查询条件
      */
-    private Object createUnsentNotificationsExample() {
-        // 生成基础 example
-        // 指定状态、类型和时间
-        return null;
+    private Object createUnsentNotificationsExample(final int env) {
+        TransChannelRequestPoExample example = new TransChannelRequestPoExample();
+        TransChannelRequestPoExample.Criteria criteria = example.createCriteria();
+        criteria.andStatusIn(TransRequestStatusEnum.UNSENT_STATUS_VALUE);
+        // FIXME：怎么给请求建模
+        criteria.andRequestTypeIn(TransRequestTypeEnum.NOTIFICATION_TYPE_VALUE);
+        criteria.andEnvEqualTo(env);
+        return example;
     }
 
     /**
