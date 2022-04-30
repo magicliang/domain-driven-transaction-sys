@@ -53,6 +53,8 @@ public interface PayOrderManager {
      */
     List<TransPayOrderPo> queryUnpaidPayOrder(int batchSize, int env);
 
+    List<TransPayOrderPo> queryTopBatchUnpaidPayOrder(int env);
+
     /**
      * 获取当前所有未支付请求的数量
      *

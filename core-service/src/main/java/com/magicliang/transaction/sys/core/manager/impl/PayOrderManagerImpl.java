@@ -7,6 +7,7 @@ import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoM
 import com.magicliang.transaction.sys.common.dal.mybatis.po.*;
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
+import com.magicliang.transaction.sys.common.enums.TransRequestTypeEnum;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,8 +125,9 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 这种任务、订单类查询一定要区分环境！
      *
      * @param env 环境
-     * @return
+     * @return 最重要一批订单未完成的支付订单
      */
+    @Override
     public List<TransPayOrderPo> queryTopBatchUnpaidPayOrder(final int env) {
         TransPayOrderPoExample example = createUnpaidPayOrderExample(env);
         return paginationQuery(DEFAULT_BATCH, DEFAULT_BATCH, () -> payOrderMapper.selectByExample(example));
@@ -446,7 +448,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
 
     /**
      * 创建查询所有的未支付请求列表的查询条件
-     * 三大任务查询约束条件：状态、时间、环境
+     * 四大任务查询约束条件：状态、时间、环境、limit或者 id 区间
      * 时间：时间范围，时间排序？如果这两者都可以指定，则时间作为联合索引的第一个列是简单的
      *
      * @param env 环境
@@ -456,8 +458,9 @@ public class PayOrderManagerImpl implements PayOrderManager {
         TransChannelRequestPoExample example = new TransChannelRequestPoExample();
         TransChannelRequestPoExample.Criteria criteria = example.createCriteria();
         criteria.andStatusIn(TransRequestStatusEnum.UNPAID_STATUS_VALUE);
+        criteria.andRequestTypeEqualTo(TransRequestTypeEnum.PAYMENT.getCode());
         criteria.andEnvEqualTo(env);
-        // 先不指定排序列
+        // 先不指定排序列和 limit
         return example;
     }
 

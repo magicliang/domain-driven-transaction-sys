@@ -84,6 +84,7 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      * 执行处理流程
      *
      * @param request 业务请求
+     * @return 被执行过的上下文
      */
     public C execute(R request) {
         // 1. 加锁，所有请求都要在锁的保护下进行
@@ -118,7 +119,9 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      * 初始化上下文，上下文级别的幂等检查要在这里执行
      *
      * @param request 处理器上下文
+     * @return 被初始化的上下文
      */
+
     public abstract C initContext(R request);
 
     /**
@@ -208,6 +211,7 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      * 只有同步语义（如受理、支付，回调）才需要使用这个方法，异步语义不需要使用这个方法（如单纯通知）
      *
      * @param transactionModel 交易模型
+     * @return 是否已被退票
      */
     protected boolean checkIsBounced(final TransactionModel transactionModel) {
         final TransPayOrderEntity payOrderEntity = transactionModel.getPayOrder();

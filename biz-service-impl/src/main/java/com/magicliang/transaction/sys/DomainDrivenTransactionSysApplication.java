@@ -35,13 +35,11 @@ import java.util.Arrays;
  * <p>
  * Reason: Failed to determine a suitable driver class
  * <p>
- * <p>
  * Action:
  * <p>
  * Consider the following:
  * If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
  * If you have database settings to be loaded from a particular profile you may need to activate it (the profiles test are currently active).
- * <p>
  * <p>
  * Process finished with exit code 0
  * <p>
