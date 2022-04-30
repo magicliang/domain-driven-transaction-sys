@@ -447,6 +447,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
     /**
      * 创建查询所有的未支付请求列表的查询条件
      * 三大任务查询约束条件：状态、时间、环境
+     * 时间：时间范围，时间排序？如果这两者都可以指定，则时间作为联合索引的第一个列是简单的
      *
      * @param env 环境
      * @return 查询所有的未支付请求列表的查询条件
@@ -456,9 +457,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
         TransChannelRequestPoExample.Criteria criteria = example.createCriteria();
         criteria.andStatusIn(TransRequestStatusEnum.UNPAID_STATUS_VALUE);
         criteria.andEnvEqualTo(env);
-        // 生成基础 example
-        // 指定状态和时间
-        return null;
+        // 先不指定排序列
+        return example;
     }
 
     /**
