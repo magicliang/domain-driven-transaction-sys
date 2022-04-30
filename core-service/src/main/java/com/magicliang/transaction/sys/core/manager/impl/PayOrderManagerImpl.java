@@ -418,7 +418,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
         List<List<Long>> partition = Lists.partition(longList, DEFAULT_BATCH);
         // 先分区查询，再 flatMap 和 collect，如果这个地方性能不好，就直接 foreach addAll可能会性能会更好
         // 如果有必要，这里加一个线程池，并行化 Stream 查询
-        return partition.stream().map(query::apply)
+        return partition.stream().map(query)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
