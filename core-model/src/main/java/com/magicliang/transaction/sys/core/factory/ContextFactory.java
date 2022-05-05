@@ -40,6 +40,7 @@ public abstract class ContextFactory {
 
     /**
      * 清理本线程上下文的内容
+     * 重要：这类方法必须支持空清扫
      */
     public static void clear() {
         final Map<String, Object> context = CONTEXT_HOLDER.get();
