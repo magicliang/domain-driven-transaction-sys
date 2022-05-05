@@ -1,15 +1,17 @@
 package com.magicliang.transaction.sys.common.util.apm;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.*;
 
 
 /**
- * project name: leads_web_ut
+ * project name: domain-driven-transaction-sys
  * <p>
  * description: 事务测试
  *
@@ -23,20 +25,22 @@ public class TransactionTest {
     /**
      * 测试单一事务操作
      * example：
+     * <pre>
      * {
-     * "type": "TransactionTest",
-     * "name": "singleTransaction",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218713436,
-     * "durationInMillis": 750,
-     * "timestamp": 1651218712686
+     *   "type": "TransactionTest",
+     *   "name": "singleTransaction",
+     *   "threadName": "main",
+     *   "completed": true,
+     *   "data": "",
+     *   "endTimestampInMillis": 1651742155133,
+     *   "durationInMillis": 807,
+     *   "timestamp": 1651742154326
      * }
+     * </pre>
      */
     @Test
     public void testSingleTransactionPrint() {
-        final Transaction transaction = ApmMonitor.beginTransaction("TransactionTest", "singleTransaction");
+        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "singleTransaction");
         singleTransaction();
         transaction.complete();
         Assertions.assertTrue(true);
@@ -45,43 +49,44 @@ public class TransactionTest {
     /**
      * 测试嵌套事务操作：
      * example：
-     * <p>
+     * <pre>
      * {
-     * "type": "TransactionTest",
-     * "name": "testSingleNestedTransactionPrint",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218748905,
-     * "durationInMillis": 4291,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T2",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218747214,
-     * "durationInMillis": 550,
-     * "timestamp": 1651218746664
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T3",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218748905,
-     * "durationInMillis": 1691,
-     * "timestamp": 1651218747214
+     *   "type": "TransactionTest",
+     *   "name": "testSingleNestedTransactionPrint",
+     *   "threadName": "main",
+     *   "completed": true,
+     *   "data": "",
+     *   "endTimestampInMillis": 1651742256646,
+     *   "durationInMillis": 9616,
+     *   "children": [
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T2",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742252051,
+     *       "durationInMillis": 4061,
+     *       "timestamp": 1651742247990
+     *     },
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T3",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742256604,
+     *       "durationInMillis": 4553,
+     *       "timestamp": 1651742252051
+     *     }
+     *   ],
+     *   "timestamp": 1651742247030
      * }
-     * ],
-     * "timestamp": 1651218744614
-     * }
+     * </pre>
      */
     @Test
     public void testSingleNestedTransactionPrint() {
-        final Transaction transaction = ApmMonitor.beginTransaction("TransactionTest", "testSingleNestedTransactionPrint");
+        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "testSingleNestedTransactionPrint");
         singleTransaction();
         singleNestedTransaction("TransactionTest", "T2");
         singleNestedTransaction("TransactionTest", "T3");
@@ -92,67 +97,68 @@ public class TransactionTest {
     /**
      * 测试嵌套事务运行：
      * example：
-     * <p>
+     * <pre>
      * {
-     * "type": "TransactionTest",
-     * "name": "testComplicatedNestedTransactionPrint",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218808222,
-     * "durationInMillis": 16496,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T2",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218808094,
-     * "durationInMillis": 12014,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T3",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218803410,
-     * "durationInMillis": 7325,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T4",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218799691,
-     * "durationInMillis": 3606,
-     * "timestamp": 1651218796085
+     *   "type": "TransactionTest",
+     *   "name": "testComplicatedNestedTransactionPrint",
+     *   "threadName": "main",
+     *   "completed": true,
+     *   "data": "",
+     *   "endTimestampInMillis": 1651742339875,
+     *   "durationInMillis": 18020,
+     *   "children": [
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T2",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742335433,
+     *       "durationInMillis": 11005,
+     *       "children": [
+     *         {
+     *           "type": "TransactionTest",
+     *           "name": "T3",
+     *           "threadName": "main",
+     *           "completed": true,
+     *           "data": "",
+     *           "endTimestampInMillis": 1651742331875,
+     *           "durationInMillis": 7442,
+     *           "children": [
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T4",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "",
+     *               "endTimestampInMillis": 1651742328163,
+     *               "durationInMillis": 3730,
+     *               "timestamp": 1651742324433
+     *             }
+     *           ],
+     *           "timestamp": 1651742324433
+     *         }
+     *       ],
+     *       "timestamp": 1651742324428
+     *     },
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T5",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742339875,
+     *       "durationInMillis": 4442,
+     *       "timestamp": 1651742335433
+     *     }
+     *   ],
+     *   "timestamp": 1651742321855
      * }
-     * ],
-     * "timestamp": 1651218796085
-     * }
-     * ],
-     * "timestamp": 1651218796080
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T5",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218808222,
-     * "durationInMillis": 128,
-     * "timestamp": 1651218808094
-     * }
-     * ],
-     * "timestamp": 1651218791726
-     * }
+     * </pre>
      */
     @Test
     public void testComplicatedNestedTransactionPrint() {
-        final Transaction transaction = ApmMonitor.beginTransaction("TransactionTest", "testComplicatedNestedTransactionPrint");
+        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "testComplicatedNestedTransactionPrint");
         singleTransaction();
         complicatedNestedTransaction("TransactionTest", "T2", () -> {
             complicatedNestedTransaction("TransactionTest", "T3", () -> {
@@ -166,124 +172,125 @@ public class TransactionTest {
 
     /**
      * 测试嵌套循环事务：
-     * <p>
+     * <pre>
      * {
-     * "type": "TransactionTest",
-     * "name": "testComplicatedForLoopTransactionPrint",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218949253,
-     * "durationInMillis": 22407,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T2",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218946821,
-     * "durationInMillis": 16649,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T3",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218945465,
-     * "durationInMillis": 15288,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T4",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218931649,
-     * "durationInMillis": 1472,
-     * "timestamp": 1651218930177
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T-Loop-0",
-     * "completed": true,
-     * "data": "loop=0",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218934158,
-     * "durationInMillis": 2509,
-     * "timestamp": 1651218931649
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T-Loop-1",
-     * "completed": true,
-     * "data": "loop=1",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218937454,
-     * "durationInMillis": 3296,
-     * "timestamp": 1651218934158
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T-Loop-2",
-     * "completed": true,
-     * "data": "loop=2",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218937879,
-     * "durationInMillis": 425,
-     * "timestamp": 1651218937454
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T-Loop-3",
-     * "completed": true,
-     * "data": "loop=3",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218941765,
-     * "durationInMillis": 3886,
-     * "timestamp": 1651218937879
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T-Loop-4",
-     * "completed": true,
-     * "data": "loop=4",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218942520,
-     * "durationInMillis": 755,
-     * "timestamp": 1651218941765
+     *   "type": "TransactionTest",
+     *   "name": "testComplicatedForLoopTransactionPrint",
+     *   "threadName": "main",
+     *   "completed": true,
+     *   "data": "",
+     *   "endTimestampInMillis": 1651742800461,
+     *   "durationInMillis": 22643,
+     *   "children": [
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T2",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742797774,
+     *       "durationInMillis": 14967,
+     *       "children": [
+     *         {
+     *           "type": "TransactionTest",
+     *           "name": "T3",
+     *           "threadName": "main",
+     *           "completed": true,
+     *           "data": "",
+     *           "endTimestampInMillis": 1651742795136,
+     *           "durationInMillis": 12325,
+     *           "children": [
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T4",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "",
+     *               "endTimestampInMillis": 1651742783295,
+     *               "durationInMillis": 484,
+     *               "timestamp": 1651742782811
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-0",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=0",
+     *               "endTimestampInMillis": 1651742785512,
+     *               "durationInMillis": 2216,
+     *               "timestamp": 1651742783296
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-1",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=1",
+     *               "endTimestampInMillis": 1651742790103,
+     *               "durationInMillis": 4591,
+     *               "timestamp": 1651742785512
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-2",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=2",
+     *               "endTimestampInMillis": 1651742790841,
+     *               "durationInMillis": 738,
+     *               "timestamp": 1651742790103
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-3",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=3",
+     *               "endTimestampInMillis": 1651742791882,
+     *               "durationInMillis": 1041,
+     *               "timestamp": 1651742790841
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-4",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=4",
+     *               "endTimestampInMillis": 1651742794216,
+     *               "durationInMillis": 2334,
+     *               "timestamp": 1651742791882
+     *             }
+     *           ],
+     *           "timestamp": 1651742782811
+     *         }
+     *       ],
+     *       "timestamp": 1651742782807
+     *     },
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T5",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742800461,
+     *       "durationInMillis": 2687,
+     *       "timestamp": 1651742797774
+     *     }
+     *   ],
+     *   "timestamp": 1651742777818
      * }
-     * ],
-     * "timestamp": 1651218930177
-     * }
-     * ],
-     * "timestamp": 1651218930172
-     * },
-     * {
-     * "type": "TransactionTest",
-     * "name": "T5",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "main",
-     * "endTimestampInMillis": 1651218949253,
-     * "durationInMillis": 2432,
-     * "timestamp": 1651218946821
-     * }
-     * ],
-     * "timestamp": 1651218926846
-     * }
+     * </pre>
      */
     @Test
     public void testComplicatedForLoopTransactionPrint() {
-        final Transaction transaction = ApmMonitor.beginTransaction("TransactionTest", "testComplicatedForLoopTransactionPrint");
+        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "testComplicatedForLoopTransactionPrint");
         singleTransaction();
         int i = 0;
         complicatedNestedTransaction("TransactionTest", "T2", () -> {
             complicatedNestedTransaction("TransactionTest", "T3", () -> {
                 singleNestedTransaction("TransactionTest", "T4");
                 for (int j = 0; j < 5; j++) {
-                    final Transaction nestedTx = ApmMonitor.beginTransaction("TransactionTest", "T-Loop-" + j);
+                    final Transaction nestedTx = ApmMonitor.beginAutoTransaction("TransactionTest", "T-Loop-" + j);
                     slowOp(getRandomSleepTime());
                     nestedTx.addData("loop=" + j);
                     nestedTx.complete();
@@ -297,79 +304,117 @@ public class TransactionTest {
 
     /**
      * 测试多线程下的多个事务：
-     * <p>
+     * <pre>
      * {
-     * "type": "TransactionTest",
-     * "name": "T1",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "fooThread",
-     * "endTimestampInMillis": 1651219022867,
-     * "durationInMillis": 7709,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T2",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "fooThread",
-     * "endTimestampInMillis": 1651219019191,
-     * "durationInMillis": 4032,
-     * "timestamp": 1651219015159
+     *   "type": "TransactionTest",
+     *   "name": "testComplicatedForLoopTransactionPrint",
+     *   "threadName": "main",
+     *   "completed": true,
+     *   "data": "",
+     *   "endTimestampInMillis": 1651742536384,
+     *   "durationInMillis": 21706,
+     *   "children": [
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T2",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742535225,
+     *       "durationInMillis": 17716,
+     *       "children": [
+     *         {
+     *           "type": "TransactionTest",
+     *           "name": "T3",
+     *           "threadName": "main",
+     *           "completed": true,
+     *           "data": "",
+     *           "endTimestampInMillis": 1651742533644,
+     *           "durationInMillis": 16130,
+     *           "children": [
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T4",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "",
+     *               "endTimestampInMillis": 1651742518067,
+     *               "durationInMillis": 553,
+     *               "timestamp": 1651742517514
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-0",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=0",
+     *               "endTimestampInMillis": 1651742518069,
+     *               "durationInMillis": 2,
+     *               "timestamp": 1651742518067
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-1",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=1",
+     *               "endTimestampInMillis": 1651742519539,
+     *               "durationInMillis": 1470,
+     *               "timestamp": 1651742518069
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-2",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=2",
+     *               "endTimestampInMillis": 1651742520835,
+     *               "durationInMillis": 1296,
+     *               "timestamp": 1651742519539
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-3",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=3",
+     *               "endTimestampInMillis": 1651742524837,
+     *               "durationInMillis": 4002,
+     *               "timestamp": 1651742520835
+     *             },
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T-Loop-4",
+     *               "threadName": "main",
+     *               "completed": true,
+     *               "data": "loop=4",
+     *               "endTimestampInMillis": 1651742529811,
+     *               "durationInMillis": 4974,
+     *               "timestamp": 1651742524837
+     *             }
+     *           ],
+     *           "timestamp": 1651742517514
+     *         }
+     *       ],
+     *       "timestamp": 1651742517509
+     *     },
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T5",
+     *       "threadName": "main",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742536384,
+     *       "durationInMillis": 1159,
+     *       "timestamp": 1651742535225
+     *     }
+     *   ],
+     *   "timestamp": 1651742514678
      * }
-     * ],
-     * "timestamp": 1651219015158
-     * }
-     * <p>
-     * {
-     * "type": "TransactionTest",
-     * "name": "T3",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "barThread",
-     * "endTimestampInMillis": 1651219030628,
-     * "durationInMillis": 15470,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T4",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "barThread",
-     * "endTimestampInMillis": 1651219026729,
-     * "durationInMillis": 11570,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T5",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "barThread",
-     * "endTimestampInMillis": 1651219024018,
-     * "durationInMillis": 8854,
-     * "children": [
-     * {
-     * "type": "TransactionTest",
-     * "name": "T6",
-     * "completed": true,
-     * "data": "",
-     * "threadName": "barThread",
-     * "endTimestampInMillis": 1651219019208,
-     * "durationInMillis": 4044,
-     * "timestamp": 1651219015164
-     * }
-     * ],
-     * "timestamp": 1651219015164
-     * }
-     * ],
-     * "timestamp": 1651219015159
-     * }
-     * ],
-     * "timestamp": 1651219015158
-     * }
+     * </pre>
      */
     @Test
-    public void testMultiThreadTransaction() throws InterruptedException {
+    public void testMultiThreadTransactionPrint() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
         Thread t1 = new Thread(() -> {
             complicatedNestedTransaction("TransactionTest", "T1", () -> {
@@ -398,6 +443,153 @@ public class TransactionTest {
     }
 
     /**
+     * 测试在线程池里使用一个线程交替执行任务
+     * <pre>
+     * {
+     *   "type": "TransactionTest",
+     *   "name": "T1",
+     *   "threadName": "pool-1-thread-1",
+     *   "completed": true,
+     *   "data": "",
+     *   "endTimestampInMillis": 1651742657321,
+     *   "durationInMillis": 6505,
+     *   "children": [
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T2",
+     *       "threadName": "pool-1-thread-1",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742653066,
+     *       "durationInMillis": 2250,
+     *       "timestamp": 1651742650816
+     *     }
+     *   ],
+     *   "timestamp": 1651742650816
+     * }
+     * </pre>
+     * <pre>
+     * {
+     *   "type": "TransactionTest",
+     *   "name": "T3",
+     *   "threadName": "pool-1-thread-1",
+     *   "completed": true,
+     *   "data": "",
+     *   "endTimestampInMillis": 1651742666675,
+     *   "durationInMillis": 9149,
+     *   "children": [
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T4",
+     *       "threadName": "pool-1-thread-1",
+     *       "completed": true,
+     *       "data": "",
+     *       "endTimestampInMillis": 1651742666602,
+     *       "durationInMillis": 9076,
+     *       "children": [
+     *         {
+     *           "type": "TransactionTest",
+     *           "name": "T5",
+     *           "threadName": "pool-1-thread-1",
+     *           "completed": true,
+     *           "data": "",
+     *           "endTimestampInMillis": 1651742665613,
+     *           "durationInMillis": 8086,
+     *           "children": [
+     *             {
+     *               "type": "TransactionTest",
+     *               "name": "T6",
+     *               "threadName": "pool-1-thread-1",
+     *               "completed": true,
+     *               "data": "",
+     *               "endTimestampInMillis": 1651742661661,
+     *               "durationInMillis": 4134,
+     *               "timestamp": 1651742657527
+     *             }
+     *           ],
+     *           "timestamp": 1651742657527
+     *         }
+     *       ],
+     *       "timestamp": 1651742657526
+     *     }
+     *   ],
+     *   "timestamp": 1651742657526
+     * }
+     * </pre>
+     */
+    @Test
+    public void testTransactionsInSameExecutor() throws InterruptedException {
+        // pool-1-thread-1
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        executor.submit(() -> {
+            try {
+                complicatedNestedTransaction("TransactionTest", "T1", () -> {
+                    singleNestedTransaction("TransactionTest", "T2");
+                });
+            } finally {
+                countDownLatch.countDown();
+            }
+        });
+
+        executor.submit(() -> {
+            complicatedNestedTransaction("TransactionTest", "T3", () -> {
+                complicatedNestedTransaction("TransactionTest", "T4", () -> {
+                    complicatedNestedTransaction("TransactionTest", "T5", () -> {
+                        singleNestedTransaction("TransactionTest", "T6");
+                    });
+                });
+            });
+            try {
+                countDownLatch.countDown();
+            } finally {
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+        Assertions.assertTrue(true);
+    }
+
+    /**
+     * 验证每个 Transaction 的时间合法性
+     * <pre>
+     * </pre>
+     * <pre>
+     * </pre>
+     */
+    @Test
+    public void verifyEveryTransactionTime() throws InterruptedException {
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        executor.submit(() -> {
+            // 使用非自动提交模式，生成一段嵌套事务
+            final Transaction transaction = complicatedNestedManualTransaction("TransactionTest", "1", () -> {
+                complicatedNestedManualTransaction("TransactionTest", "2", () -> {
+                    singleManualTransaction("TransactionTest", "3");
+                    singleManualTransaction("TransactionTest", "4");
+                });
+            });
+            // 取出清空上下文后的 log
+            final String monitorLog = transaction.getFinalLog();
+            log.info("deserialized transaction: {}", monitorLog);
+            verifyTransaction(transaction);
+            countDownLatch.countDown();
+            log.info("countDown end");
+        });
+        executor.submit(() -> {
+            final Transaction transaction = complicatedNestedManualTransaction("TransactionTest", "5", () -> singleManualTransaction("TransactionTest", "6"));
+            // 取出清空上下文后的 log
+            final String monitorLog = transaction.getFinalLog();
+            log.info("deserialized transaction: {}", monitorLog);
+            verifyTransaction(transaction);
+            countDownLatch.countDown();
+            log.info("countDown end");
+        });
+        countDownLatch.await();
+        Assertions.assertTrue(true);
+    }
+
+    /**
      * 单一事务操作
      */
     private void singleTransaction() {
@@ -406,21 +598,63 @@ public class TransactionTest {
 
     /**
      * 单一嵌套事务操作
+     *
+     * @param type 事务类型
+     * @param name 食物名称
      */
     private void singleNestedTransaction(final String type, final String name) {
-        final Transaction transaction = ApmMonitor.beginTransaction(type, name);
+        final Transaction transaction = ApmMonitor.beginAutoTransaction(type, name);
         slowOp(getRandomSleepTime());
         transaction.complete();
     }
 
     /**
-     * 复杂嵌套事务操作
+     * 单一手动事务操作
+     *
+     * @param type 事务类型
+     * @param name 食物名称
+     * @return 生成的事务
      */
-    private void complicatedNestedTransaction(final String type, final String name, Runnable runnable) {
-        final Transaction transaction = ApmMonitor.beginTransaction(type, name);
-        runnable.run();
+    private Transaction singleManualTransaction(final String type, final String name) {
+        final Transaction transaction = ApmMonitor.beginManualTransaction(type, name);
         slowOp(getRandomSleepTime());
         transaction.complete();
+        return transaction;
+    }
+
+    /**
+     * 复杂嵌套事务操作
+     *
+     * @param type     事务类型
+     * @param name     食物名称
+     * @param runnable 待运行的事务
+     */
+    private void complicatedNestedTransaction(final String type, final String name, Runnable runnable) {
+        final Transaction transaction = ApmMonitor.beginAutoTransaction(type, name);
+        // 先执行子事务
+        runnable.run();
+        // 再执行本事务
+        slowOp(getRandomSleepTime());
+        transaction.complete();
+    }
+
+
+    /**
+     * 复杂嵌套手动事务操作
+     *
+     * @param type     事务类型
+     * @param name     食物名称
+     * @param runnable 待运行的事务
+     * @return 生成的事务
+     */
+    private Transaction complicatedNestedManualTransaction(final String type, final String name, Runnable runnable) {
+        final Transaction transaction = ApmMonitor.beginManualTransaction(type, name);
+        // 先执行子事务
+        runnable.run();
+        // 再执行本事务
+        slowOp(getRandomSleepTime());
+        transaction.complete();
+        return transaction;
     }
 
     /**
@@ -442,5 +676,79 @@ public class TransactionTest {
     private long getRandomSleepTime() {
         return ThreadLocalRandom.current().nextLong(0, 5000L);
     }
-}
 
+    /**
+     * 校验单个事务内部是否完整
+     * 不要考虑把这个 util 放到非测试环节里去，因为那样做 assert 就不精准了
+     *
+     * @param transaction 单个事务
+     */
+    private void verifyTransaction(final Transaction transaction) {
+        // 1. 做本事务级校验
+        Assertions.assertNotNull(transaction);
+
+        // 本事务必须已完成
+        Assertions.assertTrue(transaction.isCompleted());
+
+        final long timestamp = transaction.getTimestamp();
+        final long endTimestampInMillis = transaction.getEndTimestampInMillis();
+        final long durationInMillis = transaction.getDurationInMillis();
+
+        // 本事务的起始时间必须小于等于中止时间
+        Assertions.assertTrue(timestamp <= endTimestampInMillis);
+        // 本事务的经过时间必须等于时间戳的差值
+        Assertions.assertEquals(durationInMillis, endTimestampInMillis - timestamp);
+
+        // 2. 对孩子列表做列表级校验
+        final List<Message> children = transaction.getChildren();
+        if (CollectionUtils.isNotEmpty(children)) {
+            // 2.1 做父子级约束校验
+
+            // 本事务的时间戳必须小于等于第一个的孩子的时间戳
+            Message firstChild = getFirstChild(children);
+            if (null != firstChild) {
+                Assertions.assertTrue(timestamp <= firstChild.getTimestamp());
+            }
+
+            // 获取最后一个事务
+            Transaction lastChild = getLastTransaction(children);
+            if (null != lastChild) {
+                // 本事务的结束时间戳必须大于等于最后一个事务的终结时间戳
+                Assertions.assertTrue(endTimestampInMillis >= lastChild.getEndTimestampInMillis());
+            }
+
+            // 做逐孩子校验
+            children.stream()
+                    .filter(Transaction.class::isInstance)
+                    .map(Transaction.class::cast)
+                    .forEach(this::verifyTransaction);
+            // 目前不用做兄弟级约束校验，因为兄弟内部会被排序一遍
+        }
+    }
+
+    /**
+     * 获取第一个孩子：起始时间最小的孩子是第一个孩子
+     *
+     * @param children 孩子列表
+     * @return 第一个孩子
+     */
+    private Message getFirstChild(final List<Message> children) {
+        return children.stream()
+                .min(Comparator.comparing(Message::getTimestamp))
+                .orElse(null);
+    }
+
+    /**
+     * 获取最后一个孩子：终结时间最大的孩子是第一个孩子
+     *
+     * @param children 孩子列表
+     * @return 第一个孩子
+     */
+    private Transaction getLastTransaction(final List<Message> children) {
+        return children.stream()
+                .filter(Transaction.class::isInstance)
+                .map(Transaction.class::cast)
+                .max(Comparator.comparing(Transaction::getEndTimestampInMillis))
+                .orElse(null);
+    }
+}
