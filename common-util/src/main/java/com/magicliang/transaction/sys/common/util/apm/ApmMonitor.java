@@ -81,6 +81,29 @@ public class ApmMonitor {
     }
 
     /**
+     * 生成一个手动事务
+     *
+     * @param type 事务类型
+     * @param name 事务名称
+     * @return 生成的手动事务
+     */
+    public static Transaction beginManualTransaction(final String type, final String name) {
+        // 1. 生成本次需要的事务消息
+        Transaction newTransaction = new DefaultTransaction(type, name, false);
+
+        // 2. 在一个 ThreadLocal 里检查，当前是否有 Transaction，如果没有则当前的 Transaction 是根。
+        Transaction rootTransaction = context.get();
+        if (null == rootTransaction) {
+            rootTransaction = newTransaction;
+            // 注意，这个方法操作的是 ThreadLocal 变量，操作之间天然是线程隔离的，不用做 double check
+            context.set(rootTransaction);
+            // 如果此 Transaction 为 root，则直接返回
+            return newTransaction;
+        }
+        return appendToTree(rootTransaction, newTransaction);
+    }
+
+    /**
      * 从根节点开始，找到一个父节点，把此节点追加为它的一个新孩子（如果此节点没有 children，则作为首个孩子，否则追加为最新的兄弟）
      * 原则：
      * 1. 从根节点的孩子出发，：
