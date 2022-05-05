@@ -4,7 +4,7 @@ import com.magicliang.transaction.sys.common.util.apm.Message;
 import lombok.ToString;
 
 /**
- * project name: leads_web_ut
+ * project name: domain-driven-transaction-sys
  * <p>
  * description: 抽象消息
  * <p>

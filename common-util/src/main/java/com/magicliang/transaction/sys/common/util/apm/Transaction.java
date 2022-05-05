@@ -3,7 +3,7 @@ package com.magicliang.transaction.sys.common.util.apm;
 import java.util.List;
 
 /**
- * project name: leads_web_ut
+ * project name: domain-driven-transaction-sys
  * <p>
  * description: 监控事务
  * <p>
@@ -36,4 +36,25 @@ public interface Transaction extends Message {
      * @return all children messages, empty if there is no nested children.
      */
     List<Message> getChildren();
+
+    /**
+     * get the value of finalLog
+     *
+     * @return the value of finalLog
+     */
+    String getFinalLog();
+
+    /**
+     * get the value of endTimestampInMillis
+     *
+     * @return the value of endTimestampInMillis
+     */
+    long getEndTimestampInMillis();
+
+    /**
+     * get the value of durationInMillis
+     *
+     * @return the value of durationInMillis
+     */
+    long getDurationInMillis();
 }

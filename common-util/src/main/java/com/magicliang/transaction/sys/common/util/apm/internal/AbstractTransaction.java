@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * project name: leads_web_ut
+ * project name: domain-driven-transaction-sys
  * <p>
  * description: 抽象事务
  *
@@ -31,6 +31,7 @@ public abstract class AbstractTransaction extends AbstractMessage implements Tra
 
     /**
      * 全参构造器
+     * Jackson 是强依赖于无参构造器的，但一个事务无 type 或 name 是不合法的，所以不要使用直接的反序列化来创建任何一个事务，要另想办法
      *
      * @param type 消息类型
      * @param name 消息名称
@@ -44,6 +45,7 @@ public abstract class AbstractTransaction extends AbstractMessage implements Tra
      *
      * @return the value of endTimestampInMillis
      */
+    @Override
     public long getEndTimestampInMillis() {
         return endTimestampInMillis;
     }
@@ -62,6 +64,7 @@ public abstract class AbstractTransaction extends AbstractMessage implements Tra
      *
      * @return the value of durationInMillis
      */
+    @Override
     public long getDurationInMillis() {
         return durationInMillis;
     }
@@ -76,5 +79,5 @@ public abstract class AbstractTransaction extends AbstractMessage implements Tra
         }
         this.durationInMillis = endTimestampInMillis - getTimestamp();
     }
-
+    
 }

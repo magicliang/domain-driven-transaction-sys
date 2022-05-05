@@ -7,11 +7,12 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * project name: leads_web_ut
+ * project name: domain-driven-transaction-sys
  * <p>
  * description: 缺省事务类
  * 原型：https://github.com/dianping/cat/blob/master/lib/java/src/main/java/com/dianping/cat/message/internal/DefaultTransaction.java
@@ -35,25 +36,20 @@ public class DefaultTransaction extends AbstractTransaction {
     private volatile List<Message> children;
 
     /**
-     * 全参构造器
-     *
-     * @param type 消息类型
-     * @param name 消息名称
+     * 最终日志，在事务完成时留档用
      */
-    public DefaultTransaction(String type, String name) {
-        this(type, name, true);
-    }
+    private String finalLog;
 
     /**
      * 全参构造器
      *
-     * @param type    消息类型
-     * @param name    消息名称
-     * @param autoLog 是否自动在日志里记录上下文
+     * @param type        消息类型
+     * @param name        消息名称
+     * @param autoLogging 是否自动在日志里记录上下文
      */
-    public DefaultTransaction(final String type, final String name, final boolean autoLog) {
+    public DefaultTransaction(final String type, final String name, final boolean autoLogging) {
         super(type, name);
-        this.autoLog = autoLog;
+        this.autoLog = autoLogging;
     }
 
     /**
@@ -94,6 +90,10 @@ public class DefaultTransaction extends AbstractTransaction {
     /**
      * Complete the message construction.
      * 未来引入状态机，则引入 complete 对状态的修改
+     * 1. complete 所有子事务
+     * 2. complete 父类操作
+     * 3. complete 本事务
+     * 4. 如果本节点是跟，清理上下文-清理上下文必须在这个
      */
     @Override
     public void complete() {
@@ -101,25 +101,31 @@ public class DefaultTransaction extends AbstractTransaction {
         if (isCompleted()) {
             return;
         }
-        final List<Message> children = getChildren();
-        if (CollectionUtils.isNotEmpty(children)) {
-            for (Message child : children) {
-                // composite 模式必须要做的事情：对孩子进行逐层完结
-                child.complete();
+        try {
+            final List<Message> children = getChildren();
+            if (CollectionUtils.isNotEmpty(children)) {
+                sortChildrenByTimestamp();
+                for (Message child : children) {
+                    // composite 模式必须要做的事情：对孩子进行逐层完结
+                    child.complete();
+                }
+            }
+            super.complete();
+            setEndTimestampInMillis(System.currentTimeMillis());
+            calculateDuration();
+        } finally {
+            // 无论上方发生了什么，如果当前节点是根节点，必定会清理上下文
+            if (isRoot()) {
+                if (autoLog) {
+                    // 清理上下文并记录日志
+                    ApmMonitor.flushMonitorAndLog();
+                } else {
+                    // 只是清理上下文，不记录日志
+                    ApmMonitor.flushMonitor();
+                }
             }
         }
-        super.complete();
-        setEndTimestampInMillis(System.currentTimeMillis());
-        calculateDuration();
 
-        // 如果当前是根节点，必定会刷新日志
-        if (isRoot()) {
-            if (autoLog) {
-                ApmMonitor.flushMonitorAndLog();
-            } else {
-                ApmMonitor.flushMonitor();
-            }
-        }
     }
 
     /**
@@ -143,11 +149,42 @@ public class DefaultTransaction extends AbstractTransaction {
     }
 
     /**
+     * 产生给监控器的结构化日志
+     *
+     * @return 给监控器的结构化日志
+     */
+    @Override
+    public String toMonitorLog() {
+        return finalLog = super.toMonitorLog();
+    }
+
+    /**
+     * get the value of finalLog
+     *
+     * @return the value of finalLog
+     */
+    @Override
+    public String getFinalLog() {
+        return finalLog;
+    }
+
+    /**
      * 确认当前的事务是否根事务
      *
      * @return 当前的事务是否根事务
      */
     private boolean isRoot() {
         return Objects.equals(ApmMonitor.getContext().get(), this);
+    }
+
+    /**
+     * 对孩子列表按照时间戳进行排序
+     */
+    private void sortChildrenByTimestamp() {
+        if (CollectionUtils.isEmpty(children)) {
+            return;
+        }
+        // 对于一般的底层数据结构而言，这个排序不会产生任何变化，因为它们是按照插入顺序来访问的，但以后如果引入多线程的 Message，则在输出孩子之前要先做排序
+        children.sort(Comparator.comparing(Message::getTimestamp));
     }
 }

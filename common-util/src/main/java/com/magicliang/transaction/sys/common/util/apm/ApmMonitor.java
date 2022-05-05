@@ -10,27 +10,31 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * project name: leads_web_ut
+ * project name: domain-driven-transaction-sys
  * <p>
- * description:
- * APM 监视器
- * 标准用法：
- * <code>
- * // 在所有的方法调用的时候都做这样的调用，在最外层的 transaction.complete() 的时候，会生成一棵树，树会告诉我们整个调用的热点在哪里
- * // 可以在公有方法，私有方法，for循环里使用这个方法，树总是能够自动生成的！
- * final Transaction transaction = ApmMonitor.beginTransaction("TransactionTest", "singleTransaction");
- * // 执行基本操作
- * transaction.addData(JacksonUtils.toJson(parameters));
- * transaction.complete();
- * </ code>。
- * <p>
- * 进阶用法：
- * 制造一个 aop：
- * 所有的方法类是 type
- * 所有的方法名是 name
- * 所有的方法参数是 data
- * <p>
- * 做嵌套调用的时候就可以看到整个调用树的性能数据：
+ * * description:
+ * * APM 监视器
+ * * 标准用法：
+ * * <code>
+ * * // 在所有的方法调用的时候都做这样的调用，在最外层的 transaction.complete() 的时候，会生成一棵树，树会告诉我们整个调用的热点在哪里
+ * * // 可以在公有方法，私有方法，for循环里使用这个方法，树总是能够自动生成的！
+ * * final Transaction transaction = ApmMonitor.beginTransaction("TransactionTest", "singleTransaction");
+ * * // 执行基本操作
+ * * transaction.addData(JacksonUtils.toJson(parameters));
+ * * transaction.complete();
+ * * </code>。
+ * * <p>
+ * * 进阶用法：
+ * * 制造一个 aop：
+ * * 所有的方法类是 type
+ * * 所有的方法名是 name
+ * * 所有的方法参数是 data
+ * * <p>
+ * * 做嵌套调用的时候就可以看到整个调用树的性能数据。
+ * *
+ * * 为什么要把 Transaction 和 Apm 分离开来：
+ * * 1. 因为 Monitor 才持有 context
+ * * 2. 多个 Message 子类可以通过类似 Visitor 的模式统一通过抽象访问 context
  *
  * @author magicliang
  * <p>
@@ -64,9 +68,21 @@ public class ApmMonitor {
      * @param name 事务名称
      * @return 生成的事务
      */
-    public static Transaction beginTransaction(final String type, final String name) {
+    public static Transaction beginAutoTransaction(final String type, final String name) {
+        return beginTransaction(type, name, true);
+    }
+
+    /**
+     * 生成一个事务
+     *
+     * @param type        事务类型
+     * @param name        事务名称
+     * @param autoLogging 是否自动在日志里记录上下文
+     * @return 生成的事务
+     */
+    public static Transaction beginTransaction(final String type, final String name, final boolean autoLogging) {
         // 1. 生成本次需要的事务消息
-        Transaction newTransaction = new DefaultTransaction(type, name);
+        Transaction newTransaction = new DefaultTransaction(type, name, autoLogging);
 
         // 2. 在一个 ThreadLocal 里检查，当前是否有 Transaction，如果没有则当前的 Transaction 是根。
         Transaction rootTransaction = context.get();
@@ -88,19 +104,7 @@ public class ApmMonitor {
      * @return 生成的手动事务
      */
     public static Transaction beginManualTransaction(final String type, final String name) {
-        // 1. 生成本次需要的事务消息
-        Transaction newTransaction = new DefaultTransaction(type, name, false);
-
-        // 2. 在一个 ThreadLocal 里检查，当前是否有 Transaction，如果没有则当前的 Transaction 是根。
-        Transaction rootTransaction = context.get();
-        if (null == rootTransaction) {
-            rootTransaction = newTransaction;
-            // 注意，这个方法操作的是 ThreadLocal 变量，操作之间天然是线程隔离的，不用做 double check
-            context.set(rootTransaction);
-            // 如果此 Transaction 为 root，则直接返回
-            return newTransaction;
-        }
-        return appendToTree(rootTransaction, newTransaction);
+        return beginTransaction(type, name, false);
     }
 
     /**
@@ -179,6 +183,7 @@ public class ApmMonitor {
 
     /**
      * 清理监视器里的内容并打印监控日志
+     * 注意，这个方法最好不要直接调用，因为 context 可能被 Transaction 的 complete 清理过了，如果想访问日志，最好使用 <code> Transaction.complte() 然后取 finalLog </code>
      */
     public static void flushMonitorAndLog() {
         flushMonitorAndLog(null);
@@ -197,12 +202,16 @@ public class ApmMonitor {
 
     /**
      * 输出监控日志并清理监视器里的内容
-     *
+     * 注意，这个方法最好不要直接调用，因为 context 可能被 Transaction 的 complete 清理过了，如果想访问日志，最好使用 <code> Transaction.complte() 然后取 finalLog </code>
      * @return 监控日志
      */
     public static String flushMonitor() {
         // 生成可视化的日志输出
         Transaction rootTransaction = context.get();
+        // 为了防止重复空 complete，允许空调用
+        if (null == rootTransaction) {
+            return "";
+        }
         final String monitorLog = rootTransaction.toMonitorLog();
         // 清理上下文
         context.remove();
