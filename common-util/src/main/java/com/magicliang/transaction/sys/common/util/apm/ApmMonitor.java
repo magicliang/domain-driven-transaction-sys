@@ -212,6 +212,7 @@ public class ApmMonitor {
         if (null == rootTransaction) {
             return "";
         }
+        rootTransaction.complete();
         final String monitorLog = rootTransaction.toMonitorLog();
         // 清理上下文
         context.remove();

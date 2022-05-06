@@ -17,6 +17,7 @@ import java.util.Objects;
  * description: 缺省事务类
  * 原型：https://github.com/dianping/cat/blob/master/lib/java/src/main/java/com/dianping/cat/message/internal/DefaultTransaction.java
  * 这个 DefaultTransaction 目前还不支持跨线程传递消息，敬请期待
+ * 缺一个缺省的 aop 拦截器：方法内部调用里出现异常在所难免，因此在 finally 里对事物进行完成至关重要，不正确完成的事务的测度数据是不准的
  *
  * @author magicliang
  * <p>
