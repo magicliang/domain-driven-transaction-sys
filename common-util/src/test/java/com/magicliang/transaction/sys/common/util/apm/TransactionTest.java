@@ -89,7 +89,7 @@ public class TransactionTest {
         final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "testSingleNestedTransactionPrint");
         singleTransaction();
         singleNestedTransaction("TransactionTest", "T2");
-        singleNestedTransaction("TransactionTest", "T3");
+        singleNestedTransaction("TransactionTest", "T2");
         transaction.complete();
         Assertions.assertTrue(true);
     }
