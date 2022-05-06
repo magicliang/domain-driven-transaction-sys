@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.common.util.apm;
 
+import com.magicliang.transaction.sys.common.UnitTest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,7 @@ import java.util.concurrent.*;
  * date: 2022-04-29 14:17
  */
 @Slf4j
-public class TransactionTest {
+public class TransactionTest extends UnitTest {
 
     /**
      * 测试单一事务操作
