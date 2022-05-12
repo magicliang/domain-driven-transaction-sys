@@ -30,12 +30,11 @@ public class TransactionTest extends UnitTest {
      * {
      *   "type": "TransactionTest",
      *   "name": "singleTransaction",
-     *   "threadName": "main",
      *   "completed": true,
-     *   "data": "",
-     *   "endTimestampInMillis": 1651742155133,
-     *   "durationInMillis": 807,
-     *   "timestamp": 1651742154326
+     *   "msgId": "29e2fac6-f069-4d00-b34e-0f136da32d00",
+     *   "endTimestampInMillis": 1652363535031,
+     *   "durationInMillis": 1891,
+     *   "timestamp": 1652363533140
      * }
      * </pre>
      */
@@ -54,34 +53,31 @@ public class TransactionTest extends UnitTest {
      * {
      *   "type": "TransactionTest",
      *   "name": "testSingleNestedTransactionPrint",
-     *   "threadName": "main",
      *   "completed": true,
-     *   "data": "",
-     *   "endTimestampInMillis": 1651742256646,
-     *   "durationInMillis": 9616,
+     *   "msgId": "a349ac5c-ac4f-4295-b149-54decc3ebf40",
+     *   "endTimestampInMillis": 1652363591474,
+     *   "durationInMillis": 7565,
      *   "children": [
      *     {
      *       "type": "TransactionTest",
      *       "name": "T2",
-     *       "threadName": "main",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742252051,
-     *       "durationInMillis": 4061,
-     *       "timestamp": 1651742247990
+     *       "msgId": "a349ac5c-ac4f-4295-b149-54decc3ebf40",
+     *       "endTimestampInMillis": 1652363588160,
+     *       "durationInMillis": 2425,
+     *       "timestamp": 1652363585735
      *     },
      *     {
      *       "type": "TransactionTest",
-     *       "name": "T3",
-     *       "threadName": "main",
+     *       "name": "T2",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742256604,
-     *       "durationInMillis": 4553,
-     *       "timestamp": 1651742252051
+     *       "msgId": "a349ac5c-ac4f-4295-b149-54decc3ebf40",
+     *       "endTimestampInMillis": 1652363591472,
+     *       "durationInMillis": 3312,
+     *       "timestamp": 1652363588160
      *     }
      *   ],
-     *   "timestamp": 1651742247030
+     *   "timestamp": 1652363583909
      * }
      * </pre>
      */
@@ -102,58 +98,53 @@ public class TransactionTest extends UnitTest {
      * {
      *   "type": "TransactionTest",
      *   "name": "testComplicatedNestedTransactionPrint",
-     *   "threadName": "main",
      *   "completed": true,
-     *   "data": "",
-     *   "endTimestampInMillis": 1651742339875,
-     *   "durationInMillis": 18020,
+     *   "msgId": "9117ac98-1202-45cc-a502-70a73f16d9fa",
+     *   "endTimestampInMillis": 1652363641359,
+     *   "durationInMillis": 5723,
      *   "children": [
      *     {
      *       "type": "TransactionTest",
      *       "name": "T2",
-     *       "threadName": "main",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742335433,
-     *       "durationInMillis": 11005,
+     *       "msgId": "9117ac98-1202-45cc-a502-70a73f16d9fa",
+     *       "endTimestampInMillis": 1652363640981,
+     *       "durationInMillis": 4840,
      *       "children": [
      *         {
      *           "type": "TransactionTest",
      *           "name": "T3",
-     *           "threadName": "main",
      *           "completed": true,
-     *           "data": "",
-     *           "endTimestampInMillis": 1651742331875,
-     *           "durationInMillis": 7442,
+     *           "msgId": "9117ac98-1202-45cc-a502-70a73f16d9fa",
+     *           "endTimestampInMillis": 1652363640166,
+     *           "durationInMillis": 4019,
      *           "children": [
      *             {
      *               "type": "TransactionTest",
      *               "name": "T4",
-     *               "threadName": "main",
      *               "completed": true,
-     *               "data": "",
-     *               "endTimestampInMillis": 1651742328163,
-     *               "durationInMillis": 3730,
-     *               "timestamp": 1651742324433
+     *               "msgId": "9117ac98-1202-45cc-a502-70a73f16d9fa",
+     *               "endTimestampInMillis": 1652363639439,
+     *               "durationInMillis": 3292,
+     *               "timestamp": 1652363636147
      *             }
      *           ],
-     *           "timestamp": 1651742324433
+     *           "timestamp": 1652363636147
      *         }
      *       ],
-     *       "timestamp": 1651742324428
+     *       "timestamp": 1652363636141
      *     },
      *     {
      *       "type": "TransactionTest",
      *       "name": "T5",
-     *       "threadName": "main",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742339875,
-     *       "durationInMillis": 4442,
-     *       "timestamp": 1651742335433
+     *       "msgId": "9117ac98-1202-45cc-a502-70a73f16d9fa",
+     *       "endTimestampInMillis": 1652363641359,
+     *       "durationInMillis": 378,
+     *       "timestamp": 1652363640981
      *     }
      *   ],
-     *   "timestamp": 1651742321855
+     *   "timestamp": 1652363635636
      * }
      * </pre>
      */
@@ -177,108 +168,103 @@ public class TransactionTest extends UnitTest {
      * {
      *   "type": "TransactionTest",
      *   "name": "testComplicatedForLoopTransactionPrint",
-     *   "threadName": "main",
      *   "completed": true,
-     *   "data": "",
-     *   "endTimestampInMillis": 1651742800461,
-     *   "durationInMillis": 22643,
+     *   "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *   "endTimestampInMillis": 1652363724336,
+     *   "durationInMillis": 29811,
      *   "children": [
      *     {
      *       "type": "TransactionTest",
      *       "name": "T2",
-     *       "threadName": "main",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742797774,
-     *       "durationInMillis": 14967,
+     *       "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *       "endTimestampInMillis": 1652363720436,
+     *       "durationInMillis": 21031,
      *       "children": [
      *         {
      *           "type": "TransactionTest",
      *           "name": "T3",
-     *           "threadName": "main",
      *           "completed": true,
-     *           "data": "",
-     *           "endTimestampInMillis": 1651742795136,
-     *           "durationInMillis": 12325,
+     *           "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *           "endTimestampInMillis": 1652363715556,
+     *           "durationInMillis": 16146,
      *           "children": [
      *             {
      *               "type": "TransactionTest",
      *               "name": "T4",
-     *               "threadName": "main",
      *               "completed": true,
-     *               "data": "",
-     *               "endTimestampInMillis": 1651742783295,
-     *               "durationInMillis": 484,
-     *               "timestamp": 1651742782811
+     *               "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *               "endTimestampInMillis": 1652363700470,
+     *               "durationInMillis": 1060,
+     *               "timestamp": 1652363699410
      *             },
      *             {
      *               "type": "TransactionTest",
      *               "name": "T-Loop-0",
-     *               "threadName": "main",
      *               "completed": true,
      *               "data": "loop=0",
-     *               "endTimestampInMillis": 1651742785512,
-     *               "durationInMillis": 2216,
-     *               "timestamp": 1651742783296
+     *               "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *               "endTimestampInMillis": 1652363703016,
+     *               "durationInMillis": 2546,
+     *               "timestamp": 1652363700470
      *             },
      *             {
      *               "type": "TransactionTest",
      *               "name": "T-Loop-1",
-     *               "threadName": "main",
      *               "completed": true,
      *               "data": "loop=1",
-     *               "endTimestampInMillis": 1651742790103,
-     *               "durationInMillis": 4591,
-     *               "timestamp": 1651742785512
+     *               "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *               "endTimestampInMillis": 1652363705342,
+     *               "durationInMillis": 2326,
+     *               "timestamp": 1652363703016
      *             },
      *             {
      *               "type": "TransactionTest",
      *               "name": "T-Loop-2",
-     *               "threadName": "main",
      *               "completed": true,
      *               "data": "loop=2",
-     *               "endTimestampInMillis": 1651742790841,
-     *               "durationInMillis": 738,
-     *               "timestamp": 1651742790103
+     *               "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *               "endTimestampInMillis": 1652363707997,
+     *               "durationInMillis": 2655,
+     *               "timestamp": 1652363705342
      *             },
      *             {
      *               "type": "TransactionTest",
      *               "name": "T-Loop-3",
-     *               "threadName": "main",
      *               "completed": true,
      *               "data": "loop=3",
-     *               "endTimestampInMillis": 1651742791882,
-     *               "durationInMillis": 1041,
-     *               "timestamp": 1651742790841
+     *               "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *               "endTimestampInMillis": 1652363709547,
+     *               "durationInMillis": 1550,
+     *               "timestamp": 1652363707997
      *             },
      *             {
      *               "type": "TransactionTest",
      *               "name": "T-Loop-4",
-     *               "threadName": "main",
      *               "completed": true,
      *               "data": "loop=4",
-     *               "endTimestampInMillis": 1651742794216,
-     *               "durationInMillis": 2334,
-     *               "timestamp": 1651742791882
+     *               "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *               "endTimestampInMillis": 1652363713452,
+     *               "durationInMillis": 3905,
+     *               "timestamp": 1652363709547
      *             }
      *           ],
-     *           "timestamp": 1651742782811
+     *           "timestamp": 1652363699410
      *         }
      *       ],
-     *       "timestamp": 1651742782807
+     *       "timestamp": 1652363699405
      *     },
      *     {
      *       "type": "TransactionTest",
      *       "name": "T5",
-     *       "threadName": "main",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742800461,
-     *       "durationInMillis": 2687,
-     *       "timestamp": 1651742797774
+     *       "msgId": "68f70d47-1610-4e57-8be1-95018a5a6c0e",
+     *       "endTimestampInMillis": 1652363724336,
+     *       "durationInMillis": 3900,
+     *       "timestamp": 1652363720436
      *     }
      *   ],
-     *   "timestamp": 1651742777818
+     *   "timestamp": 1652363694525
      * }
      * </pre>
      */
@@ -308,109 +294,67 @@ public class TransactionTest extends UnitTest {
      * <pre>
      * {
      *   "type": "TransactionTest",
-     *   "name": "testComplicatedForLoopTransactionPrint",
-     *   "threadName": "main",
+     *   "name": "T1",
      *   "completed": true,
-     *   "data": "",
-     *   "endTimestampInMillis": 1651742536384,
-     *   "durationInMillis": 21706,
+     *   "msgId": "ebb3cfc7-5d4b-4043-8648-7bcd381056ae",
+     *   "endTimestampInMillis": 1652363777364,
+     *   "durationInMillis": 6990,
      *   "children": [
      *     {
      *       "type": "TransactionTest",
      *       "name": "T2",
-     *       "threadName": "main",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742535225,
-     *       "durationInMillis": 17716,
+     *       "msgId": "ebb3cfc7-5d4b-4043-8648-7bcd381056ae",
+     *       "endTimestampInMillis": 1652363772746,
+     *       "durationInMillis": 2364,
+     *       "timestamp": 1652363770382
+     *     }
+     *   ],
+     *   "timestamp": 1652363770374
+     * }
+     * </pre>
+     * <pre>
+     * {
+     *   "type": "TransactionTest",
+     *   "name": "T3",
+     *   "completed": true,
+     *   "msgId": "e2c1b50d-022d-4a84-8b05-48fe11415ed7",
+     *   "endTimestampInMillis": 1652363779126,
+     *   "durationInMillis": 8752,
+     *   "children": [
+     *     {
+     *       "type": "TransactionTest",
+     *       "name": "T4",
+     *       "completed": true,
+     *       "msgId": "e2c1b50d-022d-4a84-8b05-48fe11415ed7",
+     *       "endTimestampInMillis": 1652363777175,
+     *       "durationInMillis": 6792,
      *       "children": [
      *         {
      *           "type": "TransactionTest",
-     *           "name": "T3",
-     *           "threadName": "main",
+     *           "name": "T5",
      *           "completed": true,
-     *           "data": "",
-     *           "endTimestampInMillis": 1651742533644,
-     *           "durationInMillis": 16130,
+     *           "msgId": "e2c1b50d-022d-4a84-8b05-48fe11415ed7",
+     *           "endTimestampInMillis": 1652363773632,
+     *           "durationInMillis": 3246,
      *           "children": [
      *             {
      *               "type": "TransactionTest",
-     *               "name": "T4",
-     *               "threadName": "main",
+     *               "name": "T6",
      *               "completed": true,
-     *               "data": "",
-     *               "endTimestampInMillis": 1651742518067,
-     *               "durationInMillis": 553,
-     *               "timestamp": 1651742517514
-     *             },
-     *             {
-     *               "type": "TransactionTest",
-     *               "name": "T-Loop-0",
-     *               "threadName": "main",
-     *               "completed": true,
-     *               "data": "loop=0",
-     *               "endTimestampInMillis": 1651742518069,
-     *               "durationInMillis": 2,
-     *               "timestamp": 1651742518067
-     *             },
-     *             {
-     *               "type": "TransactionTest",
-     *               "name": "T-Loop-1",
-     *               "threadName": "main",
-     *               "completed": true,
-     *               "data": "loop=1",
-     *               "endTimestampInMillis": 1651742519539,
-     *               "durationInMillis": 1470,
-     *               "timestamp": 1651742518069
-     *             },
-     *             {
-     *               "type": "TransactionTest",
-     *               "name": "T-Loop-2",
-     *               "threadName": "main",
-     *               "completed": true,
-     *               "data": "loop=2",
-     *               "endTimestampInMillis": 1651742520835,
-     *               "durationInMillis": 1296,
-     *               "timestamp": 1651742519539
-     *             },
-     *             {
-     *               "type": "TransactionTest",
-     *               "name": "T-Loop-3",
-     *               "threadName": "main",
-     *               "completed": true,
-     *               "data": "loop=3",
-     *               "endTimestampInMillis": 1651742524837,
-     *               "durationInMillis": 4002,
-     *               "timestamp": 1651742520835
-     *             },
-     *             {
-     *               "type": "TransactionTest",
-     *               "name": "T-Loop-4",
-     *               "threadName": "main",
-     *               "completed": true,
-     *               "data": "loop=4",
-     *               "endTimestampInMillis": 1651742529811,
-     *               "durationInMillis": 4974,
-     *               "timestamp": 1651742524837
+     *               "msgId": "e2c1b50d-022d-4a84-8b05-48fe11415ed7",
+     *               "endTimestampInMillis": 1652363772978,
+     *               "durationInMillis": 2592,
+     *               "timestamp": 1652363770386
      *             }
      *           ],
-     *           "timestamp": 1651742517514
+     *           "timestamp": 1652363770386
      *         }
      *       ],
-     *       "timestamp": 1651742517509
-     *     },
-     *     {
-     *       "type": "TransactionTest",
-     *       "name": "T5",
-     *       "threadName": "main",
-     *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742536384,
-     *       "durationInMillis": 1159,
-     *       "timestamp": 1651742535225
+     *       "timestamp": 1652363770383
      *     }
      *   ],
-     *   "timestamp": 1651742514678
+     *   "timestamp": 1652363770374
      * }
      * </pre>
      */
@@ -449,72 +393,66 @@ public class TransactionTest extends UnitTest {
      * {
      *   "type": "TransactionTest",
      *   "name": "T1",
-     *   "threadName": "pool-1-thread-1",
      *   "completed": true,
-     *   "data": "",
-     *   "endTimestampInMillis": 1651742657321,
-     *   "durationInMillis": 6505,
+     *   "msgId": "23e2e9d9-5fa3-4069-becf-6febb4b5603c",
+     *   "endTimestampInMillis": 1652363936959,
+     *   "durationInMillis": 6211,
      *   "children": [
      *     {
      *       "type": "TransactionTest",
      *       "name": "T2",
-     *       "threadName": "pool-1-thread-1",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742653066,
-     *       "durationInMillis": 2250,
-     *       "timestamp": 1651742650816
+     *       "msgId": "23e2e9d9-5fa3-4069-becf-6febb4b5603c",
+     *       "endTimestampInMillis": 1652363932543,
+     *       "durationInMillis": 1785,
+     *       "timestamp": 1652363930758
      *     }
      *   ],
-     *   "timestamp": 1651742650816
+     *   "timestamp": 1652363930748
      * }
      * </pre>
      * <pre>
      * {
      *   "type": "TransactionTest",
      *   "name": "T3",
-     *   "threadName": "pool-1-thread-1",
      *   "completed": true,
-     *   "data": "",
-     *   "endTimestampInMillis": 1651742666675,
-     *   "durationInMillis": 9149,
+     *   "msgId": "121719bf-654d-4e40-be2d-8225c72bc033",
+     *   "endTimestampInMillis": 1652363948403,
+     *   "durationInMillis": 11267,
      *   "children": [
      *     {
      *       "type": "TransactionTest",
      *       "name": "T4",
-     *       "threadName": "pool-1-thread-1",
      *       "completed": true,
-     *       "data": "",
-     *       "endTimestampInMillis": 1651742666602,
-     *       "durationInMillis": 9076,
+     *       "msgId": "121719bf-654d-4e40-be2d-8225c72bc033",
+     *       "endTimestampInMillis": 1652363946183,
+     *       "durationInMillis": 9047,
      *       "children": [
      *         {
      *           "type": "TransactionTest",
      *           "name": "T5",
-     *           "threadName": "pool-1-thread-1",
      *           "completed": true,
-     *           "data": "",
-     *           "endTimestampInMillis": 1651742665613,
-     *           "durationInMillis": 8086,
+     *           "msgId": "121719bf-654d-4e40-be2d-8225c72bc033",
+     *           "endTimestampInMillis": 1652363943405,
+     *           "durationInMillis": 6269,
      *           "children": [
      *             {
      *               "type": "TransactionTest",
      *               "name": "T6",
-     *               "threadName": "pool-1-thread-1",
      *               "completed": true,
-     *               "data": "",
-     *               "endTimestampInMillis": 1651742661661,
-     *               "durationInMillis": 4134,
-     *               "timestamp": 1651742657527
+     *               "msgId": "121719bf-654d-4e40-be2d-8225c72bc033",
+     *               "endTimestampInMillis": 1652363940097,
+     *               "durationInMillis": 2961,
+     *               "timestamp": 1652363937136
      *             }
      *           ],
-     *           "timestamp": 1651742657527
+     *           "timestamp": 1652363937136
      *         }
      *       ],
-     *       "timestamp": 1651742657526
+     *       "timestamp": 1652363937136
      *     }
      *   ],
-     *   "timestamp": 1651742657526
+     *   "timestamp": 1652363937136
      * }
      * </pre>
      */

@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.common.util.apm.internal;
 
+import com.magicliang.transaction.sys.common.util.apm.ApmMonitor;
 import com.magicliang.transaction.sys.common.util.apm.Transaction;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -79,5 +80,19 @@ public abstract class AbstractTransaction extends AbstractMessage implements Tra
         }
         this.durationInMillis = endTimestampInMillis - getTimestamp();
     }
-    
+
+    /**
+     * 生成消息 id 的缺省算法，还是使用 UUID 先顶着
+     *
+     * @return 消息id
+     */
+    @Override
+    protected String generateMsgId() {
+        final Transaction rootTransaction = ApmMonitor.getRootTransaction();
+        // TODO：注意，以后这里要注意跨线程的消息传递问题，子线程中的 Transaction 如何能够获取主线程中的 MsgId？
+        if (null == rootTransaction) {
+            return super.generateMsgId();
+        }
+        return rootTransaction.getMsgId();
+    }
 }

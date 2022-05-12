@@ -85,7 +85,7 @@ public class ApmMonitor {
         Transaction newTransaction = new DefaultTransaction(type, name, autoLogging);
 
         // 2. 在一个 ThreadLocal 里检查，当前是否有 Transaction，如果没有则当前的 Transaction 是根。
-        Transaction rootTransaction = context.get();
+        Transaction rootTransaction = getRootTransaction();
         if (null == rootTransaction) {
             rootTransaction = newTransaction;
             // 注意，这个方法操作的是 ThreadLocal 变量，操作之间天然是线程隔离的，不用做 double check
@@ -217,6 +217,15 @@ public class ApmMonitor {
         // 清理上下文
         context.remove();
         return monitorLog;
+    }
+
+    /**
+     * 获取根事务
+     *
+     * @return 根事务
+     */
+    public static Transaction getRootTransaction() {
+        return getContext().get();
     }
 
 }

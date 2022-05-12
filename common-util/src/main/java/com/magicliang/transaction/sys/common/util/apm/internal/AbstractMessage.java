@@ -3,6 +3,8 @@ package com.magicliang.transaction.sys.common.util.apm.internal;
 import com.magicliang.transaction.sys.common.util.apm.Message;
 import lombok.ToString;
 
+import java.util.UUID;
+
 /**
  * project name: domain-driven-transaction-sys
  * <p>
@@ -50,6 +52,11 @@ public class AbstractMessage implements Message {
     private CharSequence data;
 
     /**
+     * 只有在缺省情况下才生成自身的 msgId
+     */
+    private String msgId;
+
+    /**
      * 抽象构造器
      *
      * @param type 消息类型
@@ -61,6 +68,7 @@ public class AbstractMessage implements Message {
         this.timestampInMillis = System.currentTimeMillis();
         this.completed = false;
         this.threadName = Thread.currentThread().getName();
+        this.msgId = generateMsgId();
     }
 
     /**
@@ -199,4 +207,23 @@ public class AbstractMessage implements Message {
         }
     }
 
+    /**
+     * get the value of msgId
+     *
+     * @return the value of msgId
+     */
+    @Override
+    public String getMsgId() {
+        return msgId;
+    }
+
+    /**
+     * 生成消息 id 的缺省算法，还是使用 UUID 先顶着
+     *
+     * @return 消息id
+     */
+    protected String generateMsgId() {
+        // TODO：使用原生的 UUID 的解决方案来生成消息id可能会碰触到底层的锁，如果有必要日后要换高性能的 MsgId 生成方式
+        return UUID.randomUUID().toString();
+    }
 }

@@ -98,4 +98,11 @@ public interface Message {
         return toString();
     }
 
+    /**
+     * 产生给监控器的结构化日志
+     *
+     * @return 给监控器的结构化日志
+     */
+    String getMsgId();
+
 }

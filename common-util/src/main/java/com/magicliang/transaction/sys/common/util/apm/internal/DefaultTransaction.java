@@ -175,7 +175,7 @@ public class DefaultTransaction extends AbstractTransaction {
      * @return 当前的事务是否根事务
      */
     private boolean isRoot() {
-        return Objects.equals(ApmMonitor.getContext().get(), this);
+        return Objects.equals(ApmMonitor.getRootTransaction(), this);
     }
 
     /**
