@@ -17,7 +17,7 @@ import java.util.UUID;
  * date: 2022-04-28 20:23
  */
 @ToString
-public class AbstractMessage implements Message {
+public abstract class AbstractMessage implements Message {
 
     /**
      * 未初始化时间戳
