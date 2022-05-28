@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    status : 这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，会看到log4j2内部各种详细输出
+    monitorInterval：Log4j能够自动检测修改配置文件和重新配置本身，设置间隔秒数。
+-->
+<Configuration status="warn" name="MyApp" packages="" monitorInterval="600">
+    <Properties>
+        <Property name="log-path">/tmp/logs</Property>
+    </Properties>
+    <Appenders>
+        <!--这个输出控制台的配置-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- 控制台只输出level及【以上】级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
+            <!-- ThresholdFilter是临界值过滤器，过滤掉低于指定临界值的日志。当日志级别等于或高于临界值时，过滤器返回NEUTRAL；当日志级别低于临界值时，日志会被拒绝。-->
+            <!-- http://51gjie.com/javaweb/1117.html -->
+            <!-- 这是在 appender 端进行根据级别的过滤 -->
+            <Filters>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <!-- 输出日志的格式 -->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </Console>
+        <RollingRandomAccessFile name="biz-log-appender"
+                                 fileName="${log-path}/app.log"
+                                 immediateFlush="true"
+                                 filePattern="${log-path}/app.log.%d{yyyyMMdd}">
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+                <SizeBasedTriggeringPolicy size="250MB"/>
+            </Policies>
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n</Pattern>
+            </PatternLayout>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <!-- 配置日志的根节点 -->
+        <!-- 这是在 logger 端进行根据级别的过滤 -->
+        <Root level="debug">
+            <!-- 生产环境禁用 -->
+            <appender-ref ref="Console"/>
+            <AppenderRef ref="biz-log-appender"/>
+        </Root>
+        <logger name="com.magicliang.transaction.sys" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+            <AppenderRef ref="biz-log-appender"/>
+        </logger>
+
+        <logger name="org.springframework" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+            <AppenderRef ref="biz-log-appender"/>
+        </logger>
+    </Loggers>
+</Configuration>
