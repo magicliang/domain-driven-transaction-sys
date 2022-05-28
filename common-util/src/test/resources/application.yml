@@ -1,3 +1,3 @@
 # 日志配置文件位置，默认的时候使用最严厉的 online配置，而不是松散的 offline 配置
 logging:
-  config: classpath:log4j2/log4j2-online.xml
+  config: classpath:log4j2/log4j2-offline.xml
