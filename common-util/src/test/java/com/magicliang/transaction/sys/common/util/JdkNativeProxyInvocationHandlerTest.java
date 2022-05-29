@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.common.util;
 
+import com.magicliang.transaction.sys.common.UnitTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * <p>
  * date: 2022-04-22 19:45
  */
-public class JdkNativeProxyInvocationHandlerTest {
+public class JdkNativeProxyInvocationHandlerTest extends UnitTest {
 
     /**
      * 如果是遗留项目要引用 vintage 的测试注解，否则引用 jupiter 的测试注解更好
