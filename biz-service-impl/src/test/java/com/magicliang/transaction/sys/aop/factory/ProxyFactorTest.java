@@ -12,6 +12,7 @@ import org.springframework.aop.framework.AopProxy;
 import org.springframework.aop.framework.ProxyCreatorSupport;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.context.ApplicationContext;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Proxy;
@@ -31,10 +32,8 @@ class ProxyFactorTest extends DomainDrivenTransactionSysApplicationIntegrationTe
     @Resource
     private IntegerGenerator integerGenerator;
 
-    public static void main(String[] args) {
-
-
-    }
+    @Resource
+    private ApplicationContext applicationContext;
 
     /**
      * 测试平凡的代理工厂
@@ -47,7 +46,7 @@ class ProxyFactorTest extends DomainDrivenTransactionSysApplicationIntegrationTe
 //        factory.setInterfaces(IntegerGenerator.class);
 
         // 底层触发 Pointcut.TRUE 让这个 advice always match 这个 proxy 的方法
-        factory.addAdvice(new LoggingAdvice());
+        factory.addAdvice(applicationContext.getBean(LoggingAdvice.class));
         factory.addAdvisor(new DefaultPointcutAdvisor(Pointcut.TRUE, new ProfilingInterceptor()));
 
         log.info("ProxyCreatorSupport.class.isInstance: {}", ProxyCreatorSupport.class.isInstance(factory));
