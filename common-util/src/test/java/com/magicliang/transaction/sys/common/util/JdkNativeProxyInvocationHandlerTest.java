@@ -32,7 +32,7 @@ public class JdkNativeProxyInvocationHandlerTest extends UnitTest {
             }
         };
 
-        TestInterface proxyInstance = DynamicProxyFactory.getProxyInstance(TestInterface.class, testInterface, new ProxyConfig());
+        TestInterface proxyInstance = CustomDynamicProxyFactory.getProxyInstance(TestInterface.class, testInterface, new ProxyConfig());
         // 这个测试要跑得好，要准备好对日志的重定向，在 test 中重定向到 console
         proxyInstance.foo();
         assertTrue(true);

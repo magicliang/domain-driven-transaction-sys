@@ -15,7 +15,7 @@ import java.lang.reflect.Proxy;
  * date: 2022-04-22 19:34
  */
 @Slf4j
-public class DynamicProxyFactory {
+public class CustomDynamicProxyFactory {
 
     /**
      * 生产代理

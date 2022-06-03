@@ -27,7 +27,7 @@ import java.lang.reflect.Proxy;
  * date: 2022-05-28 19:20
  */
 @Slf4j
-class ProxyFactorTest extends DomainDrivenTransactionSysApplicationIntegrationTest {
+class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationTest {
 
     @Resource
     private IntegerGenerator integerGenerator;
