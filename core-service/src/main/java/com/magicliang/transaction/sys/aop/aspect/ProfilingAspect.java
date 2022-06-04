@@ -3,9 +3,7 @@ package com.magicliang.transaction.sys.aop.aspect;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 /**
@@ -18,8 +16,8 @@ import org.springframework.util.StopWatch;
  * date: 2022-06-04 13:54
  */
 @Slf4j
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class ProfilingAspect {
 
     @Around("methodsToBeProfiled()")
