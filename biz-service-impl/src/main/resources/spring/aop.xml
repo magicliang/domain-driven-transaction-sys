@@ -8,14 +8,16 @@
                 http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <bean id="logging" class="com.magicliang.transaction.sys.aop.advice.LoggingAdvice"/>
-    <bean id="profilingAspect" class="com.magicliang.transaction.sys.aop.aspect.ProfilingAspect"/>
+<!--    <bean id="profilingAspect" class="com.magicliang.transaction.sys.aop.aspect.ProfilingAspect"/>-->
 
     <aop:config>
+        <aop:pointcut id="profilingPointcut" expression="within(com.magicliang.transaction.sys..*)"/>
         <aop:advisor
                 pointcut="within(com.magicliang.transaction.sys..*)"
                 advice-ref="logging"/>
-        <aop:aspect ref="profilingAspect">
-        </aop:aspect>
+        <!--        <aop:aspect ref="profilingAspect">-->
+        <!--            <aop:around method="profile" pointcut-ref="profilingPointcut"/>-->
+        <!--        </aop:aspect>-->
     </aop:config>
 
     <!-- 强制使用 cglib proxy 的一种方法 -->
