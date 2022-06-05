@@ -42,7 +42,8 @@ class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationT
     public void testJdkDynamicAopProxyFactory() {
         ProxyFactory factory = new ProxyFactory(integerGenerator);
 //        final Class<?>[] allInterfaces = ArrayUtils.add(ClassUtils.getAllInterfaces(IntegerGenerator.class), IntegerGenerator.class);
-        // 每一步 setInterfaces 会 clear 掉上一步 setInterfaces 的结果，注意，直接把目标接口 setInterfaces 会比 得到的接口少，后者会产生一些反射才能得出（不能直接从代码里得出的）的 type 等接口
+        // 每一步 setInterfaces 会 clear 掉上一步 setInterfaces 的结果，注意，直接把目标接口 setInterfaces 会比由 proxyFactory 自己通过反射得到的接口要代理的接口要少，后者会产生一些反射才能得出（不能直接从代码里得出的）的 type 等接口
+        // 更多的接口也未必是我们想要的，这里主动设置接口虽然麻烦，但在语义上更加明确，比如我们平时做的 @Autorwired 其实是
 //        factory.setInterfaces(IntegerGenerator.class);
 
         // 底层触发 Pointcut.TRUE 让这个 advice always match 这个 proxy 的方法
