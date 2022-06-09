@@ -1,6 +1,6 @@
 -- 阿里代码规范试图标准化建表语句为：create_time、updated_time
 -- 关键字尽量大写，表名大小写敏感，数据库名、表名和字段名都小写，需要区分词意以“_”连接
--- 禁止使用关键字做为库、表、字段名,附MySQL保留关键字，不能作为表名和字段名
+-- 禁止使用关键字做为库、表、字段名，附MySQL保留关键字，不能作为表名和字段名
 -- 表，字段名需要有明确意义，并简单明了
 DROP TABLE IF EXISTS `tb_trans_pay_order`;
 -- 本模型是为了说明事务+过程+实体，所以会包含上下游，又作为聚合根矗立在子域/限界上下文里。必备的字段：上游的身份和描述、下游的身份和描述、本 rpc 前后置信息（状态+版本+时间）、帮助环境治理的字段（env、cell、set、region、ldc 等）、如果有必要还要加上某些技术方案的版本字段（交易版本、加解密版本）
@@ -34,8 +34,8 @@ CREATE TABLE `tb_trans_pay_order`
     -- 不可空时间，前置事务里有这个字段则必填
     `gmt_accepted_time`         DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '受理时间',
     -- 可空的时间，不用 default null 也可以，毕竟事件没发生不要触发约束索引。
-    -- 能够使用在这里的时间应该是：只发生一次的事件的状态+时间可以建模在一个可空列里，每次事件发生可空列被填充。如果发生复杂变化需要考虑对于 domain event/status change log 的建模
-    -- 不要轻易考虑 '0000-00-00 00:00:00' 这样的缺省值，这样的缺省值对 JDBC 数据类型不友好
+    -- 能够使用在这里的时间应该是：只发生一次的事件的状态 + 时间可以建模在一个可空列里，每次事件发生可空列被填充。如果发生复杂变化需要考虑对于 domain event/status change log 的建模
+    -- 不要轻易考虑 '0000-00-00 00:00:00' 这样的缺省值，这样的缺省值对 JDBC 数据类型不友好，可能导致 mapping null
     -- DATETIME not null 的 default value 是 '1970-01-01 00:00:00'
     `gmt_payment_begin_time`    DATETIME COMMENT '支付时间',
     `gmt_payment_success_time`  DATETIME COMMENT '支付成功时间',
@@ -62,10 +62,11 @@ CREATE TABLE `tb_trans_pay_order`
     -- 唯一类业务主键维度：1. 本业务的业务主键维度（需要大规模生成算法生成吗？生成算法唯一吗？全局唯一吗？唯一可以考虑建立，但有一天迁入 NewSql 会产生奇怪的问题）
     --                 2. 下游业务主键维度（收单唯一性）：可以由数字-名字空间-第三类型（唯一的业务、唯一的事件、唯一的关系、唯一的关系）作联合索引，注意，如果做了这样的配置，则唯一性索引易去难加。如果不在建表的时候就考虑好业务的唯一性，加唯一性索引会导致数据损毁（truncate）的。
     --                 3. 上游业务索引：可以由数字-名字空间-业务类型作联合索引。注意，2 和 3 都要考虑数字之外的名字空间（更大的索引）、第三类型-细分的子单支持。
+    --                 4. 本业务内的其他模型索引：fk id
     -- 不要使用长列作索引，尤其是 text 和 blob
     UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`) COMMENT '唯一索引，每个支付单只能拥有唯一的支付单号',
     UNIQUE KEY `uniq_biz_request` (`biz_unique_no`, `biz_identify_no`) COMMENT '唯一索引，每种支付业务类型每个业务单只能有唯一的支付订单',
-    KEY `idx_status_modified` (`status`, `gmt_modified`) COMMENT '查询索引，注意数据规模较大时区分度不高，慎用，，如果有可能一定要加上查询时间约束查询范围。如果有可能还是借助小的从表来进行状态查询。如果按照时间排序很可能触发回表进入 sort buffer'
+    KEY                         `idx_status_modified` (`status`, `gmt_modified`) COMMENT '查询索引，注意数据规模较大时区分度不高，慎用，，如果有可能一定要加上查询时间约束查询范围。如果有可能还是借助小的从表来进行状态查询。如果按照时间排序很可能触发回表进入 sort buffer'
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付订单，领域聚合根';
 -- utf8mb4 四字节才能容纳完整 utf8 字符集，COLLATE 意味着特定的排序算法
 -- AUTO_INCREMENT 不用配太大，制造数据空洞
