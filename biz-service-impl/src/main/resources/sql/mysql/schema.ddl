@@ -14,7 +14,7 @@ CREATE TABLE `tb_trans_pay_order`
     `id`                        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增物理主键，单表唯一',
     -- 创建时间如果有可能由业务生成，否则使用缺省值
     `gmt_created`               DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
-    -- 修改时间如果有可能由业务生成，否则使用缺省值
+    -- 修改时间如果有可能由业务生成，否则使用缺省值，有些设计模式要求上层代码不要设置这个值，这样只有 field update 的时候，这个值才会被默认设置上去
     `gmt_modified`              DATETIME               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '最后修改时间',
     -- 本表业务主键，业务主键也不要忘记 UNSIGNED
     `pay_order_no`              BIGINT(20) UNSIGNED NOT NULL COMMENT '支付订单号，业务主键，全局唯一',
