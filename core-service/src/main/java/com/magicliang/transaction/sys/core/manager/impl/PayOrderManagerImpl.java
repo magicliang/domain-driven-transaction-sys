@@ -469,7 +469,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      *
      * @return 未发送的通知请求列表的查询条件
      */
-    private Object createUnsentNotificationsExample(final int env) {
+    private TransChannelRequestPoExample createUnsentNotificationsExample(final int env) {
         TransChannelRequestPoExample example = new TransChannelRequestPoExample();
         TransChannelRequestPoExample.Criteria criteria = example.createCriteria();
         criteria.andStatusIn(TransRequestStatusEnum.UNSENT_STATUS_VALUE);
@@ -510,6 +510,6 @@ public class PayOrderManagerImpl implements PayOrderManager {
      *
      * @param <T> 特定类型的结果
      */
-    private static interface QueryByLongList<T> extends Function<List<Long>, T> {
+    private interface QueryByLongList<T> extends Function<List<Long>, T> {
     }
 }
