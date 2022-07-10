@@ -150,7 +150,7 @@ public class AcceptanceActivity extends BaseActivity<AcceptanceRequest, Acceptan
         AcceptanceResponse acceptanceResponse = context.getAcceptanceResponse();
         final Long acceptedPayOrderNo = acceptanceResponse.getAcceptedPayOrderNo();
         AssertUtils.assertNotNull(acceptedPayOrderNo, ACCEPTANCE_FAILURE_ERROR, "invalid acceptedPayOrderNo:" + acceptedPayOrderNo);
-        // 2. 完成当前钩子，一般情况下，只有在当前 activity 执行完之后，才可以调用 setAcceptanceComplete
+        // 3. 完成当前钩子，一般情况下，只有在当前 activity 执行完之后，才可以调用 setAcceptanceComplete
         context.setAcceptanceComplete(true);
     }
 
