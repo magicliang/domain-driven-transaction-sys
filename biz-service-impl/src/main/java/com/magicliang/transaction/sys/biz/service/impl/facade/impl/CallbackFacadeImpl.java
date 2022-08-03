@@ -29,4 +29,5 @@ public class CallbackFacadeImpl extends AbstractFacade implements ICallbackFacad
     public TransactionModel callback(final CallbackCommand callbackCommand) {
         return commandQueryBus.send(callbackCommand);
     }
+
 }

@@ -17,6 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/res/v1")
 public class TestController {
 
+    /**
+     * 1. soa swagger api 注解
+     * 2. 注释
+     * 3. 约束
+     * 4. gson 定义反序列化格式
+     *
+     * @return 健康信息
+     */
     @GetMapping("/hello")
     public String hello() {
         return "hello";
