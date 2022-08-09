@@ -66,7 +66,7 @@ public class Plane<St extends FlightStatus> extends GenericType<St> {
 
         // 这一步走不通
 //        FlightStatus planeStatus = (FlightStatus) Proxy.newProxyInstance(
-//                Thread.currentThread().getContextClassLoader(),
+//                Thread.currentThread().getContextClassL2hheoader(),
 //                new Class[]{FlightStatus.class},
 //                new InvocationHandler() {
 //                    @Override
