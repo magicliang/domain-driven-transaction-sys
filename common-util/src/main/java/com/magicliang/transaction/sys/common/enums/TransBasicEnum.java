@@ -29,7 +29,7 @@ public enum TransBasicEnum {
      */
     private static final ImmutableMap<Integer, TransBasicEnum> ENUM_MAP;
 
-    /**
+    /*
      * 初始化枚举映射
      */
     static {

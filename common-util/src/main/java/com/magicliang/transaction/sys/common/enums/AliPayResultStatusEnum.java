@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.common.enums;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,22 @@ public enum AliPayResultStatusEnum {
     ;
 
     /**
+     * 枚举映射
+     */
+    private static final ImmutableMap<Integer, AliPayResultStatusEnum> ENUM_MAP;
+
+    /*
+     * 初始化枚举映射
+     */
+    static {
+        ImmutableMap.Builder<Integer, AliPayResultStatusEnum> builder = ImmutableMap.builder();
+        for (AliPayResultStatusEnum item : AliPayResultStatusEnum.values()) {
+            builder.put(item.getCode(), item);
+        }
+        ENUM_MAP = builder.build();
+    }
+
+    /**
      * 结果状态
      */
     private final Integer code;
@@ -35,18 +52,10 @@ public enum AliPayResultStatusEnum {
     /**
      * 通过状态获取枚举
      *
-     * @param status 状态
+     * @param code 状态
      * @return 状态枚举
      */
-    public static AliPayResultStatusEnum getByCode(Integer status) {
-        if (status == null) {
-            return null;
-        }
-        for (AliPayResultStatusEnum type : values()) {
-            if (type.getCode().equals(status)) {
-                return type;
-            }
-        }
-        return null;
+    public static AliPayResultStatusEnum getByCode(Integer code) {
+        return ENUM_MAP.get(code);
     }
 }
