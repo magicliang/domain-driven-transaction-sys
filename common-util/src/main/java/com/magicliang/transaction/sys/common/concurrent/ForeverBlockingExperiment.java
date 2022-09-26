@@ -3,10 +3,9 @@ package com.magicliang.transaction.sys.common.concurrent;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -67,42 +66,42 @@ public class ForeverBlockingExperiment {
         );
     }
 
-    public static void main(String[] args) {
-        // 设计一个特别狭小的线程池，只有一个线程，拥塞队列极易满掉
-        ExecutorService testPool = arrayBlockingExecutor(
-                1,
-                1,
-                10,
-                TimeUnit.SECONDS,
-                1,
-                "test-pool");
-
-        // 生成一系列批量任务
-        final List<Callable<Integer>> tasks = IntStream.range(1, 10).mapToObj((i) -> {
-            return new Callable<Integer>() {
-                /**
-                 * Computes a result, or throws an exception if unable to do so.
-                 *
-                 * @return computed result
-                 * @throws Exception if unable to compute a result
-                 */
-                @Override
-                public Integer call() throws Exception {
-                    // 模仿长时间操作，防止线程一提交即立即执行完
-                    Thread.sleep(1000L);
-                    return i;
-                }
-            };
-        }).collect(Collectors.toList());
-        try {
-            testPool.invokeAll(tasks);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // 永远打不出这个语句出来
-        log.info("this executor can run through all tasks");
-        testPool.shutdownNow();
-        // 永远打不出这个语句出来
-        log.info("good bye");
-    }
+//    public static void main(String[] args) {
+//        // 设计一个特别狭小的线程池，只有一个线程，拥塞队列极易满掉
+//        ExecutorService testPool = arrayBlockingExecutor(
+//                1,
+//                1,
+//                10,
+//                TimeUnit.SECONDS,
+//                1,
+//                "test-pool");
+//
+//        // 生成一系列批量任务
+//        final List<Callable<Integer>> tasks = IntStream.range(1, 10).mapToObj((i) -> {
+//            return new Callable<Integer>() {
+//                /**
+//                 * Computes a result, or throws an exception if unable to do so.
+//                 *
+//                 * @return computed result
+//                 * @throws Exception if unable to compute a result
+//                 */
+//                @Override
+//                public Integer call() throws Exception {
+//                    // 模仿长时间操作，防止线程一提交即立即执行完
+//                    Thread.sleep(1000L);
+//                    return i;
+//                }
+//            };
+//        }).collect(Collectors.toList());
+//        try {
+//            testPool.invokeAll(tasks);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        // 永远打不出这个语句出来
+//        log.info("this executor can run through all tasks");
+//        testPool.shutdownNow();
+//        // 永远打不出这个语句出来
+//        log.info("good bye");
+//    }
 }
