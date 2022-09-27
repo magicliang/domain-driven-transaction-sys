@@ -1,8 +1,8 @@
 // Spring boot 的最新官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/
 plugins {
-    id 'org.springframework.boot' version '2.6.3'
+    id 'org.springframework.boot' version '2.7.4'
     // 这两个版本是如何搭配的，是 initializr 决定的吗？
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
     id 'java-library'
 }
@@ -29,7 +29,7 @@ repositories {
 
 ext {
     // spring cloud 和 spring boot 的版本兼容性见：https://start.spring.io/actuator/info
-    set('springCloudVersion', "2021.0.0")
+    set('springCloudVersion', "2021.0.4")
 }
 
 dependencies {
