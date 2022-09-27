@@ -36,6 +36,17 @@ public class EmbeddedMariaDbConfig {
     @Autowired
     private ApplicationContext applicationContext;
 
+    /**
+     * 为 url 增加 MySQL 许可，当代的 mariadb4j 倾向使用 jdbc:mariadb: jdbcurl 或者 jdbc:mysql:localhost/test?permitMysqlScheme
+     *
+     * @param databaseName
+     * @param config
+     * @return
+     */
+    private static String permitMysqlScheme4Mariadb4j(final String databaseName, final DBConfigurationBuilder config) {
+        return config.getURL(databaseName) + "?permitMysqlScheme";
+    }
+
     @Bean(name = "dataSource", destroyMethod = "close")
     @Profile("local-mariadb4j-dev")
     @Primary
@@ -58,7 +69,7 @@ public class EmbeddedMariaDbConfig {
             throw new BaseTransException(e, UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR);
         }
         DBConfigurationBuilder config = mariaDB4jSpringService.getConfiguration();
-        String url = config.getURL(databaseName);
+        String url = permitMysqlScheme4Mariadb4j(databaseName, config);
         return DataSourceBuilder
                 .create()
                 .username(userName)
@@ -106,7 +117,7 @@ public class EmbeddedMariaDbConfig {
             throw new BaseTransException(e, UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR);
         }
         DBConfigurationBuilder config = mariaDB4jSpringService.getConfiguration();
-        String url = config.getURL(databaseName);
+        String url = permitMysqlScheme4Mariadb4j(databaseName, config);
         return DataSourceBuilder
                 .create()
                 .username(userName)
