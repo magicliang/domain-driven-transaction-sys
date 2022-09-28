@@ -381,7 +381,9 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param query     查询回调
      * @return 分页查询结果
      */
-    private <T> List<T> paginationQuery(final long totalSize, final int batchSize, Supplier<List<T>> query) {
+    private <T> List<T> paginationQuery(final long totalSize,
+                                        final int batchSize,
+                                        final Supplier<List<T>> query) {
         // 查询条件不合法，则返回空列表
         if (totalSize <= 0 || batchSize <= 0) {
             return Collections.emptyList();
