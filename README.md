@@ -20,6 +20,7 @@ TODO：
 6. 写模型设计和系统分层的输入。
 7. 实现线程池开源化。
 8. 实现基于db 的最大努力型事务。
+9. 实现对aggregate root的工厂方法化
 
 ## how to build it
 
