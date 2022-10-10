@@ -36,17 +36,6 @@ public class EmbeddedMariaDbConfig {
     @Autowired
     private ApplicationContext applicationContext;
 
-    /**
-     * 为 url 增加 MySQL 许可，当代的 mariadb4j 倾向使用 jdbc:mariadb: jdbcurl 或者 jdbc:mysql:localhost/test?permitMysqlScheme
-     *
-     * @param databaseName
-     * @param config
-     * @return
-     */
-    private static String permitMysqlScheme4Mariadb4j(final String databaseName, final DBConfigurationBuilder config) {
-        return config.getURL(databaseName) + "?permitMysqlScheme";
-    }
-
     @Bean(name = "dataSource", destroyMethod = "close")
     @Profile("local-mariadb4j-dev")
     @Primary
@@ -167,6 +156,17 @@ public class EmbeddedMariaDbConfig {
         mariaDB4jSpringService.setDefaultPort(Integer.parseInt(port));
         // 这个bean start 以后会启动安装和调用 mariadb4j 的功能，有时候需要启动 openssl：brew install rbenv/tap/openssl@1.0 && ln -sfn /usr/local/Cellar/openssl@1.0/1.0.2t /usr/local/opt/openssl
         return mariaDB4jSpringService;
+    }
+
+    /**
+     * 为 url 增加 MySQL 许可，当代的 mariadb4j 倾向使用 jdbc:mariadb: jdbcurl 或者 jdbc:mysql:localhost/test?permitMysqlScheme
+     *
+     * @param databaseName 原数据库名称
+     * @param config       数据库配置构建器
+     * @return 增加了许可的 jdbc 连接字符串
+     */
+    private static String permitMysqlScheme4Mariadb4j(final String databaseName, final DBConfigurationBuilder config) {
+        return config.getURL(databaseName) + "?permitMysqlScheme";
     }
 
 }
