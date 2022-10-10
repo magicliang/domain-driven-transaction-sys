@@ -20,6 +20,14 @@ bootJar {
     enabled = true
 }
 
+// 如果找不到 application 主类，则使用如下配置指定主类
+
+//plugins {
+//    id 'application'
+//}
+// mainClassName = 'com.LeadsApplication'
+
+
 jar {
     enabled = true
 }
