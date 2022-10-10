@@ -61,6 +61,8 @@ subprojects {
     // 插件 apply plugin，version 语法不一样
     apply plugin: 'java'
     apply plugin: 'java-library'
+
+    // 只要子项目激活这两个 plugin 就可以启动，但如果子模块没有这两个配置，则不能使用 bootJar 之类的配置
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 

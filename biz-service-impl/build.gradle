@@ -1,3 +1,7 @@
+// 只要有这两个"应用插件"，本模块总可以以 Spring Boot 的模式启动起来，不需要在 root project 里面对所有的 subprojects 进行 apply
+//apply plugin: 'org.springframework.boot'
+//apply plugin: 'io.spring.dependency-management'
+
 dependencies {
     // compile（api）：这种是我们最常用的方式，使用该方式依赖的库将会参与编译和打包。也就是最简单的 dependency
     api project(":biz-shared")
