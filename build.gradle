@@ -1,5 +1,6 @@
 // Spring boot 的最新官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/
 plugins {
+    // 中文使用指南：https://www.jianshu.com/p/01588c396a29
     id 'org.springframework.boot' version '2.7.4'
     // 这两个版本是如何搭配的，是 initializr 决定的吗？
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
