@@ -19,6 +19,7 @@ spring:
     # name: masterDataSource
     # 默认就是hikari，可缺省
     # type: com.zaxxer.hikari.HikariDataSource
+   # 这个 cj 的驱动是 8.0 的驱动，jdbc url 里如果带有 SSL 去访问 8.0 的 MySQL Server，可能触发 CLIENT_PLUGIN_AUTH 的告警启动异常
     # driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: DomainDrivenTransacionSysHikariCP
@@ -159,6 +160,7 @@ spring:
     # 纯内存的 db 如下
     username: sa
     password: pppp12345
+    # 这个配置名是高版本 Spring 的配置名，和低版本 Spring  driver-class-name 语义一样
     driverClassName: org.h2.Driver
     # to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL ;INIT=runscript from 'classpath:/db.sql'
     # 文件模式
