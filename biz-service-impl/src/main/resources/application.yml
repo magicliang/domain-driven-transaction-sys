@@ -159,6 +159,7 @@ spring:
     # 纯内存的 db 如下
     username: sa
     password: pppp12345
+    # 这个配置名对 Spring boot CLIENT_PLUGIN_AUTH 问题至关重要
     driverClassName: org.h2.Driver
     # to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL ;INIT=runscript from 'classpath:/db.sql'
     # 文件模式
