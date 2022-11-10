@@ -52,6 +52,8 @@ import java.util.Arrays;
 @PropertySource(value = {
         "classpath:META-INF/conf/application.properties"
 })
+//@Import({DDDSampleApplicationContext.class,
+//        PathfinderApplicationContext.class})
 @ImportResource("classpath:/applicationContext.xml")
 public class DomainDrivenTransactionSysApplication {
 
