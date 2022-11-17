@@ -24,6 +24,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/fluent-hc
     api 'org.apache.httpcomponents:fluent-hc:4.5.13'
 
+    api 'commons-io:commons-io:2.10.0'
+
 //    testImplementation
 }
 
