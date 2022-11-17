@@ -7,7 +7,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -57,7 +62,7 @@ public class ConcurrentTest extends UnitTest {
                 try {
                     semaphore.acquire();
                 } catch (InterruptedException ex) {
-                    log.error("LeadsDistributeSettingController.setLeadsPoolName，semaphore.acquire() interrupted, just return, ", ex);
+                    log.error("ConcurrentTest.testBurstSubmit，semaphore.acquire() interrupted, just return, ", ex);
                     return false;
                 }
                 try {

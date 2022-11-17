@@ -108,6 +108,7 @@ public class DomainDrivenTransactionSysApplication {
         }
 
         /**
+         * filter
          * destroy all resources.
          * This method will be invoked in Spring shutdown hook while gracefully shutting down.
          */
