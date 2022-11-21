@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.advice;
 
+import com.magicliang.transaction.sys.common.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             = {Exception.class})
     protected ResponseEntity<Object> handleAllException(RuntimeException ex, HttpServletRequest req) {
         final String uri = req.getRequestURI();
-        if (ex instanceof RuntimeException) {
+        if (ex instanceof BizException) {
             return new ResponseEntity<>(new HashMap<String, String>(),
                     HttpStatus.OK);
         }
