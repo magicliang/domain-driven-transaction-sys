@@ -29,7 +29,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleAllException(RuntimeException ex, HttpServletRequest req) {
         final String uri = req.getRequestURI();
         if (ex instanceof BizException) {
-            return new ResponseEntity<>(new HashMap<String, String>(),
+            return new ResponseEntity<>(new HashMap<String, String>(0),
                     HttpStatus.OK);
         }
 
