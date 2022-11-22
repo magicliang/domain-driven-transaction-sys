@@ -1,6 +1,5 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.filter;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
@@ -14,8 +13,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -46,11 +43,13 @@ public class StatusBasedFilter extends OncePerRequestFilter {
          * 要输出原始的响应则可以使用这样的方法：
          * response.setContentLength(responseWrapper.getContentSize());
          * response.getOutputStream().write(responseWrapper.getContentAsByteArray());
-         *
+         * 消费 body 的几种方法：
+         *  String responseBody = IOUtils.toString(wrappedResponse.getContentInputStream(), UTF_8);
+         *  String body = new String(wrappedResponse.getContentAsByteArray(), wrappedResponse.getCharacterEncoding());
          * 另一种重写方法是：HttpServletResponseWrapper
          * 比如：https://blog.csdn.net/u011410529/article/details/78873404
          */
-        String responseBody = IOUtils.toString(wrappedResponse.getContentInputStream(), UTF_8);
+
         int status = wrappedResponse.getStatus();
         // 在这里，如果读了 status，如果消耗掉了对外输出流，要改写输出流就直接改写，不能改写输出流则需要使用 copyBodyToResponse 还原响应
         if (isClientError(status)) {
