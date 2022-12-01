@@ -21,6 +21,7 @@ TODO：
 7. 实现线程池开源化。
 8. 实现基于db 的最大努力型事务。
 9. 实现对aggregate root的工厂方法化
+10. 实现对值对象的构建
 
 ## how to build it
 
