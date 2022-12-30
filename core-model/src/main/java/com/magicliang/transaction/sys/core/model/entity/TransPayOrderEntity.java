@@ -203,4 +203,14 @@ public class TransPayOrderEntity extends BaseEntity {
         TransPayOrderStatusEnum.validateStatusBeforeUpdate(this.status.intValue(), newStatus);
         setStatus(newStatus.shortValue());
     }
+
+    /**
+     * 使用 lombok 的 builder 对本实例进行浅拷贝
+     *
+     * @return 本对象的浅拷贝
+     */
+    public TransPayOrderEntity shallowCopy() {
+        return this.toBuilder()
+                .build();
+    }
 }

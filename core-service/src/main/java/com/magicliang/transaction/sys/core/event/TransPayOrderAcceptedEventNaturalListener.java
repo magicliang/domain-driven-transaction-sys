@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class TransPayOrderAcceptedEventListener implements ApplicationListener<TransPayOrderAcceptedEvent> {
+public class TransPayOrderAcceptedEventNaturalListener implements ApplicationListener<TransPayOrderAcceptedEvent> {
 
 
     /**
@@ -26,7 +26,7 @@ public class TransPayOrderAcceptedEventListener implements ApplicationListener<T
      */
     @Override
     public void onApplicationEvent(final TransPayOrderAcceptedEvent event) {
-        log.info("receive event: {}", event);
+        log.info("1 receive event: {}", event);
     }
 
 }

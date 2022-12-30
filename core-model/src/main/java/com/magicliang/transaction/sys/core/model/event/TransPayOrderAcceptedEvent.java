@@ -30,12 +30,12 @@ public class TransPayOrderAcceptedEvent extends ApplicationEvent implements Doma
         return new TransPayOrderAcceptedEvent(source, payOrderEntitySnapShot);
     }
 
-    private TransPayOrderAcceptedEvent(Object source, final TransPayOrderEntity payOrderEntitySnapShot) {
+    protected TransPayOrderAcceptedEvent(Object source, final TransPayOrderEntity payOrderEntitySnapShot) {
         super(source);
         this.source = source;
         // 做一个快照拷贝
         if (payOrderEntitySnapShot != null) {
-            this.payOrderEntitySnapShot = payOrderEntitySnapShot.toBuilder().build();
+            this.payOrderEntitySnapShot = payOrderEntitySnapShot.shallowCopy();
         }
     }
 
