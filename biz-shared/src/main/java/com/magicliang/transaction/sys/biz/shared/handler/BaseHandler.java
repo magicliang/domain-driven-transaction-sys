@@ -103,14 +103,15 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
             // 4. 真处理操作
             realExecute(context);
 
-            // 8. 返回上下文
+            // 6. 执行后置操作
+            postExecution(context);
+
+            // 7. 返回上下文
             return context;
         } finally {
-            // 5. 执行后置操作
-            postExecution(context);
-            // 6. 解锁
+            // 8. 解锁
             lock.unlock();
-            // 7. 清理上下文
+            // 9. 清理上下文
             ContextFactory.clear();
         }
     }

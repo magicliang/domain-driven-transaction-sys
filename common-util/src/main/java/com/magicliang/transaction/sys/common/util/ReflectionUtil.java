@@ -1,9 +1,18 @@
 package com.magicliang.transaction.sys.common.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ResolvableType;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -14,7 +23,11 @@ import java.lang.reflect.Type;
  * <p>
  * date: 2022-12-30 16:02
  */
+@Slf4j
 public class ReflectionUtil {
+
+    private static final Class<?>[] EMPTY_CLASS_ARR = {};
+
 
     /**
      * 私有构造器
@@ -45,7 +58,9 @@ public class ReflectionUtil {
 
         if (genericSuperclass instanceof ParameterizedType) {
             final ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-            final boolean rawTypeMatch = parameterizedType.getRawType() == genericSuperClass;
+            final Type rawType = parameterizedType.getRawType();
+            // 这里可以确认 Collection 是不是 Collection-而不是 List
+            final boolean rawTypeMatch = rawType == genericSuperClass;
             final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
             // 这两行很重要，基本上能够获取类型实参就靠它了，但我们也只能得到 class
             for (Type type : actualTypeArguments) {
@@ -88,6 +103,45 @@ public class ReflectionUtil {
     public static boolean isParameterized(Class<?> subClass, Class<?> genericSuperClass, Class<?> targetGenericActualParameter) {
         final ResolvableType generic = ResolvableType.forClass(subClass).as(genericSuperClass).getGeneric();
         return generic.isAssignableFrom(ResolvableType.forClass(targetGenericActualParameter));
+    }
+
+    public static Collection<?> getWildCardType(Class<?> wildCardClass) {
+        // Spring 的 CGLIB 子类的 getGenericSuperclass 要取两轮
+        Type genericSuperclass = wildCardClass.getGenericSuperclass();
+        Type currentGenericClass = null;
+        while (null != genericSuperclass && genericSuperclass != currentGenericClass) {
+            if (genericSuperclass instanceof Class) {
+                final TypeVariable<? extends Class<?>>[] typeParameters = ((Class<?>) genericSuperclass).getTypeParameters();
+                for (TypeVariable<? extends Class<?>> typeParameter : typeParameters) {
+                    final Type[] bounds = typeParameter.getBounds();
+                    for (Type bound : bounds) {
+                        log.info(bound.toString());
+                    }
+                }
+            }
+            if (genericSuperclass instanceof ParameterizedType) {
+                final Type[] actualTypeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
+                return Arrays.stream(actualTypeArguments).map((actualTypeArgument) -> {
+                            if (actualTypeArgument instanceof WildcardType) {
+                                final Type[] lowerBounds = ((WildcardType) actualTypeArgument).getLowerBounds();
+                                final Type[] upperBounds = ((WildcardType) actualTypeArgument).getUpperBounds();
+                                final List<Type> result = new ArrayList<>(Arrays.asList(lowerBounds));
+                                result.addAll(Arrays.asList(upperBounds));
+                                return result;
+                            }
+                            return Collections.emptyList();
+                        }).flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+            }
+            currentGenericClass = genericSuperclass;
+            if (genericSuperclass instanceof Class) {
+                genericSuperclass = ((Class) genericSuperclass).getGenericSuperclass();
+            } else {
+                genericSuperclass = null;
+            }
+        }
+
+        return Collections.emptyList();
     }
 
 }
