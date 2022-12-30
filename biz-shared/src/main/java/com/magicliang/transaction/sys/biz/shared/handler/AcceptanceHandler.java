@@ -1,6 +1,7 @@
 package com.magicliang.transaction.sys.biz.shared.handler;
 
 import com.magicliang.transaction.sys.biz.shared.enums.OperationEnum;
+import com.magicliang.transaction.sys.biz.shared.event.ApplicationEvents;
 import com.magicliang.transaction.sys.biz.shared.request.acceptance.AcceptanceCommand;
 import com.magicliang.transaction.sys.biz.shared.request.acceptance.AlipayAcceptanceCommand;
 import com.magicliang.transaction.sys.biz.shared.request.acceptance.convertor.AlipayAcceptanceCommandConvertor;
@@ -11,7 +12,9 @@ import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransSubOrderEntity;
+import com.magicliang.transaction.sys.core.model.event.TransPayOrderAcceptedEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -28,6 +31,9 @@ import java.util.Date;
 @Slf4j
 @Service
 public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, TransactionModel, TransTransactionContext<AcceptanceCommand, TransactionModel>> {
+
+    @Autowired
+    private ApplicationEvents applicationEvents;
 
     /**
      * 标识自己的类型
@@ -205,6 +211,18 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
 //        paymentRequest.setRequestAddr(null == payChannelType ? "" : payChannelType.getAddr());
         // 暂时不设置设置其他空参数
         return paymentRequest;
+    }
+
+    @Override
+    protected void postExecution(final TransTransactionContext<AcceptanceCommand, TransactionModel> context) {
+        super.postExecution(context);
+        final TransactionModel model = context.getModel();
+        if (null == model) {
+            return;
+        }
+        final TransPayOrderEntity payOrder = model.getPayOrder();
+        // 在这里插入一个领域内部事件
+        applicationEvents.transPayOrderAccepted(TransPayOrderAcceptedEvent.create(this, payOrder));
     }
 }
 

@@ -1,8 +1,16 @@
 package com.magicliang.transaction.sys.core.model.entity;
 
-import com.magicliang.transaction.sys.common.enums.*;
+import com.magicliang.transaction.sys.common.enums.TransEnvEnum;
+import com.magicliang.transaction.sys.common.enums.TransFundAccountingEntryTypeEnum;
+import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
+import com.magicliang.transaction.sys.common.enums.TransSysConfigEnum;
+import com.magicliang.transaction.sys.common.enums.TransTargetAccountTypeEnum;
+import com.magicliang.transaction.sys.common.enums.TransUnderlyingPayChannelTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +27,9 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class TransPayOrderEntity extends BaseEntity {
 
     /**
@@ -191,5 +202,15 @@ public class TransPayOrderEntity extends BaseEntity {
         }
         TransPayOrderStatusEnum.validateStatusBeforeUpdate(this.status.intValue(), newStatus);
         setStatus(newStatus.shortValue());
+    }
+
+    /**
+     * 使用 lombok 的 builder 对本实例进行浅拷贝
+     *
+     * @return 本对象的浅拷贝
+     */
+    public TransPayOrderEntity shallowCopy() {
+        return this.toBuilder()
+                .build();
     }
 }
