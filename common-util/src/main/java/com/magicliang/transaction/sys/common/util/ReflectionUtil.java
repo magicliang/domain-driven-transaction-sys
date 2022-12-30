@@ -1,5 +1,7 @@
 package com.magicliang.transaction.sys.common.util;
 
+import org.springframework.core.ResolvableType;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -72,4 +74,18 @@ public class ReflectionUtil {
         }
         return false;
     }
+
+    /**
+     * isGenericSubClass 的 Spring 版本，只能验证第一个 TypeParameter，验证第二个参数必然返回 false
+     *
+     * @param subClass                     子类型
+     * @param genericSuperClass            超类型，可以是借口
+     * @param targetGenericActualParameter 类型实参
+     * @return 认定结果
+     */
+    public static boolean isParameterized(Class<?> subClass, Class<?> genericSuperClass, Class<?> targetGenericActualParameter) {
+        final ResolvableType generic = ResolvableType.forClass(subClass).as(genericSuperClass).getGeneric();
+        return generic.isAssignableFrom(ResolvableType.forClass(targetGenericActualParameter));
+    }
+
 }

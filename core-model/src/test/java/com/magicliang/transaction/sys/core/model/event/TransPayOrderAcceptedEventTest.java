@@ -74,13 +74,8 @@ class TransPayOrderAcceptedEventTest {
                 log.info(Arrays.toString(typeParameters));
 
                 Type[] actualTypeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
-                for (Type type :
-                        actualTypeArguments) {
-
-                }
                 log.info(Arrays.toString(actualTypeArguments));
             }
-
         }
 
         // 获取类型在基接口里的泛型的方法在此
@@ -105,12 +100,21 @@ class TransPayOrderAcceptedEventTest {
     }
 
     @Test
-    void testGenericUtil() {
+    void testIsGenericSubClass() {
         // TransPayOrderPaidEvent extends TransPayOrderAcceptedEvent extends ApplicationEvent，TransPayOrderPaidEvent/TransPayOrderAcceptedEvent 为 true，TransPayOrderPaidEvent 为 false
         Assertions.assertTrue(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderAcceptedEvent.class));
         Assertions.assertTrue(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderPaidEvent.class));
         Assertions.assertFalse(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, ApplicationEvent.class));
         Assertions.assertFalse(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, Object.class));
+    }
+
+    @Test
+    void testIsParameterized() {
+        // TransPayOrderPaidEvent extends TransPayOrderAcceptedEvent extends ApplicationEvent，TransPayOrderPaidEvent/TransPayOrderAcceptedEvent 为 true，TransPayOrderPaidEvent 为 false
+        Assertions.assertTrue(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderAcceptedEvent.class));
+        Assertions.assertTrue(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderPaidEvent.class));
+        Assertions.assertFalse(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, ApplicationEvent.class));
+        Assertions.assertFalse(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, Object.class));
     }
 
 

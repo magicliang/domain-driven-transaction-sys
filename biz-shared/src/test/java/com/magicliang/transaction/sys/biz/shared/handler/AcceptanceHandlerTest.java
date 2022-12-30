@@ -32,9 +32,16 @@ class AcceptanceHandlerTest {
      * 这个实验证明，我们可以验证多参数的继承关系
      */
     @Test
-    void testGenericUtil() {
+    void testIsGenericSubClass() {
         Assertions.assertTrue(ReflectionUtil.isGenericSubClass(AcceptanceHandler.class, BaseHandler.class, AcceptanceCommand.class));
         Assertions.assertTrue(ReflectionUtil.isGenericSubClass(AcceptanceHandler.class, BaseHandler.class, TransactionModel.class));
         Assertions.assertFalse(ReflectionUtil.isGenericSubClass(AcceptanceHandler.class, BaseHandler.class, CallbackCommand.class));
     }
+
+    @Test
+    void testIsParameterized() {
+        Assertions.assertTrue(ReflectionUtil.isParameterized(AcceptanceHandler.class, BaseHandler.class, AcceptanceCommand.class));
+        Assertions.assertFalse(ReflectionUtil.isParameterized(AcceptanceHandler.class, BaseHandler.class, CallbackCommand.class));
+    }
+
 }
