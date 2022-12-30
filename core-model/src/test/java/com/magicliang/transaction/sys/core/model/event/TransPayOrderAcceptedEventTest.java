@@ -117,5 +117,4 @@ class TransPayOrderAcceptedEventTest {
         Assertions.assertFalse(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, Object.class));
     }
 
-
 }

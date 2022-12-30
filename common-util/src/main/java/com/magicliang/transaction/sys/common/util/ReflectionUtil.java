@@ -47,6 +47,7 @@ public class ReflectionUtil {
             final ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
             final boolean rawTypeMatch = parameterizedType.getRawType() == genericSuperClass;
             final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+            // 这两行很重要，基本上能够获取类型实参就靠它了，但我们也只能得到 class
             for (Type type : actualTypeArguments) {
                 if (type instanceof Class) {
                     if (rawTypeMatch && ((Class<?>) type).isAssignableFrom(targetGenericActualParameter)) {
@@ -63,6 +64,7 @@ public class ReflectionUtil {
                 final ParameterizedType parameterizedType = (ParameterizedType) genericInterfaceType;
                 final boolean rawTypeMatch = parameterizedType.getRawType() == genericSuperClass;
                 final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+                // 这两行很重要，基本上能够获取类型实参就靠它了，但我们也只能得到 class
                 for (Type type : actualTypeArguments) {
                     if (type instanceof Class) {
                         if (rawTypeMatch && ((Class<?>) type).isAssignableFrom(targetGenericActualParameter)) {
