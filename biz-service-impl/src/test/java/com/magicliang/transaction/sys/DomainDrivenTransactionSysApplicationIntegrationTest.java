@@ -75,10 +75,12 @@ public class DomainDrivenTransactionSysApplicationIntegrationTest {
         final Collection<?> wildCardType = ReflectionUtil.getWildCardType(baseHandler.getClass());
 
         final Field fieldNum = DomainDrivenTransactionSysApplicationIntegrationTest.class.getDeclaredField("listNum");
+        // genericType几乎必然是 ParameterizedTypeImpl 的实例
         final Type genericType = fieldNum.getGenericType();
         final ParameterizedType parameterizedType = (ParameterizedType) genericType;
         final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
         for (Type actualTypeArgument : actualTypeArguments) {
+            // wildCard 隐藏在 actualTypeArguments 里，不隐藏在
             if (actualTypeArgument instanceof WildcardType) {
                 final WildcardType wildcardType = (WildcardType) actualTypeArgument;
                 final Type[] lowerBounds = wildcardType.getLowerBounds();
