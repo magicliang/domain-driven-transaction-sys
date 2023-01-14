@@ -20,6 +20,7 @@ public class MyMutex implements Lock {
     private final MySynchronizer sync = new MySynchronizer();
 
     /**
+     * 理想的锁实现可以校验出死锁来，即 erroneous use，并抛出 unchecked exception
      * Acquires the lock.
      *
      * <p>If the lock is not available then the current thread becomes
@@ -228,9 +229,11 @@ public class MyMutex implements Lock {
     /**
      * 一个示范的自定义同步器类
      * 本同步器类认为，0是 released，1是 acquired。
-     * 只要状态为 1，则这个同步器是被互斥持有的。
-     * 这个设计模式告诉我们，每个 mutex 类型的真正语义的实现，最好使用一个utility helper class 来实现，然后让这个 concrete lock implementation delegate 自己的行为到这个 helper 的内部实现上。
+     * 只要状态为 1，则这个同步器是被互斥持有的。即这个 mutex 本身只能进入一次，本身不是 reentrant（不然就要往信号量发展了），所以在 acquire 比较 state 的时候，只要比较为 1 即可。
+     * 这个设计模式告诉我们，每个 mutex 类型的真正语义的实现，最好使用一个 utility helper class 来实现，然后让这个 concrete lock implementation delegate 自己的行为到这个 helper 的内部实现上。
      * 如 ReentrantLock、Semaphore 都使用一个标准的内部自定义 Sync 来表达自己的并发控制语义。
+     * <p>
+     * 本类只实现了 try 系列方法，即 tryAcquire 和 tryRelease。因为它们也是 acquire 和 release 的技术底座，这就可以得到一个最基本的 sync 了
      */
     private static class MySynchronizer extends AbstractQueuedSynchronizer {
 
