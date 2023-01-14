@@ -70,6 +70,8 @@ public class DomainDrivenTransactionSysApplication {
 
     /**
      * Try to test connectivity before bootstrapping completion. Originally we throw exception to stop tomcat here.
+     * CommandLineRunner 接口的 Component 会在所有 Spring Beans 都初始化之后，SpringApplication.run() 之前执行，非常适合在应用程序启动之初进行一些数据初始化的工作。
+     * 这些 bean 通常搭配 @Order 注解
      */
     @Component
     @Order(value = 1)
@@ -114,7 +116,7 @@ public class DomainDrivenTransactionSysApplication {
          */
         @PreDestroy
         private void destroy() {
-            log.info("destroy taskCenter");
+            log.info("destroy taskCenter：" + Arrays.toString(Thread.currentThread().getStackTrace()));
         }
     }
 
