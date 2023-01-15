@@ -123,24 +123,28 @@ class MyMutexTest {
     @Test
     void testMutexProcedure() throws InterruptedException {
         MyMutex mutex = new MyMutex();
-        Thread t = new Thread(() -> {
+        Thread t1 = new Thread(() -> {
+            try {
+                Thread.sleep(5000L);
+            } catch (InterruptedException e) {
+            }
             mutex.lock();
             try {
                 // 理论上 aqs 内部的
                 System.out.println("3");
-                Thread.sleep(10000L);
             } catch (Exception ignored) {
 
             } finally {
                 System.out.println("4");
+                mutex.unlock();
             }
         });
-        t.setName("test-thread");
-        t.start();
+        t1.setName("test-thread1");
+        t1.start();
         mutex.lock();
         try {
             System.out.println("1");
-            Thread.sleep(10000L);
+            Thread.sleep(1000L);
         } finally {
             System.out.println("2");
             mutex.unlock();

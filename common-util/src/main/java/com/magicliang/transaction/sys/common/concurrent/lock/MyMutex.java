@@ -1,5 +1,7 @@
 package com.magicliang.transaction.sys.common.concurrent.lock;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
@@ -11,6 +13,7 @@ import java.util.concurrent.locks.Lock;
  *
  * @author liangchuan
  */
+@Slf4j
 public class MyMutex implements Lock {
 
     /**
@@ -38,6 +41,8 @@ public class MyMutex implements Lock {
     @Override
     public void lock() {
         sync.acquire(1);
+        log.info("Thread acquired lock: " + Thread.currentThread().getName());
+        System.out.println("Thread acquired lock: " + Thread.currentThread().getName());
     }
 
     /**
@@ -89,6 +94,9 @@ public class MyMutex implements Lock {
     @Override
     public void lockInterruptibly() throws InterruptedException {
         sync.acquireInterruptibly(1);
+        log.info("Thread acquired lock interruptibly: " + Thread.currentThread().getName());
+        System.out.println("Thread acquired lock interruptibly: " + Thread.currentThread().getName());
+
     }
 
     /**
@@ -120,7 +128,10 @@ public class MyMutex implements Lock {
      */
     @Override
     public boolean tryLock() {
-        return sync.tryAcquire(1);
+        boolean b = sync.tryAcquire(1);
+        log.info("Thread tried acquire lock: " + Thread.currentThread().getName());
+        System.out.println("Thread tried acquire lock: " + Thread.currentThread().getName());
+        return b;
     }
 
     /**
@@ -182,7 +193,10 @@ public class MyMutex implements Lock {
      */
     @Override
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        return sync.tryAcquireNanos(1, unit.toNanos(time));
+        boolean b = sync.tryAcquireNanos(1, unit.toNanos(time));
+        log.info("Thread tried acquire lock nanos: " + Thread.currentThread().getName());
+        System.out.println("Thread tried acquire lock nanos: " + Thread.currentThread().getName());
+        return b;
     }
 
     /**
@@ -200,6 +214,9 @@ public class MyMutex implements Lock {
     @Override
     public void unlock() {
         sync.tryRelease(1);
+        log.info("Thread tried release lock nanos: " + Thread.currentThread().getName());
+        System.out.println("Thread tried release lock nanos: " + Thread.currentThread().getName());
+
     }
 
     /**
