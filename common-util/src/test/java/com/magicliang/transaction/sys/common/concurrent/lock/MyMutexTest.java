@@ -24,108 +24,49 @@ class MyMutexTest {
     @Test
     void testLockProcedure() throws InterruptedException {
         Lock lock = new ReentrantLock();
-//        CountDownLatch countDownLatch1 = new CountDownLatch(1);
-//        Thread t1 = new Thread(() -> {
-//            lock.lock();
-//            try {
-//                Thread.sleep(10000L);
-//                System.out.println("3");
-//            } catch (Exception ignored) {
-//
-//            } finally {
-//                System.out.println("4");
-//                countDownLatch1.countDown();
-//            }
-//        });
-//        t1.setName("test-thread1");
-//        t1.start();
-//        lock.lock();
-//        try {
-//            System.out.println("1");
-//            Thread.sleep(10000L);
-//        } finally {
-//            System.out.println("2");
-//            lock.unlock();
-//
-//            /**
-//             * 理论上上一行跑完
-//             * final boolean acquireQueued(final Node node, int arg) {
-//             *         boolean failed = true;
-//             *         try {
-//             *             boolean interrupted = false;
-//             *             for (;;) {
-//             *                 final Node p = node.predecessor();
-//             *                 if (p == head && tryAcquire(arg)) {
-//             *                     setHead(node);
-//             *                     p.next = null; // help GC
-//             *                     failed = false;
-//             *                     // 不管对或者错，从这里 return
-//             *                     return interrupted;
-//             *                 }
-//             *                 if (shouldParkAfterFailedAcquire(p, node) &&
-//             *                     parkAndCheckInterrupt())
-//             *                      // 如果中断则跑到这，不然得到锁就保持 interrupted = false，然后从上面 return
-//             *                     interrupted = true;
-//             *             }
-//             *         } finally {
-//             *             if (failed)
-//             *                 cancelAcquire(node);
-//             *         }
-//             *     }
-//             *
-//             *     public final void acquire(int arg) {
-//             *         if (!tryAcquire(arg) &&
-//             *             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
-//             *             // 如果 acquireQueued 方法返回true，断点到这一行
-//             *             selfInterrupt();
-//             *
-//             *             // 否则断点到这一行即不做 selfInterrupt
-//             *     }
-//             *
-//             *   然后断点到
-//             *     System.out.println("3");
-//             *
-//             *
-//             *    private final boolean parkAndCheckInterrupt() {
-//             *         LockSupport.park(this);
-//             *         // 这是一个清理线程状态的 testMethod()
-//             *         return Thread.interrupted();
-//             *     }
-//             */
-//        }
-//        countDownLatch1.wait();
-//        Thread.sleep(10000L);
 
-
+        CountDownLatch countDownLatch1 = new CountDownLatch(1);
         CountDownLatch countDownLatch2 = new CountDownLatch(1);
-        CountDownLatch countDownLatch3 = new CountDownLatch(1);
 
-        Thread t2 = new Thread(() -> {
+        Thread t1 = new Thread(() -> {
             try {
-                countDownLatch3.wait();
+                countDownLatch2.await();
             } catch (Exception ignored) {
                 System.out.println("isInterrupted: " + Thread.currentThread().isInterrupted());
             }
+            int j = 0;
+            for (int i = 0; i < 100000; i++) {
+                j += i;
+            }
+            System.out.println(j);
 
             lock.lock();
             try {
-                System.out.println("7");
+                System.out.println("3");
             } finally {
-                System.out.println("8");
-                countDownLatch2.countDown();
+                System.out.println("4");
+                countDownLatch1.countDown();
                 lock.unlock();
             }
         });
-        t2.setName("test-thread2");
-        t2.start();
+        t1.setName("test-thread1");
+        t1.start();
         lock.lock();
         try {
-            System.out.println("5");
+            System.out.println("1");
         } finally {
-            System.out.println("6");
-            countDownLatch3.countDown();
+            System.out.println("2");
+            countDownLatch2.countDown();
+            try {
+                // 休眠一段时间，让t2开始求锁，然后再解锁
+                Thread.sleep(1000L);
+            } catch (Exception e) {
+
+            }
+            t1.interrupt();
+
             lock.unlock();
-            t2.interrupt();
+            t1.interrupt();
 //            t2.interrupt();
 
             /**
@@ -140,7 +81,7 @@ class MyMutexTest {
              *                     setHead(node);
              *                     p.next = null; // help GC
              *                     failed = false;
-             *                     // 理论上这里会返回 true
+             *                     // 不管是否中断，都从这里 return
              *                     return interrupted;
              *                 }
              *                 if (shouldParkAfterFailedAcquire(p, node) &&
@@ -154,9 +95,26 @@ class MyMutexTest {
              *         }
              *     }
              *
+             *     public final void acquire(int arg) {
+             *         if (!tryAcquire(arg) &&
+             *             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+             *             // 如果 acquireQueued 方法返回true，断点到这一行
+             *             selfInterrupt();
+             *
+             *             // 否则断点到这一行即不做 selfInterrupt
+             *     }
+             *
+             *    private final boolean parkAndCheckInterrupt() {
+             *         LockSupport.park(this);
+             *         // 这是一个清理线程状态的 testMethod()
+             *         return Thread.interrupted();
+             *     }
+             *
+             *   然后断点到第二个线程 lock() 之类的代码
+             *
              */
         }
-        countDownLatch2.wait();
+        countDownLatch1.await();
         Thread.sleep(10000L);
 
     }
