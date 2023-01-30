@@ -21,11 +21,18 @@ class MyMutexTest {
     void tearDown() {
     }
 
+
+    /**
+     * 这个实验的问题是，无法复现求锁的子线程从被中断状态下退出的场景
+     * 是不是只有从 os 层面干预线程，才能触发这一点？
+     *
+     * @throws InterruptedException 中断异常
+     */
     @Test
     void testLockProcedure() throws InterruptedException {
         Lock lock = new ReentrantLock();
 
-        CountDownLatch countDownLatch1 = new CountDownLatch(1);
+//        CountDownLatch countDownLatch1 = new CountDownLatch(1);
         CountDownLatch countDownLatch2 = new CountDownLatch(1);
 
         Thread t1 = new Thread(() -> {
@@ -34,18 +41,20 @@ class MyMutexTest {
             } catch (Exception ignored) {
                 System.out.println("isInterrupted: " + Thread.currentThread().isInterrupted());
             }
+
+            // 用 while 而不是 sleep，这样就不怕 interrupt 被阻塞 api 抛出异常来响应了
             int j = 0;
             for (int i = 0; i < 100000; i++) {
                 j += i;
             }
             System.out.println(j);
-
+            Thread.currentThread().interrupt();
             lock.lock();
             try {
                 System.out.println("3");
             } finally {
                 System.out.println("4");
-                countDownLatch1.countDown();
+//                countDownLatch1.countDown();
                 lock.unlock();
             }
         });
@@ -64,9 +73,7 @@ class MyMutexTest {
 
             }
             t1.interrupt();
-
             lock.unlock();
-            t1.interrupt();
 //            t2.interrupt();
 
             /**
@@ -114,7 +121,8 @@ class MyMutexTest {
              *
              */
         }
-        countDownLatch1.await();
+//        countDownLatch1.await();
+        t1.join();
         Thread.sleep(10000L);
 
     }
