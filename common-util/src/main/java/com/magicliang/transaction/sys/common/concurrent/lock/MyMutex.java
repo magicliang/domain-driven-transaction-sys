@@ -10,11 +10,13 @@ import java.util.concurrent.locks.Lock;
 /**
  * 一个自定义互斥器的实例
  * FROM：https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#tryAcquire-int-
+ * 通常 sync 都是保内声明包内可见的，这样才能把锁语义和同步器语义分离出来。我们应该明确理解这一点：
+ * lock 依托于 sync，但 sync 并不只是简单、狭义的 lock，否则也不足以拿来实现 semaphore 这类东西。
  *
  * @author liangchuan
  */
 @Slf4j
-public class MyMutex implements Lock {
+class MyMutex implements Lock {
 
     /**
      * 如果这个类型不被 Spring 管理，则不需要面向父类型编程
