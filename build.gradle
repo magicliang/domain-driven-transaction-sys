@@ -61,6 +61,7 @@ dependencyManagement {
 // 分离单元测试和集成测试需要仔细阅读这几个帖子：
 // https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
 // https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
+// 搜索关键词为：separate unit test and integration test
 test {
     useJUnitPlatform()
 }
