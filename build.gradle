@@ -1,4 +1,7 @@
 // Spring boot 的最新官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/
+// https://huangxshuo.github.io/2021/03/04/apply%20plugin%E5%92%8Cplugins%E4%B8%A4%E7%A7%8D%E5%BA%94%E7%94%A8gradle%E6%8F%92%E4%BB%B6%E7%9A%84%E5%8C%BA%E5%88%AB/
+
+// 如果是在官方仓库里能找到的插件，则 resolve 和 apply 可以用这种写法统一声明，这也实现了自动的 apply true
 plugins {
     // 中文使用指南：https://www.jianshu.com/p/01588c396a29
     id 'org.springframework.boot' version '2.7.4'
@@ -53,6 +56,12 @@ dependencyManagement {
     }
 }
 
+// 关于复合 sourceSet，可以参考：https://groups.google.com/g/adt-dev/c/EXdoKIMX0wg
+
+// 分离单元测试和集成测试需要仔细阅读这几个帖子：
+// https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
+// https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
+// 搜索关键词为：separate unit test and integration test
 test {
     useJUnitPlatform()
 }
@@ -60,6 +69,7 @@ test {
 // 指定插件作用于子项目
 subprojects {
     // 插件 apply plugin，version 语法不一样
+    // 如果在上下文的一处已经做过 artifact version resolve 的动作，则在另一处（在本例中是 subproject 里）可以使用这种老式的放来来 apply plugin
     apply plugin: 'java'
     apply plugin: 'java-library'
 
