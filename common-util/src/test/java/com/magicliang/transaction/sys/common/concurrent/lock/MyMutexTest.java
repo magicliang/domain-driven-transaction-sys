@@ -108,6 +108,7 @@ class MyMutexTest {
              *         if (!tryAcquire(arg) &&
              *             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
              *             // 如果 acquireQueued 方法返回true，断点到这一行
+             *             // 如果 while interrupt 循环足够多，是可以从这一步跑出去的
              *             selfInterrupt();
              *
              *             // 否则断点到这一行即不做 selfInterrupt
