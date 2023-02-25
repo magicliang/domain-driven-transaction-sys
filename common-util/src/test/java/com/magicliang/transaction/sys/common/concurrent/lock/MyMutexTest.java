@@ -32,12 +32,11 @@ class MyMutexTest {
     void testLockProcedure() throws InterruptedException {
         Lock lock = new ReentrantLock();
 
-//        CountDownLatch countDownLatch1 = new CountDownLatch(1);
-        CountDownLatch countDownLatch2 = new CountDownLatch(1);
+        CountDownLatch countDownLatch1 = new CountDownLatch(1);
 
         Thread t1 = new Thread(() -> {
             try {
-                countDownLatch2.await();
+                countDownLatch1.await();
             } catch (Exception ignored) {
                 System.out.println("isInterrupted: " + Thread.currentThread().isInterrupted());
             }
@@ -48,13 +47,13 @@ class MyMutexTest {
                 j += i;
             }
             System.out.println(j);
+            // 在lock 内部可能检测不到这个中断，需要外部频繁中断为好
             Thread.currentThread().interrupt();
             lock.lock();
             try {
                 System.out.println("3");
             } finally {
                 System.out.println("4");
-//                countDownLatch1.countDown();
                 lock.unlock();
             }
         });
@@ -65,19 +64,22 @@ class MyMutexTest {
             System.out.println("1");
         } finally {
             System.out.println("2");
-            countDownLatch2.countDown();
+            countDownLatch1.countDown();
             try {
                 // 休眠一段时间，让t2开始求锁，然后再解锁
                 Thread.sleep(1000L);
             } catch (Exception e) {
 
             }
-            t1.interrupt();
+            // 中断一千次
+            for (int i = 0; i < 1000; i++) {
+                t1.interrupt();
+            }
+            Thread.sleep(10000L);
             lock.unlock();
 //            t2.interrupt();
 
             /**
-             * 理论上上一行跑完
              * final boolean acquireQueued(final Node node, int arg) {
              *         boolean failed = true;
              *         try {
@@ -117,11 +119,9 @@ class MyMutexTest {
              *         return Thread.interrupted();
              *     }
              *
-             *   然后断点到第二个线程 lock() 之类的代码
              *
              */
         }
-//        countDownLatch1.await();
         t1.join();
         Thread.sleep(10000L);
 
