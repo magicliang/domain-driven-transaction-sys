@@ -2,6 +2,7 @@ package com.magicliang.transaction.sys.common.concurrent.lock;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
@@ -20,7 +21,7 @@ class MyMutex implements Lock {
 
     /**
      * 如果这个类型不被 Spring 管理，则不需要面向父类型编程
-     * 因为每个类
+     * 此时还需要专门考虑反序列化时，找到 concrete empty constructor 的问题
      */
     private final MySynchronizer sync = new MySynchronizer();
 
@@ -42,6 +43,7 @@ class MyMutex implements Lock {
      */
     @Override
     public void lock() {
+        // lock 和 acquire 的主要差距之一就是，lock 无参数，而 acquire 有参数。
         sync.acquire(1);
         log.info("Thread acquired lock: " + Thread.currentThread().getName());
         System.out.println("Thread acquired lock: " + Thread.currentThread().getName());
@@ -98,7 +100,6 @@ class MyMutex implements Lock {
         sync.acquireInterruptibly(1);
         log.info("Thread acquired lock interruptibly: " + Thread.currentThread().getName());
         System.out.println("Thread acquired lock interruptibly: " + Thread.currentThread().getName());
-
     }
 
     /**
@@ -252,7 +253,7 @@ class MyMutex implements Lock {
      * 这个设计模式告诉我们，每个 mutex 类型的真正语义的实现，最好使用一个 utility helper class 来实现，然后让这个 concrete lock implementation delegate 自己的行为到这个 helper 的内部实现上。
      * 如 ReentrantLock、Semaphore 都使用一个标准的内部自定义 Sync 来表达自己的并发控制语义。
      * <p>
-     * 本类只实现了 try 系列方法，即 tryAcquire 和 tryRelease。因为它们也是 acquire 和 release 的技术底座，这就可以得到一个最基本的 sync 了
+     * 本类只实现了 try 系列方法，即 tryAcquire 和 tryRelease。因为它们也是 acquire 和 release 的技术底座，因为基础的 AQS 在 acquire 里面实现了 CLH queue 的方法，这就可以得到一个最基本的 sync 了
      */
     private static class MySynchronizer extends AbstractQueuedSynchronizer {
 
@@ -273,7 +274,8 @@ class MyMutex implements Lock {
          */
         @Override
         protected boolean isHeldExclusively() {
-            return 1 == getState();
+            // 有一个隐式的假设，getExclusiveQueuedThreads不为空，则 state 必定大于0。
+            return Objects.equals(getExclusiveQueuedThreads(), Thread.currentThread());
         }
 
         /**
@@ -305,10 +307,19 @@ class MyMutex implements Lock {
         @Override
         protected boolean tryAcquire(int arg) {
             assert 1 == arg;
-            if (compareAndSetState(0, arg)) {
-                setExclusiveOwnerThread(Thread.currentThread());
-                return true;
+            int state = getState();
+            Thread thread = Thread.currentThread();
+            if (state == 0) {
+                // 如果是不允许重入的mutex，其实只有这三行就够了
+                if (compareAndSetState(0, arg)) {
+                    setExclusiveOwnerThread(Thread.currentThread());
+                    return true;
+                }
+            } else if (getExclusiveOwnerThread() == thread) {
+                // 其实如果是不允许重入的锁，则此处不管等于不等于都需要返回false，如果允许重入，则此处要差别对待，实现对 state 的累加
+                return false;
             }
+
             return false;
         }
 
@@ -338,7 +349,12 @@ class MyMutex implements Lock {
         protected boolean tryRelease(int arg) {
             // 因为是互斥锁，所以断言 state 参数只能用 1
             assert 1 == arg;
-            if (getState() == 0 || getExclusiveOwnerThread() != Thread.currentThread()) {
+            // 因为此处的比对只有单线程才会比对成功，所以下面就不用cas 设置来 release
+            if (getExclusiveOwnerThread() != Thread.currentThread()) {
+                return false;
+            }
+            // 如果支持空归还，则此处不应该抛出异常，要返回 true 才对
+            if (getState() == 0) {
                 // 解状态可以抛出 IllegalMonitorStateException
                 throw new IllegalMonitorStateException();
             }
