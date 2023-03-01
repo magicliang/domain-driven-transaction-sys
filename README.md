@@ -36,8 +36,9 @@ TODO：
 gradle test 
 
 gradle clean test
+# 执行具体的测试需要 build 完成，如果没有妥善构建完成也可能找不到测试
 
-# Executes all tests in SomeTestClass
+# Executes all tests in SomeTestClass 
 gradle test --tests com.magicliang.transaction.sys.aop.factory.ProxyFactoryTest 
 
 # Executes a single specified test in SomeTestClass
