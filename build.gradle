@@ -48,6 +48,10 @@ dependencies {
 //    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 //    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //    testImplementation 'io.projectreactor:reactor-test'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+//        testCompileOnly 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 dependencyManagement {
@@ -68,7 +72,15 @@ dependencyManagement {
  * 搜索关键词为：separate unit test and integration test
  */
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        includeEngines 'junit-vintage'
+//        includeEngines 'junit-jupiter'
+        // excludeEngines 'junit-jupiter'
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+
+    }
 }
 
 // 指定插件作用于子项目
@@ -117,13 +129,19 @@ subprojects {
     }
 
     test {
-        useJUnitPlatform()
+//        useJUnitPlatform()
+
+        useJUnitPlatform {
+            includeEngines 'junit-vintage'
+//        includeEngines 'junit-jupiter'
+            // excludeEngines 'junit-jupiter'
+        }
     }
 
-    task testReport(type: TestReport) {
-        destinationDir = file("$buildDir/reports/allTests")
-        // Include the results from the `test` task in all subprojects
-    }
+//    task testReport(type: TestReport) {
+////        destinationDir = file("$buildDir/reports/allTests")
+//        // Include the results from the `test` task in all subprojects
+//    }
 }
 
 bootJar {
@@ -133,6 +151,12 @@ bootJar {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+// 这个配置在当代的 gradle 里暂时占不到用处了，$buildDir 专指每个 module 的 build
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+//     Include the results from the `test` task in all subprojects
 }
 
 //// Configuring the wrapper, the old way (gradle < 4.8 )
