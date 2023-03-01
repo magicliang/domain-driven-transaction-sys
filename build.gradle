@@ -36,6 +36,12 @@ ext {
     set('springCloudVersion', "2021.0.4")
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
     // 非官方版本的 starter 列表：https://www.javatpoint.com/spring-boot-starters
     // 这些依赖列在这里，不会影响 subProjects，其一般用处是，列出潜在的 starter 依赖列表
@@ -53,11 +59,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
+
+// 不在这一层使用这个配置，也能从根部运行全部的测试，但要运行具名的测试，需要 cd 到具体的目录下
+//test {
+//    // 这个配置很关键，会让 platform 找到 jupiter 包相关的测试
+//    useJUnitPlatform()
+//}
 
 // 指定插件作用于子项目
 subprojects {
