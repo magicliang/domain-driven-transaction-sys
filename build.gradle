@@ -13,7 +13,7 @@ plugins {
 
 group = 'com.magicliang'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+
 
 // 需要这个配置才能让 gradlew build 通过
 configurations {
@@ -69,6 +69,9 @@ subprojects {
     // 只要子项目激活这两个 plugin 就可以启动，但如果子模块没有这两个配置，则不能使用 bootJar 之类的配置
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
 
     configurations {
 //		all*.exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
