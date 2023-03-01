@@ -46,6 +46,15 @@ gradle test --tests 'com.magicliang.transaction.sys.DomainDrivenTransactionSysAp
 gradle test --tests com.magicliang.transaction.sys.DomainDrivenTransactionSysApplicationIntegrationTest.*test*
 
 gradle test --tests "org.gradle.SomeTestClass.some method containing spaces"
+
+
+./gradlew clean  test --tests com.magicliang.transaction.sys.aop.factory.ProxyFactoryTest 
+
+./gradlew clean test --tests 'com.magicliang.transaction.sys.DomainDrivenTransactionSysApplicationIntegrationTest.testGetWildCardType'
+
+./gradlew clean test --tests com.magicliang.transaction.sys.DomainDrivenTransactionSysApplicationIntegrationTest.*test*
+
+./gradlew clean test --tests "org.gradle.SomeTestClass.some method containing spaces"
 ```
 
 # 架构解说
