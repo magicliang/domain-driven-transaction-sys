@@ -56,12 +56,17 @@ dependencyManagement {
     }
 }
 
-// 关于复合 sourceSet，可以参考：https://groups.google.com/g/adt-dev/c/EXdoKIMX0wg
-
-// 分离单元测试和集成测试需要仔细阅读这几个帖子：
-// https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
-// https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
-// 搜索关键词为：separate unit test and integration test
+/*
+ * 关于复合 sourceSet，可以参考：
+ * https://groups.google.com/g/adt-dev/c/EXdoKIMX0wg
+ * https://docs.gradle.org/current/userguide/building_java_projects.html#sec:custom_java_source_set_paths
+ * 分离单元测试和集成测试需要仔细阅读这几个帖子：
+ * https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
+ * https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
+ * https://docs.gradle.org/current/userguide/java_testing.html#sec:configuring_java_integration_tests
+ * https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#jvm_test_suite_plugin
+ * 搜索关键词为：separate unit test and integration test
+ */
 test {
     useJUnitPlatform()
 }
@@ -113,6 +118,11 @@ subprojects {
 
     test {
         useJUnitPlatform()
+    }
+
+    task testReport(type: TestReport) {
+        destinationDir = file("$buildDir/reports/allTests")
+        // Include the results from the `test` task in all subprojects
     }
 }
 

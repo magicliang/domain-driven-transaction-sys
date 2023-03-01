@@ -1,4 +1,4 @@
-package com.magicliang.transaction.sys.biz.service.impl.facade.impl;
+package biz.service.impl.facade.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
