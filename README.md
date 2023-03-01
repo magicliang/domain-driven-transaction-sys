@@ -27,6 +27,27 @@ TODO：
 
 `./gradlew clean build -x test --stacktrace`
 
+## how to test it
+
+```bash
+# 单引号双引号都可要圈起来特殊的字符，google 搜索 gradle test filtering
+# 可以切换到 ./gradlew clean 版本
+
+gradle test 
+
+gradle clean test
+
+# Executes all tests in SomeTestClass
+gradle test --tests com.magicliang.transaction.sys.aop.factory.ProxyFactoryTest 
+
+# Executes a single specified test in SomeTestClass
+gradle test --tests 'com.magicliang.transaction.sys.DomainDrivenTransactionSysApplicationIntegrationTest.testGetWildCardType'
+
+gradle test --tests com.magicliang.transaction.sys.DomainDrivenTransactionSysApplicationIntegrationTest.*test*
+
+gradle test --tests "org.gradle.SomeTestClass.some method containing spaces"
+```
+
 # 架构解说
 
 ## 经典 gradle 架构

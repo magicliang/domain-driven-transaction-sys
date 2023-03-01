@@ -32,6 +32,16 @@ jar {
     enabled = true
 }
 
+/*
+ * 在这里只是做了一个小小的修改，让 test 拥有自己的两个 source src，然后它天然的 classpath、test task 都复用原来的（没有单独的 integration task），
+ * 如果有必要需要单独 filter test 来使用测试
+ * 还有别的方法，声明两个 source set：unit 和 integration，每个 source set 都拥有自己的 srcDir、classpath、test classpath、outputdir、test task，
+ * 我们这样做其实起到了共用 classpath、test classpath、outputdir、test task，而区别 srcDir 的作用
+ */
+sourceSets {
+    test.java.srcDirs = ['src/test/integration/java', 'src/test/unit/java']
+}
+
 //sourceSets {
 //    main {
 //        java {
