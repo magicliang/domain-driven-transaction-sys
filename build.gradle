@@ -131,7 +131,10 @@ subprojects {
  * 搜索关键词为：separate unit test and integration test
  */
     test {
-        // 这个配置很关键，会让 platform 找到 jupiter 包相关的测试
+        /*
+         * 这个配置很关键，会让 platform 找到 jupiter 包相关的测试，大致上是激活了 TestEngine 相关的功能，让我们不需要使用 @RunWith(JUnitPlatform.class) 相关的注解。
+         * 当然，大部分的 IDE 或者 build tools 会自动识别和激活一个缺省的 runner，我们总能得到一个不知道是什么的 runner
+         */
         useJUnitPlatform {
             // 这里面任意一个不打开，即可以让 jupiter 相关的 api 自动搜索到相关测试
 //        includeEngines 'junit-vintage'
