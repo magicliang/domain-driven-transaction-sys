@@ -13,7 +13,7 @@ plugins {
 
 group = 'com.magicliang'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+
 
 // 需要这个配置才能让 gradlew build 通过
 configurations {
@@ -36,6 +36,12 @@ ext {
     set('springCloudVersion', "2021.0.4")
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
     // 非官方版本的 starter 列表：https://www.javatpoint.com/spring-boot-starters
     // 这些依赖列在这里，不会影响 subProjects，其一般用处是，列出潜在的 starter 依赖列表
@@ -50,38 +56,15 @@ dependencies {
 //    testImplementation 'io.projectreactor:reactor-test'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-//        testCompileOnly 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
 
-/*
- * 关于复合 sourceSet，可以参考：
- * https://groups.google.com/g/adt-dev/c/EXdoKIMX0wg
- * https://docs.gradle.org/current/userguide/building_java_projects.html#sec:custom_java_source_set_paths
- * 分离单元测试和集成测试需要仔细阅读这几个帖子：
- * https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
- * https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
- * https://docs.gradle.org/current/userguide/java_testing.html#sec:configuring_java_integration_tests
- * https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#jvm_test_suite_plugin
- * 搜索关键词为：separate unit test and integration test
- */
-test {
-    useJUnitPlatform {
-        includeEngines 'junit-vintage'
-//        includeEngines 'junit-jupiter'
-        // excludeEngines 'junit-jupiter'
-        testLogging {
-            events("passed", "skipped", "failed")
-        }
-
-    }
-}
+// 不在这一层使用这个配置，也能从根部运行全部的测试，但要运行具名的测试，需要 cd 到具体的目录下
+//test {
+//    // 这个配置很关键，会让 platform 找到 jupiter 包相关的测试
+//    useJUnitPlatform()
+//}
 
 // 指定插件作用于子项目
 subprojects {
@@ -93,6 +76,9 @@ subprojects {
     // 只要子项目激活这两个 plugin 就可以启动，但如果子模块没有这两个配置，则不能使用 bootJar 之类的配置
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
 
     configurations {
 //		all*.exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
@@ -121,23 +107,37 @@ subprojects {
 //					exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-//        testCompileOnly 'org.junit.jupiter:junit-jupiter-api:5.7.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
         testCompileOnly 'org.projectlombok:lombok:1.18.24'
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
     }
 
+/*
+ * 对于测试来讲，子项目的配置是更重要的，这个配置写在外面不生效
+ * 关于复合 sourceSet，可以参考：
+ * https://groups.google.com/g/adt-dev/c/EXdoKIMX0wg
+ * https://docs.gradle.org/current/userguide/building_java_projects.html#sec:custom_java_source_set_paths
+ * 分离单元测试和集成测试需要仔细阅读这几个帖子：
+ * https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
+ * https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
+ * https://docs.gradle.org/current/userguide/java_testing.html#sec:configuring_java_integration_tests
+ * https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#jvm_test_suite_plugin
+ * 搜索关键词为：separate unit test and integration test
+ */
     test {
-//        useJUnitPlatform()
-
+        // 这个配置很关键，会让 platform 找到 jupiter 包相关的测试
         useJUnitPlatform {
-            includeEngines 'junit-vintage'
+            // 这里面任意一个不打开，即可以让 jupiter 相关的 api 自动搜索到相关测试
+//        includeEngines 'junit-vintage'
 //        includeEngines 'junit-jupiter'
             // excludeEngines 'junit-jupiter'
+            testLogging {
+                events("passed", "skipped", "failed")
+            }
+
         }
     }
-
 //    task testReport(type: TestReport) {
 ////        destinationDir = file("$buildDir/reports/allTests")
 //        // Include the results from the `test` task in all subprojects
@@ -154,10 +154,10 @@ tasks.withType(JavaCompile) {
 }
 
 // 这个配置在当代的 gradle 里暂时占不到用处了，$buildDir 专指每个 module 的 build
-task testReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/allTests")
-//     Include the results from the `test` task in all subprojects
-}
+//task testReport(type: TestReport) {
+//    destinationDir = file("$buildDir/reports/allTests")
+////     Include the results from the `test` task in all subprojects
+//}
 
 //// Configuring the wrapper, the old way (gradle < 4.8 )
 //// see https://docs.gradle.org/4.4/userguide/gradle_wrapper.html#sec:wrapper_generation
