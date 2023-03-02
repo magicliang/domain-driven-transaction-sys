@@ -28,6 +28,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 基于 Spring 的集成测试层，每次跑测试都要启动 Spring 容器，只有集成测试才需要使用这个东西
+ * <p>
+ * 传统的测试通常还需要 @RunWith(SpringRunner.class)，但这个 SpringRunner 实际上是一个 JUnit 4 的 runner 的子类，在当代应该被逐渐淘汰了
  *
  * @author magicliang
  */
