@@ -29,7 +29,24 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * 基于 Spring 的集成测试层，每次跑测试都要启动 Spring 容器，只有集成测试才需要使用这个东西
  * <p>
+ * 标准的集成测试要求：
+ * 1. 启动完整的上下文，而没 mockEnviroment，mockMvc
+ * 2. 连接真正的 enterprise infrastructure，即连接真正的数据库
+ * 3. deploy a real server，占据真实的端口号
+ * <p>
+ * 这些测试比较慢，是 Time Consuming 的，通常在 check 的比较靠后的一步，在单元测试后执行。
+ * <p>
  * 传统的测试通常还需要 @RunWith(SpringRunner.class)，但这个 SpringRunner 实际上是一个 JUnit 4 的 runner 的子类，在当代应该被逐渐淘汰了
+ * 博客实战：：
+ * https://www.baeldung.com/integration-testing-in-spring
+ * https://www.baeldung.com/spring-boot-testing
+ * https://zhuanlan.zhihu.com/p/111418479
+ * https://ithelp.ithome.com.tw/articles/10196471
+ * https://www.cnblogs.com/myitnews/p/12330297.html
+ * 官方原理：
+ * https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html#integration-testing
+ * https://spring.io/guides/gs/testing-web/
+ * </p>
  *
  * @author magicliang
  */
