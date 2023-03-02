@@ -30,6 +30,9 @@ TODO：
 ## how to test it
 
 ```bash
+# 测试和汇总测试报告
+./gradlew testAggregateTestReport
+
 # 单引号双引号都可要圈起来特殊的字符，google 搜索 gradle test filtering
 # 可以切换到 ./gradlew clean 版本
 

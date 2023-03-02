@@ -10,6 +10,8 @@ plugins {
     id 'java'
     id 'java-library'
     // 这些配置会让我们的项目可以从根部进行 gradle clean build，然后也能生成 report
+
+    // test 其实是一个 conventional test suit，它也是可配置的 https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:declare_an_additional_test_suite
     id 'jvm-test-suite'
     id 'test-report-aggregation'
 }
@@ -154,6 +156,12 @@ bootJar {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+
+// make aggregate test report generation part of the 'check' lifecycle phase
+tasks.named('check') {
+    dependsOn tasks.named('testAggregateTestReport', TestReport)
 }
 
 // 这个配置在当代的 gradle 里暂时占不到用处了，$buildDir 专指每个 module 的 build
