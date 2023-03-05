@@ -18,6 +18,7 @@ TODO：
 10. 实现对值对象的构建
 11. 补完 JPA 的映射方法
 12. 补完 MyBatis的映射方法
+13. 要实现动态生成或者 immutable list 的 DRM/MCC/apollo/rainbow 实现方案
 
 ## how to build it
 
