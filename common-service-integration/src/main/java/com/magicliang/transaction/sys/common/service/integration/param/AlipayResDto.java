@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
  * description: 支付宝响应 dto
  * 所有的 dto 的标配都应该是 @Data、@NoArgsConstructor、@AllArgsConstructor
  * 在特定情景下 builder 会编译不过，不可过度依赖，如果缺乏无参构造器 + setter，Jackson 注定失败
+ * 但在 传统的 ddd 实现里，dto 本身是需要实现为 immutable 的，需要用 final + 构造器来实现，和 jackson 的默认行为相互矛盾。
+ * FIXME：如何解这个问题？
  *
  * @author magicliang
  * <p>
