@@ -1,27 +1,24 @@
 # domain-driven-transaction-sys
 
-**一个领域驱动设计的交易系统的例子**
-
-1. 补完 MyBatis的映射方法
-2. 补完在 Java 单机场景下的集成测试用例和单元测试用例
-3. 容器化
-4. 脚本容器化
-5. 补完 JPA 的映射方法
+**一个领域驱动设计的交易系统的例子*
 
 TODO：一个留给我自己的问题：我到底要不要让这个服务构造成一个 k8s 的微服务，要不要把所有最佳实践引入这个开源项目里来？
 
 TODO：
 
-1. 梳理 gradle task。
+1. 梳理 gradle task。补完在 Java 单机场景下的集成测试用例和单元测试用例
 2. 实现一个 Spring WebFlux 的 reactor controller。
 3. 引入 mariadb4j 做集成测试用。
-4. docker 化：准备加一个带有 MySQL 的 k8s 集群。
+4. 脚本 docker 化：准备加一个带有 MySQL 的 k8s 集群。
 5. mock 支付环节。
 6. 写模型设计和系统分层的输入。
 7. 实现线程池开源化。
 8. 实现基于db 的最大努力型事务。
-9. 实现对aggregate root的工厂方法化
+9. 实现对 aggregate root 的工厂方法化
 10. 实现对值对象的构建
+11. 补完 JPA 的映射方法
+12. 补完 MyBatis的映射方法
+13. 要实现动态生成或者 immutable list 的 DRM/MCC/apollo/rainbow 实现方案
 
 ## how to build it
 

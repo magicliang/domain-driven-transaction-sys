@@ -19,7 +19,6 @@ class MyMutexTest {
     void tearDown() {
     }
 
-
     @Test
     void testMutexProcedure() throws InterruptedException {
         MyMutex mutex = new MyMutex();
