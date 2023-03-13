@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 支付宝响应 dto
+ * 所有的 dto 的标配都应该是 @Data、@NoArgsConstructor、@AllArgsConstructor
+ * 在特定情景下 builder 会编译不过，不可过度依赖，如果缺乏无参构造器 + setter，Jackson 注定失败
  *
  * @author magicliang
  * <p>
