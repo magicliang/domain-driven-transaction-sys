@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -162,6 +163,7 @@ public class HttpRequestContextContainer {
      */
     private void initCachedHeaders() {
         final Enumeration<String> headerNames = wrappedRequest.getHeaderNames();
+        cachedHeaders = new LinkedMultiValueMap<>();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             final Enumeration<String> headers = wrappedRequest.getHeaders(headerName);
