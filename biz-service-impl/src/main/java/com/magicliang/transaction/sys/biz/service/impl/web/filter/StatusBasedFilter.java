@@ -1,6 +1,9 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.filter;
 
+import com.magicliang.transaction.sys.biz.service.impl.web.util.WebUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.FilterChain;
@@ -28,6 +31,7 @@ import java.util.Map.Entry;
  * date: 2022-11-15 11:31
  */
 //@Component
+@Slf4j
 public class StatusBasedFilter extends OncePerRequestFilter {
 
     @Override
@@ -35,9 +39,19 @@ public class StatusBasedFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // 如果要记录 response，使用 ContentCachingResponseWrapper，参考这篇文章：https://cloud.tencent.com/developer/article/1825102
-        final ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
+        // 包装HttpServletRequest，把输入流缓存下来
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(
+                request);
+        // 包装HttpServletResponse，把输出流缓存下来
+        ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(
+                response);
 
         filterChain.doFilter(request, wrappedResponse);
+
+        String requestBody = WebUtil.getBodyString(wrappedRequest);
+        String responseBody = WebUtil.getBodyString(wrappedResponse);
+        log.info("requestBody: " + requestBody);
+        log.info("responseBody: " + responseBody);
 
         /*
          * 要输出原始的响应则可以使用这样的方法：
@@ -128,6 +142,5 @@ public class StatusBasedFilter extends OncePerRequestFilter {
     private static boolean isClientError(int code) {
         return ((400 <= code) && (code <= 499));
     }
-
 
 }
