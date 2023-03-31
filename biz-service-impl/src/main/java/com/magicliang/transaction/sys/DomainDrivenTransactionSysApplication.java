@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PreDestroy;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.util.Arrays;
 
 /**
@@ -107,6 +110,26 @@ public class DomainDrivenTransactionSysApplication {
         @Override
         public void run(String... args) throws Exception {
             log.info("init taskCenter");
+
+            readSpecialFile();
+        }
+
+        private void readSpecialFile() throws IOException {
+            InputStream inputStream = getClass().getResourceAsStream("/application.yml");
+            final int available = inputStream.available();
+            byte[] buffer = new byte[available];
+            // 在缺省情况下 PushbackInputStream 能够 push back 的字符只有一个，超过 1 个就会出错：Push back buffer is full，我们需要把它提前初始化好
+            PushbackInputStream pushbackInputStream = new PushbackInputStream(inputStream, available);
+            int bytesRead = pushbackInputStream.read(buffer);
+            // 当这一步读完了以后，inputStream.available() 就会降为 0
+            String s1 = new String(buffer);
+            log.info("Read " + bytesRead + " bytes: " + s1);
+            pushbackInputStream.unread(buffer);
+            // 或者 pushbackInputStream.available()
+            buffer = new byte[available];
+            bytesRead = pushbackInputStream.read(buffer);
+            final String s2 = new String(buffer);
+            log.info("Read " + bytesRead + " bytes: " + s2);
         }
 
         /**
