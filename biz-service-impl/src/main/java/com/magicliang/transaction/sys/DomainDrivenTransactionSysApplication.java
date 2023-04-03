@@ -124,6 +124,7 @@ public class DomainDrivenTransactionSysApplication {
             // 当这一步读完了以后，inputStream.available() 就会降为 0
             String s1 = new String(buffer);
             log.info("Read " + bytesRead + " bytes: " + s1);
+            // 回写对于底层的原始输入流而言，是无用的，回写的是这个输入流的 buf
             pushbackInputStream.unread(buffer);
             // 或者 pushbackInputStream.available()
             buffer = new byte[available];
