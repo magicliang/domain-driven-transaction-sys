@@ -1,5 +1,6 @@
 package com.magicliang.transaction.sys.common.concurrent.lock;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author liangchuan
  */
+@Slf4j
 class MyMutexTest {
 
     @BeforeEach
@@ -50,4 +52,5 @@ class MyMutexTest {
         }
         Thread.sleep(10000L);
     }
+
 }
