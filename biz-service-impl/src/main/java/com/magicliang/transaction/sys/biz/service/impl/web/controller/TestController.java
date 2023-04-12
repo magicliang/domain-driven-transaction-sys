@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,10 +70,23 @@ public class TestController {
      */
     @GetMapping("/json")
     @ResponseBody
-    public Map<String, String> json() {
+    public Map<String, String> json(HttpServletResponse response) {
         Map<String, String> map = new HashMap<>();
         map.put("1", "a");
         map.put("b", "2");
+
+        // Building cookies
+        ResponseCookie cookie = ResponseCookie.from("myCookie", "myCookieValue") // key & value
+                .httpOnly(true)
+                .secure(false)
+                .domain("localhost")  // host
+                //    .path("/")      // path
+                .maxAge(Duration.ofHours(1))
+                .sameSite("none")  // sameSite
+                .build();
+
+        // Response to the client
+        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return map;
     }
 
