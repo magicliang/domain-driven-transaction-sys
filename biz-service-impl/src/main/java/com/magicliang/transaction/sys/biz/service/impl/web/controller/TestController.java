@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -67,6 +69,18 @@ public class TestController {
         map.put("1", "a");
         map.put("b", "2");
         return map;
+    }
+
+    @GetMapping("/redirect1")
+    public RedirectView redirect1(RedirectAttributes attributes) {
+        return new RedirectView("https://www.baidu.com");
+    }
+
+
+    @GetMapping("/redirect2")
+    public String redirect2(RedirectAttributes attributes) {
+        // not working
+        return "redirect:" + "https://www.baidu.com";
     }
 
     @GetMapping("/downloadmultimedia")
