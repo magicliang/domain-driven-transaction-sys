@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,14 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,6 +85,25 @@ public class TestController {
     public String redirect2(RedirectAttributes attributes) {
         // not working
         return "redirect:" + "https://www.baidu.com";
+    }
+
+    @GetMapping("/redirect3")
+    public ResponseEntity<Void> redirect3(HttpServletResponse response) {
+        Cookie cookie1 = new Cookie("name", "123");
+        cookie1.setDomain("www.baidu.com");
+        cookie1.setPath("/");
+        cookie1.setMaxAge(3600);
+
+        Cookie cookie2 = new Cookie("foo", "bar");
+        cookie2.setDomain("www.baidu.com");
+        cookie2.setPath("/");
+        cookie2.setMaxAge(996);
+        response.addCookie(cookie1);
+        response.addCookie(cookie2);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("http://www.baidu.com"));
+        return new ResponseEntity<Void>(headers, HttpStatus.FOUND);
     }
 
     @GetMapping("/downloadmultimedia")
