@@ -170,6 +170,10 @@ public class AlgorithmTest {
         arr = new int[]{5, 3, 1, 2, 99, 34, 22, 57, 48};
         insertSort2(arr);
         System.out.println(Arrays.toString(arr));
+
+        arr = new int[]{5, 3, 1, 2, 99, 34, 22, 57, 48};
+        standardInsertSort(arr);
+        System.out.println(Arrays.toString(arr));
     }
 
     /**
@@ -224,13 +228,31 @@ public class AlgorithmTest {
         for (int i = 1; i < length; i++) {
             int key = arr[i];
             int j = i - 1;
-            int tmp = arr[j];
             // 逻辑归并以后的写法不如展开时容易理解，上一轮的状态在上一轮迭代已经完成了，每一轮的条件判定要单独做
-            while (j >= 0 && tmp > key) {
+            while (j >= 0 && arr[j] > key) {
                 // 先退一位，这样，这样 a[j] 总是可插入的
-                arr[j + 1] = tmp;
+                arr[j + 1] = arr[j];
                 j--;
             }
+            arr[j + 1] = key;
+        }
+    }
+
+    /**
+     * 根据 CLRS 的  psedocode 写出的算法
+     *
+     * @param arr 待排序数组
+     */
+    private void standardInsertSort(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            int key = arr[i];
+            // 对 0 而言，此时数组已经越界
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            // 到这里要么 j 连 0 都大于 key，要么找到了一个不能进入的区间的终点
             arr[j + 1] = key;
         }
     }
