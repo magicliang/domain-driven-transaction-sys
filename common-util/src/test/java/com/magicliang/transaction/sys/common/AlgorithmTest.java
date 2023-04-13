@@ -244,10 +244,12 @@ public class AlgorithmTest {
      * @param arr 待排序数组
      */
     private void standardInsertSort(int[] arr) {
+        // 在这个例子里，认为 i 应该是有序的，所以从 1 开始和从0开始都是一样的，但j要用j+1回正回这个区间，就比较麻烦
         for (int i = 0; i < arr.length; i++) {
             int key = arr[i];
             // 对 0 而言，此时数组已经越界
             int j = i - 1;
+            // 要详细比较所有的元素，包括0，在CLRS的伪代码里，j的起点是1，就会写作 > 0
             while (j >= 0 && arr[j] > key) {
                 arr[j + 1] = arr[j];
                 j--;
