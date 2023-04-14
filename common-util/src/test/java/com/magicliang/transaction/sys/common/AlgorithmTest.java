@@ -178,6 +178,17 @@ public class AlgorithmTest {
         arr = new int[]{105, -3, 11, 12, 199, 354, 1122, 5700, 4800};
         reverseInsertSort(arr);
         System.out.println(Arrays.toString(arr));
+
+        int[] a = new int[]{1, 0, 1, 1, 1, 1};
+        int[] b = new int[]{1, 0, 1, 1, 1, 1};
+        // 答案为 1011110，恰好是上述的数组左移一位
+        System.out.println(Arrays.toString(merge2BitArrs(a, b)));
+
+
+        int[] c = new int[]{1, 1, 1, 1};
+        int[] d = new int[]{1, 0, 1, 1, 1, 1};
+        // 111110
+        System.out.println(Arrays.toString(merge2BitArrs(c, d)));
     }
 
     /**
@@ -224,6 +235,7 @@ public class AlgorithmTest {
      * 等我们进入未处理的区间发现无须处理时，j- 1 + 1 = j 就是我们的处理点
      * 要从 check-do-check-do...check来理解平凡的 while 循环
      * 这也为我们的接下来引入快排做好了准备
+     *
      * @param arr 待排序数组
      */
     private void insertSort2(int[] arr) {
@@ -275,5 +287,42 @@ public class AlgorithmTest {
             }
             arr[j + 1] = key;
         }
+    }
+
+    private int[] merge2BitArrs(int[] a, int[] b) {
+        int tmp = 0;
+        int aLength = a.length;
+        int bLength = b.length;
+        int i = aLength - 1;
+        int j = bLength - 1;
+        int[] result = new int[(aLength > bLength ? a.length : b.length) + 1];
+        int k = result.length - 1;
+        while (i >= 0 || j >= 0) {
+            int e1 = i >= 0 ? a[i] : 0;
+            int e2 = j >= 0 ? b[j] : 0;
+            int tmpResult = e1 + e2 + tmp;
+            if (tmpResult > 1) {
+                // 每进一位，本位减 2
+                tmp = 1;
+                tmpResult -= 2;
+            } else {
+                // 否则，进位为 0
+                tmp = 0;
+            }
+            result[k] = tmpResult;
+            i--;
+            j--;
+            k--;
+        }
+        if (tmp >= 0) {
+            result[k] = tmp;
+        }
+        if (result[0] == 0) {
+            int newLength = result.length - 1;
+            int[] newResult = new int[newLength];
+            System.arraycopy(result, 1, newResult, 0, newLength);
+            return newResult;
+        }
+        return result;
     }
 }
