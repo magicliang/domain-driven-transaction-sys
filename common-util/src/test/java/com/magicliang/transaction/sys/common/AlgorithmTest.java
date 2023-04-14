@@ -174,6 +174,10 @@ public class AlgorithmTest {
         arr = new int[]{5, 3, 1, 2, 99, 34, 22, 57, 48};
         standardInsertSort(arr);
         System.out.println(Arrays.toString(arr));
+
+        arr = new int[]{105, -3, 11, 12, 199, 354, 1122, 5700, 4800};
+        reverseInsertSort(arr);
+        System.out.println(Arrays.toString(arr));
     }
 
     /**
@@ -255,6 +259,20 @@ public class AlgorithmTest {
                 j--;
             }
             // 到这里要么 j 连 0 都大于 key，要么找到了一个不能进入的区间的终点
+            arr[j + 1] = key;
+        }
+    }
+
+    public void reverseInsertSort(int[] arr) {
+        int length = arr.length;
+        for (int i = 1; i < length; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            // 在这里不许等号意味着稳定，允许等号意味着交换
+            while (j >= 0 && arr[j] < key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
             arr[j + 1] = key;
         }
     }
