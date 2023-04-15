@@ -314,7 +314,7 @@ public class AlgorithmTest {
             j--;
             k--;
         }
-        if (tmp >= 0) {
+        if (tmp > 0) {
             result[k] = tmp;
         }
         if (result[0] == 0) {
