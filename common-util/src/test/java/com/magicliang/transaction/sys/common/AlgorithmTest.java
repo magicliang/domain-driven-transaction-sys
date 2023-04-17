@@ -170,6 +170,25 @@ public class AlgorithmTest {
         arr = new int[]{5, 3, 1, 2, 99, 34, 22, 57, 48};
         insertSort2(arr);
         System.out.println(Arrays.toString(arr));
+
+        arr = new int[]{5, 3, 1, 2, 99, 34, 22, 57, 48};
+        standardInsertSort(arr);
+        System.out.println(Arrays.toString(arr));
+
+        arr = new int[]{105, -3, 11, 12, 199, 354, 1122, 5700, 4800};
+        reverseInsertSort(arr);
+        System.out.println(Arrays.toString(arr));
+
+        int[] a = new int[]{1, 0, 1, 1, 1, 1};
+        int[] b = new int[]{1, 0, 1, 1, 1, 1};
+        // 答案为 1011110，恰好是上述的数组左移一位
+        System.out.println(Arrays.toString(merge2BitArrs(a, b)));
+
+
+        int[] c = new int[]{1, 1, 1, 1};
+        int[] d = new int[]{1, 0, 1, 1, 1, 1};
+        // 111110
+        System.out.println(Arrays.toString(merge2BitArrs(c, d)));
     }
 
     /**
@@ -216,6 +235,7 @@ public class AlgorithmTest {
      * 等我们进入未处理的区间发现无须处理时，j- 1 + 1 = j 就是我们的处理点
      * 要从 check-do-check-do...check来理解平凡的 while 循环
      * 这也为我们的接下来引入快排做好了准备
+     *
      * @param arr 待排序数组
      */
     private void insertSort2(int[] arr) {
@@ -224,14 +244,85 @@ public class AlgorithmTest {
         for (int i = 1; i < length; i++) {
             int key = arr[i];
             int j = i - 1;
-            int tmp = arr[j];
             // 逻辑归并以后的写法不如展开时容易理解，上一轮的状态在上一轮迭代已经完成了，每一轮的条件判定要单独做
-            while (j >= 0 && tmp > key) {
+            while (j >= 0 && arr[j] > key) {
                 // 先退一位，这样，这样 a[j] 总是可插入的
-                arr[j + 1] = tmp;
+                arr[j + 1] = arr[j];
                 j--;
             }
             arr[j + 1] = key;
         }
+    }
+
+    /**
+     * 根据 CLRS 的  psedocode 写出的算法
+     *
+     * @param arr 待排序数组
+     */
+    private void standardInsertSort(int[] arr) {
+        // 在这个例子里，认为 i 应该是有序的，所以从 1 开始和从0开始都是一样的，但j要用j+1回正回这个区间，就比较麻烦
+        for (int i = 0; i < arr.length; i++) {
+            int key = arr[i];
+            // 对 0 而言，此时数组已经越界
+            int j = i - 1;
+            // 要详细比较所有的元素，包括0，在CLRS的伪代码里，j的起点是1，就会写作 > 0
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            // 到这里要么 j 连 0 都大于 key，要么找到了一个不能进入的区间的终点
+            arr[j + 1] = key;
+        }
+    }
+
+    public void reverseInsertSort(int[] arr) {
+        int length = arr.length;
+        for (int i = 1; i < length; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            // 在这里不许等号意味着稳定，允许等号意味着交换
+            while (j >= 0 && arr[j] < key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+    private int[] merge2BitArrs(int[] a, int[] b) {
+        int tmp = 0;
+        int aLength = a.length;
+        int bLength = b.length;
+        int i = aLength - 1;
+        int j = bLength - 1;
+        int[] result = new int[(aLength > bLength ? a.length : b.length) + 1];
+        int k = result.length - 1;
+        while (i >= 0 || j >= 0) {
+            int e1 = i >= 0 ? a[i] : 0;
+            int e2 = j >= 0 ? b[j] : 0;
+            int tmpResult = e1 + e2 + tmp;
+            if (tmpResult > 1) {
+                // 每进一位，本位减 2
+                tmp = 1;
+                tmpResult -= 2;
+            } else {
+                // 否则，进位为 0
+                tmp = 0;
+            }
+            result[k] = tmpResult;
+            i--;
+            j--;
+            k--;
+        }
+        if (tmp > 0) {
+            result[k] = tmp;
+        }
+        if (result[0] == 0) {
+            int newLength = result.length - 1;
+            int[] newResult = new int[newLength];
+            System.arraycopy(result, 1, newResult, 0, newLength);
+            return newResult;
+        }
+        return result;
     }
 }
