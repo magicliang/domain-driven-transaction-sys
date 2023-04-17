@@ -16,15 +16,23 @@ CREATE TABLE `tb_trans_pay_order`
     `gmt_created`               DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
     -- 修改时间如果有可能由业务生成，否则使用缺省值，有些设计模式要求上层代码不要设置这个值，这样只有 field update 的时候，这个值才会被默认设置上去
     `gmt_modified`              DATETIME               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '最后修改时间',
+
+    -- 把所有相关动作的时间列出来
+    -- 把所有动作相关的输入输出列出来，如果细分，单独为参数和响应拆解建列，甚至为 io 建立从表模型
+    -- 单独为所有动作的状态建列
+
     -- 本表业务主键，业务主键也不要忘记 UNSIGNED
     `pay_order_no`              BIGINT(20) UNSIGNED NOT NULL COMMENT '支付订单号，业务主键，全局唯一',
     -- 上游系统的 role 说明符，如果存在其他 role 建模，则这里可以是 role 的外键
     -- char 类型超过 16 个字符则考虑 varchar 吧
     -- 只有字符串适合 NOT NULL DEFAULT ''，其他都要酌情考虑-要考虑引入 magic number，magic string。缺省空值 NOT NULL DEFAULT '' 在语义上等于没有这个设置
-    `sys_code`                  VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付订单来源系统',
+    `sys_code`                  VARCHAR(255) NOT NULL  DEFAULT '' COMMENT '支付订单来源系统',
+
+    -- 确定本模型是第几级模型，把关联的外键全都写出来
+
     -- 上游联合外键
-    `biz_identify_no`           VARCHAR(255)  NOT NULL COMMENT '业务标识码',
-    `biz_unique_no`             VARCHAR(255)  NOT NULL COMMENT '上游业务号，语义同 out_biz_no，与业务标识码联合后，必须全局唯一，可以作为分表键',
+    `biz_identify_no`           VARCHAR(255) NOT NULL COMMENT '业务标识码',
+    `biz_unique_no`             VARCHAR(255) NOT NULL COMMENT '上游业务号，语义同 out_biz_no，与业务标识码联合后，必须全局唯一，可以作为分表键',
     `money`                     BIGINT(20) UNSIGNED NOT NULL COMMENT '支付单金额，单位为分，全为正数',
     -- 这种布尔/枚举类型使用 SMALLINT(6) 对存储更友好，不过对 ORM 不友好，暂时先使用 INT(6)。不要使用 bit、enum 和 set 类型，这些类型对存储的帮助不大，对 alter 的要求很高，也不易读（人工读或者 ORM）
     -- 本次交易因子，类似 description、place、party、thing 等坐标（coordination）
