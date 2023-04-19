@@ -140,6 +140,7 @@ public class DomainDrivenTransactionSysApplication {
          */
         @PreDestroy
         private void destroy() {
+            // 标准的栈帧输出方式
             log.info("destroy taskCenter：" + Arrays.toString(Thread.currentThread().getStackTrace()));
         }
     }
