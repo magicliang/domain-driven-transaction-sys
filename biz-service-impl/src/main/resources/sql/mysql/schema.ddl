@@ -10,7 +10,7 @@ CREATE TABLE `tb_trans_pay_order`
 (
     -- 所有字段先考虑 not null，text/blob/json/geometry 类型除外
     -- 每个表必须带上的三个字段
-    -- 一张表必须只有一个 AUTO_INCREMENT
+    -- 一张表必须只有一个 AUTO_INCREMENT，在很多的建表场景下，不要设置 default value，设置 default value 会导致建表建不出来，步长和初始值应该使用 AUTO_INCREMENT=0 来指定
     `id`                        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增物理主键，单表唯一',
     -- 创建时间如果有可能由业务生成，否则使用缺省值
     `gmt_created`               DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
