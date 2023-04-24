@@ -320,6 +320,7 @@ public class AlgorithmTest {
         if (result[0] == 0) {
             int newLength = result.length - 1;
             int[] newResult = new int[newLength];
+            // 这个小拷贝的时间复杂度过高，放在这里实际上破坏了算法的理论复杂度，就当一个添头
             System.arraycopy(result, 1, newResult, 0, newLength);
             return newResult;
         }
