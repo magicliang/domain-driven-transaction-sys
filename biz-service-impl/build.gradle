@@ -21,7 +21,7 @@ bootJar {
 }
 
 // 如果找不到 application 主类，则使用如下配置指定主类
-
+// 在存在多个主类时，要使用以下配置，否则构建会出错
 //plugins {
 //    id 'application'
 //}
