@@ -26,7 +26,8 @@ bootJar {
 //    id 'application'
 //}
 // mainClassName = 'com.MyApplication'
-
+// 多个 main 下，指定 main 启动法：
+// sudo /usr/local/jdk-1.8/bin/java -cp $CLASSPATH:conf  -Duser.dir=/usr/local/services/abc -Dis.temporary.job=true -DapplicationMode=spring  -Dconfig.file=conf/application-prod.conf -Dlogger.file=conf/logback.xml -Dfile.encoding=UTF-8 -Denv=prod  -Dspring.profiles.active=test -Dn=ATask -Djava.ext.dirs=lib -Dloader.main=com.magicliang.task.ATask org.springframework.boot.loader.PropertiesLauncher path-to-arg-0-file > log/a.log
 
 jar {
     enabled = true
