@@ -1,5 +1,8 @@
 package com.magicliang.transaction.sys.common.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * project name: domain-driven-transaction-sys
  * <p>
@@ -21,6 +24,17 @@ public class CustomExceptionUtil {
 
         throwable = unwrapAndFindException(c, RuntimeException.class);
         System.out.println(throwable);
+
+        String input = "Field error in object 'leadsQueryConditionForGetRequest' on field 'hideRepeatRegisterLeads': rejected value [1235]; codes [typeMismatch.leadsQueryConditionForGetRequest.hideRepeatRegisterLeads,typeMismatch.hideRepeatRegisterLeads,typeMismatch.boolean,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [leadsQueryConditionForGetRequest.hideRepeatRegisterLeads,hideRepeatRegisterLeads]; arguments []; default message [hideRepeatRegisterLeads]]; default message [Failed to convert property value of type 'java.lang.String' to required type 'boolean' for property 'hideRepeatRegisterLeads'; nested exception is java.lang.IllegalArgumentException: Invalid boolean value [1235]]";
+        Pattern pattern = Pattern.compile("field (.*?);");
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            String captured = matcher.group(1);
+            System.out.println(captured);  // 输出：zzz
+        } else {
+            System.out.println("No match found.");
+        }
+
     }
 
     public static Throwable unwrapAndFindException(Throwable throwable, Class<? extends Throwable> toFind) {
