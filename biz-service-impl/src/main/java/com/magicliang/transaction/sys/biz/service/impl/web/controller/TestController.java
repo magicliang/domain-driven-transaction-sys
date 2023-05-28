@@ -19,15 +19,13 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -89,6 +87,12 @@ public class TestController {
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return map;
     }
+
+    @GetMapping("/async")
+    public CompletionStage<ResponseEntity<String>> asyncCompletionStage(HttpServletResponse response) {
+        return CompletableFuture.supplyAsync(() -> ResponseEntity.ok("123456"));
+    }
+
 
     @GetMapping("/redirect1")
     public RedirectView redirect1(RedirectAttributes attributes) {
