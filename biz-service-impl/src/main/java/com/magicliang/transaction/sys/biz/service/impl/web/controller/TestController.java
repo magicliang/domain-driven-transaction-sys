@@ -106,6 +106,23 @@ public class TestController {
         return "redirect:" + "https://www.baidu.com";
     }
 
+    /**
+     * it's working
+     *
+     * @param attributes 属性
+     * @param type       请求类型
+     * @return 任意返回值
+     */
+    @GetMapping("/multiple-response")
+    public Object multiResponseType(RedirectAttributes attributes, Integer type) {
+        if (type == 1) {
+            return new RedirectView("https://www.baidu.com");
+        } else if (type == 2) {
+            return ResponseEntity.ok("2");
+        }
+        return "hello";
+    }
+
     @GetMapping("/redirect3")
     public ResponseEntity<Void> redirect3(HttpServletResponse response) {
         Cookie cookie1 = new Cookie("name", "123");
