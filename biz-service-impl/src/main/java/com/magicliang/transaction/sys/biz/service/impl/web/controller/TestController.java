@@ -19,15 +19,13 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -90,6 +88,12 @@ public class TestController {
         return map;
     }
 
+    @GetMapping("/async")
+    public CompletionStage<ResponseEntity<String>> asyncCompletionStage(HttpServletResponse response) {
+        return CompletableFuture.supplyAsync(() -> ResponseEntity.ok("123456"));
+    }
+
+
     @GetMapping("/redirect1")
     public RedirectView redirect1(RedirectAttributes attributes) {
         return new RedirectView("https://www.baidu.com");
@@ -100,6 +104,23 @@ public class TestController {
     public String redirect2(RedirectAttributes attributes) {
         // not working
         return "redirect:" + "https://www.baidu.com";
+    }
+
+    /**
+     * it's working
+     *
+     * @param attributes 属性
+     * @param type       请求类型
+     * @return 任意返回值
+     */
+    @GetMapping("/multiple-response")
+    public Object multiResponseType(RedirectAttributes attributes, Integer type) {
+        if (type == 1) {
+            return new RedirectView("https://www.baidu.com");
+        } else if (type == 2) {
+            return ResponseEntity.ok("2");
+        }
+        return "hello";
     }
 
     @GetMapping("/redirect3")
