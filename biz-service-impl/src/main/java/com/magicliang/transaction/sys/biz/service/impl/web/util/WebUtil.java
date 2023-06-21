@@ -502,7 +502,10 @@ public class WebUtil {
 
 
     public static String getPath(HttpServletRequest request) {
-        return request.getContextPath() + request.getServletPath();
+        final String contextPath = request.getContextPath();
+        final String servletPath = request.getServletPath();
+        log.info("contextPath: {}, servletPath: {}", contextPath, servletPath);
+        return contextPath + servletPath;
     }
 
 }
