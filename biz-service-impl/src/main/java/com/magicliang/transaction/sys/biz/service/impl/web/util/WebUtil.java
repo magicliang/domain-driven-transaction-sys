@@ -1,7 +1,13 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.magicliang.transaction.sys.biz.service.impl.web.http.ContentHeaderCachingRequestWrapper;
+import com.magicliang.transaction.sys.biz.service.impl.web.model.vo.ApiResult;
+import com.magicliang.transaction.sys.common.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -86,6 +92,14 @@ public class WebUtil {
     @SuppressWarnings("unchecked")
     public static <T> T getCurrentRequestAttribute(final String name, T defaultValue) {
         final HttpServletRequest currentRequest = getCurrentRequest();
+        return getRequestAttribute(name, defaultValue, currentRequest);
+    }
+
+    public static <T> T getRequestAttribute(String name, HttpServletRequest currentRequest) {
+        return getRequestAttribute(name, null, currentRequest);
+    }
+
+    public static <T> T getRequestAttribute(String name, T defaultValue, HttpServletRequest currentRequest) {
         if (currentRequest == null) {
             return defaultValue;
         }
@@ -110,6 +124,149 @@ public class WebUtil {
         return readCachingRequest(new ContentCachingRequestWrapper(request));
     }
 
+    public static boolean hasBodyParam(HttpServletRequest request, String paramName) {
+        final JsonNode bodyJson = getBodyJson(request);
+        if (null == bodyJson) {
+            return false;
+        }
+        return bodyJson.has(paramName);
+    }
+
+    public static <T extends Enum<T>> T getEnumFromRequest(HttpServletRequest request, String paramName,
+                                                           Class<T> enumType) {
+        final JsonNode bodyJson = getBodyJson(request);
+        if (null == bodyJson) {
+            return null;
+        }
+        try {
+            return Enum.valueOf(enumType, bodyJson.asText().trim());
+        } catch (Exception e) {
+            throw new RuntimeException(paramName + "参数错误");
+        }
+    }
+
+    public static Boolean getBodyParamAsBoolean(HttpServletRequest request, String paramName, boolean required) {
+        final Boolean param = getBodyParamAsBoolean(request, paramName);
+        if (param == null && required) {
+            throw new RuntimeException(paramName + "为必填项");
+        }
+        return param;
+    }
+
+    public static Boolean getBodyParamAsBoolean(HttpServletRequest request, String paramName) {
+        final JsonNode bodyJson = getBodyJson(request);
+        if (null == bodyJson) {
+            return null;
+        }
+        final JsonNode jsonNode = bodyJson.get(paramName);
+        if (null == jsonNode) {
+            return null;
+        }
+        return jsonNode.asBoolean();
+    }
+
+    /**
+     * 读取请求体的一个字段，可能返回空字符串，如果不允许返回空字符串，抛出异常
+     *
+     * @param request   原始 http 请求
+     * @param paramName 字段名称
+     * @param notBlank  是否不允许为空
+     * @return 请求的 body 的一个 element
+     */
+    public static String getBodyParamAsText(HttpServletRequest request, String paramName, boolean notBlank) {
+        final String bodyParam = getBodyParamAsText(request, paramName);
+        if (notBlank && StringUtils.isBlank(bodyParam)) {
+            throw new RuntimeException(paramName + "为空");
+        }
+        return bodyParam;
+    }
+
+    /**
+     * 读取请求体的一个字段，可能返回空字符串
+     *
+     * @param request   原始 http 请求
+     * @param paramName 字段名称
+     * @return 请求的 body 的一个 element，如果找不到返回空字符串
+     */
+    public static String getBodyParamAsText(HttpServletRequest request, String paramName) {
+        final JsonNode bodyJson = getBodyJson(request);
+        if (null == bodyJson) {
+            return "";
+        }
+        final JsonNode jsonNode = bodyJson.get(paramName);
+        if (null == jsonNode) {
+            return "";
+        }
+        return jsonNode.asText();
+    }
+
+    public static Integer getBodyParamAsInteger(HttpServletRequest request, String paramName, boolean required) {
+        final Integer param = getBodyParamAsInteger(request, paramName);
+        if (param == null && required) {
+            throw new RuntimeException(paramName + "为必填项");
+        }
+        return param;
+    }
+
+    public static Integer getBodyParamAsInteger(HttpServletRequest request, String paramName) {
+        final JsonNode bodyJson = getBodyJson(request);
+        if (null == bodyJson) {
+            return null;
+        }
+        final JsonNode jsonNode = bodyJson.get(paramName);
+        if (null == jsonNode) {
+            return null;
+        }
+        return jsonNode.asInt();
+    }
+
+    public static Long getBodyParamAsLong(HttpServletRequest request, String paramName, boolean required) {
+        final Long param = getBodyParamAsLong(request, paramName);
+        if (param == null && required) {
+            throw new RuntimeException(paramName + "为必填项");
+        }
+        return param;
+    }
+
+    public static Long getBodyParamAsLong(HttpServletRequest request, String paramName) {
+        final JsonNode bodyJson = getBodyJson(request);
+        if (null == bodyJson) {
+            return null;
+        }
+        final JsonNode jsonNode = bodyJson.get(paramName);
+        if (null == jsonNode) {
+            return null;
+        }
+        return jsonNode.asLong();
+    }
+
+    /**
+     * 读取请求体为 JsonNode，为后续搜索查找提供帮助
+     *
+     * @param request 原始 http 请求
+     * @return 请求的 body 的 JsonNode 形态
+     */
+    public static JsonNode getBodyJson(HttpServletRequest request) {
+        if (null == request) {
+            return null;
+        }
+        final String bodyString = getBodyString(request);
+        if (StringUtils.isBlank(bodyString)) {
+            return null;
+        }
+        return JsonUtils.toJsonNode(bodyString);
+    }
+
+    /**
+     * 读取当前请求体为 JsonNode，为后续搜索查找提供帮助
+     *
+     * @return 请求的 body 的 JsonNode 形态
+     */
+    public static JsonNode getCurrentRequestBodyJson() {
+        final HttpServletRequest request = getCurrentRequest();
+        return getBodyJson(request);
+    }
+
     public static String getBodyString(ContentCachingResponseWrapper wrappedResponse) {
         try {
             return new String(wrappedResponse.getContentAsByteArray(),
@@ -120,12 +277,24 @@ public class WebUtil {
         }
     }
 
+    public static String getCurrentRequestCookie(String cookieName) {
+        return getCookie(getCurrentRequest(), cookieName, "");
+    }
+
+    public static String getCurrentRequestCookie(String cookieName,
+                                                 String defaultValue) {
+        return getCookie(getCurrentRequest(), cookieName, defaultValue);
+    }
+
     public static String getCookie(HttpServletRequest request, String cookieName) {
         return getCookie(request, cookieName, "");
     }
 
     public static String getCookie(HttpServletRequest request, String cookieName,
                                    String defaultValue) {
+        if (request == null) {
+            return defaultValue;
+        }
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return defaultValue;
@@ -140,8 +309,9 @@ public class WebUtil {
     }
 
     /**
-     * 获取查询参数的值
+     * 获取任意请求查询参数的值
      *
+     * @param request        任意请求
      * @param queryParamName 查询参数名称
      * @return 查询参数的值
      */
@@ -151,12 +321,22 @@ public class WebUtil {
     }
 
     /**
+     * 获取当前请求的查询参数的值
+     *
+     * @param queryParamName 查询参数名称
+     * @return 查询参数的值
+     */
+    public static String getCurrentRequestQueryString(final String queryParamName) {
+        return getQueryString(getCurrentRequest(), queryParamName);
+    }
+
+    /**
      * 将请求参数转化为 Map
      *
      * @param request 原始请求
      * @return 参数映射表
      */
-    private static Map<String, Object> getParameterMap(final HttpServletRequest request) {
+    public static Map<String, Object> getParameterMap(final HttpServletRequest request) {
         Map<String, Object> param = new HashMap<>(16);
         try {
             Enumeration<String> em = request.getParameterNames();
@@ -223,7 +403,7 @@ public class WebUtil {
     }
 
     private static String readNormalRequest(HttpServletRequest request) {
-        BufferedReader br = null;
+        BufferedReader br;
         try {
             br = request.getReader();
         } catch (IOException e) {
@@ -246,6 +426,83 @@ public class WebUtil {
             wholeStr.append(str);
         }
         return wholeStr.toString();
+    }
+
+    public static <T> ResponseEntity<ApiResult<T>> getSuccessResult(T data) {
+        return ok(ApiResult.success(data));
+    }
+
+    public static <T> ResponseEntity<ApiResult<T>> getSuccessResult() {
+        return ok(ApiResult.success());
+    }
+
+    public static ResponseEntity<ApiResult<String>> getFailResult(String msg) {
+        return ok(ApiResult.fail(msg));
+    }
+
+    public static ResponseEntity<ApiResult<String>> getFailResult(String msg, int errorCode) {
+        return ok(failResult(msg, errorCode));
+    }
+
+    public static <T> ResponseEntity<ApiResult<T>> ok(ApiResult<T> content) {
+        return rawOk(content);
+    }
+
+    public static <T> ResponseEntity<T> rawOk(T content) {
+        return ResponseEntity.ok(content);
+    }
+
+    public static ApiResult<String> failResult(String msg) {
+        return ApiResult.fail(msg);
+    }
+
+    public static ApiResult<String> failResult(String msg, int errorCode) {
+        return ApiResult.fail(msg, errorCode);
+    }
+
+    public static <T> ApiResult<T> failResult(String msg, T data) {
+        return ApiResult.fail(msg, data);
+    }
+
+    public static String getHostWithoutScheme(final HttpServletRequest request) {
+        return request.getHeader("Host");
+    }
+
+    public static String copyAbsoluteURL(final HttpServletRequest request) {
+        String url = request.getRequestURL().toString();
+        String queryString = request.getQueryString();
+        if (queryString != null) {
+            url += "?" + queryString;
+        }
+        return url;
+    }
+
+    public static void addHeader(String key, String value) {
+        addHeaderToCurrentHttpRequest(key, value);
+    }
+
+
+    public static void addHeaderToCurrentHttpRequest(String key,
+                                                     String value) {
+        addHeaderToHttpRequest(getCurrentRequest(), key, value);
+    }
+
+    public static boolean addHeaderToHttpRequest(HttpServletRequest request, String key,
+                                                 String value) {
+        if (request instanceof ContentHeaderCachingRequestWrapper) {
+            addHeaderToRequestWrapper((ContentHeaderCachingRequestWrapper) request, key, value);
+            return true;
+        }
+        return false;
+    }
+
+    public static void addHeaderToRequestWrapper(ContentHeaderCachingRequestWrapper request, String key, String value) {
+        request.addHeader(key, value);
+    }
+
+
+    public static String getPath(HttpServletRequest request) {
+        return request.getContextPath() + request.getServletPath();
     }
 
 }

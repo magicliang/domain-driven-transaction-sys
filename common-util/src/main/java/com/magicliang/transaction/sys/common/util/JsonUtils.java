@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -270,4 +271,19 @@ public class JsonUtils {
     }
 
 
+    /**
+     * 转化成 json node
+     *
+     * @param json 原始 json 字符串
+     * @return 构建成功的 json node
+     */
+    public static JsonNode toJsonNode(String json) {
+        try {
+            return OBJECT_MAPPER_INCLUDE_ALWAYS.readTree(json);
+        } catch (Exception e) {
+            log.error("Convert {} to JsonNode error.", json, e);
+        }
+
+        return null;
+    }
 }
