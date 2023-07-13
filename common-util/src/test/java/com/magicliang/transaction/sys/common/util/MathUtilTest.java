@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MathUtilTest {
 
     @Test
-    public void gcdOfNums() {
+    public void testGcdOfNums() {
         final List<Long> l1 = Arrays.asList(5L, 3L, 1L);
         final List<Long> l2 = Arrays.asList(50L, 30L, 10L);
         final List<Long> l3 = Arrays.asList(6L, 4L);
@@ -28,6 +28,14 @@ class MathUtilTest {
         assertEquals(10L, MathUtil.gcdOfNums(l2));
         assertEquals(2L, MathUtil.gcdOfNums(l3));
         assertEquals(20L, MathUtil.gcdOfNums(l4));
+    }
+
+    @Test
+    public void testConvertToOneDigit() {
+        assertEquals(6, MathUtil.convertToOneDigit(60));
+        assertEquals(5, MathUtil.convertToOneDigit(540));
+        assertEquals(7, MathUtil.convertToOneDigit(700));
+
     }
 
 }

@@ -34,4 +34,15 @@ public class MathUtil {
         }
         return result.longValue();
     }
+
+    public static int convertToOneDigit(long number) {
+        // 将数值转换为字符串
+        String str = String.valueOf(number);
+        // 取字符串的第一位字符
+        char firstChar = str.charAt(0);
+        // 将字符转换为整数
+        int digit = Character.getNumericValue(firstChar);
+        return digit;
+    }
+
 }
