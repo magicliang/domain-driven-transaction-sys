@@ -22,7 +22,7 @@ public class MathUtil {
     }
 
 
-    public static long gcdOfNums(List<Long> nums) {
+    public static long greatestCommonDivisorOfNums(List<Long> nums) {
         final int size = nums.size();
         BigInteger[] bigNums = new BigInteger[size];
         for (int i = 0; i < size; i++) {

@@ -24,10 +24,10 @@ class MathUtilTest {
         final List<Long> l2 = Arrays.asList(50L, 30L, 10L);
         final List<Long> l3 = Arrays.asList(6L, 4L);
         final List<Long> l4 = Arrays.asList(60L, 40L);
-        assertEquals(1L, MathUtil.gcdOfNums(l1));
-        assertEquals(10L, MathUtil.gcdOfNums(l2));
-        assertEquals(2L, MathUtil.gcdOfNums(l3));
-        assertEquals(20L, MathUtil.gcdOfNums(l4));
+        assertEquals(1L, MathUtil.greatestCommonDivisorOfNums(l1));
+        assertEquals(10L, MathUtil.greatestCommonDivisorOfNums(l2));
+        assertEquals(2L, MathUtil.greatestCommonDivisorOfNums(l3));
+        assertEquals(20L, MathUtil.greatestCommonDivisorOfNums(l4));
     }
 
     @Test
