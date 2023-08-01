@@ -1,11 +1,10 @@
 package com.magicliang.transaction.sys.common.util;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -13,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2023-07-13 15:45
+ *         <p>
+ *         date: 2023-07-13 15:45
  */
 class MathUtilTest {
 

@@ -1,8 +1,7 @@
 package com.magicliang.transaction.sys.common.util;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import java.util.Collection;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -25,7 +24,7 @@ public class CollectionUtilPlus {
     public static boolean isEqualCollection(final Collection<?> a, final Collection<?> b) {
         return ObjectUtilPlus.allNull(a, b)
                 // CollectionUtils.isEqualCollection 不能接受空值，a 一个为空一个不为空，自然不相等
-                && (!ObjectUtilPlus.allNotNull(a, b) && CollectionUtils.isEqualCollection(a, b));
+                || (ObjectUtilPlus.allNotNull(a, b) && CollectionUtils.isEqualCollection(a, b));
     }
 
     public static boolean isNotEqualCollection(final Collection<?> a, final Collection<?> b) {
@@ -33,3 +32,4 @@ public class CollectionUtilPlus {
     }
 
 }
+
