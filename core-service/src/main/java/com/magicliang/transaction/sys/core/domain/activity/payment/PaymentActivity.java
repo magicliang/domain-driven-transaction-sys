@@ -1,5 +1,10 @@
 package com.magicliang.transaction.sys.core.domain.activity.payment;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_CHANNEL_PAYMENT_TRACE_NO_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAYMENT_REQUEST_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAYMENT_STRATEGY_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAY_ORDER_ERROR;
+
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
@@ -13,14 +18,11 @@ import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.request.payment.PaymentRequest;
 import com.magicliang.transaction.sys.core.model.response.payment.PaymentResponse;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.List;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -28,8 +30,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * description: 支付活动
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 13:27
+ *         <p>
+ *         date: 2022-01-05 13:27
  */
 @Slf4j
 @Component
@@ -91,7 +93,8 @@ public class PaymentActivity extends BaseActivity<PaymentRequest, PaymentRespons
      * @return 领域能力请求
      */
     @Override
-    protected PaymentRequest assembleDomainRequest(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected PaymentRequest assembleDomainRequest(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         final TransactionModel model = context.getModel();
         final TransPayOrderEntity payOrder = model.getPayOrder();
         PaymentRequest paymentRequest = context.getPaymentRequest();
@@ -111,7 +114,8 @@ public class PaymentActivity extends BaseActivity<PaymentRequest, PaymentRespons
      * @return 领域能力响应
      */
     @Override
-    protected PaymentResponse assembleDomainResponse(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected PaymentResponse assembleDomainResponse(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         return context.getPaymentResponse();
     }
 
@@ -153,7 +157,8 @@ public class PaymentActivity extends BaseActivity<PaymentRequest, PaymentRespons
         // 2.检查活动响应
         final PaymentResponse paymentResponse = context.getPaymentResponse();
         final String channelPaymentTraceNo = paymentResponse.getChannelPaymentTraceNo();
-        AssertUtils.assertNotBlank(channelPaymentTraceNo, INVALID_CHANNEL_PAYMENT_TRACE_NO_ERROR, "invalid channelPaymentTraceNo：" + channelPaymentTraceNo);
+        AssertUtils.assertNotBlank(channelPaymentTraceNo, INVALID_CHANNEL_PAYMENT_TRACE_NO_ERROR,
+                "invalid channelPaymentTraceNo：" + channelPaymentTraceNo);
 
         // 3. 影响其他活动：支付未到终态，则不需要立即通知
         final Short payOrderStatus = payOrder.getStatus();

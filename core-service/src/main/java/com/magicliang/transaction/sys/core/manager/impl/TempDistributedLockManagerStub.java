@@ -1,12 +1,11 @@
 package com.magicliang.transaction.sys.core.manager.impl;
 
 import com.magicliang.transaction.sys.core.manager.IDistributedLockManager;
-import org.springframework.stereotype.Component;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import org.springframework.stereotype.Component;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -14,8 +13,8 @@ import java.util.concurrent.locks.ReadWriteLock;
  * description: 以后要单独实现一个专有的分布式锁包
  *
  * @author magicliang
- * <p>
- * date: 2022-01-25 17:42
+ *         <p>
+ *         date: 2022-01-25 17:42
  */
 @Component
 public class TempDistributedLockManagerStub implements IDistributedLockManager {
@@ -89,6 +88,7 @@ public class TempDistributedLockManagerStub implements IDistributedLockManager {
      * 临时的锁实现
      */
     private static class DefaultLockImpl implements Lock, ReadWriteLock {
+
         /**
          * Acquires the lock.
          *
@@ -152,8 +152,8 @@ public class TempDistributedLockManagerStub implements IDistributedLockManager {
          * be documented by that {@code Lock} implementation.
          *
          * @throws InterruptedException if the current thread is
-         *                              interrupted while acquiring the lock (and interruption
-         *                              of lock acquisition is supported)
+         *         interrupted while acquiring the lock (and interruption
+         *         of lock acquisition is supported)
          */
         @Override
         public void lockInterruptibly() throws InterruptedException {
@@ -185,7 +185,7 @@ public class TempDistributedLockManagerStub implements IDistributedLockManager {
          * doesn't try to unlock if the lock was not acquired.
          *
          * @return {@code true} if the lock was acquired and
-         * {@code false} otherwise
+         *         {@code false} otherwise
          */
         @Override
         public boolean tryLock() {
@@ -244,10 +244,10 @@ public class TempDistributedLockManagerStub implements IDistributedLockManager {
          * @param time the maximum time to wait for the lock
          * @param unit the time unit of the {@code time} argument
          * @return {@code true} if the lock was acquired and {@code false}
-         * if the waiting time elapsed before the lock was acquired
+         *         if the waiting time elapsed before the lock was acquired
          * @throws InterruptedException if the current thread is interrupted
-         *                              while acquiring the lock (and interruption of lock
-         *                              acquisition is supported)
+         *         while acquiring the lock (and interruption of lock
+         *         acquisition is supported)
          */
         @Override
         public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
@@ -288,7 +288,7 @@ public class TempDistributedLockManagerStub implements IDistributedLockManager {
          *
          * @return A new {@link Condition} instance for this {@code Lock} instance
          * @throws UnsupportedOperationException if this {@code Lock}
-         *                                       implementation does not support conditions
+         *         implementation does not support conditions
          */
         @Override
         public Condition newCondition() {

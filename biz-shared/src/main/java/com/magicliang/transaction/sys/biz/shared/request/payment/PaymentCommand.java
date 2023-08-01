@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:50
+ *         <p>
+ *         date: 2022-01-05 14:50
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

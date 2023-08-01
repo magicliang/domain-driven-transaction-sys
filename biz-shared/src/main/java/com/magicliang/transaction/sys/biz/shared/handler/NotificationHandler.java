@@ -1,5 +1,7 @@
 package com.magicliang.transaction.sys.biz.shared.handler;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_MODEL_ERROR;
+
 import com.magicliang.transaction.sys.biz.shared.enums.OperationEnum;
 import com.magicliang.transaction.sys.biz.shared.request.notification.NotificationCommand;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
@@ -9,12 +11,9 @@ import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.helper.PayOrderHelper;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_MODEL_ERROR;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -22,12 +21,14 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID
  * description: 通知处理器
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 16:12
+ *         <p>
+ *         date: 2022-01-05 16:12
  */
 @Slf4j
 @Service
-public class NotificationHandler extends BaseHandler<NotificationCommand, TransactionModel, TransTransactionContext<NotificationCommand, TransactionModel>> {
+public class NotificationHandler extends
+        BaseHandler<NotificationCommand, TransactionModel, TransTransactionContext<NotificationCommand,
+                TransactionModel>> {
 
     /**
      * 标识自己的类型。
@@ -45,9 +46,11 @@ public class NotificationHandler extends BaseHandler<NotificationCommand, Transa
      * @param request 处理器上下文
      */
     @Override
-    public TransTransactionContext<NotificationCommand, TransactionModel> initContext(final NotificationCommand request) {
+    public TransTransactionContext<NotificationCommand, TransactionModel> initContext(
+            final NotificationCommand request) {
         // 1. 初始化交易上下文
-        TransTransactionContext<NotificationCommand, TransactionModel> context = TransTransactionContextFactory.getStandardTransactionContext();
+        TransTransactionContext<NotificationCommand, TransactionModel> context =
+                TransTransactionContextFactory.getStandardTransactionContext();
         // 2. 设置原始请求
         context.setRequest(request);
         // 3. 依据主库校验幂等并弹出领域模型
@@ -71,7 +74,7 @@ public class NotificationHandler extends BaseHandler<NotificationCommand, Transa
      * 填充全模型
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 全领域模型
      */
     @Override
@@ -114,7 +117,8 @@ public class NotificationHandler extends BaseHandler<NotificationCommand, Transa
         }
         // 填充全模型
         // 模型必须填充成功，否则接下来的流程无法执行
-        AssertUtils.assertNotNull(transactionModel, INVALID_MODEL_ERROR, "invalid transactionModel: " + transactionModel);
+        AssertUtils.assertNotNull(transactionModel, INVALID_MODEL_ERROR,
+                "invalid transactionModel: " + transactionModel);
 
         // 被幂等
         final List<TransRequestEntity> notificationRequests = payOrder.getNotificationRequests();

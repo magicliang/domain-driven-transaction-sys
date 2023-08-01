@@ -17,9 +17,9 @@
 
         <!--load from properties 替换为申请的数据库地址、用户名、密码-->
         <jdbcConnection driverClass="${jdbcDriverClass}"
-                        connectionURL="${jdbcUrl}"
-                        userId="${jdbcUsername}"
-                        password="${jdbcPassword}">
+                connectionURL="${jdbcUrl}"
+                userId="${jdbcUsername}"
+                password="${jdbcPassword}">
         </jdbcConnection>
 
         <!--        实参形式-->
@@ -32,15 +32,15 @@
 
         <!--load targetProject from properties-->
         <javaModelGenerator targetPackage="com.magicliang.transaction.sys.common.dal.mybatis.po"
-                            targetProject="src/main/java">
+                targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
         <!--load targetProject from properties-->
         <javaClientGenerator type="ANNOTATEDMAPPER"
-                             targetPackage="com.magicliang.transaction.sys.common.dal.mybatis.mapper"
-                             targetProject="src/main/java">
+                targetPackage="com.magicliang.transaction.sys.common.dal.mybatis.mapper"
+                targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 

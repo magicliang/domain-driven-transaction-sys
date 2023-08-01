@@ -1,5 +1,8 @@
 package com.magicliang.transaction.sys.core.service.impl;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAYMENT_REQUEST_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_SUB_ORDER_ERROR;
+
 import com.magicliang.transaction.sys.common.constant.TimeConstant;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
@@ -16,16 +19,16 @@ import com.magicliang.transaction.sys.core.model.entity.convertor.TransPayOrderC
 import com.magicliang.transaction.sys.core.model.entity.convertor.TransRequestConvertor;
 import com.magicliang.transaction.sys.core.model.entity.helper.PayOrderHelper;
 import com.magicliang.transaction.sys.core.service.IPayOrderService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAYMENT_REQUEST_ERROR;
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_SUB_ORDER_ERROR;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -33,8 +36,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID
  * description: 支付订单服务实现
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 19:23
+ *         <p>
+ *         date: 2022-01-04 19:23
  */
 @Service
 public class PayOrderServiceImpl implements IPayOrderService {
@@ -49,7 +52,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
      * 轻量级填充支付订单领域模型
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 支付订单领域模型
      */
     @Override
@@ -80,7 +83,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
      * 填充支付订单领域模型，只要不满足模型实体完整性约束，立刻返回空值
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 支付订单领域模型
      */
     @Override
@@ -150,7 +153,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
      * 查询特定环境、特定数量的未完成的支付请求
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未完成的支付请求列表
      */
     @Override
@@ -176,7 +179,7 @@ public class PayOrderServiceImpl implements IPayOrderService {
      * 查询特定环境、特定数量的未完成的支付订单
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未完成的支付订单列表
      */
     @Override
@@ -197,7 +200,8 @@ public class PayOrderServiceImpl implements IPayOrderService {
     public void populateAlipaySubOrder(final TransPayOrderEntity payOrderEntity) {
         final Long payOrderNo = payOrderEntity.getPayOrderNo();
         final List<TransAlipaySubOrderPo> alipaySuborders = payOrderManager.queryAlipaySubOrder(payOrderNo);
-        AssertUtils.assertSingletonCollection(alipaySuborders, INVALID_SUB_ORDER_ERROR, INVALID_SUB_ORDER_ERROR.getErrorMsg());
+        AssertUtils.assertSingletonCollection(alipaySuborders, INVALID_SUB_ORDER_ERROR,
+                INVALID_SUB_ORDER_ERROR.getErrorMsg());
         payOrderEntity.setSubOrder(TransAlipaySubOrderConvertor.toDomainEntity(alipaySuborders.get(0)));
     }
 
@@ -225,7 +229,8 @@ public class PayOrderServiceImpl implements IPayOrderService {
     public void populatePaymentRequest(final TransPayOrderEntity payOrderEntity) {
         final Long payOrderNo = payOrderEntity.getPayOrderNo();
         List<TransChannelRequestPoWithBLOBs> paymentRequests = payOrderManager.queryPaymentRequest(payOrderNo);
-        AssertUtils.assertSingletonCollection(paymentRequests, INVALID_PAYMENT_REQUEST_ERROR, INVALID_PAYMENT_REQUEST_ERROR.getErrorMsg());
+        AssertUtils.assertSingletonCollection(paymentRequests, INVALID_PAYMENT_REQUEST_ERROR,
+                INVALID_PAYMENT_REQUEST_ERROR.getErrorMsg());
         payOrderEntity.setPaymentRequest(TransRequestConvertor.toDomainEntity(paymentRequests.get(0)));
     }
 
@@ -237,9 +242,12 @@ public class PayOrderServiceImpl implements IPayOrderService {
     @Override
     public void populateNotificationRequest(final TransPayOrderEntity payOrderEntity) {
         final Long payOrderNo = payOrderEntity.getPayOrderNo();
-        List<TransChannelRequestPoWithBLOBs> notificationRequests = payOrderManager.queryNotificationRequest(payOrderNo);
-        AssertUtils.assertNotEmpty(notificationRequests, INVALID_PAYMENT_REQUEST_ERROR, INVALID_PAYMENT_REQUEST_ERROR.getErrorMsg());
-        payOrderEntity.setNotificationRequests(notificationRequests.stream().map(TransRequestConvertor::toDomainEntity).collect(Collectors.toCollection(ArrayList::new)));
+        List<TransChannelRequestPoWithBLOBs> notificationRequests = payOrderManager.queryNotificationRequest(
+                payOrderNo);
+        AssertUtils.assertNotEmpty(notificationRequests, INVALID_PAYMENT_REQUEST_ERROR,
+                INVALID_PAYMENT_REQUEST_ERROR.getErrorMsg());
+        payOrderEntity.setNotificationRequests(notificationRequests.stream().map(TransRequestConvertor::toDomainEntity)
+                .collect(Collectors.toCollection(ArrayList::new)));
     }
 
     /**
@@ -294,27 +302,28 @@ public class PayOrderServiceImpl implements IPayOrderService {
     /**
      * 在一个事务里更新支付订单和支付请求
      *
-     * @param payOrder   支付订单
+     * @param payOrder 支付订单
      * @param payRequest 支付请求
      * @return 支付结果
      */
     @Override
     public boolean updatePayOrderAndRequest(final TransPayOrderEntity payOrder, final TransRequestEntity payRequest) {
-        return payOrderManager.updatePayOrderAndRequest(TransPayOrderConvertor.toPo(payOrder), TransRequestConvertor.toPo(payRequest));
+        return payOrderManager.updatePayOrderAndRequest(TransPayOrderConvertor.toPo(payOrder),
+                TransRequestConvertor.toPo(payRequest));
     }
 
     /**
      * 在一个事务里更新支付订单和支付请求
      *
-     * @param payOrder            支付订单
-     * @param payRequest          支付请求
+     * @param payOrder 支付订单
+     * @param payRequest 支付请求
      * @param notificationRequest 通知请求
      * @return 支付结果
      */
     @Override
     public boolean insertNotificationAndUpdatePayOrder(final TransPayOrderEntity payOrder,
-                                                       final TransRequestEntity payRequest,
-                                                       final TransRequestEntity notificationRequest) {
+            final TransRequestEntity payRequest,
+            final TransRequestEntity notificationRequest) {
         final TransPayOrderPo payOrderPo = TransPayOrderConvertor.toPo(payOrder);
         final TransChannelRequestPoWithBLOBs payRequestPo = TransRequestConvertor.toPo(payRequest);
         final TransChannelRequestPoWithBLOBs notificationRequestPo = TransRequestConvertor.toPo(notificationRequest);
@@ -393,10 +402,11 @@ public class PayOrderServiceImpl implements IPayOrderService {
     /**
      * 针对把支付请求装填进轻量级支付订单里
      *
-     * @param litePayOrders   轻量级支付订单
+     * @param litePayOrders 轻量级支付订单
      * @param paymentRequests 支付请求
      */
-    private void fillPaymentRequests(final List<TransPayOrderEntity> litePayOrders, final List<TransRequestEntity> paymentRequests) {
+    private void fillPaymentRequests(final List<TransPayOrderEntity> litePayOrders,
+            final List<TransRequestEntity> paymentRequests) {
         if (CollectionUtils.isEmpty(litePayOrders) || CollectionUtils.isEmpty(paymentRequests)) {
             return;
         }

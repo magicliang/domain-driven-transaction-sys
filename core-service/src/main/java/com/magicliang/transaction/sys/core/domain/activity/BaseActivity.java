@@ -6,12 +6,11 @@ import com.magicliang.transaction.sys.core.model.context.TransTransactionContext
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.request.IRequest;
 import com.magicliang.transaction.sys.core.model.response.IResponse;
+import java.util.Collections;
+import java.util.List;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -21,8 +20,8 @@ import java.util.List;
  * 如何解释 activity 和 strategy 的差别？
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 13:47
+ *         <p>
+ *         date: 2022-01-04 13:47
  */
 @Slf4j
 @Setter

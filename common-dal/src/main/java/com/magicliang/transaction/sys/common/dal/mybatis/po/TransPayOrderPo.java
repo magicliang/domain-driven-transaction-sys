@@ -7,6 +7,7 @@ import java.util.Date;
  * This class corresponds to the database table tb_trans_pay_order
  */
 public class TransPayOrderPo {
+
     /**
      * Database Column Remarks:
      * 自增物理主键，单表唯一
@@ -950,32 +951,55 @@ public class TransPayOrderPo {
         }
         TransPayOrderPo other = (TransPayOrderPo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getGmtCreated() == null ? other.getGmtCreated() == null : this.getGmtCreated().equals(other.getGmtCreated()))
-                && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null : this.getPayOrderNo().equals(other.getPayOrderNo()))
-                && (this.getSysCode() == null ? other.getSysCode() == null : this.getSysCode().equals(other.getSysCode()))
-                && (this.getBizIdentifyNo() == null ? other.getBizIdentifyNo() == null : this.getBizIdentifyNo().equals(other.getBizIdentifyNo()))
-                && (this.getBizUniqueNo() == null ? other.getBizUniqueNo() == null : this.getBizUniqueNo().equals(other.getBizUniqueNo()))
+                && (this.getGmtCreated() == null ? other.getGmtCreated() == null
+                : this.getGmtCreated().equals(other.getGmtCreated()))
+                && (this.getGmtModified() == null ? other.getGmtModified() == null
+                : this.getGmtModified().equals(other.getGmtModified()))
+                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null
+                : this.getPayOrderNo().equals(other.getPayOrderNo()))
+                && (this.getSysCode() == null ? other.getSysCode() == null
+                : this.getSysCode().equals(other.getSysCode()))
+                && (this.getBizIdentifyNo() == null ? other.getBizIdentifyNo() == null
+                : this.getBizIdentifyNo().equals(other.getBizIdentifyNo()))
+                && (this.getBizUniqueNo() == null ? other.getBizUniqueNo() == null
+                : this.getBizUniqueNo().equals(other.getBizUniqueNo()))
                 && (this.getMoney() == null ? other.getMoney() == null : this.getMoney().equals(other.getMoney()))
-                && (this.getPayChannelType() == null ? other.getPayChannelType() == null : this.getPayChannelType().equals(other.getPayChannelType()))
-                && (this.getTargetAccountType() == null ? other.getTargetAccountType() == null : this.getTargetAccountType().equals(other.getTargetAccountType()))
-                && (this.getAccountingEntry() == null ? other.getAccountingEntry() == null : this.getAccountingEntry().equals(other.getAccountingEntry()))
-                && (this.getGmtAcceptedTime() == null ? other.getGmtAcceptedTime() == null : this.getGmtAcceptedTime().equals(other.getGmtAcceptedTime()))
-                && (this.getGmtPaymentBeginTime() == null ? other.getGmtPaymentBeginTime() == null : this.getGmtPaymentBeginTime().equals(other.getGmtPaymentBeginTime()))
-                && (this.getGmtPaymentSuccessTime() == null ? other.getGmtPaymentSuccessTime() == null : this.getGmtPaymentSuccessTime().equals(other.getGmtPaymentSuccessTime()))
-                && (this.getGmtPaymentFailureTime() == null ? other.getGmtPaymentFailureTime() == null : this.getGmtPaymentFailureTime().equals(other.getGmtPaymentFailureTime()))
-                && (this.getGmtPaymentClosedTime() == null ? other.getGmtPaymentClosedTime() == null : this.getGmtPaymentClosedTime().equals(other.getGmtPaymentClosedTime()))
-                && (this.getGmtPaymentBouncedTime() == null ? other.getGmtPaymentBouncedTime() == null : this.getGmtPaymentBouncedTime().equals(other.getGmtPaymentBouncedTime()))
+                && (this.getPayChannelType() == null ? other.getPayChannelType() == null
+                : this.getPayChannelType().equals(other.getPayChannelType()))
+                && (this.getTargetAccountType() == null ? other.getTargetAccountType() == null
+                : this.getTargetAccountType().equals(other.getTargetAccountType()))
+                && (this.getAccountingEntry() == null ? other.getAccountingEntry() == null
+                : this.getAccountingEntry().equals(other.getAccountingEntry()))
+                && (this.getGmtAcceptedTime() == null ? other.getGmtAcceptedTime() == null
+                : this.getGmtAcceptedTime().equals(other.getGmtAcceptedTime()))
+                && (this.getGmtPaymentBeginTime() == null ? other.getGmtPaymentBeginTime() == null
+                : this.getGmtPaymentBeginTime().equals(other.getGmtPaymentBeginTime()))
+                && (this.getGmtPaymentSuccessTime() == null ? other.getGmtPaymentSuccessTime() == null
+                : this.getGmtPaymentSuccessTime().equals(other.getGmtPaymentSuccessTime()))
+                && (this.getGmtPaymentFailureTime() == null ? other.getGmtPaymentFailureTime() == null
+                : this.getGmtPaymentFailureTime().equals(other.getGmtPaymentFailureTime()))
+                && (this.getGmtPaymentClosedTime() == null ? other.getGmtPaymentClosedTime() == null
+                : this.getGmtPaymentClosedTime().equals(other.getGmtPaymentClosedTime()))
+                && (this.getGmtPaymentBouncedTime() == null ? other.getGmtPaymentBouncedTime() == null
+                : this.getGmtPaymentBouncedTime().equals(other.getGmtPaymentBouncedTime()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
+                && (this.getVersion() == null ? other.getVersion() == null
+                : this.getVersion().equals(other.getVersion()))
                 && (this.getMemo() == null ? other.getMemo() == null : this.getMemo().equals(other.getMemo()))
-                && (this.getChannelPaymentTraceNo() == null ? other.getChannelPaymentTraceNo() == null : this.getChannelPaymentTraceNo().equals(other.getChannelPaymentTraceNo()))
-                && (this.getChannelDishonorTraceNo() == null ? other.getChannelDishonorTraceNo() == null : this.getChannelDishonorTraceNo().equals(other.getChannelDishonorTraceNo()))
-                && (this.getChannelErrorCode() == null ? other.getChannelErrorCode() == null : this.getChannelErrorCode().equals(other.getChannelErrorCode()))
-                && (this.getBusinessEntity() == null ? other.getBusinessEntity() == null : this.getBusinessEntity().equals(other.getBusinessEntity()))
-                && (this.getNotifyUri() == null ? other.getNotifyUri() == null : this.getNotifyUri().equals(other.getNotifyUri()))
-                && (this.getExtendInfo() == null ? other.getExtendInfo() == null : this.getExtendInfo().equals(other.getExtendInfo()))
-                && (this.getBizInfo() == null ? other.getBizInfo() == null : this.getBizInfo().equals(other.getBizInfo()))
+                && (this.getChannelPaymentTraceNo() == null ? other.getChannelPaymentTraceNo() == null
+                : this.getChannelPaymentTraceNo().equals(other.getChannelPaymentTraceNo()))
+                && (this.getChannelDishonorTraceNo() == null ? other.getChannelDishonorTraceNo() == null
+                : this.getChannelDishonorTraceNo().equals(other.getChannelDishonorTraceNo()))
+                && (this.getChannelErrorCode() == null ? other.getChannelErrorCode() == null
+                : this.getChannelErrorCode().equals(other.getChannelErrorCode()))
+                && (this.getBusinessEntity() == null ? other.getBusinessEntity() == null
+                : this.getBusinessEntity().equals(other.getBusinessEntity()))
+                && (this.getNotifyUri() == null ? other.getNotifyUri() == null
+                : this.getNotifyUri().equals(other.getNotifyUri()))
+                && (this.getExtendInfo() == null ? other.getExtendInfo() == null
+                : this.getExtendInfo().equals(other.getExtendInfo()))
+                && (this.getBizInfo() == null ? other.getBizInfo() == null
+                : this.getBizInfo().equals(other.getBizInfo()))
                 && (this.getEnv() == null ? other.getEnv() == null : this.getEnv().equals(other.getEnv()));
     }
 

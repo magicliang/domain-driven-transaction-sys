@@ -2,7 +2,6 @@ package com.magicliang.transaction.sys.core.service;
 
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
-
 import java.util.List;
 
 /**
@@ -11,8 +10,8 @@ import java.util.List;
  * description: 支付订单服务
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 19:17
+ *         <p>
+ *         date: 2022-01-04 19:17
  */
 public interface IPayOrderService {
 
@@ -29,7 +28,7 @@ public interface IPayOrderService {
      * 填充支付订单领域模型，只要不满足模型实体完整性约束，立刻返回空值
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 支付订单领域模型
      */
     TransPayOrderEntity populateWholePayOrder(String bizIdentifyNo, String bizUniqueNo);
@@ -46,7 +45,7 @@ public interface IPayOrderService {
      * 轻量级填充支付订单领域模型
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 支付订单领域模型
      */
     TransPayOrderEntity populateLitePayOrder(String bizIdentifyNo, String bizUniqueNo);
@@ -70,7 +69,7 @@ public interface IPayOrderService {
      * 查询特定环境、特定数量的未完成的支付请求
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未完成的支付请求列表
      */
     List<TransRequestEntity> populateUnpaidRequest(int batchSize, int env);
@@ -86,7 +85,7 @@ public interface IPayOrderService {
      * 查询特定环境、特定数量的未发送通知
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未发送通知
      */
     List<TransRequestEntity> populateUnSentNotifications(int batchSize, int env);
@@ -129,7 +128,7 @@ public interface IPayOrderService {
     /**
      * 在一个事务里更新支付订单和支付请求
      *
-     * @param payOrder   支付订单
+     * @param payOrder 支付订单
      * @param payRequest 支付请求
      * @return 支付结果
      */
@@ -138,14 +137,14 @@ public interface IPayOrderService {
     /**
      * 在一个事务里更新支付订单和支付请求
      *
-     * @param payOrder            支付订单
-     * @param payRequest          支付请求
+     * @param payOrder 支付订单
+     * @param payRequest 支付请求
      * @param notificationRequest 通知请求
      * @return 支付结果
      */
     boolean insertNotificationAndUpdatePayOrder(TransPayOrderEntity payOrder,
-                                                TransRequestEntity payRequest,
-                                                TransRequestEntity notificationRequest);
+            TransRequestEntity payRequest,
+            TransRequestEntity notificationRequest);
 
     /**
      * 更新通道请求

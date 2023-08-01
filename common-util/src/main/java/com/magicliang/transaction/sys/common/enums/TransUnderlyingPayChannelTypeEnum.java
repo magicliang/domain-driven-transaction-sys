@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 底层支付通道枚举
  *
  * @author magicliang
- * <p>
- * date: 2022-01-25 22:27
+ *         <p>
+ *         date: 2022-01-25 22:27
  */
 @Getter
 @RequiredArgsConstructor

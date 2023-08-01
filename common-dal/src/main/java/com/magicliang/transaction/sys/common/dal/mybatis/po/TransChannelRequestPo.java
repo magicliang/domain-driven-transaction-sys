@@ -7,6 +7,7 @@ import java.util.Date;
  * This class corresponds to the database table tb_trans_channel_request
  */
 public class TransChannelRequestPo {
+
     /**
      * Database Column Remarks:
      * 自增物理主键，单表唯一
@@ -488,18 +489,29 @@ public class TransChannelRequestPo {
         }
         TransChannelRequestPo other = (TransChannelRequestPo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getGmtCreated() == null ? other.getGmtCreated() == null : this.getGmtCreated().equals(other.getGmtCreated()))
-                && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null : this.getPayOrderNo().equals(other.getPayOrderNo()))
-                && (this.getRequestType() == null ? other.getRequestType() == null : this.getRequestType().equals(other.getRequestType()))
-                && (this.getBizIdentifyNo() == null ? other.getBizIdentifyNo() == null : this.getBizIdentifyNo().equals(other.getBizIdentifyNo()))
-                && (this.getBizUniqueNo() == null ? other.getBizUniqueNo() == null : this.getBizUniqueNo().equals(other.getBizUniqueNo()))
-                && (this.getGmtNextExecution() == null ? other.getGmtNextExecution() == null : this.getGmtNextExecution().equals(other.getGmtNextExecution()))
-                && (this.getRetryCount() == null ? other.getRetryCount() == null : this.getRetryCount().equals(other.getRetryCount()))
-                && (this.getRequestAddr() == null ? other.getRequestAddr() == null : this.getRequestAddr().equals(other.getRequestAddr()))
+                && (this.getGmtCreated() == null ? other.getGmtCreated() == null
+                : this.getGmtCreated().equals(other.getGmtCreated()))
+                && (this.getGmtModified() == null ? other.getGmtModified() == null
+                : this.getGmtModified().equals(other.getGmtModified()))
+                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null
+                : this.getPayOrderNo().equals(other.getPayOrderNo()))
+                && (this.getRequestType() == null ? other.getRequestType() == null
+                : this.getRequestType().equals(other.getRequestType()))
+                && (this.getBizIdentifyNo() == null ? other.getBizIdentifyNo() == null
+                : this.getBizIdentifyNo().equals(other.getBizIdentifyNo()))
+                && (this.getBizUniqueNo() == null ? other.getBizUniqueNo() == null
+                : this.getBizUniqueNo().equals(other.getBizUniqueNo()))
+                && (this.getGmtNextExecution() == null ? other.getGmtNextExecution() == null
+                : this.getGmtNextExecution().equals(other.getGmtNextExecution()))
+                && (this.getRetryCount() == null ? other.getRetryCount() == null
+                : this.getRetryCount().equals(other.getRetryCount()))
+                && (this.getRequestAddr() == null ? other.getRequestAddr() == null
+                : this.getRequestAddr().equals(other.getRequestAddr()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getCloseReason() == null ? other.getCloseReason() == null : this.getCloseReason().equals(other.getCloseReason()))
-                && (this.getGmtLastExecution() == null ? other.getGmtLastExecution() == null : this.getGmtLastExecution().equals(other.getGmtLastExecution()))
+                && (this.getCloseReason() == null ? other.getCloseReason() == null
+                : this.getCloseReason().equals(other.getCloseReason()))
+                && (this.getGmtLastExecution() == null ? other.getGmtLastExecution() == null
+                : this.getGmtLastExecution().equals(other.getGmtLastExecution()))
                 && (this.getEnv() == null ? other.getEnv() == null : this.getEnv().equals(other.getEnv()));
     }
 

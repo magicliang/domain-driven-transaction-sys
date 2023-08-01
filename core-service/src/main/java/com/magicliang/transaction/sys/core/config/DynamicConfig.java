@@ -1,10 +1,9 @@
 package com.magicliang.transaction.sys.core.config;
 
 import com.magicliang.transaction.sys.common.util.JsonUtils;
-import org.springframework.stereotype.Component;
-
 import java.util.Collections;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -13,8 +12,8 @@ import java.util.Map;
  * 待引入类似 apollo 或者 spring config 之类的动态配置实现
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 11:17
+ *         <p>
+ *         date: 2021-12-31 11:17
  */
 @Component
 public class DynamicConfig {

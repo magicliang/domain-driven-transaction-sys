@@ -1,9 +1,9 @@
 package com.magicliang.transaction.sys.core.model.entity.validator;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_SUB_ORDER_ERROR;
+
 import com.magicliang.transaction.sys.common.util.AssertUtils;
 import com.magicliang.transaction.sys.core.model.entity.TransAlipaySubOrderEntity;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_SUB_ORDER_ERROR;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -11,8 +11,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID
  * description: 支付宝子订单校验器
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 11:27
+ *         <p>
+ *         date: 2022-01-05 11:27
  */
 public class TransAlipaySubOrderValidator {
 
@@ -29,7 +29,8 @@ public class TransAlipaySubOrderValidator {
      * @param subOrder 支付订单
      */
     public static void validateBeforeInsert(TransAlipaySubOrderEntity subOrder) {
-        AssertUtils.assertNotBlank(subOrder.getToAliPayAccount(), INVALID_SUB_ORDER_ERROR, "invalid toAliPayAccount:" + subOrder);
+        AssertUtils.assertNotBlank(subOrder.getToAliPayAccount(), INVALID_SUB_ORDER_ERROR,
+                "invalid toAliPayAccount:" + subOrder);
         // 其他差异化校验
     }
 }

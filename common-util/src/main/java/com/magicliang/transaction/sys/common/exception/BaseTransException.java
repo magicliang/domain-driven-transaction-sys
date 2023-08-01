@@ -12,8 +12,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 交易异常，这是一个基于不同错误码的异常和监控基础设计
  *
  * @author magicliang
- * <p>
- * date: 2021-12-29 11:57
+ *         <p>
+ *         date: 2021-12-29 11:57
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -52,7 +52,7 @@ public class BaseTransException extends RuntimeException {
     /**
      * 构造器
      *
-     * @param cause     原因
+     * @param cause 原因
      * @param errorEnum 错误枚举
      */
     public BaseTransException(Throwable cause, TransErrorEnum errorEnum) {
@@ -64,7 +64,7 @@ public class BaseTransException extends RuntimeException {
      *
      * @param errorEnum 错误枚举
      * @param errorCode 自定义错误码
-     * @param message   自定义错信息
+     * @param message 自定义错信息
      */
     public BaseTransException(TransErrorEnum errorEnum, String errorCode, String message) {
         this(null, errorEnum, errorCode, message, null);
@@ -74,7 +74,7 @@ public class BaseTransException extends RuntimeException {
      * 构造器
      *
      * @param errorEnum 错误枚举
-     * @param message   自定义错信息
+     * @param message 自定义错信息
      */
     public BaseTransException(TransErrorEnum errorEnum, String message) {
         this(null, errorEnum, null, message, null);
@@ -83,9 +83,9 @@ public class BaseTransException extends RuntimeException {
     /**
      * 构造器
      *
-     * @param cause     原因
+     * @param cause 原因
      * @param errorEnum 错误枚举
-     * @param message   自定义错信息
+     * @param message 自定义错信息
      */
     public BaseTransException(Throwable cause, TransErrorEnum errorEnum, String message) {
         this(cause, errorEnum, null, message, null);
@@ -94,12 +94,13 @@ public class BaseTransException extends RuntimeException {
     /**
      * 构造器
      *
-     * @param cause     原因
+     * @param cause 原因
      * @param errorEnum 错误枚举
      * @param errorCode 自定义错误码
-     * @param message   自定义错信息
+     * @param message 自定义错信息
      */
-    public BaseTransException(final Throwable cause, final TransErrorEnum errorEnum, final String errorCode, final String message, final Boolean retryAble) {
+    public BaseTransException(final Throwable cause, final TransErrorEnum errorEnum, final String errorCode,
+            final String message, final Boolean retryAble) {
         super(cause);
         setErrorEnum(errorEnum);
         // 1. 如果错误枚举不为空，设置其错误码和错误信息为本异常的缺省错误码和错误信息

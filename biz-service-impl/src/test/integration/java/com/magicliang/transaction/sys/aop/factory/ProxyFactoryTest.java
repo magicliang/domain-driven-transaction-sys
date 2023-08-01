@@ -4,6 +4,8 @@ import com.magicliang.transaction.sys.DomainDrivenTransactionSysApplicationInteg
 import com.magicliang.transaction.sys.aop.advice.LoggingAdvice;
 import com.magicliang.transaction.sys.aop.advice.ProfilingInterceptor;
 import com.magicliang.transaction.sys.aop.generator.IntegerGenerator;
+import java.lang.reflect.Proxy;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,17 +16,14 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Resource;
-import java.lang.reflect.Proxy;
-
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 这种测试用内部类可以封闭可见性，让所有的测试都在同一个包里
  *
  * @author magicliang
- * <p>
- * date: 2022-05-28 19:20
+ *         <p>
+ *         date: 2022-05-28 19:20
  */
 @Slf4j
 class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationTest {
@@ -41,8 +40,10 @@ class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationT
     @Test
     public void testJdkDynamicAopProxyFactory() {
         ProxyFactory factory = new ProxyFactory(integerGenerator);
-//        final Class<?>[] allInterfaces = ArrayUtils.add(ClassUtils.getAllInterfaces(IntegerGenerator.class), IntegerGenerator.class);
-        // 每一步 setInterfaces 会 clear 掉上一步 setInterfaces 的结果，注意，直接把目标接口 setInterfaces 会比由 proxyFactory 自己通过反射得到的接口要代理的接口要少，后者会产生一些反射才能得出（不能直接从代码里得出的）的 type 等接口
+//        final Class<?>[] allInterfaces = ArrayUtils.add(ClassUtils.getAllInterfaces(IntegerGenerator.class),
+//        IntegerGenerator.class);
+        // 每一步 setInterfaces 会 clear 掉上一步 setInterfaces 的结果，注意，直接把目标接口 setInterfaces 会比由 proxyFactory
+        // 自己通过反射得到的接口要代理的接口要少，后者会产生一些反射才能得出（不能直接从代码里得出的）的 type 等接口
         // 更多的接口也未必是我们想要的，这里主动设置接口虽然麻烦，但在语义上更加明确，比如我们平时做的 @Autorwired 其实是
 //        factory.setInterfaces(IntegerGenerator.class);
 
@@ -52,9 +53,9 @@ class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationT
 
         log.info("ProxyCreatorSupport.class.isInstance: {}", ProxyCreatorSupport.class.isInstance(factory));
 
-
 //        factory.addAdvisor(myAdvisor);
-        // 如果底层实现是 JdkDynamicAopProxy，这个 object 是个合成的（Synthesized） Proxy 内部类，有个 h 成员为 JdkDynamicAopProxy，factory 能够识别出几个接口，底层的 realProxy 就能做怎样的转化
+        // 如果底层实现是 JdkDynamicAopProxy，这个 object 是个合成的（Synthesized） Proxy 内部类，有个 h 成员为 JdkDynamicAopProxy，factory
+        // 能够识别出几个接口，底层的 realProxy 就能做怎样的转化
         final Object realProxy = factory.getProxy();
         final IntegerGenerator proxy = (IntegerGenerator) realProxy;
         /*
@@ -63,7 +64,8 @@ class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationT
         log.info("proxy is: {}", proxy);
         log.info("proxy hashCode: {}", proxy.hashCode());
         log.info("proxy equals proxy: {}", proxy.equals(realProxy));
-        // A isAssignableFrom B 意思是 A 是否 B 的超类，和 B instanceof A 的语义正好反过来，AopProxy 是 JdkDynamicProxy 的超类，不是 JdkDynamicProxy.getProxy() 的超类，
+        // A isAssignableFrom B 意思是 A 是否 B 的超类，和 B instanceof A 的语义正好反过来，AopProxy 是 JdkDynamicProxy 的超类，不是
+        // JdkDynamicProxy.getProxy() 的超类，
         log.info("AopProxy.class.isAssignableFrom: {}", AopProxy.class.isAssignableFrom(proxy.getClass()));
         // JdkDynamicAopProxy.getProxy() 的结果
         final Class<? extends IntegerGenerator> aClass = proxy.getClass();
@@ -90,7 +92,8 @@ class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationT
         // 使用 HotSwappableTargetSource 必须添加接口
         ProxyFactory factory = new ProxyFactory();
 
-        // 不能直接 set target，需要 setTargetSource，才能不出现：org.springframework.aop.AopInvocationException: AOP configuration seems to be invalid object is not an instance of declaring class 类似的错误
+        // 不能直接 set target，需要 setTargetSource，才能不出现：org.springframework.aop.AopInvocationException: AOP configuration
+        // seems to be invalid object is not an instance of declaring class 类似的错误
         factory.setTargetSource(HotSwappableTargetSourceFactory.createHotSwappableTargetSource(integerGenerator));
         // 如果设置了 HotSwappableTargetSource，则无法自动探测出接口，会回退到 cglib 代理，设置了 setInterfaces 又会激活 JdkDynamicAopProxy
 //        factory.setInterfaces(IntegerGenerator.class);
@@ -110,7 +113,8 @@ class ProxyFactoryTest extends DomainDrivenTransactionSysApplicationIntegrationT
          */
         log.info("proxy is: {}", proxy);
         final Class<? extends IntegerGenerator> aClass = proxy.getClass();
-        // aClass.toString()：class com.magicliang.transaction.sys.aop.generator.impl.IntegerGeneratorImpl$$EnhancerBySpringCGLIB$$edeee08d
+        // aClass.toString()：class com.magicliang.transaction.sys.aop.generator.impl
+        // .IntegerGeneratorImpl$$EnhancerBySpringCGLIB$$edeee08d
         log.info("aClass.toString()：{}", aClass);
         // AopProxy 是 CglibAopProxy 的超类，不是 CglibAopProxy.getProxy() 的超类
         // false

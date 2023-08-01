@@ -1,15 +1,14 @@
 package com.magicliang.transaction.sys.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * @author liangchuan
@@ -79,6 +78,7 @@ public class AlgorithmTest {
         @Data
         @AllArgsConstructor
         class TimeUnit {
+
             private String name;
             private long length;
         }
@@ -112,6 +112,7 @@ public class AlgorithmTest {
         @Data
         @AllArgsConstructor
         class Applier {
+
             private String name;
             private Function<Integer, Long> applier;
         }
@@ -183,7 +184,6 @@ public class AlgorithmTest {
         int[] b = new int[]{1, 0, 1, 1, 1, 1};
         // 答案为 1011110，恰好是上述的数组左移一位
         System.out.println(Arrays.toString(merge2BitArrs(a, b)));
-
 
         int[] c = new int[]{1, 1, 1, 1};
         int[] d = new int[]{1, 0, 1, 1, 1, 1};

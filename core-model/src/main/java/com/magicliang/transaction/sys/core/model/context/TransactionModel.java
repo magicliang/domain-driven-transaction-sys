@@ -10,8 +10,8 @@ import lombok.Data;
  * 一个领域的主交易模型到底应不应该因为平台产品的变动而变动，有待探讨
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 17:31
+ *         <p>
+ *         date: 2021-12-31 17:31
  */
 @Data
 public class TransactionModel {

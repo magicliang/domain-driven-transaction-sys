@@ -1,10 +1,14 @@
 package com.magicliang.transaction.sys.common.dal.datasource;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_EMBEDDED_DB_PORT_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR;
+
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import ch.vorburger.mariadb4j.springframework.MariaDB4jSpringService;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +20,13 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
-import javax.sql.DataSource;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_EMBEDDED_DB_PORT_ERROR;
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.UNABLE_TO_BOOTSTRAP_EMBEDDED_DB_PORT_ERROR;
-
 /**
  * 只在 mariadb4j 这个profile下面使用的数据源
  * 参考：
- * 1. {@link https://github.com/vorburger/MariaDB4j/blob/master/mariaDB4j/src/test/java/ch/vorburger/mariadb4j/tests/MariaDB4jSampleTutorialTest.java}
+ * 1.
+ * {@link
+ * https://github.com/vorburger/MariaDB4j/blob/master/mariaDB4j/src/test/java/ch/vorburger/mariadb4j/tests
+ * /MariaDB4jSampleTutorialTest.java}
  * 2. {@link https://objectpartners.com/2017/06/19/using-mariadb4j-for-a-spring-boot-embedded-database/}
  *
  * @author liangchuan
@@ -36,6 +38,17 @@ public class EmbeddedMariaDbConfig {
     @Autowired
     private ApplicationContext applicationContext;
 
+    /**
+     * 为 url 增加 MySQL 许可，当代的 mariadb4j 倾向使用 jdbc:mariadb: jdbcurl 或者 jdbc:mysql:localhost/test?permitMysqlScheme
+     *
+     * @param databaseName 原数据库名称
+     * @param config 数据库配置构建器
+     * @return 增加了许可的 jdbc 连接字符串
+     */
+    private static String permitMysqlScheme4Mariadb4j(final String databaseName, final DBConfigurationBuilder config) {
+        return config.getURL(databaseName) + "?permitMysqlScheme";
+    }
+
     @Bean(name = "dataSource", destroyMethod = "close")
     @Profile("local-mariadb4j-dev")
     @Primary
@@ -46,7 +59,8 @@ public class EmbeddedMariaDbConfig {
         final String userName = environment.getProperty("spring.datasource.master.userName");
         final String password = environment.getProperty("spring.datasource.master.password");
         final String driverClassName = environment.getProperty("spring.datasource.master.driver-class-name");
-        MariaDB4jSpringService mariaDB4jSpringService = applicationContext.getBean("masterMariaDB4jSpringService", MariaDB4jSpringService.class);
+        MariaDB4jSpringService mariaDB4jSpringService = applicationContext.getBean("masterMariaDB4jSpringService",
+                MariaDB4jSpringService.class);
         try {
             // Create our database with default root user and no password
             DB db = mariaDB4jSpringService.getDB();
@@ -88,7 +102,8 @@ public class EmbeddedMariaDbConfig {
         final String userName = environment.getProperty("spring.datasource.slave1.userName");
         final String password = environment.getProperty("spring.datasource.slave1.password");
         final String driverClassName = environment.getProperty("spring.datasource.slave1.driver-class-name");
-        MariaDB4jSpringService mariaDB4jSpringService = applicationContext.getBean("getSlaveMariaDB4jSpringService1", MariaDB4jSpringService.class);
+        MariaDB4jSpringService mariaDB4jSpringService = applicationContext.getBean("getSlaveMariaDB4jSpringService1",
+                MariaDB4jSpringService.class);
         try {
             // Create our database with default root user and no password
             DB db = mariaDB4jSpringService.getDB();
@@ -129,11 +144,13 @@ public class EmbeddedMariaDbConfig {
         final String port = environment.getProperty("spring.datasource.master.port");
         // 生成一个局部的、临时的 mariaDB4jSpringService，只为托管一个嵌入式 DB
         if (StringUtils.isBlank(port)) {
-            throw new BaseTransException(INVALID_EMBEDDED_DB_PORT_ERROR, INVALID_EMBEDDED_DB_PORT_ERROR.getErrorMsg() + port);
+            throw new BaseTransException(INVALID_EMBEDDED_DB_PORT_ERROR,
+                    INVALID_EMBEDDED_DB_PORT_ERROR.getErrorMsg() + port);
         }
         MariaDB4jSpringService mariaDB4jSpringService = new MariaDB4jSpringService();
         mariaDB4jSpringService.setDefaultPort(Integer.parseInt(port));
-        // 这个bean start 以后会启动安装和调用 mariadb4j 的功能，有时候需要启动 openssl：brew install rbenv/tap/openssl@1.0 && ln -sfn /usr/local/Cellar/openssl@1.0/1.0.2t /usr/local/opt/openssl
+        // 这个bean start 以后会启动安装和调用 mariadb4j 的功能，有时候需要启动 openssl：brew install rbenv/tap/openssl@1.0 && ln -sfn
+        // /usr/local/Cellar/openssl@1.0/1.0.2t /usr/local/opt/openssl
         return mariaDB4jSpringService;
     }
 
@@ -150,23 +167,14 @@ public class EmbeddedMariaDbConfig {
         final String port = environment.getProperty("spring.datasource.slave1.port");
         // 生成一个局部的、临时的 mariaDB4jSpringService，只为托管一个嵌入式 DB
         if (StringUtils.isBlank(port)) {
-            throw new BaseTransException(INVALID_EMBEDDED_DB_PORT_ERROR, INVALID_EMBEDDED_DB_PORT_ERROR.getErrorMsg() + port);
+            throw new BaseTransException(INVALID_EMBEDDED_DB_PORT_ERROR,
+                    INVALID_EMBEDDED_DB_PORT_ERROR.getErrorMsg() + port);
         }
         MariaDB4jSpringService mariaDB4jSpringService = new MariaDB4jSpringService();
         mariaDB4jSpringService.setDefaultPort(Integer.parseInt(port));
-        // 这个bean start 以后会启动安装和调用 mariadb4j 的功能，有时候需要启动 openssl：brew install rbenv/tap/openssl@1.0 && ln -sfn /usr/local/Cellar/openssl@1.0/1.0.2t /usr/local/opt/openssl
+        // 这个bean start 以后会启动安装和调用 mariadb4j 的功能，有时候需要启动 openssl：brew install rbenv/tap/openssl@1.0 && ln -sfn
+        // /usr/local/Cellar/openssl@1.0/1.0.2t /usr/local/opt/openssl
         return mariaDB4jSpringService;
-    }
-
-    /**
-     * 为 url 增加 MySQL 许可，当代的 mariadb4j 倾向使用 jdbc:mariadb: jdbcurl 或者 jdbc:mysql:localhost/test?permitMysqlScheme
-     *
-     * @param databaseName 原数据库名称
-     * @param config       数据库配置构建器
-     * @return 增加了许可的 jdbc 连接字符串
-     */
-    private static String permitMysqlScheme4Mariadb4j(final String databaseName, final DBConfigurationBuilder config) {
-        return config.getURL(databaseName) + "?permitMysqlScheme";
     }
 
 }

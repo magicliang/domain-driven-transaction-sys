@@ -1,5 +1,9 @@
 package com.magicliang.transaction.sys.core.domain.activity.acceptance;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.ACCEPTANCE_FAILURE_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_ACCEPTANCE_STRATEGY_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAYMENT_REQUEST_ERROR;
+
 import com.magicliang.transaction.sys.common.constant.TransConstant;
 import com.magicliang.transaction.sys.common.enums.TransEnvEnum;
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
@@ -19,14 +23,11 @@ import com.magicliang.transaction.sys.core.model.entity.validator.TransRequestVa
 import com.magicliang.transaction.sys.core.model.entity.validator.TransSubOrderValidator;
 import com.magicliang.transaction.sys.core.model.request.acceptance.AcceptanceRequest;
 import com.magicliang.transaction.sys.core.model.response.acceptance.AcceptanceResponse;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.List;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -34,8 +35,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * description: 受理活动
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 11:21
+ *         <p>
+ *         date: 2022-01-05 11:21
  */
 @Slf4j
 @Component
@@ -78,11 +79,13 @@ public class AcceptanceActivity extends BaseActivity<AcceptanceRequest, Acceptan
 
         // 5. 检查支付请求
         final TransRequestEntity paymentRequest = payOrder.getPaymentRequest();
-        AssertUtils.assertNotNull(paymentRequest, INVALID_PAYMENT_REQUEST_ERROR, "invalid paymentRequest:" + paymentRequest);
+        AssertUtils.assertNotNull(paymentRequest, INVALID_PAYMENT_REQUEST_ERROR,
+                "invalid paymentRequest:" + paymentRequest);
         TransRequestValidator.validateBeforeInsert(paymentRequest);
 
         // 6. 校验决策出来的策略
-        AssertUtils.assertNotNull(decideStrategy(context), INVALID_ACCEPTANCE_STRATEGY_ERROR, JsonUtils.toJson(context));
+        AssertUtils.assertNotNull(decideStrategy(context), INVALID_ACCEPTANCE_STRATEGY_ERROR,
+                JsonUtils.toJson(context));
 
         // 7. 完成当前钩子
         return context.isAcceptanceComplete();
@@ -95,7 +98,8 @@ public class AcceptanceActivity extends BaseActivity<AcceptanceRequest, Acceptan
      * @return 领域能力请求
      */
     @Override
-    protected AcceptanceRequest assembleDomainRequest(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected AcceptanceRequest assembleDomainRequest(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         AcceptanceRequest request = context.getAcceptanceRequest();
         TransactionModel model = context.getModel();
         final TransPayOrderEntity payOrder = model.getPayOrder();
@@ -112,7 +116,8 @@ public class AcceptanceActivity extends BaseActivity<AcceptanceRequest, Acceptan
      * @return 领域能力响应
      */
     @Override
-    protected AcceptanceResponse assembleDomainResponse(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected AcceptanceResponse assembleDomainResponse(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         return context.getAcceptanceResponse();
     }
 
@@ -123,7 +128,8 @@ public class AcceptanceActivity extends BaseActivity<AcceptanceRequest, Acceptan
      * @return 作为决策结果的策略点
      */
     @Override
-    protected AcceptanceStrategyEnum decideStrategy(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected AcceptanceStrategyEnum decideStrategy(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         return AcceptanceStrategyEnum.SYNC;
     }
 
@@ -149,7 +155,8 @@ public class AcceptanceActivity extends BaseActivity<AcceptanceRequest, Acceptan
         // 2. 断言处理结果
         AcceptanceResponse acceptanceResponse = context.getAcceptanceResponse();
         final Long acceptedPayOrderNo = acceptanceResponse.getAcceptedPayOrderNo();
-        AssertUtils.assertNotNull(acceptedPayOrderNo, ACCEPTANCE_FAILURE_ERROR, "invalid acceptedPayOrderNo:" + acceptedPayOrderNo);
+        AssertUtils.assertNotNull(acceptedPayOrderNo, ACCEPTANCE_FAILURE_ERROR,
+                "invalid acceptedPayOrderNo:" + acceptedPayOrderNo);
         // 3. 完成当前钩子，一般情况下，只有在当前 activity 执行完之后，才可以调用 setAcceptanceComplete
         context.setAcceptanceComplete(true);
     }

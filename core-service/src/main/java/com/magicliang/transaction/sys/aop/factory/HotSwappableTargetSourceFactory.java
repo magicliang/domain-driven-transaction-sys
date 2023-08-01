@@ -8,8 +8,8 @@ import org.springframework.aop.target.HotSwappableTargetSource;
  * description: 可热切换的目标源工厂
  *
  * @author magicliang
- * <p>
- * date: 2022-05-28 18:45
+ *         <p>
+ *         date: 2022-05-28 18:45
  */
 public class HotSwappableTargetSourceFactory {
 

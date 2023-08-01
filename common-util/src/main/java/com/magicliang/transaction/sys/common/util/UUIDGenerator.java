@@ -9,8 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * description: UUID 生成器
  *
  * @author magicliang
- * <p>
- * date: 2021-12-30 17:24
+ *         <p>
+ *         date: 2021-12-30 17:24
  */
 public class UUIDGenerator {
 
@@ -36,7 +36,8 @@ public class UUIDGenerator {
         String zero = String.format("%0" + (randomBit - 1) + "d", 0);
         String startValueStr = 1 + zero;
         String endValueStr = 9 + zero;
-        int random = ThreadLocalRandom.current().nextInt(Integer.parseInt(startValueStr), Integer.parseInt(endValueStr));
+        int random = ThreadLocalRandom.current()
+                .nextInt(Integer.parseInt(startValueStr), Integer.parseInt(endValueStr));
         return String.valueOf(random);
     }
 }

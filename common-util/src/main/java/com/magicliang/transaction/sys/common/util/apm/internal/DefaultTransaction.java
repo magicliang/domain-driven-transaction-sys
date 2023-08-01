@@ -3,25 +3,25 @@ package com.magicliang.transaction.sys.common.util.apm.internal;
 import com.magicliang.transaction.sys.common.util.JsonUtils;
 import com.magicliang.transaction.sys.common.util.apm.ApmMonitor;
 import com.magicliang.transaction.sys.common.util.apm.Message;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.collections.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 缺省事务类
- * 原型：https://github.com/dianping/cat/blob/master/lib/java/src/main/java/com/dianping/cat/message/internal/DefaultTransaction.java
+ * 原型：https://github.com/dianping/cat/blob/master/lib/java/src/main/java/com/dianping/cat/message/internal
+ * /DefaultTransaction.java
  * 这个 DefaultTransaction 目前还不支持跨线程传递消息，敬请期待
  * 缺一个缺省的 aop 拦截器：方法内部调用里出现异常在所难免，因此在 finally 里对事物进行完成至关重要，不正确完成的事务的测度数据是不准的
  *
  * @author magicliang
- * <p>
- * date: 2022-04-28 20:32
+ *         <p>
+ *         date: 2022-04-28 20:32
  */
 @EqualsAndHashCode(callSuper = true)
 public class DefaultTransaction extends AbstractTransaction {
@@ -44,8 +44,8 @@ public class DefaultTransaction extends AbstractTransaction {
     /**
      * 全参构造器
      *
-     * @param type        消息类型
-     * @param name        消息名称
+     * @param type 消息类型
+     * @param name 消息名称
      * @param autoLogging 是否自动在日志里记录上下文
      */
     public DefaultTransaction(final String type, final String name, final boolean autoLogging) {
@@ -77,7 +77,8 @@ public class DefaultTransaction extends AbstractTransaction {
      * Get all children message within current transaction.
      *
      * <p>
-     * Typically, a <code>Transaction</code> can nest other <code>Transaction</code>s, <code>Event</code>s and <code>Heartbeat</code>
+     * Typically, a <code>Transaction</code> can nest other <code>Transaction</code>s, <code>Event</code>s and
+     * <code>Heartbeat</code>
      * s, while an <code>Event</code> or <code>Heartbeat</code> can't nest other messages.
      * </p>
      *

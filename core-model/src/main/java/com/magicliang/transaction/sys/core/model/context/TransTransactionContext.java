@@ -20,8 +20,8 @@ import lombok.Data;
  * 指定多个泛型的好处是：能够把搭配在继承时限定出来
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 17:42
+ *         <p>
+ *         date: 2021-12-31 17:42
  */
 @Data
 public class TransTransactionContext<R, T extends TransactionModel> {

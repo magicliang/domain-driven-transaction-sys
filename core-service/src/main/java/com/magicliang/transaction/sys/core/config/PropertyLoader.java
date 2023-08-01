@@ -15,8 +15,8 @@ import org.springframework.core.env.StandardEnvironment;
  * description: 一个 hocon 的 configuration 的例子
  *
  * @author magicliang
- * <p>
- * date: 2022-10-31 10:42
+ *         <p>
+ *         date: 2022-10-31 10:42
  */
 @Slf4j
 //@Configuration

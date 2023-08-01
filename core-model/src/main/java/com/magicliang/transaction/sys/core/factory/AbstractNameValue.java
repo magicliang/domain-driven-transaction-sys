@@ -11,8 +11,8 @@ import org.springframework.beans.factory.FactoryBean;
  * description: 抽象名值对工厂 bean
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 13:33
+ *         <p>
+ *         date: 2021-12-31 13:33
  */
 @Slf4j
 public abstract class AbstractNameValue<T> implements FactoryBean<T> {

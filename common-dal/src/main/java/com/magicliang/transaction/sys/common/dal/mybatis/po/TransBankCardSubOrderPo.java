@@ -7,6 +7,7 @@ import java.util.Date;
  * This class corresponds to the database table tb_trans_bank_card_suborder
  */
 public class TransBankCardSubOrderPo {
+
     /**
      * Database Column Remarks:
      * 自增物理主键，单表唯一
@@ -422,17 +423,25 @@ public class TransBankCardSubOrderPo {
         }
         TransBankCardSubOrderPo other = (TransBankCardSubOrderPo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getGmtCreated() == null ? other.getGmtCreated() == null : this.getGmtCreated().equals(other.getGmtCreated()))
-                && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null : this.getPayOrderNo().equals(other.getPayOrderNo()))
-                && (this.getToBankAccount() == null ? other.getToBankAccount() == null : this.getToBankAccount().equals(other.getToBankAccount()))
-                && (this.getAccountType() == null ? other.getAccountType() == null : this.getAccountType().equals(other.getAccountType()))
+                && (this.getGmtCreated() == null ? other.getGmtCreated() == null
+                : this.getGmtCreated().equals(other.getGmtCreated()))
+                && (this.getGmtModified() == null ? other.getGmtModified() == null
+                : this.getGmtModified().equals(other.getGmtModified()))
+                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null
+                : this.getPayOrderNo().equals(other.getPayOrderNo()))
+                && (this.getToBankAccount() == null ? other.getToBankAccount() == null
+                : this.getToBankAccount().equals(other.getToBankAccount()))
+                && (this.getAccountType() == null ? other.getAccountType() == null
+                : this.getAccountType().equals(other.getAccountType()))
                 && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
                 && (this.getBankId() == null ? other.getBankId() == null : this.getBankId().equals(other.getBankId()))
-                && (this.getBranchId() == null ? other.getBranchId() == null : this.getBranchId().equals(other.getBranchId()))
+                && (this.getBranchId() == null ? other.getBranchId() == null
+                : this.getBranchId().equals(other.getBranchId()))
                 && (this.getCityId() == null ? other.getCityId() == null : this.getCityId().equals(other.getCityId()))
-                && (this.getBranchName() == null ? other.getBranchName() == null : this.getBranchName().equals(other.getBranchName()))
-                && (this.getToBranchNo() == null ? other.getToBranchNo() == null : this.getToBranchNo().equals(other.getToBranchNo()));
+                && (this.getBranchName() == null ? other.getBranchName() == null
+                : this.getBranchName().equals(other.getBranchName()))
+                && (this.getToBranchNo() == null ? other.getToBranchNo() == null
+                : this.getToBranchNo().equals(other.getToBranchNo()));
     }
 
     /**

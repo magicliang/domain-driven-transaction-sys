@@ -9,8 +9,8 @@ import java.util.concurrent.locks.ReadWriteLock;
  * description: 分布式锁底层依赖的管理器
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 15:31
+ *         <p>
+ *         date: 2022-01-05 15:31
  */
 public interface IDistributedLockManager {
 

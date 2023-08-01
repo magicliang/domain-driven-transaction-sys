@@ -1,5 +1,10 @@
 package com.magicliang.transaction.sys.biz.shared.handler;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_IDEMPOTENT_KEY_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.PAYMENT_BOUNCED_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.PAYMENT_CLOSED_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.PAYMENT_FAILURE_ERROR;
+
 import com.magicliang.transaction.sys.biz.shared.enums.OperationEnum;
 import com.magicliang.transaction.sys.biz.shared.request.HandlerRequest;
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
@@ -16,12 +21,9 @@ import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.service.IDistributedLock;
 import com.magicliang.transaction.sys.core.service.IPayOrderService;
+import java.util.concurrent.locks.Lock;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.concurrent.locks.Lock;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -29,11 +31,13 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * description: 基础处理器
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 15:17
+ *         <p>
+ *         date: 2022-01-05 15:17
  */
 @Slf4j
-public abstract class BaseHandler<R extends HandlerRequest, M extends TransactionModel, C extends TransTransactionContext<R, M>> implements IIdentifiableType<OperationEnum> {
+public abstract class BaseHandler<R extends HandlerRequest, M extends TransactionModel,
+        C extends TransTransactionContext<R, M>> implements
+        IIdentifiableType<OperationEnum> {
 
     // ---------------------------------- 公共服务 ----------------------------------
     /**
@@ -154,7 +158,7 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      * 在分布式锁里执行锁回调
      *
      * @param idempotentKey 幂等键
-     * @param runnable      可执行回调
+     * @param runnable 可执行回调
      */
     protected void lockAround(final String idempotentKey, final Runnable runnable) {
         lockAround(idempotentKey, commonConfig.getLockExpiration(), runnable);
@@ -163,9 +167,9 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
     /**
      * 在带超时时间的分布式锁里执行锁回调
      *
-     * @param idempotentKey  幂等键
+     * @param idempotentKey 幂等键
      * @param lockExpiration 锁超时时间
-     * @param runnable       可执行回调
+     * @param runnable 可执行回调
      */
     protected void lockAround(final String idempotentKey, Integer lockExpiration, final Runnable runnable) {
         // 防御性编程，如果不带有幂等键则不执行
@@ -178,7 +182,7 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      * 填充全模型，不同的处理器的全模型定义不一样
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 全领域模型
      */
     protected M populateNecessaryModel(final String bizIdentifyNo, final String bizUniqueNo) {
@@ -193,7 +197,8 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      */
     protected void getErrorMessage(final TransactionModel transactionModel) {
         final TransPayOrderEntity payOrderEntity = transactionModel.getPayOrder();
-        TransPayOrderStatusEnum payOrderStatus = TransPayOrderStatusEnum.getByCode(payOrderEntity.getStatus().intValue());
+        TransPayOrderStatusEnum payOrderStatus = TransPayOrderStatusEnum.getByCode(
+                payOrderEntity.getStatus().intValue());
         // 执行失败
         if (TransPayOrderStatusEnum.FAILED == payOrderStatus) {
             setErrorCode(transactionModel, payOrderEntity);
@@ -216,7 +221,8 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      */
     protected boolean checkIsBounced(final TransactionModel transactionModel) {
         final TransPayOrderEntity payOrderEntity = transactionModel.getPayOrder();
-        TransPayOrderStatusEnum payOrderStatus = TransPayOrderStatusEnum.getByCode(payOrderEntity.getStatus().intValue());
+        TransPayOrderStatusEnum payOrderStatus = TransPayOrderStatusEnum.getByCode(
+                payOrderEntity.getStatus().intValue());
         if (TransPayOrderStatusEnum.BOUNCED == payOrderStatus) {
             setErrorCode(transactionModel, payOrderEntity);
             transactionModel.setErrorMsg(PAYMENT_BOUNCED_ERROR.getSynthesizedErrorCode());
@@ -229,7 +235,7 @@ public abstract class BaseHandler<R extends HandlerRequest, M extends Transactio
      * 设置错误码
      *
      * @param transactionModel 交易模型
-     * @param payOrderEntity   支付订单
+     * @param payOrderEntity 支付订单
      */
     private void setErrorCode(final TransactionModel transactionModel, final TransPayOrderEntity payOrderEntity) {
         transactionModel.setErrorMsg("channelErrorCode:" + payOrderEntity.getChannelErrorCode());

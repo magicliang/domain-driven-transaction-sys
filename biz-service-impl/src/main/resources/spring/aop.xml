@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns="http://www.springframework.org/schema/beans"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
                 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                 http://www.springframework.org/schema/aop
                 http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <bean id="logging" class="com.magicliang.transaction.sys.aop.advice.LoggingAdvice"/>
-<!--    <bean id="profilingAspect" class="com.magicliang.transaction.sys.aop.aspect.ProfilingAspect"/>-->
+    <!--    <bean id="profilingAspect" class="com.magicliang.transaction.sys.aop.aspect.ProfilingAspect"/>-->
 
     <aop:config>
         <aop:pointcut id="profilingPointcut" expression="within(com.magicliang.transaction.sys..*)"/>

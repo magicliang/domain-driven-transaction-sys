@@ -1,5 +1,9 @@
 package com.magicliang.transaction.sys.core.domain.activity.idgeneration;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_GENERATION_STRATEGY_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAY_ORDER_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAY_ORDER_NO_ERROR;
+
 import com.magicliang.transaction.sys.common.service.integration.constant.IntegrationConstant;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
 import com.magicliang.transaction.sys.common.util.JsonUtils;
@@ -13,13 +17,10 @@ import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransSubOrderEntity;
 import com.magicliang.transaction.sys.core.model.request.idgeneration.IdGenerationRequest;
 import com.magicliang.transaction.sys.core.model.response.idgeneration.IdGenerationResponse;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -27,12 +28,13 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * description: id 生成活动
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 12:01
+ *         <p>
+ *         date: 2022-01-05 12:01
  */
 @Slf4j
 @Component
-public class IdGenerationActivity extends BaseActivity<IdGenerationRequest, IdGenerationResponse, IdGenerationStrategyEnum> {
+public class IdGenerationActivity extends
+        BaseActivity<IdGenerationRequest, IdGenerationResponse, IdGenerationStrategyEnum> {
 
     /**
      * 领域策略
@@ -62,7 +64,8 @@ public class IdGenerationActivity extends BaseActivity<IdGenerationRequest, IdGe
         AssertUtils.assertNotNull(payOrder, INVALID_PAY_ORDER_ERROR, "invalid payOrder:" + payOrder);
 
         // 4. 校验决策出来的策略
-        AssertUtils.assertNotNull(decideStrategy(context), INVALID_GENERATION_STRATEGY_ERROR, JsonUtils.toJson(context));
+        AssertUtils.assertNotNull(decideStrategy(context), INVALID_GENERATION_STRATEGY_ERROR,
+                JsonUtils.toJson(context));
 
         // 5. 完成当前钩子
         return context.isIdGenerationComplete();
@@ -75,7 +78,8 @@ public class IdGenerationActivity extends BaseActivity<IdGenerationRequest, IdGe
      * @return 领域能力请求
      */
     @Override
-    protected IdGenerationRequest assembleDomainRequest(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected IdGenerationRequest assembleDomainRequest(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         IdGenerationRequest request = context.getIdGenerationRequest();
         request.setSequenceKey(IntegrationConstant.LEAF_KEY);
         request.setBatchSize(1);
@@ -89,7 +93,8 @@ public class IdGenerationActivity extends BaseActivity<IdGenerationRequest, IdGe
      * @return 领域能力响应
      */
     @Override
-    protected IdGenerationResponse assembleDomainResponse(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected IdGenerationResponse assembleDomainResponse(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         return context.getIdGenerationResponse();
     }
 
@@ -101,7 +106,8 @@ public class IdGenerationActivity extends BaseActivity<IdGenerationRequest, IdGe
      * @return 作为决策结果的策略点
      */
     @Override
-    protected IdGenerationStrategyEnum decideStrategy(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected IdGenerationStrategyEnum decideStrategy(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         return IdGenerationStrategyEnum.LEAF;
     }
 

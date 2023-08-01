@@ -9,8 +9,8 @@ import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
  * description: 交易请求转换器
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 16:57
+ *         <p>
+ *         date: 2022-01-04 16:57
  */
 public class TransRequestConvertor {
 

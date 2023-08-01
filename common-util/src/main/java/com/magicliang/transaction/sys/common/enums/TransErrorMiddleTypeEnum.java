@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
  * description: 交易系统错误中间类型枚举
  *
  * @author magicliang
- * <p>
- * date: 2021-12-29 12:00
+ *         <p>
+ *         date: 2021-12-29 12:00
  */
 @Getter
 @RequiredArgsConstructor

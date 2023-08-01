@@ -8,8 +8,8 @@ import lombok.Data;
  * description: 代理配置
  *
  * @author magicliang
- * <p>
- * date: 2022-04-22 19:28
+ *         <p>
+ *         date: 2022-04-22 19:28
  */
 @Data
 public class ProxyConfig {

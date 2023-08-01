@@ -1,11 +1,10 @@
 package com.magicliang.transaction.sys.common.concurrent;
 
 import com.google.common.base.Joiner;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -13,8 +12,8 @@ import java.util.concurrent.TimeUnit;
  * description: 永久阻塞的实验
  *
  * @author magicliang
- * <p>
- * date: 2022-05-09 16:12
+ *         <p>
+ *         date: 2022-05-09 16:12
  */
 @Slf4j
 public class ForeverBlockingExperiment {
@@ -22,16 +21,16 @@ public class ForeverBlockingExperiment {
     /**
      * 一个有缺陷的线程池构造器
      *
-     * @param corePoolSize      the number of threads to keep in the pool, even
-     *                          if they are idle, unless {@code allowCoreThreadTimeOut} is set
-     * @param maximumPoolSize   the maximum number of threads to allow in the
-     *                          pool
-     * @param keepAliveTime     when the number of threads is greater than
-     *                          the core, this is the maximum time that excess idle threads
-     *                          will wait for new tasks before terminating.
-     * @param unit              the time unit for the {@code keepAliveTime} argument
+     * @param corePoolSize the number of threads to keep in the pool, even
+     *         if they are idle, unless {@code allowCoreThreadTimeOut} is set
+     * @param maximumPoolSize the maximum number of threads to allow in the
+     *         pool
+     * @param keepAliveTime when the number of threads is greater than
+     *         the core, this is the maximum time that excess idle threads
+     *         will wait for new tasks before terminating.
+     * @param unit the time unit for the {@code keepAliveTime} argument
      * @param blockingQueueSize 拥塞队列尺寸
-     * @param tag               线程标签
+     * @param tag 线程标签
      * @return 有缺陷的线程池
      */
     public static ThreadPoolExecutor arrayBlockingExecutor(int corePoolSize, int maximumPoolSize
@@ -54,7 +53,8 @@ public class ForeverBlockingExperiment {
                     return thread;
                 },
                 /*
-                 * 这个线程池就是有bug的，一旦线程池满了，future task 会无限等待，见：https://stackoverflow.com/questions/31761012/how-to-handle-rejection-so-that-future-get-does-not-forever
+                 * 这个线程池就是有bug的，一旦线程池满了，future task 会无限等待，见：https://stackoverflow
+                 * .com/questions/31761012/how-to-handle-rejection-so-that-future-get-does-not-forever
                  * 要不要修这个 bug 还得仔细想一想
                  */
 //                (r, executor) -> log.error(

@@ -13,11 +13,10 @@ import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.request.payment.PaymentRequest;
 import com.magicliang.transaction.sys.core.model.response.payment.PaymentResponse;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -25,8 +24,8 @@ import java.util.Date;
  * description: 支付到支付宝余额支付策略
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 20:22
+ *         <p>
+ *         date: 2022-01-04 20:22
  */
 @Slf4j
 @Component
@@ -51,7 +50,7 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
     /**
      * 执行领域请求，生成领域响应
      *
-     * @param paymentRequest  领域请求
+     * @param paymentRequest 领域请求
      * @param paymentResponse 领域响应
      */
     @Override
@@ -88,7 +87,8 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
      * @param subOrder 支付子订单
      * @return 支付宝余额请求参数
      */
-    private AlipayReqParam buildTransferToAlipayBalanceReqParam(final TransPayOrderEntity payOrder, final TransAlipaySubOrderEntity subOrder) {
+    private AlipayReqParam buildTransferToAlipayBalanceReqParam(final TransPayOrderEntity payOrder,
+            final TransAlipaySubOrderEntity subOrder) {
         AlipayReqParam param = new AlipayReqParam();
         return param;
     }
@@ -97,11 +97,12 @@ public class AlipayBalanceStrategy extends AbstractAlipayStrategy {
      * 记录响应
      *
      * @param paymentResponse 支付领域响应
-     * @param payOrder        支付订单
-     * @param payRequest      支付请求
-     * @param res             原始响应
+     * @param payOrder 支付订单
+     * @param payRequest 支付请求
+     * @param res 原始响应
      */
-    private void recordRes(final PaymentResponse paymentResponse, final TransPayOrderEntity payOrder, final TransRequestEntity payRequest, final AlipayResDto res) {
+    private void recordRes(final PaymentResponse paymentResponse, final TransPayOrderEntity payOrder,
+            final TransRequestEntity payRequest, final AlipayResDto res) {
         payRequest.setRequestResponse(JsonUtils.toJson(res));
         Date now = new Date();
         if (AliPayResultStatusEnum.SUCCESS == AliPayResultStatusEnum.getByCode(res.getStatus())) {

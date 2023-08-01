@@ -1,13 +1,12 @@
 package com.magicliang.transaction.sys.common.util.apm;
 
 import com.magicliang.transaction.sys.common.util.apm.internal.DefaultTransaction;
+import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -37,8 +36,8 @@ import java.util.Objects;
  * * 2. 多个 Message 子类可以通过类似 Visitor 的模式统一通过抽象访问 context
  *
  * @author magicliang
- * <p>
- * date: 2022-04-28 20:42
+ *         <p>
+ *         date: 2022-04-28 20:42
  */
 public class ApmMonitor {
 
@@ -75,8 +74,8 @@ public class ApmMonitor {
     /**
      * 生成一个事务
      *
-     * @param type        事务类型
-     * @param name        事务名称
+     * @param type 事务类型
+     * @param name 事务名称
      * @param autoLogging 是否自动在日志里记录上下文
      * @return 生成的事务
      */
@@ -146,7 +145,7 @@ public class ApmMonitor {
      * 这样树形结构的闭环就形成了，这要求所有的 Transaction 在兄弟 Transaction 开始之前必须合理关闭，在返回给自己的 parent 之前必须合理关闭
      *
      * @param rootTransaction 当前的根消息
-     * @param newTransaction  待追加的消息
+     * @param newTransaction 待追加的消息
      * @return 适合做父事务
      */
     private static Transaction appendToTree(final Transaction rootTransaction, final Transaction newTransaction) {
@@ -183,7 +182,8 @@ public class ApmMonitor {
 
     /**
      * 清理监视器里的内容并打印监控日志
-     * 注意，这个方法最好不要直接调用，因为 context 可能被 Transaction 的 complete 清理过了，如果想访问日志，最好使用 <code> Transaction.complte() 然后取 finalLog </code>
+     * 注意，这个方法最好不要直接调用，因为 context 可能被 Transaction 的 complete 清理过了，如果想访问日志，最好使用 <code> Transaction.complte() 然后取 finalLog
+     * </code>
      */
     public static void flushMonitorAndLog() {
         flushMonitorAndLog(null);
@@ -202,7 +202,9 @@ public class ApmMonitor {
 
     /**
      * 输出监控日志并清理监视器里的内容
-     * 注意，这个方法最好不要直接调用，因为 context 可能被 Transaction 的 complete 清理过了，如果想访问日志，最好使用 <code> Transaction.complte() 然后取 finalLog </code>
+     * 注意，这个方法最好不要直接调用，因为 context 可能被 Transaction 的 complete 清理过了，如果想访问日志，最好使用 <code> Transaction.complte() 然后取 finalLog
+     * </code>
+     *
      * @return 监控日志
      */
     public static String flushMonitor() {

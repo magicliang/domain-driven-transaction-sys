@@ -6,8 +6,9 @@ package com.magicliang.transaction.sys.biz.shared.request;
  * description: 处理器命令
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:19
+ *         <p>
+ *         date: 2022-01-05 14:19
  */
 public abstract class HandlerCommand extends HandlerRequest {
+
 }

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       default-lazy-init="true"
-       xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        default-lazy-init="true"
+        xmlns="http://www.springframework.org/schema/beans"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
        		http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!-- 初始化一个 AbstractPlatformTransactionManager 实例给 Spring 用 -->
     <bean id="transactionManager"
-          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource">
             <!-- spring autoconfiguration 的数据源名称缺省是 dataSource -->
             <ref bean="dataSource"/>

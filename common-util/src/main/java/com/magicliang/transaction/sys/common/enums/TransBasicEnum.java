@@ -11,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 交易的基本枚举
  *
  * @author magicliang
- * <p>
- * date: 2021-12-28 20:42
+ *         <p>
+ *         date: 2021-12-28 20:42
  */
 @Getter
 @RequiredArgsConstructor

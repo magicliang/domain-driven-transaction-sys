@@ -9,8 +9,8 @@ import com.magicliang.transaction.sys.core.model.entity.TransAlipaySubOrderEntit
  * description: 支付宝子订单转换器
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 16:51
+ *         <p>
+ *         date: 2021-12-31 16:51
  */
 public class TransAlipaySubOrderConvertor {
 

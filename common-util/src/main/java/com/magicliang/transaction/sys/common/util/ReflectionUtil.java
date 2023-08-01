@@ -1,8 +1,5 @@
 package com.magicliang.transaction.sys.common.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ResolvableType;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -13,6 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ResolvableType;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -20,8 +19,8 @@ import java.util.stream.Collectors;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-12-30 16:02
+ *         <p>
+ *         date: 2022-12-30 16:02
  */
 @Slf4j
 public class ReflectionUtil {
@@ -44,12 +43,13 @@ public class ReflectionUtil {
      * 注意，如果存在 D extends C，C extends F
      * D 作为第三个参数返回 true，而 F 返回 false
      *
-     * @param subClass                     子类型
-     * @param genericSuperClass            超类型，可以是借口
+     * @param subClass 子类型
+     * @param genericSuperClass 超类型，可以是借口
      * @param targetGenericActualParameter 类型实参
      * @return 认定结果
      */
-    public static boolean isGenericSubClass(Class<?> subClass, Class<?> genericSuperClass, Class<?> targetGenericActualParameter) {
+    public static boolean isGenericSubClass(Class<?> subClass, Class<?> genericSuperClass,
+            Class<?> targetGenericActualParameter) {
 
         if (!genericSuperClass.isAssignableFrom(subClass)) {
             return false;
@@ -71,7 +71,6 @@ public class ReflectionUtil {
                 }
             }
         }
-
 
         final Type[] genericInterfaceTypes = subClass.getGenericInterfaces();
         for (Type genericInterfaceType : genericInterfaceTypes) {
@@ -95,12 +94,13 @@ public class ReflectionUtil {
     /**
      * isGenericSubClass 的 Spring 版本，只能验证第一个 TypeParameter，验证第二个参数必然返回 false
      *
-     * @param subClass                     子类型
-     * @param genericSuperClass            超类型，可以是借口
+     * @param subClass 子类型
+     * @param genericSuperClass 超类型，可以是借口
      * @param targetGenericActualParameter 类型实参
      * @return 认定结果
      */
-    public static boolean isParameterized(Class<?> subClass, Class<?> genericSuperClass, Class<?> targetGenericActualParameter) {
+    public static boolean isParameterized(Class<?> subClass, Class<?> genericSuperClass,
+            Class<?> targetGenericActualParameter) {
         final ResolvableType generic = ResolvableType.forClass(subClass).as(genericSuperClass).getGeneric();
         return generic.isAssignableFrom(ResolvableType.forClass(targetGenericActualParameter));
     }
@@ -111,7 +111,8 @@ public class ReflectionUtil {
         Type currentGenericClass = null;
         while (null != genericSuperclass && genericSuperclass != currentGenericClass) {
             if (genericSuperclass instanceof Class) {
-                final TypeVariable<? extends Class<?>>[] typeParameters = ((Class<?>) genericSuperclass).getTypeParameters();
+                final TypeVariable<? extends Class<?>>[] typeParameters =
+                        ((Class<?>) genericSuperclass).getTypeParameters();
                 for (TypeVariable<? extends Class<?>> typeParameter : typeParameters) {
                     final Type[] bounds = typeParameter.getBounds();
                     for (Type bound : bounds) {

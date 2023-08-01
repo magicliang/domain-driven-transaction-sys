@@ -2,7 +2,6 @@ package com.magicliang.transaction.sys.core.factory;
 
 import com.magicliang.transaction.sys.core.model.context.TransTransactionContext;
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * description: 交易上下文工厂
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 19:55
+ *         <p>
+ *         date: 2021-12-31 19:55
  */
 public class TransTransactionContextFactory extends ContextFactory {
 

@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * description: 基础策略
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 14:03
+ *         <p>
+ *         date: 2022-01-04 14:03
  */
 public abstract class BaseStrategy {
 

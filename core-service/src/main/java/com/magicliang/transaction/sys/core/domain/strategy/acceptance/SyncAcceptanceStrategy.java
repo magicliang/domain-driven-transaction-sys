@@ -26,12 +26,13 @@ import org.springframework.stereotype.Component;
  * description: 同步受理策略
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 16:51
+ *         <p>
+ *         date: 2022-01-04 16:51
  */
 @Slf4j
 @Component
-public class SyncAcceptanceStrategy extends BaseStrategy implements DomainStrategy<AcceptanceRequest, AcceptanceResponse, AcceptanceStrategyEnum> {
+public class SyncAcceptanceStrategy extends BaseStrategy implements
+        DomainStrategy<AcceptanceRequest, AcceptanceResponse, AcceptanceStrategyEnum> {
 
     /**
      * payOrderManager
@@ -52,7 +53,7 @@ public class SyncAcceptanceStrategy extends BaseStrategy implements DomainStrate
     /**
      * 执行领域请求，生成领域响应
      *
-     * @param acceptanceRequest  领域请求
+     * @param acceptanceRequest 领域请求
      * @param acceptanceResponse 领域响应
      */
     @Override

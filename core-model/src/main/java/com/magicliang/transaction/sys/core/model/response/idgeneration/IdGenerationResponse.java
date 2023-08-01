@@ -1,9 +1,8 @@
 package com.magicliang.transaction.sys.core.model.response.idgeneration;
 
 import com.magicliang.transaction.sys.core.model.response.IResponse;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -11,8 +10,8 @@ import java.util.List;
  * description: id 生成活动响应
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 17:21
+ *         <p>
+ *         date: 2021-12-31 17:21
  */
 @Data
 public class IdGenerationResponse implements IResponse {

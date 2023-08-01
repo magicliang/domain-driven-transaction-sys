@@ -11,8 +11,8 @@ import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
  * 因为静态方法不易被继承和覆写，所以不适合泛型化
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 16:36
+ *         <p>
+ *         date: 2021-12-31 16:36
  */
 public class TransPayOrderConvertor {
 
@@ -51,7 +51,8 @@ public class TransPayOrderConvertor {
      * @param subOrder 支付宝支付子订单持久层对象
      * @return 领域模型实体
      */
-    public static TransPayOrderEntity toDomainEntity(final TransPayOrderPo payOrder, final TransAlipaySubOrderPo subOrder) {
+    public static TransPayOrderEntity toDomainEntity(final TransPayOrderPo payOrder,
+            final TransAlipaySubOrderPo subOrder) {
         TransPayOrderEntity transPayOrderEntity = toDomainEntity(payOrder);
         transPayOrderEntity.setSubOrder(TransAlipaySubOrderConvertor.toDomainEntity(subOrder));
         return transPayOrderEntity;

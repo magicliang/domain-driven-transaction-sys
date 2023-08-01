@@ -1,10 +1,9 @@
 package com.magicliang.transaction.sys.common.util;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -12,8 +11,8 @@ import java.util.Arrays;
  * description: 一个编程式的，纯享版本 Jdk 调用拦截器。非 Spring 版本
  *
  * @author magicliang
- * <p>
- * date: 2022-04-22 19:20
+ *         <p>
+ *         date: 2022-04-22 19:20
  */
 @Slf4j
 public class JdkNativeProxyInvocationHandler implements InvocationHandler {
@@ -56,7 +55,8 @@ public class JdkNativeProxyInvocationHandler implements InvocationHandler {
         long endTime = System.currentTimeMillis();
         long elapsed = endTime - startTime;
         if (elapsed >= proxyConfig.getTimeoutThreshold()) {
-            log.warn("JdkNativeProxyInvocationHandler timeout, {}.{} cost {}ms, args: {}", proxyClassName, methodName, elapsed, Arrays.toString(args));
+            log.warn("JdkNativeProxyInvocationHandler timeout, {}.{} cost {}ms, args: {}", proxyClassName, methodName,
+                    elapsed, Arrays.toString(args));
         }
         log.info("JdkNativeProxyInvocationHandler, elapsed: {}", elapsed);
 

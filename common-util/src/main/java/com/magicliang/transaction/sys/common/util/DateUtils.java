@@ -1,9 +1,9 @@
 package com.magicliang.transaction.sys.common.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.util.Calendar.DATE;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,8 +16,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.stream.IntStream;
-
-import static java.util.Calendar.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -25,8 +27,8 @@ import static java.util.Calendar.*;
  * description: 日期工具类
  *
  * @author magicliang
- * <p>
- * date: 2021-12-30 17:12
+ *         <p>
+ *         date: 2021-12-30 17:12
  */
 public class DateUtils {
 
@@ -66,7 +68,7 @@ public class DateUtils {
      * 计算两个日期之间相差的天数
      *
      * @param smdate 较小的时间
-     * @param bdate  较大的时间
+     * @param bdate 较大的时间
      * @return 相差天数
      * @throws ParseException
      */
@@ -94,7 +96,7 @@ public class DateUtils {
      * 计算两个日期之间相差的年数
      *
      * @param first 开始时间
-     * @param last  结束时间
+     * @param last 结束时间
      * @return 相差年数
      */
     public static int yearsBetween(Date first, Date last) {
@@ -138,7 +140,7 @@ public class DateUtils {
     /**
      * 格式化日期为字符串
      *
-     * @param date    日期
+     * @param date 日期
      * @param pattern 格式，如"yyyy-MM-dd HH:mm:ss"
      * @return 字符串形式的日期
      */
@@ -154,7 +156,7 @@ public class DateUtils {
     /**
      * 格式化字符串为日期
      *
-     * @param date    日期
+     * @param date 日期
      * @param pattern 格式，如"yyyy-MM-dd HH:mm:ss"
      * @return 字符串形式的日期
      */
@@ -780,7 +782,8 @@ public class DateUtils {
      * @return 下个月的对应日期
      */
     public static String getMonthlyExpirationDate(final String effectiveTime) {
-        return convertDateToString(getMonthlyExpirationDateTime(convertStringToDate(effectiveTime, YYYY_MM_DD)), YYYY_MM_DD);
+        return convertDateToString(getMonthlyExpirationDateTime(convertStringToDate(effectiveTime, YYYY_MM_DD)),
+                YYYY_MM_DD);
     }
 
     /**
@@ -790,7 +793,8 @@ public class DateUtils {
      * @return 下个月的对应日期
      */
     public static String getYearlyExpirationDate(final String effectiveTime) {
-        return convertDateToString(getYearlyExpirationDateTime(convertStringToDate(effectiveTime, YYYY_MM_DD)), YYYY_MM_DD);
+        return convertDateToString(getYearlyExpirationDateTime(convertStringToDate(effectiveTime, YYYY_MM_DD)),
+                YYYY_MM_DD);
     }
 
     /**
@@ -800,7 +804,8 @@ public class DateUtils {
      * @return 下个月的对应日期
      */
     public static Date getMonthlyExpirationDateTime(final Date effectiveTime) {
-        final Date effectiveDate = convertStringToDate(convertDateToString(effectiveTime, YYYY_MM_DD) + LAST_SECOND_OF_ONE_DAY, YYYY_MM_DD_HH_MM_SS);
+        final Date effectiveDate = convertStringToDate(
+                convertDateToString(effectiveTime, YYYY_MM_DD) + LAST_SECOND_OF_ONE_DAY, YYYY_MM_DD_HH_MM_SS);
         // 加一月，减一天
         return getNextNumDay(getNextNumMonth(effectiveDate, 1), -1);
     }
@@ -812,7 +817,8 @@ public class DateUtils {
      * @return 下个月的对应日期
      */
     public static Date getYearlyExpirationDateTime(final Date effectiveTime) {
-        final Date effectiveDate = convertStringToDate(convertDateToString(effectiveTime, YYYY_MM_DD) + LAST_SECOND_OF_ONE_DAY, YYYY_MM_DD_HH_MM_SS);
+        final Date effectiveDate = convertStringToDate(
+                convertDateToString(effectiveTime, YYYY_MM_DD) + LAST_SECOND_OF_ONE_DAY, YYYY_MM_DD_HH_MM_SS);
         // 加十二月，减一天
         return getNextNumDay(getNextNumMonth(effectiveDate, 12), -1);
     }
@@ -848,8 +854,8 @@ public class DateUtils {
      * 是不是代扣第 [begin - end]天
      *
      * @param withholdDate 代扣日期
-     * @param begin        代扣日期
-     * @param end          代扣日期
+     * @param begin 代扣日期
+     * @param end 代扣日期
      * @return 是不是代扣第 x 天
      */
     public static boolean isWithholdDateInRange(final int withholdDate, final int begin, final int end) {

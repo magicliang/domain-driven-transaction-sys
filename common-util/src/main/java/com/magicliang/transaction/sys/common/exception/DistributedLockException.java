@@ -6,8 +6,8 @@ package com.magicliang.transaction.sys.common.exception;
  * description: 分布式锁异常
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 15:30
+ *         <p>
+ *         date: 2022-01-05 15:30
  */
 public class DistributedLockException extends BizException {
 

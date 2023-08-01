@@ -2,6 +2,10 @@ package com.magicliang.transaction.sys.core.model.event;
 
 import com.magicliang.transaction.sys.common.util.ReflectionUtil;
 import com.magicliang.transaction.sys.core.shared.DomainEvent;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -11,19 +15,14 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.ResolvableType;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
-
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-12-30 11:41
+ *         <p>
+ *         date: 2022-12-30 11:41
  */
 @Slf4j
 class TransPayOrderAcceptedEventTest {
@@ -57,7 +56,8 @@ class TransPayOrderAcceptedEventTest {
         for (Class<?> singleInterface : interfaces) {
             Type singleInterfaceType = singleInterface;
 
-            // 如果一个类型是泛型接口，则它不再有泛型超类，对于 Type 子类型的辨析，需要通过赋值给 Type 来做，泛型接口的 Class 仍然是 class，不是 ParameterizedType，所以此处返回 false
+            // 如果一个类型是泛型接口，则它不再有泛型超类，对于 Type 子类型的辨析，需要通过赋值给 Type 来做，泛型接口的 Class 仍然是 class，不是 ParameterizedType，所以此处返回
+            // false
             if (singleInterfaceType instanceof ParameterizedType) {
                 // 获取本接口的实际类型变量的 types，类型为 Type
                 final Type[] actualTypeArguments = ((ParameterizedType) singleInterfaceType).getActualTypeArguments();
@@ -101,20 +101,30 @@ class TransPayOrderAcceptedEventTest {
 
     @Test
     void testIsGenericSubClass() {
-        // TransPayOrderPaidEvent extends TransPayOrderAcceptedEvent extends ApplicationEvent，TransPayOrderPaidEvent/TransPayOrderAcceptedEvent 为 true，TransPayOrderPaidEvent 为 false
-        Assertions.assertTrue(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderAcceptedEvent.class));
-        Assertions.assertTrue(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderPaidEvent.class));
-        Assertions.assertFalse(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, ApplicationEvent.class));
-        Assertions.assertFalse(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, Object.class));
+        // TransPayOrderPaidEvent extends TransPayOrderAcceptedEvent extends
+        // ApplicationEvent，TransPayOrderPaidEvent/TransPayOrderAcceptedEvent 为 true，TransPayOrderPaidEvent 为 false
+        Assertions.assertTrue(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class,
+                TransPayOrderAcceptedEvent.class));
+        Assertions.assertTrue(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class,
+                TransPayOrderPaidEvent.class));
+        Assertions.assertFalse(ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class,
+                ApplicationEvent.class));
+        Assertions.assertFalse(
+                ReflectionUtil.isGenericSubClass(TransPayOrderAcceptedEvent.class, DomainEvent.class, Object.class));
     }
 
     @Test
     void testIsParameterized() {
-        // TransPayOrderPaidEvent extends TransPayOrderAcceptedEvent extends ApplicationEvent，TransPayOrderPaidEvent/TransPayOrderAcceptedEvent 为 true，TransPayOrderPaidEvent 为 false
-        Assertions.assertTrue(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderAcceptedEvent.class));
-        Assertions.assertTrue(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, TransPayOrderPaidEvent.class));
-        Assertions.assertFalse(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, ApplicationEvent.class));
-        Assertions.assertFalse(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, Object.class));
+        // TransPayOrderPaidEvent extends TransPayOrderAcceptedEvent extends
+        // ApplicationEvent，TransPayOrderPaidEvent/TransPayOrderAcceptedEvent 为 true，TransPayOrderPaidEvent 为 false
+        Assertions.assertTrue(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class,
+                TransPayOrderAcceptedEvent.class));
+        Assertions.assertTrue(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class,
+                TransPayOrderPaidEvent.class));
+        Assertions.assertFalse(ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class,
+                ApplicationEvent.class));
+        Assertions.assertFalse(
+                ReflectionUtil.isParameterized(TransPayOrderAcceptedEvent.class, DomainEvent.class, Object.class));
     }
 
 }

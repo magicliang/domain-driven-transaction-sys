@@ -9,8 +9,8 @@ import java.util.List;
  * description: 数学工具类
  *
  * @author magicliang
- * <p>
- * date: 2023-07-13 15:44
+ *         <p>
+ *         date: 2023-07-13 15:44
  */
 public class MathUtil {
 

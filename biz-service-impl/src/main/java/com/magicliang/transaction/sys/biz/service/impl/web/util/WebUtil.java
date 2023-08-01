@@ -4,6 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.magicliang.transaction.sys.biz.service.impl.web.http.ContentHeaderCachingRequestWrapper;
 import com.magicliang.transaction.sys.biz.service.impl.web.model.vo.ApiResult;
 import com.magicliang.transaction.sys.common.util.JsonUtils;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,23 +21,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2023-03-30 17:05
+ *         <p>
+ *         date: 2023-03-30 17:05
  */
 @Slf4j
 public class WebUtil {
@@ -72,7 +71,7 @@ public class WebUtil {
      * 2. 取不到值返回 null
      *
      * @param name attribute 名称
-     * @param <T>  attribute 的类型
+     * @param <T> attribute 的类型
      * @return attribute 的值
      */
     public static <T> T getCurrentRequestAttribute(final String name) {
@@ -84,9 +83,9 @@ public class WebUtil {
      * 1. 返回值的类型要调用方自己确定
      * 2. 可以指定缺省值
      *
-     * @param name         attribute 名称
+     * @param name attribute 名称
      * @param defaultValue attribute 的缺省值
-     * @param <T>          attribute 的类型
+     * @param <T> attribute 的类型
      * @return attribute 的值
      */
     @SuppressWarnings("unchecked")
@@ -133,7 +132,7 @@ public class WebUtil {
     }
 
     public static <T extends Enum<T>> T getEnumFromRequest(HttpServletRequest request, String paramName,
-                                                           Class<T> enumType) {
+            Class<T> enumType) {
         final JsonNode bodyJson = getBodyJson(request);
         if (null == bodyJson) {
             return null;
@@ -168,9 +167,9 @@ public class WebUtil {
     /**
      * 读取请求体的一个字段，可能返回空字符串，如果不允许返回空字符串，抛出异常
      *
-     * @param request   原始 http 请求
+     * @param request 原始 http 请求
      * @param paramName 字段名称
-     * @param notBlank  是否不允许为空
+     * @param notBlank 是否不允许为空
      * @return 请求的 body 的一个 element
      */
     public static String getBodyParamAsText(HttpServletRequest request, String paramName, boolean notBlank) {
@@ -184,7 +183,7 @@ public class WebUtil {
     /**
      * 读取请求体的一个字段，可能返回空字符串
      *
-     * @param request   原始 http 请求
+     * @param request 原始 http 请求
      * @param paramName 字段名称
      * @return 请求的 body 的一个 element，如果找不到返回空字符串
      */
@@ -282,7 +281,7 @@ public class WebUtil {
     }
 
     public static String getCurrentRequestCookie(String cookieName,
-                                                 String defaultValue) {
+            String defaultValue) {
         return getCookie(getCurrentRequest(), cookieName, defaultValue);
     }
 
@@ -291,7 +290,7 @@ public class WebUtil {
     }
 
     public static String getCookie(HttpServletRequest request, String cookieName,
-                                   String defaultValue) {
+            String defaultValue) {
         if (request == null) {
             return defaultValue;
         }
@@ -311,7 +310,7 @@ public class WebUtil {
     /**
      * 获取任意请求查询参数的值
      *
-     * @param request        任意请求
+     * @param request 任意请求
      * @param queryParamName 查询参数名称
      * @return 查询参数的值
      */
@@ -483,12 +482,12 @@ public class WebUtil {
 
 
     public static void addHeaderToCurrentHttpRequest(String key,
-                                                     String value) {
+            String value) {
         addHeaderToHttpRequest(getCurrentRequest(), key, value);
     }
 
     public static boolean addHeaderToHttpRequest(HttpServletRequest request, String key,
-                                                 String value) {
+            String value) {
         if (request instanceof ContentHeaderCachingRequestWrapper) {
             addHeaderToRequestWrapper((ContentHeaderCachingRequestWrapper) request, key, value);
             return true;

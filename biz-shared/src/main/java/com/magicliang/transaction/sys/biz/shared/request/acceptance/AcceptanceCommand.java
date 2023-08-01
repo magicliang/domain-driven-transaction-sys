@@ -3,10 +3,9 @@ package com.magicliang.transaction.sys.biz.shared.request.acceptance;
 import com.magicliang.transaction.sys.biz.shared.enums.OperationEnum;
 import com.magicliang.transaction.sys.biz.shared.request.HandlerRequest;
 import com.magicliang.transaction.sys.common.enums.TransFundAccountingEntryTypeEnum;
+import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Map;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -14,8 +13,8 @@ import java.util.Map;
  * description: 受理命令
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:21
+ *         <p>
+ *         date: 2022-01-05 14:21
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

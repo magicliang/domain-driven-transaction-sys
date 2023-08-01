@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
  * description: TransPayOrderAcceptedEvent 事件监听器
  *
  * @author magicliang
- * <p>
- * date: 2022-12-29 17:28
+ *         <p>
+ *         date: 2022-12-29 17:28
  */
 @Slf4j
 @Component

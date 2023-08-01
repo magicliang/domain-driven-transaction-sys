@@ -1,14 +1,17 @@
 package com.magicliang.transaction.sys.common.util.apm;
 
 import com.magicliang.transaction.sys.common.UnitTest;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.*;
 
 
 /**
@@ -17,8 +20,8 @@ import java.util.concurrent.*;
  * description: 事务测试
  *
  * @author magicliang
- * <p>
- * date: 2022-04-29 14:17
+ *         <p>
+ *         date: 2022-04-29 14:17
  */
 @Slf4j
 public class TransactionTest extends UnitTest {
@@ -83,7 +86,8 @@ public class TransactionTest extends UnitTest {
      */
     @Test
     public void testSingleNestedTransactionPrint() {
-        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "testSingleNestedTransactionPrint");
+        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest",
+                "testSingleNestedTransactionPrint");
         singleTransaction();
         singleNestedTransaction("TransactionTest", "T2");
         singleNestedTransaction("TransactionTest", "T2");
@@ -150,7 +154,8 @@ public class TransactionTest extends UnitTest {
      */
     @Test
     public void testComplicatedNestedTransactionPrint() {
-        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "testComplicatedNestedTransactionPrint");
+        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest",
+                "testComplicatedNestedTransactionPrint");
         singleTransaction();
         complicatedNestedTransaction("TransactionTest", "T2", () -> {
             complicatedNestedTransaction("TransactionTest", "T3", () -> {
@@ -270,7 +275,8 @@ public class TransactionTest extends UnitTest {
      */
     @Test
     public void testComplicatedForLoopTransactionPrint() {
-        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest", "testComplicatedForLoopTransactionPrint");
+        final Transaction transaction = ApmMonitor.beginAutoTransaction("TransactionTest",
+                "testComplicatedForLoopTransactionPrint");
         singleTransaction();
         int i = 0;
         complicatedNestedTransaction("TransactionTest", "T2", () -> {
@@ -459,7 +465,8 @@ public class TransactionTest extends UnitTest {
     @Test
     public void testTransactionsInSameExecutor() throws InterruptedException {
         // pool-1-thread-1
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(10));
         CountDownLatch countDownLatch = new CountDownLatch(2);
         executor.submit(() -> {
             try {
@@ -498,7 +505,8 @@ public class TransactionTest extends UnitTest {
      */
     @Test
     public void verifyEveryTransactionTime() throws InterruptedException {
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(10));
         CountDownLatch countDownLatch = new CountDownLatch(2);
         executor.submit(() -> {
             // 使用非自动提交模式，生成一段嵌套事务
@@ -516,7 +524,8 @@ public class TransactionTest extends UnitTest {
             log.info("countDown end");
         });
         executor.submit(() -> {
-            final Transaction transaction = complicatedNestedManualTransaction("TransactionTest", "5", () -> singleManualTransaction("TransactionTest", "6"));
+            final Transaction transaction = complicatedNestedManualTransaction("TransactionTest", "5",
+                    () -> singleManualTransaction("TransactionTest", "6"));
             // 取出清空上下文后的 log
             final String monitorLog = transaction.getFinalLog();
             log.info("deserialized transaction: {}", monitorLog);
@@ -564,8 +573,8 @@ public class TransactionTest extends UnitTest {
     /**
      * 复杂嵌套事务操作
      *
-     * @param type     事务类型
-     * @param name     食物名称
+     * @param type 事务类型
+     * @param name 食物名称
      * @param runnable 待运行的事务
      */
     private void complicatedNestedTransaction(final String type, final String name, Runnable runnable) {
@@ -581,8 +590,8 @@ public class TransactionTest extends UnitTest {
     /**
      * 复杂嵌套手动事务操作
      *
-     * @param type     事务类型
-     * @param name     食物名称
+     * @param type 事务类型
+     * @param name 食物名称
      * @param runnable 待运行的事务
      * @return 生成的事务
      */

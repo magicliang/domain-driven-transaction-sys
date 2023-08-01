@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 目标账户类型枚举
  *
  * @author magicliang
- * <p>
- * date: 2022-01-25 22:31
+ *         <p>
+ *         date: 2022-01-25 22:31
  */
 @Getter
 @RequiredArgsConstructor

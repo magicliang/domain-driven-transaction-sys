@@ -10,10 +10,11 @@ import com.magicliang.transaction.sys.core.model.response.IResponse;
  * description: 领域策略接口
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 13:57
+ *         <p>
+ *         date: 2022-01-04 13:57
  */
-public interface DomainStrategy<Req extends IRequest, Res extends IResponse, E extends Enum> extends IIdentifiableType<E> {
+public interface DomainStrategy<Req extends IRequest, Res extends IResponse, E extends Enum> extends
+        IIdentifiableType<E> {
 
     /**
      * 执行领域请求，生成领域响应

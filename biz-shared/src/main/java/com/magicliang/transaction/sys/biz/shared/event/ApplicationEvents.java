@@ -9,8 +9,8 @@ import com.magicliang.transaction.sys.core.model.event.TransPayOrderAcceptedEven
  * 声明这个接口在应用层，则
  *
  * @author magicliang
- * <p>
- * date: 2022-12-29 15:06
+ *         <p>
+ *         date: 2022-12-29 15:06
  */
 public interface ApplicationEvents {
 

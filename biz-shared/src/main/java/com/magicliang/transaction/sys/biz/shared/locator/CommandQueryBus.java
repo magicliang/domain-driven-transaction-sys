@@ -1,18 +1,17 @@
 package com.magicliang.transaction.sys.biz.shared.locator;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_OP_ERROR;
+
 import com.magicliang.transaction.sys.biz.shared.handler.BaseHandler;
 import com.magicliang.transaction.sys.biz.shared.request.HandlerRequest;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
 import com.magicliang.transaction.sys.common.util.JsonUtils;
 import com.magicliang.transaction.sys.core.model.context.TransTransactionContext;
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_OP_ERROR;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -20,8 +19,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID
  * description: 命令查询总线
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 15:03
+ *         <p>
+ *         date: 2022-01-05 15:03
  */
 @Slf4j
 @Service
@@ -59,14 +58,16 @@ public class CommandQueryBus {
                     errorMsg = ex.getErrorMsg();
                     Throwable cause = ex.getCause();
                     String causeMsg = cause == null ? "" : cause.toString();
-                    String errorLog = String.format("handler exception，code：%s，message：%s，cause：%s", errorCode, errorMsg, causeMsg);
+                    String errorLog = String.format("handler exception，code：%s，message：%s，cause：%s", errorCode,
+                            errorMsg, causeMsg);
                     log.error(errorLog, ex);
                 } catch (Exception ex) {
                     log.error("unknown exception", ex);
                 } finally {
                     long elapsed = System.currentTimeMillis() - begin;
                     // TODO：对请求进行打点
-                    log.info("handler execution finished, req：{}, model：{}, elapsed：{}ms", JsonUtils.toJson(req), JsonUtils.toJson(context.getModel()), elapsed);
+                    log.info("handler execution finished, req：{}, model：{}, elapsed：{}ms", JsonUtils.toJson(req),
+                            JsonUtils.toJson(context.getModel()), elapsed);
                 }
             }
         }

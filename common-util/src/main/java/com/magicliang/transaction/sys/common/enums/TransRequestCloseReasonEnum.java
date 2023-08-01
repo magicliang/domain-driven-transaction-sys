@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 关闭原因枚举
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 15:45
+ *         <p>
+ *         date: 2021-12-31 15:45
  */
 @Getter
 @RequiredArgsConstructor

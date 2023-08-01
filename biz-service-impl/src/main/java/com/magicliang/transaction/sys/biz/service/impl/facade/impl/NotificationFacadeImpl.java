@@ -7,15 +7,14 @@ import com.magicliang.transaction.sys.biz.shared.request.notification.convertor.
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Service;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -24,8 +23,8 @@ import java.util.stream.Collectors;
  * fixme：这里的任务处理模型要仔细重写过
  *
  * @author magicliang
- * <p>
- * date: 2022-01-25 17:49
+ *         <p>
+ *         date: 2022-01-25 17:49
  */
 @Slf4j
 @Service
@@ -44,7 +43,8 @@ public class NotificationFacadeImpl extends AbstractConcurrentFacade implements 
      * 批量支付线程池
      */
     @Getter
-//    @CustomExecutorService(id = "batchNotifyPool", corePoolSize = THREAD_COUNT, maximumPoolSize = THREAD_COUNT, workQueueCapacity = 1500)
+//    @CustomExecutorService(id = "batchNotifyPool", corePoolSize = THREAD_COUNT, maximumPoolSize = THREAD_COUNT,
+//    workQueueCapacity = 1500)
     private ExecutorService executorService;
 
     /**
@@ -69,7 +69,8 @@ public class NotificationFacadeImpl extends AbstractConcurrentFacade implements 
         distributedLock.tryLock("IPaymentFacade.batchPay", lockExpirationInSeconds,
                 () -> {
                     for (int i = 0; i < loop; i++) {
-                        List<TransRequestEntity> notifications = payOrderService.populateUnSentNotifications(batchSize, env);
+                        List<TransRequestEntity> notifications = payOrderService.populateUnSentNotifications(batchSize,
+                                env);
                         if (CollectionUtils.isEmpty(notifications)) {
                             return;
                         }

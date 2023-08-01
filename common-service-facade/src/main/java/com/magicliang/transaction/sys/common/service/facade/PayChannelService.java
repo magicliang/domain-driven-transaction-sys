@@ -6,8 +6,9 @@ package com.magicliang.transaction.sys.common.service.facade;
  * description: 支付通道服务
  *
  * @author magicliang
- * <p>
- * date: 2022-01-12 19:52
+ *         <p>
+ *         date: 2022-01-12 19:52
  */
 public interface PayChannelService {
+
 }

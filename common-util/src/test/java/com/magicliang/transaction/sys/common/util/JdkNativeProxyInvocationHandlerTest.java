@@ -1,9 +1,9 @@
 package com.magicliang.transaction.sys.common.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.magicliang.transaction.sys.common.UnitTest;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * description: Jdk原生代理的处理器
  *
  * @author magicliang
- * <p>
- * date: 2022-04-22 19:45
+ *         <p>
+ *         date: 2022-04-22 19:45
  */
 public class JdkNativeProxyInvocationHandlerTest extends UnitTest {
 
@@ -32,13 +32,15 @@ public class JdkNativeProxyInvocationHandlerTest extends UnitTest {
             }
         };
 
-        TestInterface proxyInstance = CustomDynamicProxyFactory.getProxyInstance(TestInterface.class, testInterface, new ProxyConfig());
+        TestInterface proxyInstance = CustomDynamicProxyFactory.getProxyInstance(TestInterface.class, testInterface,
+                new ProxyConfig());
         // 这个测试要跑得好，要准备好对日志的重定向，在 test 中重定向到 console
         proxyInstance.foo();
         assertTrue(true);
     }
 
     interface TestInterface {
+
         void foo();
     }
 }

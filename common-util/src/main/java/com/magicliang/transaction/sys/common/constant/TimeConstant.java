@@ -6,8 +6,8 @@ package com.magicliang.transaction.sys.common.constant;
  * description: 时间常量
  *
  * @author magicliang
- * <p>
- * date: 2021-12-28 20:41
+ *         <p>
+ *         date: 2021-12-28 20:41
  */
 public class TimeConstant {
 

@@ -1,9 +1,8 @@
 package biz.service.impl.facade.impl;
 
+import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-
-import java.util.stream.IntStream;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -11,8 +10,8 @@ import java.util.stream.IntStream;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-08-03 16:17
+ *         <p>
+ *         date: 2022-08-03 16:17
  */
 @Slf4j
 class AbstractConcurrentFacadeTest {

@@ -7,6 +7,7 @@ import java.util.Date;
  * This class corresponds to the database table tb_trans_alipay_suborder
  */
 public class TransAlipaySubOrderPo {
+
     /**
      * Database Column Remarks:
      * 自增物理主键，单表唯一
@@ -224,10 +225,14 @@ public class TransAlipaySubOrderPo {
         }
         TransAlipaySubOrderPo other = (TransAlipaySubOrderPo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getGmtCreated() == null ? other.getGmtCreated() == null : this.getGmtCreated().equals(other.getGmtCreated()))
-                && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null : this.getPayOrderNo().equals(other.getPayOrderNo()))
-                && (this.getToAccountNo() == null ? other.getToAccountNo() == null : this.getToAccountNo().equals(other.getToAccountNo()))
+                && (this.getGmtCreated() == null ? other.getGmtCreated() == null
+                : this.getGmtCreated().equals(other.getGmtCreated()))
+                && (this.getGmtModified() == null ? other.getGmtModified() == null
+                : this.getGmtModified().equals(other.getGmtModified()))
+                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null
+                : this.getPayOrderNo().equals(other.getPayOrderNo()))
+                && (this.getToAccountNo() == null ? other.getToAccountNo() == null
+                : this.getToAccountNo().equals(other.getToAccountNo()))
                 && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()));
     }
 

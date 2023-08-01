@@ -11,10 +11,11 @@ import com.magicliang.transaction.sys.core.model.context.TransactionModel;
  * @param <T> 交易模型类型参数
  * @param <R> 请求类型参数
  * @author magicliang
- * <p>
- * date: 2022-01-05 15:01
+ *         <p>
+ *         date: 2022-01-05 15:01
  */
 public interface IBus<T extends TransactionModel, R extends HandlerRequest> {
+
     /**
      * 分发请求，获取交易模型
      *

@@ -4,7 +4,8 @@
  * description: 通知命令集合
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:31
+ *         <p>
+ *         date: 2022-01-05 14:31
  */
+
 package com.magicliang.transaction.sys.biz.shared.request.notification;

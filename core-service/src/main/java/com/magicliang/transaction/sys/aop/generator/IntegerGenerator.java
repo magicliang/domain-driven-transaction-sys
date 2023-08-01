@@ -6,8 +6,8 @@ package com.magicliang.transaction.sys.aop.generator;
  * description: 整数生成器接口
  *
  * @author magicliang
- * <p>
- * date: 2022-05-28 18:49
+ *         <p>
+ *         date: 2022-05-28 18:49
  */
 public interface IntegerGenerator {
 

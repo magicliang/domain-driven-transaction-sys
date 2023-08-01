@@ -2,10 +2,9 @@ package com.magicliang.transaction.sys.biz.shared.request.callback;
 
 import com.magicliang.transaction.sys.biz.shared.enums.OperationEnum;
 import com.magicliang.transaction.sys.biz.shared.request.HandlerRequest;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Date;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -13,8 +12,8 @@ import java.util.Date;
  * description: 回调命令
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:30
+ *         <p>
+ *         date: 2022-01-05 14:30
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

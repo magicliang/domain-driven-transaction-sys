@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 系统配置枚举
  *
  * @author magicliang
- * <p>
- * date: 2021-12-29 12:03
+ *         <p>
+ *         date: 2021-12-29 12:03
  */
 @Getter
 @RequiredArgsConstructor

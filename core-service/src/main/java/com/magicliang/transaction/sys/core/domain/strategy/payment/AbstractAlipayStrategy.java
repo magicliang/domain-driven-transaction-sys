@@ -6,8 +6,9 @@ package com.magicliang.transaction.sys.core.domain.strategy.payment;
  * description: 支付宝相关策略
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 20:13
+ *         <p>
+ *         date: 2022-01-04 20:13
  */
 public abstract class AbstractAlipayStrategy extends BasePaymentStrategy {
+
 }

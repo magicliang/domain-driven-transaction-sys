@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 操作类型枚举
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:08
+ *         <p>
+ *         date: 2022-01-05 14:08
  */
 @Getter
 @RequiredArgsConstructor

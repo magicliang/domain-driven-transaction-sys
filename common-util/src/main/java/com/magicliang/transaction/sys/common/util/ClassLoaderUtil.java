@@ -1,9 +1,5 @@
 package com.magicliang.transaction.sys.common.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.net.JarURLConnection;
@@ -12,6 +8,9 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -19,8 +18,8 @@ import java.util.jar.JarFile;
  * description: 类加载器工具
  *
  * @author magicliang
- * <p>
- * date: 2022-01-25 13:40
+ *         <p>
+ *         date: 2022-01-25 13:40
  */
 @Slf4j
 public class ClassLoaderUtil {
@@ -99,7 +98,9 @@ public class ClassLoaderUtil {
                                 if ((idx != -1) || recursive) {
                                     if (name.endsWith(CLASS_POSTFIX) && !entry.isDirectory()) {
                                         // 去掉后面的".class" 获取真正的类名
-                                        String className = packageName + PACKAGE_SYMBOL + name.substring(packageName.length() + 1, name.length() - CLASS_POSTFIX.length());
+                                        String className =
+                                                packageName + PACKAGE_SYMBOL + name.substring(packageName.length() + 1,
+                                                        name.length() - CLASS_POSTFIX.length());
                                         try {
                                             Class.forName(className);
                                         } catch (Throwable e) {
@@ -126,7 +127,8 @@ public class ClassLoaderUtil {
      * @param packagePath
      * @param recursive
      */
-    public static void findAndAddClassesInPackageByFile(String packageName, String packagePath, final boolean recursive) {
+    public static void findAndAddClassesInPackageByFile(String packageName, String packagePath,
+            final boolean recursive) {
         File dir = new File(packagePath);
         if (!dir.exists() || !dir.isDirectory()) {
             return;
@@ -143,7 +145,8 @@ public class ClassLoaderUtil {
             if (file.isDirectory()) {
                 findAndAddClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath(), recursive);
             } else {
-                String className = packageName + PACKAGE_SYMBOL + file.getName().substring(0, file.getName().length() - CLASS_POSTFIX.length());
+                String className = packageName + PACKAGE_SYMBOL + file.getName()
+                        .substring(0, file.getName().length() - CLASS_POSTFIX.length());
                 try {
                     Class.forName(className);
                 } catch (Throwable e) {

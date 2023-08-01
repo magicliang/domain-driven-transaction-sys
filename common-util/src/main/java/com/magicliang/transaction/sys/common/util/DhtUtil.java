@@ -1,15 +1,14 @@
 package com.magicliang.transaction.sys.common.util;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -17,8 +16,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * description: 分布式散列表工具
  *
  * @author magicliang
- * <p>
- * date: 2022-04-25 15:11
+ *         <p>
+ *         date: 2022-04-25 15:11
  */
 @Slf4j
 public class DhtUtil {
@@ -160,6 +159,7 @@ public class DhtUtil {
 
     @Data
     public static class DhtNode {
+
         /**
          * 物理 id
          */

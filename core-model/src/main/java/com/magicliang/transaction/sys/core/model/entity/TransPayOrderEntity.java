@@ -6,15 +6,14 @@ import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransSysConfigEnum;
 import com.magicliang.transaction.sys.common.enums.TransTargetAccountTypeEnum;
 import com.magicliang.transaction.sys.common.enums.TransUnderlyingPayChannelTypeEnum;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -22,8 +21,8 @@ import java.util.Map;
  * description: 支付订单实体，聚合根
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 16:10
+ *         <p>
+ *         date: 2021-12-31 16:10
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

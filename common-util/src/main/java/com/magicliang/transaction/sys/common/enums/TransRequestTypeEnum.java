@@ -1,13 +1,12 @@
 package com.magicliang.transaction.sys.common.enums;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -15,8 +14,8 @@ import java.util.stream.Collectors;
  * description: 交易请求类型
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 14:21
+ *         <p>
+ *         date: 2021-12-31 14:21
  */
 @Getter
 @RequiredArgsConstructor
@@ -41,12 +40,14 @@ public enum TransRequestTypeEnum {
     /**
      * 通知类型枚举列表
      */
-    private static final Set<TransRequestTypeEnum> NOTIFICATION_TYPE = EnumSet.of(BASIC_NOTIFICATION, BOUNCED_NOTIFICATION);
+    private static final Set<TransRequestTypeEnum> NOTIFICATION_TYPE = EnumSet.of(BASIC_NOTIFICATION,
+            BOUNCED_NOTIFICATION);
 
     /**
      * 通知类型枚举值列表
      */
-    public static final List<Integer> NOTIFICATION_TYPE_VALUE = NOTIFICATION_TYPE.stream().map(TransRequestTypeEnum::getCode).collect(Collectors.toList());
+    public static final List<Integer> NOTIFICATION_TYPE_VALUE = NOTIFICATION_TYPE.stream()
+            .map(TransRequestTypeEnum::getCode).collect(Collectors.toList());
 
     /**
      * 枚举类型码

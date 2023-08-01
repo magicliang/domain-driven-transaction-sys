@@ -9,8 +9,8 @@ import lombok.Data;
  * description: id 生成活动请求
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 17:27
+ *         <p>
+ *         date: 2021-12-31 17:27
  */
 @Data
 public class IdGenerationRequest implements IRequest {

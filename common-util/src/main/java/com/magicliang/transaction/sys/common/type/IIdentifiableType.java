@@ -6,8 +6,8 @@ package com.magicliang.transaction.sys.common.type;
  * description: 可以被领域识别的接口
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 13:59
+ *         <p>
+ *         date: 2022-01-04 13:59
  */
 public interface IIdentifiableType<E> {
 

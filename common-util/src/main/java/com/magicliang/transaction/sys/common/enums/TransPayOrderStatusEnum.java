@@ -1,17 +1,16 @@
 package com.magicliang.transaction.sys.common.enums;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAY_ORDER_STATUS_ERROR;
+
 import com.magicliang.transaction.sys.common.constant.ErrorConstant;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAY_ORDER_STATUS_ERROR;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -19,8 +18,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID
  * description: 支付订单状态枚举
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 16:16
+ *         <p>
+ *         date: 2021-12-31 16:16
  */
 @Getter
 @RequiredArgsConstructor
@@ -70,7 +69,8 @@ public enum TransPayOrderStatusEnum {
     /**
      * 未支付状态枚举值列表
      */
-    public static final List<Integer> UNPAID_STATUS_VALUE = UNPAID_STATUS.stream().map(TransPayOrderStatusEnum::getCode).collect(Collectors.toList());
+    public static final List<Integer> UNPAID_STATUS_VALUE = UNPAID_STATUS.stream().map(TransPayOrderStatusEnum::getCode)
+            .collect(Collectors.toList());
 
     /**
      * 坏的终态
@@ -175,24 +175,30 @@ public enum TransPayOrderStatusEnum {
     public static void validateStatusBeforeUpdate(final Integer oldStatus, final Integer newStatus) {
         TransPayOrderStatusEnum oldStatusEnum = TransPayOrderStatusEnum.getByCode(oldStatus);
         TransPayOrderStatusEnum newStatusEnum = TransPayOrderStatusEnum.getByCode(newStatus);
-        AssertUtils.assertNotNull(oldStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR, ErrorConstant.INVALID_OLD_STATUS + oldStatus);
-        AssertUtils.assertNotNull(newStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+        AssertUtils.assertNotNull(oldStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR,
+                ErrorConstant.INVALID_OLD_STATUS + oldStatus);
+        AssertUtils.assertNotNull(newStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR,
+                ErrorConstant.INVALID_NEW_STATUS + newStatus);
 
         // 旧态非终态
         final boolean oldIsNotFinalStatus = !TransPayOrderStatusEnum.isFinalStatus(oldStatus);
 
         if (TransPayOrderStatusEnum.INIT == newStatusEnum) {
             // 只能由初始态跃迁到初始态
-            AssertUtils.assertEquals(TransPayOrderStatusEnum.INIT, oldStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+            AssertUtils.assertEquals(TransPayOrderStatusEnum.INIT, oldStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR,
+                    ErrorConstant.INVALID_NEW_STATUS + newStatus);
         } else if (TransPayOrderStatusEnum.PENDING == newStatusEnum) {
             // 只能由非终态迁到在途态
-            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_PAY_ORDER_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_PAY_ORDER_STATUS_ERROR,
+                    ErrorConstant.INVALID_NEW_STATUS + newStatus);
         } else if (TransPayOrderStatusEnum.BOUNCED == newStatusEnum) {
             // 只能由成功态跃迁到退票态
-            AssertUtils.assertEquals(TransPayOrderStatusEnum.SUCCESS, oldStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+            AssertUtils.assertEquals(TransPayOrderStatusEnum.SUCCESS, oldStatusEnum, INVALID_PAY_ORDER_STATUS_ERROR,
+                    ErrorConstant.INVALID_NEW_STATUS + newStatus);
         } else if (TransPayOrderStatusEnum.isFinalStatus(newStatus)) {
             // 只能由非终态跃迁到其他终态
-            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_PAY_ORDER_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_PAY_ORDER_STATUS_ERROR,
+                    ErrorConstant.INVALID_NEW_STATUS + newStatus);
         }
     }
 }
