@@ -102,3 +102,4 @@ application
 # 一些编程的原则
 
 - 尽量对列表尽量使用浅拷贝后再操作的做法，尽量不影响原列表，更不要影响原列表的 subList
+- rich object is important

@@ -10,6 +10,7 @@ package com.magicliang.transaction.sys.common.util;
  * date: 2023-07-17 11:32
  */
 public class ObjectUtilPlus {
+
     /**
      * 私有构造器
      */

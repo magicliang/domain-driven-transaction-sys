@@ -1,8 +1,8 @@
 package com.magicliang.transaction.sys.common.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2023-07-17 11:35
+ *         <p>
+ *         date: 2023-07-17 11:35
  */
 class ObjectUtilPlusTest {
 
