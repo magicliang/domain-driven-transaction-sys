@@ -9,14 +9,6 @@ import com.magicliang.transaction.sys.core.model.context.TransTransactionContext
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.event.TransPayOrderAcceptedEvent;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -25,6 +17,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * 基于 Spring 的集成测试层，每次跑测试都要启动 Spring 容器，只有集成测试才需要使用这个东西
@@ -90,7 +89,8 @@ public class DomainDrivenTransactionSysApplicationIntegrationTest {
         }
 
         // 这里虽然声明的时候只有通配符，但得到每一个具体的 Handler 的时候，通配符已经被类型实参所取代了，第三个参数 TransTransactionContext 也不过是 ParameterizedTypeImpl
-        final BaseHandler<? extends HandlerRequest, ? extends TransactionModel, ? extends TransTransactionContext> baseHandler = handlers.get(0);
+        final BaseHandler<? extends HandlerRequest, ? extends TransactionModel, ? extends TransTransactionContext> baseHandler = handlers.get(
+                0);
         final Collection<?> wildCardType = ReflectionUtil.getWildCardType(baseHandler.getClass());
 
         final Field fieldNum = DomainDrivenTransactionSysApplicationIntegrationTest.class.getDeclaredField("listNum");

@@ -1,13 +1,12 @@
 package com.magicliang.transaction.sys.common.dal.datasource;
 
+import javax.sql.DataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-
-import javax.sql.DataSource;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -17,8 +16,8 @@ import javax.sql.DataSource;
  * 多数据源配置参考：https://blog.51cto.com/u_12462157/3798109
  *
  * @author magicliang
- * <p>
- * date: 2022-01-27 15:46
+ *         <p>
+ *         date: 2022-01-27 15:46
  */
 @Configuration
 // @MapperScan("com.magicliang.transaction.sys.common.dal.mybatis.mapper")
@@ -62,7 +61,8 @@ public class DataSourceConfig {
 //        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
 //        bean.setDataSource(dataSource);
 //        //指定xml映射文件位置
-//        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/ds1/**/*Mapper.xml"));
+//        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources
+//        ("classpath:mapper/ds1/**/*Mapper.xml"));
 //        return bean.getObject();
 //    }
 //
@@ -74,7 +74,8 @@ public class DataSourceConfig {
 //
 //    @Bean(name = "test1SqlSessionTemplate")
 //    @Primary
-//    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier("test1SqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+//    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier("test1SqlSessionFactory") SqlSessionFactory
+//    sqlSessionFactory) throws Exception {
 //        return new SqlSessionTemplate(sqlSessionFactory);
 //    }
 }

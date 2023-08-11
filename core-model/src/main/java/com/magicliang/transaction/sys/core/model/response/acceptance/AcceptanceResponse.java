@@ -9,8 +9,8 @@ import lombok.Data;
  * description: 受理响应
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 17:20
+ *         <p>
+ *         date: 2021-12-31 17:20
  */
 @Data
 public class AcceptanceResponse implements IResponse {

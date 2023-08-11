@@ -6,8 +6,8 @@ package com.magicliang.transaction.sys.common.util;
  * description: 对象工具类
  *
  * @author magicliang
- * <p>
- * date: 2023-07-17 11:32
+ *         <p>
+ *         date: 2023-07-17 11:32
  */
 public class ObjectUtilPlus {
 

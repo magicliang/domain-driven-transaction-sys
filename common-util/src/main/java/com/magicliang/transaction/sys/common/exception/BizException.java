@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
  * description: 通用业务异常基类
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 15:28
+ *         <p>
+ *         date: 2022-01-05 15:28
  */
 @Data
 @AllArgsConstructor

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
  * description: 通用配置
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 11:34
+ *         <p>
+ *         date: 2021-12-31 11:34
  */
 @Data
 @ConfigurationProperties(prefix = "common")

@@ -9,8 +9,8 @@ import java.lang.reflect.Type;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-08-05 15:28
+ *         <p>
+ *         date: 2022-08-05 15:28
  */
 public class Plane<St extends FlightStatus> extends GenericType<St> {
 
@@ -57,7 +57,8 @@ public class Plane<St extends FlightStatus> extends GenericType<St> {
 
         ParameterizedType parameterizedSuperType = (ParameterizedType) genericSuperclass;
         Type[] actualTypeArguments = parameterizedSuperType.getActualTypeArguments();
-        // 如果使用匿名子类，这里显示的 type variable 的名字，得不到 aireport.Landed 或者 aireport.Flying 这类类型，所以我们无法动态地把 aireport.FlightStatus 里隐藏的信息读出来；如果使用具体子类，这里可以得到 aireport.FlightStatus 的子类
+        // 如果使用匿名子类，这里显示的 type variable 的名字，得不到 aireport.Landed 或者 aireport.Flying 这类类型，所以我们无法动态地把 aireport
+        // .FlightStatus 里隐藏的信息读出来；如果使用具体子类，这里可以得到 aireport.FlightStatus 的子类
         Type actualTypeArgument = actualTypeArguments[0];
         final String typeName = actualTypeArgument.getTypeName();
         // 这里强依赖类型构造器
@@ -70,7 +71,8 @@ public class Plane<St extends FlightStatus> extends GenericType<St> {
 //                new Class[]{FlightStatus.class},
 //                new InvocationHandler() {
 //                    @Override
-//                    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+//                    public Object invoke(final Object proxy, final Method method, final Object[] args) throws
+//                    Throwable {
 //                        Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
 //                                .getDeclaredConstructor(Class.class);
 //                        constructor.setAccessible(true);
@@ -109,6 +111,7 @@ public class Plane<St extends FlightStatus> extends GenericType<St> {
     }
 
     public static class FlyingPlane extends Plane<Flying> {
+
         public FlyingPlane(final int passenger) {
             super(passenger);
         }

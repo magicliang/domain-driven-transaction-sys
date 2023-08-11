@@ -4,7 +4,6 @@ import com.magicliang.transaction.sys.biz.shared.request.notification.Notificati
 import com.magicliang.transaction.sys.biz.shared.request.notification.UnSentNotificationQuery;
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
-
 import java.util.List;
 
 /**
@@ -13,8 +12,8 @@ import java.util.List;
  * description: 通知门面
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 16:45
+ *         <p>
+ *         date: 2022-01-05 16:45
  */
 public interface INotificationFacade {
 

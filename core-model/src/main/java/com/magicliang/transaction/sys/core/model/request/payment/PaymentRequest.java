@@ -10,10 +10,11 @@ import lombok.EqualsAndHashCode;
  * description: 支付请求
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 17:28
+ *         <p>
+ *         date: 2021-12-31 17:28
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PaymentRequest extends AcceptanceRequest {
+
 }

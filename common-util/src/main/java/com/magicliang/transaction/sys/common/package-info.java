@@ -4,7 +4,8 @@
  * description: 公共工具包
  *
  * @author magicliang
- * <p>
- * date: 2021-12-29 12:18
+ *         <p>
+ *         date: 2021-12-29 12:18
  */
+
 package com.magicliang.transaction.sys.common;

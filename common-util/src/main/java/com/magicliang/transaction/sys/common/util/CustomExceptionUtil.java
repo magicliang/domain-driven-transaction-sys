@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
  * description: 自定义异常工具类
  *
  * @author magicliang
- * <p>
- * date: 2023-05-05 19:03
+ *         <p>
+ *         date: 2023-05-05 19:03
  */
 public class CustomExceptionUtil {
 
@@ -25,7 +25,14 @@ public class CustomExceptionUtil {
         throwable = unwrapAndFindException(c, RuntimeException.class);
         System.out.println(throwable);
 
-        String input = "Field error in object 'leadsQueryConditionForGetRequest' on field 'hideRepeatRegisterLeads': rejected value [1235]; codes [typeMismatch.leadsQueryConditionForGetRequest.hideRepeatRegisterLeads,typeMismatch.hideRepeatRegisterLeads,typeMismatch.boolean,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [leadsQueryConditionForGetRequest.hideRepeatRegisterLeads,hideRepeatRegisterLeads]; arguments []; default message [hideRepeatRegisterLeads]]; default message [Failed to convert property value of type 'java.lang.String' to required type 'boolean' for property 'hideRepeatRegisterLeads'; nested exception is java.lang.IllegalArgumentException: Invalid boolean value [1235]]";
+        String input = "Field error in object 'leadsQueryConditionForGetRequest' on field 'hideRepeatRegisterLeads': "
+                + "rejected value [1235]; codes [typeMismatch.leadsQueryConditionForGetRequest"
+                + ".hideRepeatRegisterLeads,typeMismatch.hideRepeatRegisterLeads,typeMismatch.boolean,typeMismatch]; "
+                + "arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes "
+                + "[leadsQueryConditionForGetRequest.hideRepeatRegisterLeads,hideRepeatRegisterLeads]; arguments []; "
+                + "default message [hideRepeatRegisterLeads]]; default message [Failed to convert property value of "
+                + "type 'java.lang.String' to required type 'boolean' for property 'hideRepeatRegisterLeads'; nested "
+                + "exception is java.lang.IllegalArgumentException: Invalid boolean value [1235]]";
         Pattern pattern = Pattern.compile("field (.*?);");
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {

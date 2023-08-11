@@ -13,9 +13,8 @@ import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.helper.PayOrderHelper;
 import com.magicliang.transaction.sys.core.model.request.payment.PaymentRequest;
 import com.magicliang.transaction.sys.core.model.response.payment.PaymentResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -23,10 +22,11 @@ import java.util.Date;
  * description: 支付策略基类
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 20:08
+ *         <p>
+ *         date: 2022-01-04 20:08
  */
-public abstract class BasePaymentStrategy extends BaseStrategy implements DomainStrategy<PaymentRequest, PaymentResponse, PaymentStrategyEnum> {
+public abstract class BasePaymentStrategy extends BaseStrategy implements
+        DomainStrategy<PaymentRequest, PaymentResponse, PaymentStrategyEnum> {
 
     /**
      * 通用配置
@@ -43,13 +43,13 @@ public abstract class BasePaymentStrategy extends BaseStrategy implements Domain
     /**
      * 记录请求异常
      *
-     * @param ex         请求异常
-     * @param payOrder   支付订单
+     * @param ex 请求异常
+     * @param payOrder 支付订单
      * @param payRequest 支付领域请求
      */
     protected void recordException(final BaseTransException ex,
-                                   final TransPayOrderEntity payOrder,
-                                   final TransRequestEntity payRequest) {
+            final TransPayOrderEntity payOrder,
+            final TransRequestEntity payRequest) {
         Throwable cause = ex.getCause();
         if (null != cause) {
             payRequest.setRequestException(cause.toString());
@@ -76,10 +76,11 @@ public abstract class BasePaymentStrategy extends BaseStrategy implements Domain
     /**
      * 更新请求后的领域模型
      *
-     * @param payOrder   支付订单
+     * @param payOrder 支付订单
      * @param payRequest 支付请求
      */
-    protected void updateDomainModelsBeforePayment(final TransPayOrderEntity payOrder, final TransRequestEntity payRequest) {
+    protected void updateDomainModelsBeforePayment(final TransPayOrderEntity payOrder,
+            final TransRequestEntity payRequest) {
         final Date now = new Date();
         payRequest.setGmtModified(now);
         payOrder.setGmtModified(now);

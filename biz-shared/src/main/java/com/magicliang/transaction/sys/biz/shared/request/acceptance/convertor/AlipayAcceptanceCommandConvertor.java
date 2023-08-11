@@ -9,8 +9,8 @@ import com.magicliang.transaction.sys.core.model.entity.TransSubOrderEntity;
  * description: 支付宝余额受理命令转换器
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:27
+ *         <p>
+ *         date: 2022-01-05 14:27
  */
 public class AlipayAcceptanceCommandConvertor {
 

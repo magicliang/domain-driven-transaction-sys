@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-12-29 15:23
+ *         <p>
+ *         date: 2022-12-29 15:23
  */
 @Component
 public class ApplicationEventSpringPublisher implements ApplicationEvents {

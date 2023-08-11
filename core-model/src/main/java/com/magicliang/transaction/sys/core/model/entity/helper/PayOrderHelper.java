@@ -6,13 +6,12 @@ import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestTypeEnum;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
-import org.apache.commons.collections.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -20,8 +19,8 @@ import java.util.stream.Collectors;
  * description: 支付订单帮助器
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 16:55
+ *         <p>
+ *         date: 2021-12-31 16:55
  */
 public class PayOrderHelper {
 
@@ -54,7 +53,7 @@ public class PayOrderHelper {
     /**
      * 关闭支付订单和支付请求
      *
-     * @param payOrder   支付订单
+     * @param payOrder 支付订单
      * @param closedTime 关闭时间
      */
     public static void closePayOrder(final TransPayOrderEntity payOrder, final Date closedTime) {
@@ -78,7 +77,7 @@ public class PayOrderHelper {
     /**
      * 更新支付订单
      *
-     * @param payOrder     支付订单
+     * @param payOrder 支付订单
      * @param modifiedTime 修改时间
      * @return 支付订单
      */
@@ -123,7 +122,8 @@ public class PayOrderHelper {
         boolean noBouncedNotification = true;
         if (CollectionUtils.isNotEmpty(notificationRequests)) {
             for (TransRequestEntity notificationRequest : notificationRequests) {
-                TransRequestTypeEnum requestType = TransRequestTypeEnum.getByCode(notificationRequest.getRequestType().intValue());
+                TransRequestTypeEnum requestType = TransRequestTypeEnum.getByCode(
+                        notificationRequest.getRequestType().intValue());
                 if (TransRequestTypeEnum.BOUNCED_NOTIFICATION == requestType) {
                     // 一旦有一个退票请求，则不允许产生新的退票请求
                     noBouncedNotification = false;
@@ -157,11 +157,12 @@ public class PayOrderHelper {
     /**
      * 初始化支付订单的通知请求
      *
-     * @param payOrder         支付订单
+     * @param payOrder 支付订单
      * @param notificationType 通知类型
      * @return 通知请求
      */
-    public static TransRequestEntity buildInitialNotificationRequest(final TransPayOrderEntity payOrder, final TransRequestTypeEnum notificationType) {
+    public static TransRequestEntity buildInitialNotificationRequest(final TransPayOrderEntity payOrder,
+            final TransRequestTypeEnum notificationType) {
         TransRequestEntity notificationRequest = new TransRequestEntity();
         Date now = new Date();
         notificationRequest.setPayOrderNo(payOrder.getPayOrderNo());
@@ -195,7 +196,8 @@ public class PayOrderHelper {
         }
         return notificationRequests
                 .stream()
-                .filter((notificationRequest) -> !TransRequestStatusEnum.isFinalStatus(notificationRequest.getStatus().intValue()))
+                .filter((notificationRequest) -> !TransRequestStatusEnum.isFinalStatus(
+                        notificationRequest.getStatus().intValue()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

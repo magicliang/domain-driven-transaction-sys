@@ -1,21 +1,20 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.filter;
 
 import com.magicliang.transaction.sys.biz.service.impl.web.util.WebUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -27,8 +26,8 @@ import java.util.Map.Entry;
  * 他们都有不能读或者写 status 的问题，如果我们使用 filter，则以后还可以迁移到其他兼容 servlet 的技术栈中，总比使用 Spring 原生 api 好
  *
  * @author magicliang
- * <p>
- * date: 2022-11-15 11:31
+ *         <p>
+ *         date: 2022-11-15 11:31
  */
 //@Component
 @Slf4j
@@ -102,12 +101,12 @@ public class StatusBasedFilter extends OncePerRequestFilter {
     /**
      * 记录响应头
      *
-     * @param response    原始的 HttpServlet 响应
+     * @param response 原始的 HttpServlet 响应
      * @param headerNames 响应头的名称
      * @return 被记录的响应头
      */
     private static Map<String, Collection<String>> recordHeaders(HttpServletResponse response,
-                                                                 Collection<String> headerNames) {
+            Collection<String> headerNames) {
         Map<String, Collection<String>> headerMap = new HashMap<>();
         for (String headerName : headerNames) {
             final Collection<String> headers = response.getHeaders(headerName);
@@ -119,7 +118,7 @@ public class StatusBasedFilter extends OncePerRequestFilter {
     /**
      * 重建响应头
      *
-     * @param response  重建响应头
+     * @param response 重建响应头
      * @param headerMap 响应头记录映射表
      */
     private static void resetHeaders(HttpServletResponse response, Map<String, Collection<String>> headerMap) {

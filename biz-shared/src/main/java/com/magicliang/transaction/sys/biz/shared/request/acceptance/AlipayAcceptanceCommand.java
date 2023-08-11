@@ -9,8 +9,8 @@ import lombok.EqualsAndHashCode;
  * description: 支付宝宝余额支付订单受理命令
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:22
+ *         <p>
+ *         date: 2022-01-05 14:22
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

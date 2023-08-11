@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
  * description: DB 错误码
  *
  * @author magicliang
- * <p>
- * date: 2021-12-30 17:05
+ *         <p>
+ *         date: 2021-12-30 17:05
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -26,12 +26,14 @@ public class DbErrorCode extends ErrorCode {
     /**
      * 更新计划操作，期望1条实际0条
      */
-    public final static DbErrorCode DB_EXPECTED_ONE_ACTUAL_ZERO = new DbErrorCode(2210, "E2210", "更新计划操作，期望1条实际0条");
+    public final static DbErrorCode DB_EXPECTED_ONE_ACTUAL_ZERO = new DbErrorCode(2210, "E2210",
+            "更新计划操作，期望1条实际0条");
 
     /**
      * 更新计划操作，期望1条实际多条
      */
-    public final static DbErrorCode DB_EXPECTED_ONE_ACTUAL_MORE = new DbErrorCode(2211, "E2211", "更新计划操作，期望1条实际多条");
+    public final static DbErrorCode DB_EXPECTED_ONE_ACTUAL_MORE = new DbErrorCode(2211, "E2211",
+            "更新计划操作，期望1条实际多条");
 
     /**
      * 更新计划操作错误

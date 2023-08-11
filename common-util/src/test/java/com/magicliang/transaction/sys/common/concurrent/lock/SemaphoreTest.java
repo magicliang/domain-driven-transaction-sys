@@ -1,10 +1,9 @@
 package com.magicliang.transaction.sys.common.concurrent.lock;
 
+import java.util.concurrent.Semaphore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.Semaphore;
 
 /**
  * @author liangchuan

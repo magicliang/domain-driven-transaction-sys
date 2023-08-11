@@ -8,14 +8,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -24,8 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 本工具类主要基于 Jackson
  *
  * @author magicliang
- * <p>
- * date: 2021-12-29 15:02
+ *         <p>
+ *         date: 2021-12-29 15:02
  */
 @Slf4j
 public class JsonUtils {
@@ -64,17 +63,21 @@ public class JsonUtils {
 
         OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         // 关闭缓存的ObjectMapper。这个 disable 虽然 deprecated 了，但因为取不到原生的 factory，所以暂且继续用
-        OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
+        OBJECT_MAPPER_INCLUDE_ALWAYS_NO_CACHE.getFactory()
+                .disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
 
         // 只包含非空字段，且关闭缓存
         OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         // 在本 mapper 上禁用线程局部缓存，这样对性能可能不好，但会对 gc 好，也防止内存泄漏：https://github.com/fasterxml/jackson-core/issues/189
-        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.getFactory().disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
+        OBJECT_MAPPER_INCLUDE_NONEMPTY_NO_CACHE.getFactory()
+                .disable(JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING);
 
         // 序列化为 a_b 小写下划线形式
-        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.setPropertyNamingStrategy(
+                PropertyNamingStrategies.SNAKE_CASE);
+        OBJECT_MAPPER_CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES.configure(
+                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**
@@ -88,8 +91,8 @@ public class JsonUtils {
      * 将Java对象转成Json，默认约束规则JsonInclude.Include.NON_EMPTY
      * 注意，原始的字符串 123 序列化后会变成 "123"
      *
-     * @param object     原始对象
-     * @param include    序列化的包含参数
+     * @param object 原始对象
+     * @param include 序列化的包含参数
      * @param jsonCached 是否激活 cache
      * @return 序列化后字符串
      */
@@ -164,7 +167,7 @@ public class JsonUtils {
     /**
      * 将Java对象转成Json，默认约束规则JsonInclude.Include.NON_EMPTY
      *
-     * @param object  原始对象
+     * @param object 原始对象
      * @param include 包含策略
      * @return 序列化后字符串
      */
@@ -176,9 +179,9 @@ public class JsonUtils {
     /**
      * 转换成小写下划线类型
      *
-     * @param json  原始 json 字符串
+     * @param json 原始 json 字符串
      * @param clazz 类对象
-     * @param <T>   列表元素类型
+     * @param <T> 列表元素类型
      * @return 反序列结果
      */
     public static <T> T toObjectCamelIgnore(String json, Class<T> clazz) {
@@ -196,9 +199,9 @@ public class JsonUtils {
     /**
      * 将 json 转成 Java 对象
      *
-     * @param json  原始 json 字符串
+     * @param json 原始 json 字符串
      * @param clazz 类对象
-     * @param <T>   列表元素类型
+     * @param <T> 列表元素类型
      * @return 反序列结果
      */
     public static <T> T toObject(String json, Class<T> clazz) {
@@ -216,9 +219,9 @@ public class JsonUtils {
     /**
      * 将 json 转成 map
      *
-     * @param json           原始 json 字符串
+     * @param json 原始 json 字符串
      * @param elementClasses 类对象
-     * @param <T>            列表元素类型
+     * @param <T> 列表元素类型
      * @return 反序列结果
      */
     public static <T> Map<String, T> toMapObject(String json, Class<T> elementClasses) {
@@ -238,9 +241,9 @@ public class JsonUtils {
      * 把 json 反序列化为列表
      * 反序列化的时候使用 INCLUDE_ALWAYS 的策略也没关系，因为这个策略主要是用在 serialize 这个流程上的
      *
-     * @param json  原始 json 字符串
+     * @param json 原始 json 字符串
      * @param clazz 类对象
-     * @param <T>   列表元素类型
+     * @param <T> 列表元素类型
      * @return 反序列结果
      */
     public static <T> List<T> toList(String json, Class<T>... clazz) {
@@ -262,7 +265,7 @@ public class JsonUtils {
      * 获取泛型的Collection Type
      *
      * @param collectionClass 泛型的Collection
-     * @param elementClasses  类对象
+     * @param elementClasses 类对象
      * @return JavaType Java类型
      */
     private static JavaType getCollectionType(Class<?> collectionClass, Class<?>... elementClasses) {

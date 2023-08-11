@@ -2,6 +2,11 @@ package com.magicliang.transaction.sys;
 
 import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoMapper;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
+import java.util.Arrays;
+import javax.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,17 +19,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.PreDestroy;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PushbackInputStream;
-import java.util.Arrays;
-
 /**
  * 程序主入口类
  * 如果没有 exclude = DataSourceAutoConfiguration.class，则会报错：
  * <p>
- * 使用 h2 这类数据源，如果使用自动配置数据源需要使用 DataSourceAutoConfiguration，使用 xml 或者 DataSourceConfig 则需要 exclude = DataSourceAutoConfiguration.class
+ * 使用 h2 这类数据源，如果使用自动配置数据源需要使用 DataSourceAutoConfiguration，使用 xml 或者 DataSourceConfig 则需要 exclude =
+ * DataSourceAutoConfiguration.class
  * <p>
  * 如果企图使用自动配置数据源，而自动配置数据源不完备，则会报以下错：
  * <p>
@@ -42,7 +42,8 @@ import java.util.Arrays;
  * <p>
  * Consider the following:
  * If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
- * If you have database settings to be loaded from a particular profile you may need to activate it (the profiles test are currently active).
+ * If you have database settings to be loaded from a particular profile you may need to activate it (the profiles test
+ * are currently active).
  * <p>
  * Process finished with exit code 0
  * <p>

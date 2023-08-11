@@ -9,8 +9,8 @@ import org.apache.commons.collections.CollectionUtils;
  * description: 增强版集合工具
  *
  * @author magicliang
- * <p>
- * date: 2023-07-17 13:09
+ *         <p>
+ *         date: 2023-07-17 13:09
  */
 public class CollectionUtilPlus {
 

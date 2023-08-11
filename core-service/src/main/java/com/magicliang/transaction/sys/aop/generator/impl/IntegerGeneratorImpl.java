@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
  * description: 整数生成器实现
  *
  * @author magicliang
- * <p>
- * date: 2022-05-28 20:13
+ *         <p>
+ *         date: 2022-05-28 20:13
  */
 @Service
 public class IntegerGeneratorImpl implements IntegerGenerator {

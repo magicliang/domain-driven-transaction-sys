@@ -5,6 +5,7 @@ package com.magicliang.transaction.sys.common.dal.mybatis.po;
  * This class corresponds to the database table tb_trans_channel_request
  */
 public class TransChannelRequestPoWithBLOBs extends TransChannelRequestPo {
+
     /**
      * Database Column Remarks:
      * 请求参数
@@ -156,23 +157,38 @@ public class TransChannelRequestPoWithBLOBs extends TransChannelRequestPo {
         }
         TransChannelRequestPoWithBLOBs other = (TransChannelRequestPoWithBLOBs) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getGmtCreated() == null ? other.getGmtCreated() == null : this.getGmtCreated().equals(other.getGmtCreated()))
-                && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null : this.getPayOrderNo().equals(other.getPayOrderNo()))
-                && (this.getRequestType() == null ? other.getRequestType() == null : this.getRequestType().equals(other.getRequestType()))
-                && (this.getBizIdentifyNo() == null ? other.getBizIdentifyNo() == null : this.getBizIdentifyNo().equals(other.getBizIdentifyNo()))
-                && (this.getBizUniqueNo() == null ? other.getBizUniqueNo() == null : this.getBizUniqueNo().equals(other.getBizUniqueNo()))
-                && (this.getGmtNextExecution() == null ? other.getGmtNextExecution() == null : this.getGmtNextExecution().equals(other.getGmtNextExecution()))
-                && (this.getRetryCount() == null ? other.getRetryCount() == null : this.getRetryCount().equals(other.getRetryCount()))
-                && (this.getRequestAddr() == null ? other.getRequestAddr() == null : this.getRequestAddr().equals(other.getRequestAddr()))
+                && (this.getGmtCreated() == null ? other.getGmtCreated() == null
+                : this.getGmtCreated().equals(other.getGmtCreated()))
+                && (this.getGmtModified() == null ? other.getGmtModified() == null
+                : this.getGmtModified().equals(other.getGmtModified()))
+                && (this.getPayOrderNo() == null ? other.getPayOrderNo() == null
+                : this.getPayOrderNo().equals(other.getPayOrderNo()))
+                && (this.getRequestType() == null ? other.getRequestType() == null
+                : this.getRequestType().equals(other.getRequestType()))
+                && (this.getBizIdentifyNo() == null ? other.getBizIdentifyNo() == null
+                : this.getBizIdentifyNo().equals(other.getBizIdentifyNo()))
+                && (this.getBizUniqueNo() == null ? other.getBizUniqueNo() == null
+                : this.getBizUniqueNo().equals(other.getBizUniqueNo()))
+                && (this.getGmtNextExecution() == null ? other.getGmtNextExecution() == null
+                : this.getGmtNextExecution().equals(other.getGmtNextExecution()))
+                && (this.getRetryCount() == null ? other.getRetryCount() == null
+                : this.getRetryCount().equals(other.getRetryCount()))
+                && (this.getRequestAddr() == null ? other.getRequestAddr() == null
+                : this.getRequestAddr().equals(other.getRequestAddr()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getCloseReason() == null ? other.getCloseReason() == null : this.getCloseReason().equals(other.getCloseReason()))
-                && (this.getGmtLastExecution() == null ? other.getGmtLastExecution() == null : this.getGmtLastExecution().equals(other.getGmtLastExecution()))
+                && (this.getCloseReason() == null ? other.getCloseReason() == null
+                : this.getCloseReason().equals(other.getCloseReason()))
+                && (this.getGmtLastExecution() == null ? other.getGmtLastExecution() == null
+                : this.getGmtLastExecution().equals(other.getGmtLastExecution()))
                 && (this.getEnv() == null ? other.getEnv() == null : this.getEnv().equals(other.getEnv()))
-                && (this.getRequestParams() == null ? other.getRequestParams() == null : this.getRequestParams().equals(other.getRequestParams()))
-                && (this.getRequestResponse() == null ? other.getRequestResponse() == null : this.getRequestResponse().equals(other.getRequestResponse()))
-                && (this.getCallbackParams() == null ? other.getCallbackParams() == null : this.getCallbackParams().equals(other.getCallbackParams()))
-                && (this.getRequestException() == null ? other.getRequestException() == null : this.getRequestException().equals(other.getRequestException()));
+                && (this.getRequestParams() == null ? other.getRequestParams() == null
+                : this.getRequestParams().equals(other.getRequestParams()))
+                && (this.getRequestResponse() == null ? other.getRequestResponse() == null
+                : this.getRequestResponse().equals(other.getRequestResponse()))
+                && (this.getCallbackParams() == null ? other.getCallbackParams() == null
+                : this.getCallbackParams().equals(other.getCallbackParams()))
+                && (this.getRequestException() == null ? other.getRequestException() == null
+                : this.getRequestException().equals(other.getRequestException()));
     }
 
     /**

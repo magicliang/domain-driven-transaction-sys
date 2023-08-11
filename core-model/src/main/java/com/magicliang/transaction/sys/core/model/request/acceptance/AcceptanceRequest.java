@@ -10,8 +10,8 @@ import lombok.Data;
  * description: 受理请求
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 17:25
+ *         <p>
+ *         date: 2021-12-31 17:25
  */
 @Data
 public class AcceptanceRequest implements IRequest {

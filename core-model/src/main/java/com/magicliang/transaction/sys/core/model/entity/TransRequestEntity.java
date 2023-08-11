@@ -4,10 +4,9 @@ import com.magicliang.transaction.sys.common.enums.TransEnvEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestCloseReasonEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestTypeEnum;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Date;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -15,8 +14,8 @@ import java.util.Date;
  * description: 交易请求实体
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 14:19
+ *         <p>
+ *         date: 2021-12-31 14:19
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

@@ -1,10 +1,6 @@
 package com.magicliang.transaction.sys.common;
 
 import com.google.common.base.Joiner;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -14,6 +10,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -21,8 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-05-07 16:47
+ *         <p>
+ *         date: 2022-05-07 16:47
  */
 @Slf4j
 public class ConcurrentTest extends UnitTest {
@@ -38,13 +37,16 @@ public class ConcurrentTest extends UnitTest {
                 new ArrayBlockingQueue<>(1),
                 r -> {
                     Thread thread = new Thread(r);
-                    thread.setName(Joiner.on("_").join("ad_service_pool", "thread", counter.getAndIncrement(), "priority", Thread.NORM_PRIORITY));
+                    thread.setName(Joiner.on("_")
+                            .join("ad_service_pool", "thread", counter.getAndIncrement(), "priority",
+                                    Thread.NORM_PRIORITY));
                     thread.setPriority(Thread.NORM_PRIORITY);
                     return thread;
                 },
 //                (r, executor) -> {
 //                    log.error("{}_thread_full:queue_size={}, ActiveCount={}, CorePoolSize={}, CompletedTaskCount={}",
-//                            executor.getQueue().size(), executor.getActiveCount(), executor.getCorePoolSize(), executor.getCompletedTaskCount());
+//                            executor.getQueue().size(), executor.getActiveCount(), executor.getCorePoolSize(),
+//                            executor.getCompletedTaskCount());
 //                    // 如果没有这一行，这个线程池就是有bug的，一单线程池满了，future task 会无限等待，见：https://stackoverflow.com/questions/31761012/how-to-handle-rejection-so-that-future-get-does-not-forever
 //                    if (r instanceof FutureTask) {
 //                        ((FutureTask) r).cancel(false);

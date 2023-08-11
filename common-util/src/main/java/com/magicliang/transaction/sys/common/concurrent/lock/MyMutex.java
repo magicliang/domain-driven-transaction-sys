@@ -1,16 +1,16 @@
 package com.magicliang.transaction.sys.common.concurrent.lock;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 一个自定义互斥器的实例
- * FROM：https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#tryAcquire-int-
+ * FROM：https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/AbstractQueuedSynchronizer
+ * .html#tryAcquire-int-
  * 通常 sync 都是保内声明包内可见的，这样才能把锁语义和同步器语义分离出来。我们应该明确理解这一点：
  * lock 依托于 sync，但 sync 并不只是简单、狭义的 lock，否则也不足以拿来实现 semaphore 这类东西。
  *
@@ -92,8 +92,8 @@ class MyMutex implements Lock {
      * be documented by that {@code Lock} implementation.
      *
      * @throws InterruptedException if the current thread is
-     *                              interrupted while acquiring the lock (and interruption
-     *                              of lock acquisition is supported)
+     *         interrupted while acquiring the lock (and interruption
+     *         of lock acquisition is supported)
      */
     @Override
     public void lockInterruptibly() throws InterruptedException {
@@ -127,7 +127,7 @@ class MyMutex implements Lock {
      * doesn't try to unlock if the lock was not acquired.
      *
      * @return {@code true} if the lock was acquired and
-     * {@code false} otherwise
+     *         {@code false} otherwise
      */
     @Override
     public boolean tryLock() {
@@ -189,10 +189,10 @@ class MyMutex implements Lock {
      * @param time the maximum time to wait for the lock
      * @param unit the time unit of the {@code time} argument
      * @return {@code true} if the lock was acquired and {@code false}
-     * if the waiting time elapsed before the lock was acquired
+     *         if the waiting time elapsed before the lock was acquired
      * @throws InterruptedException if the current thread is interrupted
-     *                              while acquiring the lock (and interruption of lock
-     *                              acquisition is supported)
+     *         while acquiring the lock (and interruption of lock
+     *         acquisition is supported)
      */
     @Override
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
@@ -239,7 +239,7 @@ class MyMutex implements Lock {
      *
      * @return A new {@link Condition} instance for this {@code Lock} instance
      * @throws UnsupportedOperationException if this {@code Lock}
-     *                                       implementation does not support conditions
+     *         implementation does not support conditions
      */
     @Override
     public Condition newCondition() {
@@ -250,10 +250,12 @@ class MyMutex implements Lock {
      * 一个示范的自定义同步器类
      * 本同步器类认为，0是 released，1是 acquired。
      * 只要状态为 1，则这个同步器是被互斥持有的。即这个 mutex 本身只能进入一次，本身不是 reentrant（不然就要往信号量发展了），所以在 acquire 比较 state 的时候，只要比较为 1 即可。
-     * 这个设计模式告诉我们，每个 mutex 类型的真正语义的实现，最好使用一个 utility helper class 来实现，然后让这个 concrete lock implementation delegate 自己的行为到这个 helper 的内部实现上。
+     * 这个设计模式告诉我们，每个 mutex 类型的真正语义的实现，最好使用一个 utility helper class 来实现，然后让这个 concrete lock implementation delegate
+     * 自己的行为到这个 helper 的内部实现上。
      * 如 ReentrantLock、Semaphore 都使用一个标准的内部自定义 Sync 来表达自己的并发控制语义。
      * <p>
-     * 本类只实现了 try 系列方法，即 tryAcquire 和 tryRelease。因为它们也是 acquire 和 release 的技术底座，因为基础的 AQS 在 acquire 里面实现了 CLH queue 的方法，这就可以得到一个最基本的 sync 了
+     * 本类只实现了 try 系列方法，即 tryAcquire 和 tryRelease。因为它们也是 acquire 和 release 的技术底座，因为基础的 AQS 在 acquire 里面实现了 CLH queue
+     * 的方法，这就可以得到一个最基本的 sync 了
      */
     private static class MySynchronizer extends AbstractQueuedSynchronizer {
 
@@ -269,7 +271,7 @@ class MyMutex implements Lock {
          * not be defined if conditions are not used.
          *
          * @return {@code true} if synchronization is held exclusively;
-         * {@code false} otherwise
+         *         {@code false} otherwise
          * @throws UnsupportedOperationException if conditions are not supported
          */
         @Override
@@ -293,15 +295,15 @@ class MyMutex implements Lock {
          * implementation throws {@link UnsupportedOperationException}.
          *
          * @param arg the acquire argument. This value is always the one
-         *            passed to an acquire method, or is the value saved on entry
-         *            to a condition wait.  The value is otherwise uninterpreted
-         *            and can represent anything you like.
+         *         passed to an acquire method, or is the value saved on entry
+         *         to a condition wait.  The value is otherwise uninterpreted
+         *         and can represent anything you like.
          * @return {@code true} if successful. Upon success, this object has
-         * been acquired.
-         * @throws IllegalMonitorStateException  if acquiring would place this
-         *                                       synchronizer in an illegal state. This exception must be
-         *                                       thrown in a consistent fashion for synchronization to work
-         *                                       correctly.
+         *         been acquired.
+         * @throws IllegalMonitorStateException if acquiring would place this
+         *         synchronizer in an illegal state. This exception must be
+         *         thrown in a consistent fashion for synchronization to work
+         *         correctly.
          * @throws UnsupportedOperationException if exclusive mode is not supported
          */
         @Override
@@ -333,16 +335,16 @@ class MyMutex implements Lock {
          * {@link UnsupportedOperationException}.
          *
          * @param arg the release argument. This value is always the one
-         *            passed to a release method, or the current state value upon
-         *            entry to a condition wait.  The value is otherwise
-         *            uninterpreted and can represent anything you like.
+         *         passed to a release method, or the current state value upon
+         *         entry to a condition wait.  The value is otherwise
+         *         uninterpreted and can represent anything you like.
          * @return {@code true} if this object is now in a fully released
-         * state, so that any waiting threads may attempt to acquire;
-         * and {@code false} otherwise.
-         * @throws IllegalMonitorStateException  if releasing would place this
-         *                                       synchronizer in an illegal state. This exception must be
-         *                                       thrown in a consistent fashion for synchronization to work
-         *                                       correctly.
+         *         state, so that any waiting threads may attempt to acquire;
+         *         and {@code false} otherwise.
+         * @throws IllegalMonitorStateException if releasing would place this
+         *         synchronizer in an illegal state. This exception must be
+         *         thrown in a consistent fashion for synchronization to work
+         *         correctly.
          * @throws UnsupportedOperationException if exclusive mode is not supported
          */
         @Override

@@ -1,17 +1,16 @@
 package com.magicliang.transaction.sys.biz.service.impl.job;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.BATCH_PAYMENT_JOB_ERROR;
+
 import com.magicliang.transaction.sys.biz.service.impl.facade.IPaymentFacade;
 import com.magicliang.transaction.sys.biz.shared.request.payment.UnPaidOrderQuery;
 import com.magicliang.transaction.sys.common.enums.TransEnvEnum;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
 import com.magicliang.transaction.sys.core.config.CommonConfig;
 import com.magicliang.transaction.sys.core.config.DynamicConfig;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Objects;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.BATCH_PAYMENT_JOB_ERROR;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -19,8 +18,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.BATCH_P
  * description: 发起支付任务
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 17:55
+ *         <p>
+ *         date: 2022-01-05 17:55
  */
 @Slf4j
 public class PaymentJob {

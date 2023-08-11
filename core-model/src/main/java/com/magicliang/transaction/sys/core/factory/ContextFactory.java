@@ -1,9 +1,8 @@
 package com.magicliang.transaction.sys.core.factory;
 
-import org.springframework.core.NamedInheritableThreadLocal;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.core.NamedInheritableThreadLocal;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -11,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * description: 交易上下文工厂
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 19:46
+ *         <p>
+ *         date: 2021-12-31 19:46
  */
 public abstract class ContextFactory {
 
@@ -36,7 +35,8 @@ public abstract class ContextFactory {
      * <p>
      * ThreadLocal 本质上是 ThreadLocalVar
      */
-    private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = NamedInheritableThreadLocal.withInitial(() -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
+    private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = NamedInheritableThreadLocal.withInitial(
+            () -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
 
     /**
      * 清理本线程上下文的内容

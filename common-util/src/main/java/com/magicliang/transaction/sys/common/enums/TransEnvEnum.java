@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 交易环境参数
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 11:48
+ *         <p>
+ *         date: 2021-12-31 11:48
  */
 @Getter
 @RequiredArgsConstructor

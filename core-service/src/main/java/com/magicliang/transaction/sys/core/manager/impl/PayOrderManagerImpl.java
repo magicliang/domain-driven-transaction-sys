@@ -4,16 +4,15 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransChannelRequestPoMapper;
 import com.magicliang.transaction.sys.common.dal.mybatis.mapper.TransPayOrderPoMapper;
-import com.magicliang.transaction.sys.common.dal.mybatis.po.*;
+import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
+import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoExample;
+import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
+import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
+import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPoExample;
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestTypeEnum;
 import com.magicliang.transaction.sys.core.manager.PayOrderManager;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +21,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -30,8 +33,8 @@ import java.util.stream.IntStream;
  * FIXME：补完这个类
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 14:19
+ *         <p>
+ *         date: 2022-01-04 14:19
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -77,7 +80,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 根据业务标识码 + 业务唯一标识 查询支付订单
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 支付订单
      */
     @Override
@@ -103,7 +106,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 这种任务、订单类查询一定要区分环境！
      *
      * @param batchSize 每次查询的批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未完成的支付订单列表
      */
     @Deprecated
@@ -150,7 +153,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 查询特定环境、特定数量的未完成的支付请求
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未完成的支付请求列表
      */
     @Override
@@ -172,7 +175,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 查询特定环境、全部的未发送的通知请求列表
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未发送的通知请求列表
      */
     @Override
@@ -227,13 +230,14 @@ public class PayOrderManagerImpl implements PayOrderManager {
     /**
      * 插入支付订单和支付请求
      *
-     * @param payOrder       支付订单
-     * @param request        支付请求
+     * @param payOrder 支付订单
+     * @param request 支付请求
      * @param alipaySuborder 支付宝子订单
      * @return 支付结果
      */
     @Override
-    public boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request, final TransAlipaySubOrderPo alipaySuborder) {
+    public boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request,
+            final TransAlipaySubOrderPo alipaySuborder) {
         return true;
     }
 
@@ -241,7 +245,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 插入支付订单和支付请求
      *
      * @param payOrder 支付订单
-     * @param request  支付请求
+     * @param request 支付请求
      * @return 支付结果
      */
     @Override
@@ -253,14 +257,15 @@ public class PayOrderManagerImpl implements PayOrderManager {
     /**
      * 在一个事务里更新支付订单和支付请求
      *
-     * @param payOrder            支付订单
-     * @param payRequest          支付请求
+     * @param payOrder 支付订单
+     * @param payRequest 支付请求
      * @param notificationRequest 通知请求
      * @return 支付结果
      */
     @Override
-    public boolean insertNotificationAndUpdatePayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs payRequest,
-                                                       final TransChannelRequestPoWithBLOBs notificationRequest) {
+    public boolean insertNotificationAndUpdatePayOrder(final TransPayOrderPo payOrder,
+            final TransChannelRequestPoWithBLOBs payRequest,
+            final TransChannelRequestPoWithBLOBs notificationRequest) {
         if (updatePayOrderAndRequest(payOrder, payRequest)) {
             return insertRequest(notificationRequest);
         }
@@ -284,11 +289,12 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 在一个事务里更新支付订单和支付请求
      *
      * @param payOrder 支付订单
-     * @param request  支付请求
+     * @param request 支付请求
      * @return 支付结果
      */
     @Override
-    public boolean updatePayOrderAndRequest(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request) {
+    public boolean updatePayOrderAndRequest(final TransPayOrderPo payOrder,
+            final TransChannelRequestPoWithBLOBs request) {
         if (updatePayOrder(payOrder)) {
             return updateChannelRequest(request);
         }
@@ -340,8 +346,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 分区查询，这样每次查询的时候输入大小可控
      *
      * @param payOrderNos 支付订单号列表
-     * @param query       查询语句
-     * @param <T>         返回值类型
+     * @param query 查询语句
+     * @param <T> 返回值类型
      * @return 特定类型的结果
      */
     private <T> List<T> partitionQueryByPayOrderNos(final List<Long> payOrderNos, QueryByLongList<List<T>> query) {
@@ -378,12 +384,12 @@ public class PayOrderManagerImpl implements PayOrderManager {
      *
      * @param totalSize 总大小
      * @param batchSize 批大小
-     * @param query     查询回调
+     * @param query 查询回调
      * @return 分页查询结果
      */
     private <T> List<T> paginationQuery(final long totalSize,
-                                        final int batchSize,
-                                        final Supplier<List<T>> query) {
+            final int batchSize,
+            final Supplier<List<T>> query) {
         // 查询条件不合法，则返回空列表
         if (totalSize <= 0 || batchSize <= 0) {
             return Collections.emptyList();
@@ -405,8 +411,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * 根据分区函数执行基于 payOrderNos 的分页查询
      *
      * @param longList 支付订单号列表
-     * @param query    查询语句
-     * @param <T>      返回值类型
+     * @param query 查询语句
+     * @param <T> 返回值类型
      * @return 分页查询结果
      */
     private <T> List<T> partitionQuery(final List<Long> longList, QueryByLongList<List<T>> query) {
@@ -417,7 +423,8 @@ public class PayOrderManagerImpl implements PayOrderManager {
          * 翻页查询的秘诀：每次只查询一批特别小的页，每次翻页的上限一定要小，避免：1. 单个查询时间太久，导致 innodb 的工作被阻塞 2. 单个连接被单个事务占用太久
          * 实现分页逻辑和非分页逻辑的分离，然后把非分页逻辑装进分页闭包里。
          *
-         * 另一种不优雅的做法是 longList/DEFAULT_BATCH 向上取整得到总页数 pages，for( page = 0; page < pages; page++) { for(i = 0 + (page - 1) * DEFAULT_BATCH; i< page * DEFAULT_BATCH && i < totalCount); i++ }
+         * 另一种不优雅的做法是 longList/DEFAULT_BATCH 向上取整得到总页数 pages，for( page = 0; page < pages; page++) { for(i = 0 + (page
+         *  - 1) * DEFAULT_BATCH; i< page * DEFAULT_BATCH && i < totalCount); i++ }
          */
         List<List<Long>> partition = Lists.partition(longList, DEFAULT_BATCH);
         // 先分区查询，再 flatMap 和 collect，如果这个地方性能不好，就直接 foreach addAll可能会性能会更好
@@ -496,7 +503,7 @@ public class PayOrderManagerImpl implements PayOrderManager {
     /**
      * 查询指定支付订单和指定类型的通道请求
      *
-     * @param payOrderNo   支付订单号
+     * @param payOrderNo 支付订单号
      * @param requestTypes 通道请求类型
      * @return 通道请求
      */
@@ -513,5 +520,6 @@ public class PayOrderManagerImpl implements PayOrderManager {
      * @param <T> 特定类型的结果
      */
     private interface QueryByLongList<T> extends Function<List<Long>, T> {
+
     }
 }

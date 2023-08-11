@@ -2,6 +2,20 @@ package com.magicliang.transaction.sys.biz.service.impl.web.controller;
 
 import com.magicliang.transaction.sys.biz.service.impl.web.util.WebUtil;
 import com.magicliang.transaction.sys.common.util.JsonUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,29 +33,14 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 测试控制器
  *
  * @author magicliang
- * <p>
- * date: 2022-06-04 18:00
+ *         <p>
+ *         date: 2022-06-04 18:00
  */
 @Slf4j
 @RestController
@@ -120,7 +119,7 @@ public class TestController {
      * it's working
      *
      * @param attributes 属性
-     * @param type       请求类型
+     * @param type 请求类型
      * @return 任意返回值
      */
     @GetMapping("/multiple-response")

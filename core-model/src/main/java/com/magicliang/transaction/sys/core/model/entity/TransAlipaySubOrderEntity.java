@@ -9,8 +9,8 @@ import lombok.EqualsAndHashCode;
  * description: 支付宝子订单实体
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 16:30
+ *         <p>
+ *         date: 2021-12-31 16:30
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

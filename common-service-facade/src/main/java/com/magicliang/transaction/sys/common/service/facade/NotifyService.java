@@ -7,8 +7,9 @@ package com.magicliang.transaction.sys.common.service.facade;
  * tag interface
  *
  * @author magicliang
- * <p>
- * date: 2022-01-12 19:50
+ *         <p>
+ *         date: 2022-01-12 19:50
  */
 public interface NotifyService {
+
 }

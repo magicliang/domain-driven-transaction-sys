@@ -1,11 +1,10 @@
 package com.magicliang.transaction.sys.aop.advice;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -13,8 +12,8 @@ import javax.annotation.Nullable;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-05-29 22:08
+ *         <p>
+ *         date: 2022-05-29 22:08
  */
 @Slf4j
 public class ProfilingInterceptor implements MethodInterceptor {
@@ -26,9 +25,9 @@ public class ProfilingInterceptor implements MethodInterceptor {
      *
      * @param invocation the method invocation joinpoint
      * @return the result of the call to {@link Joinpoint#proceed()};
-     * might be intercepted by the interceptor
+     *         might be intercepted by the interceptor
      * @throws Throwable if the interceptors or the target object
-     *                   throws an exception
+     *         throws an exception
      */
     @Nullable
     @Override

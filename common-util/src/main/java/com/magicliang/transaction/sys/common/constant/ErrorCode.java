@@ -1,12 +1,11 @@
 package com.magicliang.transaction.sys.common.constant;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import java.io.Serializable;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -14,8 +13,8 @@ import java.io.Serializable;
  * description: 另一种 ErrorCode
  *
  * @author magicliang
- * <p>
- * date: 2021-12-30 16:29
+ *         <p>
+ *         date: 2021-12-30 16:29
  */
 @Data
 @NoArgsConstructor

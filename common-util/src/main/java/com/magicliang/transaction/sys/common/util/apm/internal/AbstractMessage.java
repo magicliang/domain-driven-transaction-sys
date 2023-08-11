@@ -1,20 +1,20 @@
 package com.magicliang.transaction.sys.common.util.apm.internal;
 
 import com.magicliang.transaction.sys.common.util.apm.Message;
-import lombok.ToString;
-
 import java.util.UUID;
+import lombok.ToString;
 
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description: 抽象消息
  * <p>
- * 原型：https://github.com/dianping/cat/blob/master/lib/java/src/main/java/com/dianping/cat/message/internal/AbstractMessage.java
+ * 原型：https://github.com/dianping/cat/blob/master/lib/java/src/main/java/com/dianping/cat/message/internal
+ * /AbstractMessage.java
  *
  * @author magicliang
- * <p>
- * date: 2022-04-28 20:23
+ *         <p>
+ *         date: 2022-04-28 20:23
  */
 @ToString
 public abstract class AbstractMessage implements Message {
@@ -177,7 +177,7 @@ public abstract class AbstractMessage implements Message {
     /**
      * add one key-value pair to the message.
      *
-     * @param key   data key
+     * @param key data key
      * @param value data value
      */
     @Override

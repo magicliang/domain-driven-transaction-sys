@@ -6,8 +6,8 @@ package com.magicliang.transaction.sys.common.constant;
  * description: 错误常量
  *
  * @author magicliang
- * <p>
- * date: 2021-12-28 20:39
+ *         <p>
+ *         date: 2021-12-28 20:39
  */
 public class ErrorConstant {
 

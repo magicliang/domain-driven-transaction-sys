@@ -1,17 +1,5 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.http;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -20,6 +8,17 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -31,8 +30,8 @@ import java.util.Map;
  * HttpServletRequest request = requestAttributes.getRequest();
  *
  * @author magicliang
- * <p>
- * date: 2023-03-24 10:59
+ *         <p>
+ *         date: 2023-03-24 10:59
  */
 @Getter
 @Slf4j
@@ -67,7 +66,7 @@ public class HttpRequestContextContainer {
     private String cachedRequestBody;
 
     public static HttpRequestContextContainer begin(final HttpServletRequest request,
-                                                    final HttpServletResponse response) {
+            final HttpServletResponse response) {
         return new HttpRequestContextContainer(request, response);
     }
 
@@ -119,7 +118,7 @@ public class HttpRequestContextContainer {
     /**
      * 增加 header
      *
-     * @param key   key
+     * @param key key
      * @param value value
      */
     public void addHeader(final String key, final String value) {

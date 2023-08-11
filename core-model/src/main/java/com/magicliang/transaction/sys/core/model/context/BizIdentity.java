@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
  * 如果产生业务特殊的入参，放到派生类里
  *
  * @author magicliang
- * <p>
- * date: 2022-01-06 21:34
+ *         <p>
+ *         date: 2022-01-06 21:34
  */
 @Data
 @NoArgsConstructor

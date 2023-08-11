@@ -14,12 +14,13 @@ import org.springframework.stereotype.Component;
  * description: kafka 通知策略
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 17:09
+ *         <p>
+ *         date: 2022-01-04 17:09
  */
 @Slf4j
 @Component
-public class KafkaNotificationStrategy extends BaseStrategy implements DomainStrategy<NotificationRequest, NotificationResponse, NotificationStrategyEnum> {
+public class KafkaNotificationStrategy extends BaseStrategy implements
+        DomainStrategy<NotificationRequest, NotificationResponse, NotificationStrategyEnum> {
 
     /**
      * 标识自己的类型
@@ -34,11 +35,12 @@ public class KafkaNotificationStrategy extends BaseStrategy implements DomainStr
     /**
      * 执行领域请求，生成领域响应
      *
-     * @param notificationRequest  领域请求
+     * @param notificationRequest 领域请求
      * @param notificationResponse 领域响应
      */
     @Override
-    public void execute(final NotificationRequest notificationRequest, final NotificationResponse notificationResponse) {
+    public void execute(final NotificationRequest notificationRequest,
+            final NotificationResponse notificationResponse) {
         throw new UnsupportedOperationException();
     }
 }

@@ -13,11 +13,10 @@ import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransSubOrderEntity;
 import com.magicliang.transaction.sys.core.model.event.TransPayOrderAcceptedEvent;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -25,12 +24,13 @@ import java.util.Date;
  * description: 受理处理器
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 15:40
+ *         <p>
+ *         date: 2022-01-05 15:40
  */
 @Slf4j
 @Service
-public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, TransactionModel, TransTransactionContext<AcceptanceCommand, TransactionModel>> {
+public class AcceptanceHandler extends
+        BaseHandler<AcceptanceCommand, TransactionModel, TransTransactionContext<AcceptanceCommand, TransactionModel>> {
 
     @Autowired
     private ApplicationEvents applicationEvents;
@@ -53,7 +53,8 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
     @Override
     public TransTransactionContext<AcceptanceCommand, TransactionModel> initContext(final AcceptanceCommand request) {
         // 1. 初始化交易上下文
-        TransTransactionContext<AcceptanceCommand, TransactionModel> context = TransTransactionContextFactory.getStandardTransactionContext();
+        TransTransactionContext<AcceptanceCommand, TransactionModel> context =
+                TransTransactionContextFactory.getStandardTransactionContext();
         // 2. 设置原始请求
         context.setRequest(request);
         // 3. 依据主库校验幂等并弹出领域模型 TODO：实现一个 mock 的 forceMaster
@@ -81,7 +82,7 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
      * 填充全模型
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 全领域模型
      */
     @Override
@@ -171,7 +172,7 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
      * 由原始请求生成支付子订单列表
      *
      * @param command 原始请求
-     * @param date    业务日期
+     * @param date 业务日期
      * @return 支付子订单列表
      */
     private TransSubOrderEntity generateSubOrder(final AcceptanceCommand command, final Date date) {
@@ -185,7 +186,7 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
      * 由原始请求生成支付宝余额支付子订单
      *
      * @param command 原始请求
-     * @param date    业务日期
+     * @param date 业务日期
      * @return 支付子订单
      */
     private TransSubOrderEntity generateAlipaySubOrder(final AlipayAcceptanceCommand command, final Date date) {
@@ -207,7 +208,8 @@ public class AcceptanceHandler extends BaseHandler<AcceptanceCommand, Transactio
         paymentRequest.setBizIdentifyNo(payOrder.getBizIdentifyNo());
         paymentRequest.setBizUniqueNo(payOrder.getBizUniqueNo());
         // 由支付订单来确定调用地址
-//        InsUnderlyingPayChannelTypeEnum payChannelType = InsUnderlyingPayChannelTypeEnum.getByCode(payOrder.getPayChannelType().intValue());
+//        InsUnderlyingPayChannelTypeEnum payChannelType = InsUnderlyingPayChannelTypeEnum.getByCode(payOrder
+//        .getPayChannelType().intValue());
 //        paymentRequest.setRequestAddr(null == payChannelType ? "" : payChannelType.getAddr());
         // 暂时不设置设置其他空参数
         return paymentRequest;

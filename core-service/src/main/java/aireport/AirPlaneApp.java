@@ -6,8 +6,8 @@ package aireport;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-08-05 15:29
+ *         <p>
+ *         date: 2022-08-05 15:29
  */
 public class AirPlaneApp {
 

@@ -3,7 +3,6 @@ package com.magicliang.transaction.sys.core.manager;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransAlipaySubOrderPo;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransChannelRequestPoWithBLOBs;
 import com.magicliang.transaction.sys.common.dal.mybatis.po.TransPayOrderPo;
-
 import java.util.List;
 
 /**
@@ -13,8 +12,8 @@ import java.util.List;
  * 接口是 Java 表达语义最优雅的方法，我们应该尽量把语义表达为接口
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 14:05
+ *         <p>
+ *         date: 2022-01-04 14:05
  */
 public interface PayOrderManager {
 
@@ -38,7 +37,7 @@ public interface PayOrderManager {
      * 根据业务标识码 + 业务唯一标识 查询支付订单
      *
      * @param bizIdentifyNo 业务标识码
-     * @param bizUniqueNo   业务唯一标识
+     * @param bizUniqueNo 业务唯一标识
      * @return 支付订单
      */
     TransPayOrderPo queryPayOrder(final String bizIdentifyNo, final String bizUniqueNo);
@@ -48,7 +47,7 @@ public interface PayOrderManager {
      * 因为这个查询可能查出大量数据，所以实现上使用了分页查询方法。其他查询如果遇到潜在的分页问题，要自己实现相关的分页。
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未完成的支付订单列表
      */
     List<TransPayOrderPo> queryUnpaidPayOrder(int batchSize, int env);
@@ -67,7 +66,7 @@ public interface PayOrderManager {
      * 查询特定环境、全部的未完成的支付请求
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未完成的支付请求列表
      */
     List<TransChannelRequestPoWithBLOBs> queryUnpaidPaymentRequest(int batchSize, int env);
@@ -83,7 +82,7 @@ public interface PayOrderManager {
      * 查询特定环境、全部的未发送的通知请求列表
      *
      * @param batchSize 批次大小
-     * @param env       环境
+     * @param env 环境
      * @return 未发送的通知请求列表
      */
     List<TransChannelRequestPoWithBLOBs> queryUnsentNotifications(int batchSize, int env);
@@ -124,18 +123,19 @@ public interface PayOrderManager {
     /**
      * 插入支付订单和支付请求
      *
-     * @param payOrder       支付订单
-     * @param request        支付请求
+     * @param payOrder 支付订单
+     * @param request 支付请求
      * @param alipaySuborder 支付宝子订单
      * @return 支付结果
      */
-    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request, final TransAlipaySubOrderPo alipaySuborder);
+    boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request,
+            final TransAlipaySubOrderPo alipaySuborder);
 
     /**
      * 插入支付订单和支付请求
      *
      * @param payOrder 支付订单
-     * @param request  支付请求
+     * @param request 支付请求
      * @return 支付结果
      */
     boolean insertPayOrder(final TransPayOrderPo payOrder, final TransChannelRequestPoWithBLOBs request);
@@ -143,13 +143,13 @@ public interface PayOrderManager {
     /**
      * 在一个事务里更新支付订单和支付请求
      *
-     * @param payOrder            支付订单
-     * @param payRequest          支付请求
+     * @param payOrder 支付订单
+     * @param payRequest 支付请求
      * @param notificationRequest 通知请求
      * @return 支付结果
      */
     boolean insertNotificationAndUpdatePayOrder(TransPayOrderPo payOrder, TransChannelRequestPoWithBLOBs payRequest,
-                                                TransChannelRequestPoWithBLOBs notificationRequest);
+            TransChannelRequestPoWithBLOBs notificationRequest);
 
     /**
      * 插入支付通道请求
@@ -163,7 +163,7 @@ public interface PayOrderManager {
      * 在一个事务里更新支付订单和支付请求
      *
      * @param payOrder 支付订单
-     * @param request  支付请求
+     * @param request 支付请求
      * @return 支付结果
      */
     boolean updatePayOrderAndRequest(TransPayOrderPo payOrder, TransChannelRequestPoWithBLOBs request);

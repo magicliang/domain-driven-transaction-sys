@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: 字符串值工厂 bean
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 13:38
+ *         <p>
+ *         date: 2021-12-31 13:38
  */
 public class StringValue extends AbstractNameValue<String> {
 

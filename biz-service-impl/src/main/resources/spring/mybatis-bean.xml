@@ -1,6 +1,6 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       default-lazy-init="false" xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        default-lazy-init="false" xmlns="http://www.springframework.org/schema/beans"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
        		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -16,7 +16,7 @@
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!--扫描所有dao接口的实现，加入到ioc容器中 -->
         <property name="basePackage"
-                  value="com.magicliang.transaction.sys.common.dal.mybatis.mapper"></property>
+                value="com.magicliang.transaction.sys.common.dal.mybatis.mapper"></property>
     </bean>
 
     <!-- 配置一个可以执行批量的sqlSession -->

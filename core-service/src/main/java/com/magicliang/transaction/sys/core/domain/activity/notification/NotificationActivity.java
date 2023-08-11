@@ -1,5 +1,10 @@
 package com.magicliang.transaction.sys.core.domain.activity.notification;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_NOTIFICATION_REQUEST_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAYMENT_STRATEGY_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_PAY_ORDER_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.NOTIFICATION_FAILURE_ERROR;
+
 import com.magicliang.transaction.sys.common.enums.TransPayOrderStatusEnum;
 import com.magicliang.transaction.sys.common.enums.TransRequestStatusEnum;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
@@ -15,15 +20,12 @@ import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.helper.PayOrderHelper;
 import com.magicliang.transaction.sys.core.model.request.notification.NotificationRequest;
 import com.magicliang.transaction.sys.core.model.response.notification.NotificationResponse;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.List;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -31,12 +33,13 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * description: 通知活动
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 12:06
+ *         <p>
+ *         date: 2022-01-05 12:06
  */
 @Slf4j
 @Component
-public class NotificationActivity extends BaseActivity<NotificationRequest, NotificationResponse, NotificationStrategyEnum> {
+public class NotificationActivity extends
+        BaseActivity<NotificationRequest, NotificationResponse, NotificationStrategyEnum> {
 
     /**
      * 领域策略
@@ -70,7 +73,8 @@ public class NotificationActivity extends BaseActivity<NotificationRequest, Noti
         }
 
         List<TransRequestEntity> notificationRequests = payOrderEntity.getNotificationRequests();
-        AssertUtils.assertNotNull(notificationRequests, INVALID_NOTIFICATION_REQUEST_ERROR, "invalid notificationRequest" + notificationRequests);
+        AssertUtils.assertNotNull(notificationRequests, INVALID_NOTIFICATION_REQUEST_ERROR,
+                "invalid notificationRequest" + notificationRequests);
 
         // 4. 局部幂等校验，如果目标模型已经进入终态，则不再执行活动
         if (CollectionUtils.isEmpty(PayOrderHelper.getUnsentNotificationRequests(payOrderEntity))) {
@@ -90,7 +94,8 @@ public class NotificationActivity extends BaseActivity<NotificationRequest, Noti
      * @return 领域能力请求
      */
     @Override
-    protected NotificationRequest assembleDomainRequest(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected NotificationRequest assembleDomainRequest(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         NotificationRequest notificationRequest = context.getNotificationRequest();
         TransactionModel model = context.getModel();
         final TransPayOrderEntity payOrder = model.getPayOrder();
@@ -130,7 +135,8 @@ public class NotificationActivity extends BaseActivity<NotificationRequest, Noti
      * @return 领域能力响应
      */
     @Override
-    protected NotificationResponse assembleDomainResponse(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected NotificationResponse assembleDomainResponse(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         return context.getNotificationResponse();
     }
 
@@ -142,7 +148,8 @@ public class NotificationActivity extends BaseActivity<NotificationRequest, Noti
      * @return 作为决策结果的策略点
      */
     @Override
-    protected NotificationStrategyEnum decideStrategy(final TransTransactionContext<?, ? extends TransactionModel> context) {
+    protected NotificationStrategyEnum decideStrategy(
+            final TransTransactionContext<?, ? extends TransactionModel> context) {
         return NotificationStrategyEnum.RPC;
     }
 
@@ -167,7 +174,8 @@ public class NotificationActivity extends BaseActivity<NotificationRequest, Noti
         super.postExecution(context);
         // 2.检查活动响应
         final NotificationResponse paymentResponse = context.getNotificationResponse();
-        AssertUtils.isTrue(paymentResponse.isNotificationSuccess(), NOTIFICATION_FAILURE_ERROR, NOTIFICATION_FAILURE_ERROR.getErrorMsg());
+        AssertUtils.isTrue(paymentResponse.isNotificationSuccess(), NOTIFICATION_FAILURE_ERROR,
+                NOTIFICATION_FAILURE_ERROR.getErrorMsg());
         // 3. 完成当前钩子
         context.setNotificationComplete(true);
     }

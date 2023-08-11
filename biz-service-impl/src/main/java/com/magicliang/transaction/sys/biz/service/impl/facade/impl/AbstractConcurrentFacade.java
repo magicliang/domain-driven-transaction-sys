@@ -1,17 +1,16 @@
 package com.magicliang.transaction.sys.biz.service.impl.facade.impl;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.BATCH_PAYMENT_JOB_ERROR;
+
 import com.magicliang.transaction.sys.common.constant.TimeConstant;
 import com.magicliang.transaction.sys.common.exception.BaseTransException;
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.BATCH_PAYMENT_JOB_ERROR;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -19,8 +18,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.BATCH_P
  * description: 带有并发功能的门面
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 16:52
+ *         <p>
+ *         date: 2022-01-05 16:52
  */
 @Slf4j
 public abstract class AbstractConcurrentFacade extends AbstractFacade {
@@ -58,7 +57,8 @@ public abstract class AbstractConcurrentFacade extends AbstractFacade {
                         idempotentCount++;
                     }
                 }
-                log.info("batch pay，total：{}，success：{}，failed：{}，idempotentCount：{}", results.size(), successCount, failureCount, idempotentCount);
+                log.info("batch pay，total：{}，success：{}，failed：{}，idempotentCount：{}", results.size(), successCount,
+                        failureCount, idempotentCount);
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 // 任一线程执行失败，抛出异常
@@ -82,8 +82,8 @@ public abstract class AbstractConcurrentFacade extends AbstractFacade {
     /**
      * 估算任务执行时间，忽略除法的零头，单位为秒
      *
-     * @param threadCount      线程数
-     * @param taskCount        任务数量
+     * @param threadCount 线程数
+     * @param taskCount 任务数量
      * @param threadThroughPut 单线程吞吐量
      * @return 任务近似执行时间
      */

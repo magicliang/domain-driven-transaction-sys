@@ -1,10 +1,9 @@
 package com.magicliang.transaction.sys.common.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -12,8 +11,8 @@ import java.util.Objects;
  * description: 金钱工具类
  *
  * @author magicliang
- * <p>
- * date: 2021-12-29 17:27
+ *         <p>
+ *         date: 2021-12-29 17:27
  */
 public class MoneyUtil {
 
@@ -31,12 +30,13 @@ public class MoneyUtil {
     /**
      * 分乘以百分比，取整。四舍五入
      *
-     * @param fen     基数
+     * @param fen 基数
      * @param percent 比例
      * @return 计算结果
      */
     public static int calcPercentValue(long fen, int percent) {
-        BigDecimal fenCost = new BigDecimal(fen).multiply(new BigDecimal(percent)).divide(new BigDecimal(100), RoundingMode.HALF_UP);
+        BigDecimal fenCost = new BigDecimal(fen).multiply(new BigDecimal(percent))
+                .divide(new BigDecimal(100), RoundingMode.HALF_UP);
         return fenCost.intValue();
     }
 

@@ -1,5 +1,10 @@
 package com.magicliang.transaction.sys.core.domain.strategy.notification;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_NOTIFY_URI;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.PAYMENT_BOUNCED_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.PAYMENT_CLOSED_ERROR;
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.PAYMENT_FAILURE_ERROR;
+
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.magicliang.transaction.sys.common.constant.TimeConstant;
@@ -20,17 +25,14 @@ import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
 import com.magicliang.transaction.sys.core.model.entity.helper.PayOrderHelper;
 import com.magicliang.transaction.sys.core.model.request.notification.NotificationRequest;
 import com.magicliang.transaction.sys.core.model.response.notification.NotificationResponse;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -38,12 +40,13 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.*;
  * description: rpc 通知策略
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 17:14
+ *         <p>
+ *         date: 2022-01-04 17:14
  */
 @Slf4j
 @Component
-public class RpcNotificationStrategy extends BaseStrategy implements DomainStrategy<NotificationRequest, NotificationResponse, NotificationStrategyEnum> {
+public class RpcNotificationStrategy extends BaseStrategy implements
+        DomainStrategy<NotificationRequest, NotificationResponse, NotificationStrategyEnum> {
 
     /**
      * 对每个支付订单，每种类型的通知请求只能存在一个。一个普通通知请求和一个回调通知请求等于两个请求
@@ -70,11 +73,12 @@ public class RpcNotificationStrategy extends BaseStrategy implements DomainStrat
     /**
      * 执行领域请求，生成领域响应
      *
-     * @param notificationRequest  领域请求
+     * @param notificationRequest 领域请求
      * @param notificationResponse 领域响应
      */
     @Override
-    public void execute(final NotificationRequest notificationRequest, final NotificationResponse notificationResponse) {
+    public void execute(final NotificationRequest notificationRequest,
+            final NotificationResponse notificationResponse) {
         TransPayOrderEntity payOrder = notificationRequest.getTransPayOrder();
         List<TransRequestEntity> notifyRequests = PayOrderHelper.getUnsentNotificationRequests(payOrder);
         if (CollectionUtils.isEmpty(notifyRequests)) {
@@ -119,19 +123,21 @@ public class RpcNotificationStrategy extends BaseStrategy implements DomainStrat
     /**
      * 构造基本的回调通知请求
      *
-     * @param payOrder       支付订单
+     * @param payOrder 支付订单
      * @param sortedRequests 排序过的通知请求列表
-     * @param notifyRequest  当前的通知
+     * @param notifyRequest 当前的通知
      * @return 基本的回调通知请求
      */
-    private PaymentResultNotifyRequest buildBasicRequest(final TransPayOrderEntity payOrder, final List<TransRequestEntity> sortedRequests, final TransRequestEntity notifyRequest) {
+    private PaymentResultNotifyRequest buildBasicRequest(final TransPayOrderEntity payOrder,
+            final List<TransRequestEntity> sortedRequests, final TransRequestEntity notifyRequest) {
         PaymentResultNotifyRequest resultNotifyRequest = new PaymentResultNotifyRequest();
         resultNotifyRequest.setPayOrderNo(payOrder.getPayOrderNo());
         resultNotifyRequest.setSysCode(payOrder.getSysCode());
         resultNotifyRequest.setBizIdentifyNo(payOrder.getBizIdentifyNo());
         resultNotifyRequest.setBizUniqueNo(payOrder.getBizUniqueNo());
 
-        final TransRequestTypeEnum requestType = TransRequestTypeEnum.getByCode(notifyRequest.getRequestType().intValue());
+        final TransRequestTypeEnum requestType = TransRequestTypeEnum.getByCode(
+                notifyRequest.getRequestType().intValue());
         if (HAS_BOUNCED_NOTIFICATION == sortedRequests.size()
                 && TransRequestTypeEnum.BASIC_NOTIFICATION == requestType) {
             // 如果同时存在两个通知请求，且本请求为普通回调请求，则本请求的发送状态应该为成功，且极有可能原始的任务数据被退票回调覆盖了，所以不依赖当前的支付订单生成回调请求
@@ -147,17 +153,19 @@ public class RpcNotificationStrategy extends BaseStrategy implements DomainStrat
     /**
      * 根据支付订单填充回调请求
      *
-     * @param payOrder            支付订单
+     * @param payOrder 支付订单
      * @param resultNotifyRequest 回调请求
      */
-    private void fillResultNotifyRequest(final TransPayOrderEntity payOrder, final PaymentResultNotifyRequest resultNotifyRequest) {
+    private void fillResultNotifyRequest(final TransPayOrderEntity payOrder,
+            final PaymentResultNotifyRequest resultNotifyRequest) {
         // 其他情况下，依据原始的支付订单上记载的因子生成回调请求
         final boolean paymentSuccess = TransPayOrderStatusEnum.isSuccessFinalStatus(payOrder.getStatus().intValue());
         // 根据支付订单的状态设置通知的错误码
         resultNotifyRequest.setSuccess(paymentSuccess);
 
         if (!paymentSuccess) {
-            final TransPayOrderStatusEnum payOrderStatus = TransPayOrderStatusEnum.getByCode(payOrder.getStatus().intValue());
+            final TransPayOrderStatusEnum payOrderStatus = TransPayOrderStatusEnum.getByCode(
+                    payOrder.getStatus().intValue());
             if (TransPayOrderStatusEnum.FAILED == payOrderStatus) {
                 resultNotifyRequest.setErrorCode(PAYMENT_FAILURE_ERROR.getSynthesizedErrorCode());
             } else if (TransPayOrderStatusEnum.CLOSED == payOrderStatus) {
@@ -192,12 +200,12 @@ public class RpcNotificationStrategy extends BaseStrategy implements DomainStrat
      * 记录响应
      *
      * @param notificationResponse 通知领域响应
-     * @param notifyRequest        通知请求
-     * @param notifyResult         通知下游结果
+     * @param notifyRequest 通知请求
+     * @param notifyResult 通知下游结果
      */
     private void recordRes(final NotificationResponse notificationResponse,
-                           final TransRequestEntity notifyRequest,
-                           final PaymentResultNotifyResponse notifyResult) {
+            final TransRequestEntity notifyRequest,
+            final PaymentResultNotifyResponse notifyResult) {
         // 更新领域响应
         notificationResponse.setNotificationSuccess(notifyResult.isSuccess());
 
@@ -217,7 +225,7 @@ public class RpcNotificationStrategy extends BaseStrategy implements DomainStrat
      * 记录异常
      *
      * @param notifyRequest 通知请求
-     * @param ex            请求异常
+     * @param ex 请求异常
      */
     private void recordException(final TransRequestEntity notifyRequest, final BaseTransException ex) {
         Throwable cause = ex.getCause();

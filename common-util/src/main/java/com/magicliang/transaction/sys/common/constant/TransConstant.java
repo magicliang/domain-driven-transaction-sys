@@ -6,8 +6,8 @@ package com.magicliang.transaction.sys.common.constant;
  * description:
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 11:48
+ *         <p>
+ *         date: 2022-01-05 11:48
  */
 public class TransConstant {
 

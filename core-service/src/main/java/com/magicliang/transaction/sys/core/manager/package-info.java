@@ -7,7 +7,8 @@
  * 传统的 DDD 的结构事务边界是在用例层实现的，暂时先把本服务的事务边界放在这一层
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 14:05
+ *         <p>
+ *         date: 2022-01-04 14:05
  */
+
 package com.magicliang.transaction.sys.core.manager;

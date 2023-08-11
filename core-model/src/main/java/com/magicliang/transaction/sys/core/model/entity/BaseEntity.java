@@ -1,10 +1,9 @@
 package com.magicliang.transaction.sys.core.model.entity;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -12,8 +11,8 @@ import java.util.Date;
  * description: 基础实体
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 14:18
+ *         <p>
+ *         date: 2021-12-31 14:18
  */
 @Data
 @AllArgsConstructor

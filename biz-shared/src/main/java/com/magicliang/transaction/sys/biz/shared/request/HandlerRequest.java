@@ -11,8 +11,8 @@ import lombok.Data;
  * description: 处理器请求
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 14:17
+ *         <p>
+ *         date: 2022-01-05 14:17
  */
 @Data
 public abstract class HandlerRequest implements IIdentifiableType<OperationEnum> {

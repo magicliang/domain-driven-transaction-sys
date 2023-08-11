@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
  * description: 公共工具类
  *
  * @author magicliang
- * <p>
- * date: 2021-12-30 13:40
+ *         <p>
+ *         date: 2021-12-30 13:40
  */
 public class CommonUtils {
 
@@ -28,7 +28,7 @@ public class CommonUtils {
      * 在一个集合里寻找重复集合
      *
      * @param collection 候选集合
-     * @param <T>        类型参数
+     * @param <T> 类型参数
      * @return 重复集合
      */
     public static <T> Set<T> findDuplicateByGrouping(Collection<T> collection) {

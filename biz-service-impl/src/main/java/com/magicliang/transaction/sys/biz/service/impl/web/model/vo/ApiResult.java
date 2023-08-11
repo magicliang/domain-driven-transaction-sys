@@ -1,8 +1,7 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.model.vo;
 
-import lombok.Data;
-
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -10,8 +9,8 @@ import java.io.Serializable;
  * description: 响应对象
  *
  * @author magicliang
- * <p>
- * date: 2023-06-21 14:53
+ *         <p>
+ *         date: 2023-06-21 14:53
  */
 @Data
 public class ApiResult<T> implements Serializable {

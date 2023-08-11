@@ -1,15 +1,35 @@
 package com.magicliang.transaction.sys.common.util;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.net.ssl.SSLContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.StringEntity;
@@ -23,26 +43,14 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
-import javax.net.ssl.SSLContext;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * project name: domain-driven-transaction-sys
  * <p>
  * description: http 工具类
  *
  * @author magicliang
- * <p>
- * date: 2021-12-30 13:41
+ *         <p>
+ *         date: 2021-12-30 13:41
  */
 @Slf4j
 public class HttpUtils {
@@ -81,7 +89,8 @@ public class HttpUtils {
      * @throws IOException
      * @throws URISyntaxException
      */
-    public static String simpleGetInvoke(String url, Map<String, String> params) throws IOException, URISyntaxException {
+    public static String simpleGetInvoke(String url, Map<String, String> params)
+            throws IOException, URISyntaxException {
         return simpleGetInvoke(url, params, CONTENT_CHARSET);
     }
 
@@ -94,7 +103,8 @@ public class HttpUtils {
      * @throws IOException
      * @throws URISyntaxException
      */
-    public static String simpleGetInvoke(String url, Map<String, String> params, String charset) throws IOException, URISyntaxException {
+    public static String simpleGetInvoke(String url, Map<String, String> params, String charset)
+            throws IOException, URISyntaxException {
         return simpleHttpInvoke(charset, buildHttpGet(url, params), null);
     }
 
@@ -150,7 +160,8 @@ public class HttpUtils {
      * @throws URISyntaxException
      * @throws IOException
      */
-    public static String simplePostInvoke(String url, Map<String, String> params, String charset) throws URISyntaxException, IOException {
+    public static String simplePostInvoke(String url, Map<String, String> params, String charset)
+            throws URISyntaxException, IOException {
         return simpleHttpInvoke(charset, buildHttpPost(url, params), null);
     }
 
@@ -158,12 +169,13 @@ public class HttpUtils {
      * 简单http调用
      *
      * @param charset 字符集
-     * @param method  httpMethod
-     * @param config  配置特殊配置，比如超时时间
+     * @param method httpMethod
+     * @param config 配置特殊配置，比如超时时间
      * @return
      * @throws IOException
      */
-    public static String simpleHttpInvoke(String charset, HttpRequestBase method, RequestConfig config) throws IOException {
+    public static String simpleHttpInvoke(String charset, HttpRequestBase method, RequestConfig config)
+            throws IOException {
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
         String returnStr = null;
@@ -212,7 +224,8 @@ public class HttpUtils {
      * @param isMultiThread
      * @return
      */
-    public static CloseableHttpClient buildHttpsClient(boolean isMultiThread, HttpHost proxy, String username, String password) {
+    public static CloseableHttpClient buildHttpsClient(boolean isMultiThread, HttpHost proxy, String username,
+            String password) {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         if (isMultiThread) {
             httpClientBuilder.setConnectionManager(new PoolingHttpClientConnectionManager());
@@ -231,7 +244,7 @@ public class HttpUtils {
                 // 信任所有
                 @Override
                 public boolean isTrusted(X509Certificate[] chain,
-                                         String authType) throws CertificateException {
+                        String authType) throws CertificateException {
                     return true;
                 }
             }).build();
@@ -253,7 +266,8 @@ public class HttpUtils {
      * @throws UnsupportedEncodingException
      * @throws URISyntaxException
      */
-    public static HttpPost buildHttpPost(String url, Map<String, String> params) throws UnsupportedEncodingException, URISyntaxException {
+    public static HttpPost buildHttpPost(String url, Map<String, String> params)
+            throws UnsupportedEncodingException, URISyntaxException {
         return buildHttpPost(url, params, UTF_8);
 
     }
@@ -267,7 +281,8 @@ public class HttpUtils {
      * @throws UnsupportedEncodingException
      * @throws URISyntaxException
      */
-    public static HttpPost buildHttpPost(String url, Map<String, String> params, Charset charset) throws UnsupportedEncodingException, URISyntaxException {
+    public static HttpPost buildHttpPost(String url, Map<String, String> params, Charset charset)
+            throws UnsupportedEncodingException, URISyntaxException {
         Validate.notNull(url, "构建HttpPost时,url不能为null");
         HttpPost post = new HttpPost(url);
         setCommonHttpMethod(post);
@@ -292,7 +307,8 @@ public class HttpUtils {
      * @throws UnsupportedEncodingException
      * @throws URISyntaxException
      */
-    public static HttpPost buildHttpPost(String url, String data, Charset charset) throws UnsupportedEncodingException, URISyntaxException {
+    public static HttpPost buildHttpPost(String url, String data, Charset charset)
+            throws UnsupportedEncodingException, URISyntaxException {
         Validate.notNull(url, "构建HttpPost时,url不能为null");
         HttpPost post = new HttpPost(url);
         setCommonHttpMethod(post);
@@ -420,7 +436,8 @@ public class HttpUtils {
      * @throws IOException
      * @throws ParseException
      */
-    public static String postData(HttpEntityEnclosingRequestBase method, String parameters, String charSet) throws ParseException, IOException {
+    public static String postData(HttpEntityEnclosingRequestBase method, String parameters, String charSet)
+            throws ParseException, IOException {
         return postData(method, parameters, charSet, CONTENT_TYPE_JSON_CHARSET);
     }
 
@@ -431,12 +448,14 @@ public class HttpUtils {
      * @return
      * @throws IOException
      */
-    public static String postData(HttpEntityEnclosingRequestBase method, String parameters, String charSet, String inContentType) throws ParseException, IOException {
+    public static String postData(HttpEntityEnclosingRequestBase method, String parameters, String charSet,
+            String inContentType) throws ParseException, IOException {
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
         String body = null;
-        if (StringUtils.isBlank(parameters))
+        if (StringUtils.isBlank(parameters)) {
             parameters = "{}";
+        }
         try {
             client = buildHttpClient(false);
             // 添加参数
@@ -470,12 +489,14 @@ public class HttpUtils {
      * @throws IOException
      * @throws ParseException
      */
-    public static String postHttpsData(HttpEntityEnclosingRequestBase method, String parameters, String charSet, String inContentType) throws ParseException, IOException {
+    public static String postHttpsData(HttpEntityEnclosingRequestBase method, String parameters, String charSet,
+            String inContentType) throws ParseException, IOException {
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
         String body = null;
-        if (StringUtils.isBlank(parameters))
+        if (StringUtils.isBlank(parameters)) {
             parameters = "{}";
+        }
         try {
             client = buildHttpsClient(false, null, null, null);
             // 添加参数

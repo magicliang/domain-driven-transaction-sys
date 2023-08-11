@@ -1,9 +1,12 @@
 package com.magicliang.transaction.sys.common.enums;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SECOND_BIZ;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SECOND_SYS;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SELF_BIZ;
+import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.SELF_SYS;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEnum.*;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -11,8 +14,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorMiddleTypeEn
  * description: 基本交易错误码枚举
  *
  * @author magicliang
- * <p>
- * date: 2021-12-29 11:58
+ *         <p>
+ *         date: 2021-12-29 11:58
  */
 @Getter
 @RequiredArgsConstructor

@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  * description: id 生成策略点枚举
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 13:31
+ *         <p>
+ *         date: 2022-01-04 13:31
  */
 @Getter
 @RequiredArgsConstructor

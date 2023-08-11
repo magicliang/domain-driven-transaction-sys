@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
  * description: 银行付款时效枚举
  *
  * @author magicliang
- * <p>
- * date: 2022-01-04 13:40
+ *         <p>
+ *         date: 2022-01-04 13:40
  */
 @Getter
 @RequiredArgsConstructor

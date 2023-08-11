@@ -10,8 +10,8 @@ package com.magicliang.transaction.sys.common.util.apm;
  * https://github.com/dianping/cat/blob/master/lib/java/src/main/java/com/dianping/cat/message/Message.java
  *
  * @author magicliang
- * <p>
- * date: 2022-04-28 18:31
+ *         <p>
+ *         date: 2022-04-28 18:31
  */
 public interface Message {
 
@@ -77,7 +77,7 @@ public interface Message {
     /**
      * add one key-value pair to the message.
      *
-     * @param key   data key
+     * @param key data key
      * @param value data value
      */
     void addData(String key, Object value);

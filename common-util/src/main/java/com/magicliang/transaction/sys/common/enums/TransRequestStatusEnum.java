@@ -1,17 +1,16 @@
 package com.magicliang.transaction.sys.common.enums;
 
+import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_CHANNEL_REQUEST_STATUS_ERROR;
+
 import com.magicliang.transaction.sys.common.constant.ErrorConstant;
 import com.magicliang.transaction.sys.common.util.AssertUtils;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID_CHANNEL_REQUEST_STATUS_ERROR;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -20,8 +19,8 @@ import static com.magicliang.transaction.sys.common.enums.TransErrorEnum.INVALID
  * 状态机的本质是有些任务有了结果，需要记录“不可逆的副作用和影响”
  *
  * @author magicliang
- * <p>
- * date: 2021-12-31 14:23
+ *         <p>
+ *         date: 2021-12-31 14:23
  */
 @Getter
 @RequiredArgsConstructor
@@ -63,7 +62,8 @@ public enum TransRequestStatusEnum {
     /**
      * 非请求终态状态枚举值列表
      */
-    public static final List<Integer> UNSENT_STATUS_VALUE = UNSENT_STATUS.stream().map(TransRequestStatusEnum::getCode).collect(Collectors.toList());
+    public static final List<Integer> UNSENT_STATUS_VALUE = UNSENT_STATUS.stream().map(TransRequestStatusEnum::getCode)
+            .collect(Collectors.toList());
 
 
     /**
@@ -137,21 +137,26 @@ public enum TransRequestStatusEnum {
     public static void validateStatusBeforeUpdate(final Integer oldStatus, final Integer newStatus) {
         TransRequestStatusEnum oldStatusEnum = TransRequestStatusEnum.getByCode(oldStatus);
         TransRequestStatusEnum newStatusEnum = TransRequestStatusEnum.getByCode(newStatus);
-        AssertUtils.assertNotNull(oldStatusEnum, INVALID_CHANNEL_REQUEST_STATUS_ERROR, ErrorConstant.INVALID_OLD_STATUS + oldStatus);
-        AssertUtils.assertNotNull(newStatusEnum, INVALID_CHANNEL_REQUEST_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+        AssertUtils.assertNotNull(oldStatusEnum, INVALID_CHANNEL_REQUEST_STATUS_ERROR,
+                ErrorConstant.INVALID_OLD_STATUS + oldStatus);
+        AssertUtils.assertNotNull(newStatusEnum, INVALID_CHANNEL_REQUEST_STATUS_ERROR,
+                ErrorConstant.INVALID_NEW_STATUS + newStatus);
 
         // 旧态非终态
         final boolean oldIsNotFinalStatus = !TransRequestStatusEnum.isFinalStatus(oldStatus);
 
         if (TransRequestStatusEnum.INIT == newStatusEnum) {
             // 只能由初始态跃迁到初始态
-            AssertUtils.assertEquals(TransRequestStatusEnum.INIT, oldStatusEnum, INVALID_CHANNEL_REQUEST_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+            AssertUtils.assertEquals(TransRequestStatusEnum.INIT, oldStatusEnum, INVALID_CHANNEL_REQUEST_STATUS_ERROR,
+                    ErrorConstant.INVALID_NEW_STATUS + newStatus);
         } else if (TransRequestStatusEnum.PENDING == newStatusEnum || TransRequestStatusEnum.FAILED == newStatusEnum) {
             // 只能由非终态迁到在途态和失败态
-            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_CHANNEL_REQUEST_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_CHANNEL_REQUEST_STATUS_ERROR,
+                    ErrorConstant.INVALID_NEW_STATUS + newStatus);
         } else if (TransRequestStatusEnum.SUCCESS == newStatusEnum || TransRequestStatusEnum.CLOSED == newStatusEnum) {
             // 只能由非终态迁到成功或关闭态
-            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_CHANNEL_REQUEST_STATUS_ERROR, ErrorConstant.INVALID_NEW_STATUS + newStatus);
+            AssertUtils.isTrue(oldIsNotFinalStatus, INVALID_CHANNEL_REQUEST_STATUS_ERROR,
+                    ErrorConstant.INVALID_NEW_STATUS + newStatus);
         }
     }
 }

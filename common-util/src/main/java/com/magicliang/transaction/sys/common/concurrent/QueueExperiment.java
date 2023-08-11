@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
  * description: 队列实验
  *
  * @author magicliang
- * <p>
- * date: 2022-05-10 22:30
+ *         <p>
+ *         date: 2022-05-10 22:30
  */
 @Slf4j
 public class QueueExperiment {

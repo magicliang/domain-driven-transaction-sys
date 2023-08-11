@@ -12,8 +12,8 @@ import java.util.List;
  * 事务的设计理念是：通过 composite 模式将操作自包含起来，然后统一输出
  *
  * @author magicliang
- * <p>
- * date: 2022-04-28 18:38
+ *         <p>
+ *         date: 2022-04-28 18:38
  */
 public interface Transaction extends Message {
 
@@ -29,7 +29,8 @@ public interface Transaction extends Message {
      * Get all children message within current transaction.
      *
      * <p>
-     * Typically, a <code>Transaction</code> can nest other <code>Transaction</code>s, <code>Event</code>s and <code>Heartbeat</code>
+     * Typically, a <code>Transaction</code> can nest other <code>Transaction</code>s, <code>Event</code>s and
+     * <code>Heartbeat</code>
      * s, while an <code>Event</code> or <code>Heartbeat</code> can't nest other messages.
      * </p>
      *

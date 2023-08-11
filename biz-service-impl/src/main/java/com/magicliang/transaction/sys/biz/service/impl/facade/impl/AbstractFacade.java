@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * description: 抽象门面
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 16:50
+ *         <p>
+ *         date: 2022-01-05 16:50
  */
 public class AbstractFacade {
 

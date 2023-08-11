@@ -2,10 +2,9 @@ package com.magicliang.transaction.sys.core.model.event;
 
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.shared.DomainEvent;
+import java.util.Objects;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-
-import java.util.Objects;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -13,8 +12,8 @@ import java.util.Objects;
  * description: 支付订单被受理事件
  *
  * @author magicliang
- * <p>
- * date: 2022-12-29 15:09
+ *         <p>
+ *         date: 2022-12-29 15:09
  */
 @Getter
 public class TransPayOrderAcceptedEvent extends ApplicationEvent implements DomainEvent<TransPayOrderAcceptedEvent> {

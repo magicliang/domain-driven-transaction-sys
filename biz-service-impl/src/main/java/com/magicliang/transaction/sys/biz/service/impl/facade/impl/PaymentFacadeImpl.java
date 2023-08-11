@@ -10,16 +10,15 @@ import com.magicliang.transaction.sys.biz.shared.request.payment.convertor.Payme
 import com.magicliang.transaction.sys.core.model.context.TransactionModel;
 import com.magicliang.transaction.sys.core.model.entity.TransPayOrderEntity;
 import com.magicliang.transaction.sys.core.model.entity.TransRequestEntity;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -27,8 +26,8 @@ import java.util.stream.Collectors;
  * description: 支付门面实现
  *
  * @author magicliang
- * <p>
- * date: 2022-01-05 16:57
+ *         <p>
+ *         date: 2022-01-05 16:57
  */
 @Slf4j
 @Service
@@ -48,7 +47,8 @@ public class PaymentFacadeImpl extends AbstractConcurrentFacade implements IPaym
      * 批量支付线程池
      */
     @Getter
-//    @CustomExecutorService(id = "batchPayPool", corePoolSize = THREAD_COUNT, maximumPoolSize = THREAD_COUNT, workQueueCapacity = 3000)
+//    @CustomExecutorService(id = "batchPayPool", corePoolSize = THREAD_COUNT, maximumPoolSize = THREAD_COUNT,
+//    workQueueCapacity = 3000)
     private ExecutorService executorService;
 
     /**
