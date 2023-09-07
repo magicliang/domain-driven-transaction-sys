@@ -1,20 +1,21 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.filter;
 
 import com.magicliang.transaction.sys.biz.service.impl.web.util.WebUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -24,10 +25,11 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
  * 另一种方案是：ResponseBodyAdvice
  * <p>
  * 他们都有不能读或者写 status 的问题，如果我们使用 filter，则以后还可以迁移到其他兼容 servlet 的技术栈中，总比使用 Spring 原生 api 好
+ * Filter 也是一种 aspect
  *
  * @author magicliang
- *         <p>
- *         date: 2022-11-15 11:31
+ * <p>
+ * date: 2022-11-15 11:31
  */
 //@Component
 @Slf4j
