@@ -927,6 +927,13 @@ public class DateUtils {
      * @return java date
      */
     public static Date fromUnixTimestamp(long unixTimestampSeconds) {
+
+        /*
+         * 允许切入时区的做法 second - Instant - zonedDateTime - Instant - Date
+         * final ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(epocSecond),
+         * TimeZone.getDefault().toZoneId());
+         * return Date.from(zonedDateTime.toInstant());
+         */
         Instant instant = Instant.ofEpochSecond(unixTimestampSeconds);
         return Date.from(instant);
     }
