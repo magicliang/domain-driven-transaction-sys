@@ -16,6 +16,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
@@ -29,10 +30,12 @@ import org.springframework.core.env.Environment;
  * /MariaDB4jSampleTutorialTest.java}
  * 2. {@link https://objectpartners.com/2017/06/19/using-mariadb4j-for-a-spring-boot-embedded-database/}
  *
+ * proxyBeanMethods=true 意味着从外部调用 config.getXXX 不是普通的工厂方法，而是从 beanFactory 里取值
  * @author liangchuan
  */
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
+@EnableAspectJAutoProxy(exposeProxy = true)
 public class EmbeddedMariaDbConfig {
 
     @Autowired
