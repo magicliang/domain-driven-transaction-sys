@@ -30,7 +30,7 @@ import org.springframework.core.env.Environment;
  * /MariaDB4jSampleTutorialTest.java}
  * 2. {@link https://objectpartners.com/2017/06/19/using-mariadb4j-for-a-spring-boot-embedded-database/}
  *
- * proxyBeanMethods=true 意味着从外部调用 config.getXXX 不是普通的工厂方法，而是从 beanFactory 里取值
+ * proxyBeanMethods=true 意味着从外部调用 config.getXXX 不是普通的工厂方法，而是从 beanFactory 里取值，总是可以取到相等的单例
  * @author liangchuan
  */
 @Slf4j
