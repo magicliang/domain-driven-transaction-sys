@@ -13,11 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import javax.annotation.PreDestroy;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -45,7 +47,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Slf4j
 @RestController
 @RequestMapping("/res/v1/test")
-public class TestController {
+public class TestController implements DisposableBean {
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -224,5 +226,16 @@ public class TestController {
     protected <T> ResponseEntity<StreamingResponseBody> asStreamingResponseJsonBody(T body)
             throws UnsupportedEncodingException {
         return asStreamingResponseBody(JsonUtils.toJson(body), "application/json");
+    }
+
+    @PreDestroy
+    protected void preDestroy() {
+        log.info("preDestroy");
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        log.info("destroy");
+
     }
 }
