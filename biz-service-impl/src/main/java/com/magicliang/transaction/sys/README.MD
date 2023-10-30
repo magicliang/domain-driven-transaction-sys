@@ -15,6 +15,7 @@ sudo ln -sfn /opt/homebrew/Cellar/openssl@1.0/1.0.2u /usr/local/opt/openssl
 
 # 暂时在 m1 上不生效：
 https://stackoverflow.com/questions/69896059/is-it-possible-to-get-mariadb4j-to-work-on-an-m1-mac
+https://github.com/MariaDB4j/MariaDB4j/issues/497
 
 # 方法2：https://stackoverflow.com/questions/71500911/library-not-loaded-libssl-1-1-dylib-loaderror-when-trying-to-run-rails-server
 brew unlink openssl@1.1
