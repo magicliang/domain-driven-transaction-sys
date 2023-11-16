@@ -25,13 +25,13 @@ public class CustomExceptionUtil {
         throwable = unwrapAndFindException(c, RuntimeException.class);
         System.out.println(throwable);
 
-        String input = "Field error in object 'leadsQueryConditionForGetRequest' on field 'hideRepeatRegisterLeads': "
-                + "rejected value [1235]; codes [typeMismatch.leadsQueryConditionForGetRequest"
-                + ".hideRepeatRegisterLeads,typeMismatch.hideRepeatRegisterLeads,typeMismatch.boolean,typeMismatch]; "
+        String input = "Field error in object 'kkkkQueryConditionForGetRequest' on field 'hideRepeatRegisterkkkk': "
+                + "rejected value [1235]; codes [typeMismatch.kkkkQueryConditionForGetRequest"
+                + ".hideRepeatRegisterkkkk,typeMismatch.hideRepeatRegisterkkkk,typeMismatch.boolean,typeMismatch]; "
                 + "arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes "
-                + "[leadsQueryConditionForGetRequest.hideRepeatRegisterLeads,hideRepeatRegisterLeads]; arguments []; "
-                + "default message [hideRepeatRegisterLeads]]; default message [Failed to convert property value of "
-                + "type 'java.lang.String' to required type 'boolean' for property 'hideRepeatRegisterLeads'; nested "
+                + "[kkkkQueryConditionForGetRequest.hideRepeatRegisterkkkk,hideRepeatRegisterkkkk]; arguments []; "
+                + "default message [hideRepeatRegisterkkkk]]; default message [Failed to convert property value of "
+                + "type 'java.lang.String' to required type 'boolean' for property 'hideRepeatRegisterkkkk'; nested "
                 + "exception is java.lang.IllegalArgumentException: Invalid boolean value [1235]]";
         Pattern pattern = Pattern.compile("field (.*?);");
         Matcher matcher = pattern.matcher(input);

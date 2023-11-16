@@ -117,6 +117,10 @@ subprojects {
         // 这个依赖让底层能够拥有 log4j2，但并不去掉 logback 的影响
         implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
+        api("com.google.code.gson:gson:2.10") {
+            force = true
+        }
+
         // 在这里实现了对 spring-boot-test jar 的引入，确切地讲，@SpringBootTest 这个注解依赖于本依赖
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
 //					exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
