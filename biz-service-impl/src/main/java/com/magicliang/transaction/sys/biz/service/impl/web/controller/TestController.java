@@ -236,6 +236,5 @@ public class TestController implements DisposableBean {
     @Override
     public void destroy() throws Exception {
         log.info("destroy");
-
     }
 }
