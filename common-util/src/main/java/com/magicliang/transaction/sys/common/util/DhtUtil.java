@@ -48,7 +48,7 @@ public class DhtUtil {
         for (int i = 0; i < nodeCnt; i++) {
             tokens[i] = ThreadLocalRandom.current().nextLong(0, TWO_POWER_32);
         }
-        // 用 tokens 升序保证 nodes 升序
+        // 用 tokens 升序保证 nodes 升序。在这个排序算法里：key，keyword。空值比 ascii 值的排序靠前。
         Arrays.sort(tokens);
 
         DhtNode[] nodes = new DhtNode[nodeCnt];
