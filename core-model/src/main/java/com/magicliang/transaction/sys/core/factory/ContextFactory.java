@@ -34,6 +34,20 @@ public abstract class ContextFactory {
      * 类似的容器还有 Spring 的 RequestContextHolder、TransactionSynchronizationManager、LocaleContextHolder
      * <p>
      * ThreadLocal 本质上是 ThreadLocalVar
+     * <p>
+     * 这里要注意 withInitial 方法在这里扮演的是兜底值的提醒的角色：
+     *  <code>
+     *     private static final ThreadLocal<Integer> T1 = NamedInheritableThreadLocal.withInitial(
+     *             () -> 123);
+     *
+     *     public static void main(String[] args) {
+     *         System.out.println(T1.get());
+     *         T1.remove();
+     *         System.out.println(T1.get());
+     *     }
+     * </code>
+     * <p>
+     * 两者都返回123，而不是null。
      */
     private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = NamedInheritableThreadLocal.withInitial(
             () -> new ConcurrentHashMap<>(CONTEXT_CACHE_SIZE));
