@@ -27,6 +27,8 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
  * 他们都有不能读或者写 status 的问题，如果我们使用 filter，则以后还可以迁移到其他兼容 servlet 的技术栈中，总比使用 Spring 原生 api 好
  * Filter 也是一种 aspect
  *
+ * 本质上来讲，所有的 filter 都是 around advice，只不过它不能通过 pdc 来指定到底 pointcut 在哪里而已。依赖于 servlet 的 req/resp 模型是有很多好处的，因为数据和线程的关系已经被处理好了
+ *
  * @author magicliang
  * <p>
  * date: 2022-11-15 11:31
