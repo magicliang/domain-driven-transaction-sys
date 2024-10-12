@@ -1,21 +1,21 @@
 package com.magicliang.transaction.sys.biz.service.impl.web.filter;
 
 import com.magicliang.transaction.sys.biz.service.impl.web.util.WebUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -34,6 +34,14 @@ import java.util.Map.Entry;
 //@Component
 @Slf4j
 public class StatusBasedFilter extends OncePerRequestFilter {
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        if (StringUtils.equals("/health/liveness", WebUtil.getPath(request))) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
