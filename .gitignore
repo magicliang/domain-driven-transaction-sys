@@ -69,5 +69,5 @@ gradle-app.setting
 # 任意日志输出
 out/
 
+# git rm -r --cached .jpb
 .jpb/
-/.jpb/
