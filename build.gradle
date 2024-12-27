@@ -1,3 +1,5 @@
+// 理论上不加入这个文件也是一个完整的项目，只要每个 module 拥有自己的 build.gradle 就行了。这个 build script 是为了 root project 或者 root module 准备的
+
 // Spring boot 的最新官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/
 // https://huangxshuo.github.io/2021/03/04/apply%20plugin%E5%92%8Cplugins%E4%B8%A4%E7%A7%8D%E5%BA%94%E7%94%A8gradle%E6%8F%92%E4%BB%B6%E7%9A%84%E5%8C%BA%E5%88%AB/
 
