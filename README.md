@@ -22,7 +22,10 @@ TODO：
 
 ## how to build it
 
-`./gradlew clean build -x test --stacktrace`
+```bash
+sdk install java 8.0.432
+./gradlew clean build -x test --stacktrace
+```
 
 ## how to test it
 
