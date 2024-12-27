@@ -1,4 +1,5 @@
 // 构建脚本
+// Generally, a build script details build configuration, tasks, and plugins.
 
 // 理论上不加入这个文件也是一个完整的项目，只要每个 module 拥有自己的 build.gradle 就行了。这个 build script 是为了 root project 或者 root module 准备的
 
