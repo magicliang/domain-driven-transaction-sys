@@ -1,3 +1,4 @@
+// 设定脚本
 // Gradle settings file to define a root project name and subprojects
 // 类似 maven 里面的 parent 和 module 段
 rootProject.name = 'domain-driven-transaction-sys'
