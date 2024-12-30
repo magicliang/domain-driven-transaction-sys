@@ -14,7 +14,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.18'
     // 这两个版本是如何搭配的，是 initializr 决定的吗？
     id("io.spring.dependency-management") version "1.1.7"
-    // 大于等于 java/java-library
+    // 大于等于 java/java-library，支持一个 CLI application，能够 bootRun
     id 'application'
     id 'idea'
     // 这些配置会让我们的项目可以从根部进行 gradle clean build，然后也能生成 report
