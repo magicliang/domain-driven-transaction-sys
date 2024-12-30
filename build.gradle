@@ -1,4 +1,6 @@
 // 构建脚本
+// gradle 官方不推荐这个脚本，但是把这个脚本拆解到子项目里比较麻烦：Some builds may contain a build.gradle(.kts) file in the root project but this
+// is NOT recommended.
 // Generally, a build script details build configuration, tasks, and plugins.
 
 // 理论上不加入这个文件也是一个完整的项目，只要每个 module 拥有自己的 build.gradle 就行了。这个 build script 是为了 root project 或者 root module 准备的
@@ -27,12 +29,12 @@ version = '0.0.1-SNAPSHOT'
 
 
 // 需要这个配置才能让 gradlew build 通过
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-    // 全局项目也可以排除掉 logging 依赖，不过还是要让 subModule 排除掉更有效
-}
+//configurations {
+//    compileOnly {
+//        extendsFrom annotationProcessor
+//    }
+//    // 全局项目也可以排除掉 logging 依赖，不过还是要让 subModule 排除掉更有效
+//}
 
 repositories {
     // 参考：https://bbs.huaweicloud.com/blogs/257878
@@ -122,8 +124,13 @@ subprojects {
         // 这个依赖让底层能够拥有 log4j2，但并不去掉 logback 的影响
         implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
-        api("com.google.code.gson:gson:2.10") {
-            force = true
+        // api("com.google.code.gson:gson:2.10!!")
+        api("com.google.code.gson:gson") {
+            // @deprecated
+            // force = true
+            version {
+                strictly("2.10")
+            }
         }
 
         // 在这里实现了对 spring-boot-test jar 的引入，确切地讲，@SpringBootTest 这个注解依赖于本依赖
