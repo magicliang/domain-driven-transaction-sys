@@ -14,7 +14,7 @@
 // 这是使用插件的新语法，不同于 apply plugin：如果是在官方仓库里能找到的插件，则 resolve 和 apply 可以用这种写法统一声明，这也实现了自动的 apply true
 plugins {
 //    // 中文使用指南：https://www.jianshu.com/p/01588c396a29
-    id 'org.springframework.boot' version '2.7.10'
+    id 'org.springframework.boot' version '2.7.4'
 //    // 这两个版本是如何搭配的，是 initializr 决定的吗？
     id("io.spring.dependency-management") version "1.1.7"
 //    // 大于等于 java/java-library，支持一个 CLI application，能够 bootRun
