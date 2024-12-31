@@ -27,6 +27,8 @@ plugins {
     // apply from: 'https://sonatype.com/nexus3/repository/raw/gradle/nexus3_v7.gradle'
 }
 
+apply from: 'script-plugin.gradle'
+
 group = 'com.magicliang'
 version = '0.0.1-SNAPSHOT'
 
