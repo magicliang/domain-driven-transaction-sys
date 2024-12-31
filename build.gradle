@@ -33,13 +33,13 @@ group = 'com.magicliang'
 version = '0.0.1-SNAPSHOT'
 
 
-// 需要这个配置才能让 gradlew build 通过
-//configurations {
-//    compileOnly {
-//        extendsFrom annotationProcessor
-//    }
-//    // 全局项目也可以排除掉 logging 依赖，不过还是要让 subModule 排除掉更有效
-//}
+// 早期处理 lombok 需要这个配置才能让 gradlew build 通过，现在注释这段配置也可以
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    // 全局项目也可以排除掉 logging 依赖，不过还是要让 subModule 排除掉更有效
+}
 
 repositories {
     // 参考：https://bbs.huaweicloud.com/blogs/257878
