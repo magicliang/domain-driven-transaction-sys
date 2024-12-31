@@ -22,6 +22,9 @@ plugins {
     // test 其实是一个 conventional test suit，它也是可配置的 https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:declare_an_additional_test_suite
     id 'jvm-test-suite'
     id 'test-report-aggregation'
+
+    // Script plugins are Groovy DSL or Kotlin DSL scripts that are applied directly to a Gradle build script using the apply from: syntax. They are applied inline within a build script to add functionality or customize the build process. They are not recommended but it’s important to understand how to work:
+    // apply from: 'https://sonatype.com/nexus3/repository/raw/gradle/nexus3_v7.gradle'
 }
 
 group = 'com.magicliang'
