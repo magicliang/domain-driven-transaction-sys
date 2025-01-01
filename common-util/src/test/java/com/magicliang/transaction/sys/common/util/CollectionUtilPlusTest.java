@@ -1,12 +1,13 @@
 package com.magicliang.transaction.sys.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -26,6 +27,8 @@ class CollectionUtilPlusTest {
         map.put(10020045L, 5L);
         map.put(10019039L, 1L);
         List<Long> list = Lists.newArrayList(10019039L, 10020045L, 0L);
-        assertTrue(CollectionUtilPlus.isEqualCollection(map.keySet(), null));
+        assertTrue(CollectionUtilPlus.isNotEqualCollection(map.keySet(), null));
+        assertTrue(CollectionUtilPlus.isEqualCollection(map.keySet(), list));
+
     }
 }
