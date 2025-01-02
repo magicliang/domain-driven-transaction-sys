@@ -12,9 +12,13 @@
 // 没有放进 subprojects 里的内容不会对所有子 module 生效，配页白配
 
 // 这是使用插件的新语法，不同于 apply plugin：如果是在官方仓库里能找到的插件，则 resolve 和 apply 可以用这种写法统一声明，这也实现了自动的 apply true
+// The plugins{} block must also be a top-level statement in the build script. It cannot be nested inside another construct (e.g., an if-statement or for-loop).
 plugins {
+    // These plugins are not automatically applied.
+    // They can be applied in subprojects as needed (in their respective build files).
+
 //    // 中文使用指南：https://www.jianshu.com/p/01588c396a29
-    id 'org.springframework.boot' version '2.7.18'
+    id 'org.springframework.boot' version '2.7.18' // 在任意子项目里 id 这个插件不再需要版本
 //    // 这两个版本是如何搭配的，是 initializr 决定的吗？
     id("io.spring.dependency-management") version "1.1.7"
 //    // 大于等于 java/java-library，支持一个 CLI application，能够 bootRun
