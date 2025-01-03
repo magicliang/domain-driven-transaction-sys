@@ -75,6 +75,9 @@ dependencies {
 }
 
 allprojects {
+    // apply plugin: JavaPlugin // 使用类名来使用 java 插件
+
+    // java 类库插件
     apply plugin: 'java-library'
     apply plugin: 'idea'
     // 这些特定版本的插件要在顶层使用 id 声明版本
