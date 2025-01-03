@@ -32,7 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // TODO：这个以后要升级
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.1'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.2'
     // 先不用 testCompile，如果使用 testCompile，需要把数据源的初始化放到 test 这个 source folder下面去
     api("ch.vorburger.mariaDB4j:mariaDB4j-springboot:2.5.3")
 
