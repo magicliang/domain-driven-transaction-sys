@@ -74,6 +74,14 @@ dependencies {
 //    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
+// https://docs.gradle.org/current/userguide/toolchains.html#toolchains
+java {
+    // 引入 java 工具链
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
 allprojects {
     // apply plugin: JavaPlugin // 使用类名来使用 java 插件
 
