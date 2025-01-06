@@ -1,6 +1,5 @@
 // 构建脚本
-// gradle 官方不推荐这个脚本，但是把这个脚本拆解到子项目里比较麻烦：Some builds may contain a build.gradle(.kts) file in the root project but this
-// is NOT recommended.
+// gradle 官方不推荐这个脚本，但是把这个脚本拆解到子项目里比较麻烦：Some builds may contain a build.gradle(.kts) file in the root project but this is NOT recommended.
 // Generally, a build script details build configuration, tasks, and plugins.
 
 // 理论上不加入这个文件也是一个完整的项目，只要每个 module 拥有自己的 build.gradle 就行了。这个 build script 是为了 root project 或者 root module 准备的
@@ -8,8 +7,7 @@
 // Spring boot 的最新官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/
 // https://huangxshuo.github.io/2021/03/04/apply%20plugin%E5%92%8Cplugins%E4%B8%A4%E7%A7%8D%E5%BA%94%E7%94%A8gradle%E6%8F%92%E4%BB%B6%E7%9A%84%E5%8C%BA%E5%88%AB/
 
-
-// 没有放进 subprojects 里的内容不会对所有子 module 生效，配页白配
+// 没有放进 subprojects 里的内容不会对所有子 module 生效，配也白配
 
 // 这是使用插件的新语法，不同于 apply plugin：如果是在官方仓库里能找到的插件，则 resolve 和 apply 可以用这种写法统一声明，这也实现了自动的 apply true
 // The plugins{} block must also be a top-level statement in the build script. It cannot be nested inside another construct (e.g., an if-statement or for-loop).
@@ -85,7 +83,7 @@ java {
 allprojects {
     // apply plugin: JavaPlugin // 使用类名来使用 java 插件
 
-    // java 类库插件
+    // java 类库插件，带有 compileJava、compileTestJava、test、jar、javadoc 几个任务。
     apply plugin: 'java-library'
     apply plugin: 'idea'
     // 这些特定版本的插件要在顶层使用 id 声明版本

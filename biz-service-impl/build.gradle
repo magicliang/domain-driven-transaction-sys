@@ -3,16 +3,23 @@
 //apply plugin: 'io.spring.dependency-management'
 
 dependencies {
+
     // compile（api）：这种是我们最常用的方式，使用该方式依赖的库将会参与编译和打包。也就是最简单的 dependency
     api project(":biz-shared")
+    // 第二种依赖：Project dependencies allow you to declare dependencies on other projects within the same build. This is
+    // useful in multi-project builds where multiple projects are part of the same Gradle build.
     api project(":common-service-facade")
 
+    // 第一种以来：Module dependencies are the most common dependencies. They refer to a module in a repository:
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     testImplementation 'io.projectreactor:reactor-test'
+    // 第三种：These are known as file dependencies because they represent files without any metadata (such as information about transitive dependencies, origin, or author) attached to them.
+//    runtimeOnly files('libs/a.jar', 'libs/b.jar')
+//    runtimeOnly fileTree('libs') { include '*.jar' }
 }
 
 // 这个名字是插件的函数的名字，也是 task，特定的插件的 task 名字是不一样的
