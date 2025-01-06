@@ -35,7 +35,6 @@ plugins {
 group = 'com.magicliang'
 version = '0.0.1-SNAPSHOT'
 
-
 // 早期处理 lombok 需要这个配置才能让 gradlew build 通过，现在注释这段配置也可以
 //configurations {
 //    compileOnly {
@@ -44,7 +43,6 @@ version = '0.0.1-SNAPSHOT'
 //    }
 //    // 全局项目也可以排除掉 logging 依赖，不过还是要让 subModule 排除掉更有效
 //}
-
 
 //dependencyManagement {
 //    imports {
@@ -182,7 +180,9 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
         // api("com.google.code.gson:gson:2.10!!")
-        api("com.google.code.gson:gson") {
+        // implementation 才是最需要使用的configuration，因为大多数情况下我们除了专门的 sdk module，不需要 publish api。
+        // 非 entrance/worker 模块要传递 lib 依赖（如 jackson）给 entrance/worker 模块用，就使用 api，但外围模块应该尽量使用 implementation
+        implementation("com.google.code.gson:gson") {
             // @deprecated
             // force = true
             version {
