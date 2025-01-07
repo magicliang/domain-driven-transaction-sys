@@ -77,6 +77,8 @@ java {
         // 替代了 sourceCompatibility、targetCompatibility
         languageVersion = JavaLanguageVersion.of(8)
     }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 allprojects {
