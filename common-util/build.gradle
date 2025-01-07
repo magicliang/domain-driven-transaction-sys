@@ -1,3 +1,7 @@
+ext {
+    jacksonVersion = '2.17.2'
+}
+
 dependencies {
     // 引入基础设施包
 //    api 'com.magicliang:common-concurrent-starter:1.0.0-SNAPSHOT'
@@ -12,9 +16,9 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-collections/commons-collections
     api 'commons-collections:commons-collections:3.2.2'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    api 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    api 'com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    api 'com.fasterxml.jackson.core:jackson-annotations:2.13.1'
+    api 'com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}'
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
     api 'org.apache.httpcomponents:httpcore:4.4.15'
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
