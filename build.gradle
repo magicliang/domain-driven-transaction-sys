@@ -74,6 +74,7 @@ dependencies {
 java {
     // 引入 java 工具链
     toolchain {
+        // 替代了 sourceCompatibility、targetCompatibility
         languageVersion = JavaLanguageVersion.of(8)
     }
 }
@@ -153,9 +154,6 @@ subprojects {
     apply plugin: 'jvm-test-suite'
     apply plugin: 'test-report-aggregation'
 
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-
     configurations {
 //		all*.exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
         // 对排除 logback 而言，这个配置最有用，子项目必须排除掉这个依赖
@@ -189,6 +187,10 @@ subprojects {
                 strictly("2.10")
             }
         }
+        implementation(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.10.0"))
+
+        implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.10.0'
+        implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-logback-mdc-1.0', version: '2.10.0-alpha'
 
         // 在这里实现了对 spring-boot-test jar 的引入，确切地讲，@SpringBootTest 这个注解依赖于本依赖
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
