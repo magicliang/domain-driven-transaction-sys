@@ -22,7 +22,6 @@ public class LockTest {
     void tearDown() {
     }
 
-
     /**
      * 这个实验的问题是，无法复现求锁的子线程从被中断状态下退出的场景
      * 是不是只有从 os 层面干预线程，才能触发这一点？
@@ -55,6 +54,9 @@ public class LockTest {
             // 让系统在这个地方卡住，然后用 debugger 观察本线程的状态
             lock.lock();
             try {
+                System.out.println(String.format("from inside Thread.currentThread().getState(): %s, Thread"
+                                + ".currentThread().isInterrupted(): %s",
+                        Thread.currentThread().getState(), Thread.currentThread().isInterrupted()));
                 System.out.println("3");
             } finally {
                 System.out.println("4");
@@ -138,6 +140,5 @@ public class LockTest {
         }
         t1.join();
         Thread.sleep(10000L);
-
     }
 }
