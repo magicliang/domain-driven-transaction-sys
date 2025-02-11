@@ -38,6 +38,7 @@ public class ProfilingAspect {
         }
     }
 
+    // 这里面的 ((execution(public * com.controller.C1.*(..)) || (execution(public * com.controller.C2.*(..))) 是可以用 || 逻辑关联的
     @Pointcut("within(com.magicliang.transaction.sys..*)")
     public void methodsToBeProfiled() {
     }
