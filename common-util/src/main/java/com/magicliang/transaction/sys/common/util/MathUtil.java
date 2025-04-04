@@ -56,6 +56,7 @@ public class MathUtil {
          * 好的解法是：
          * 1. 禁止转成 double，确实不合法
          * 2. 尝试使用 bound 或者带有 bound 的 wildcard，这仍然会导致禁止赋值到 double 身上，虽然看起来几个数里找到中间数给 double 是合法的。
+         * 3. 所有参数一开始就强转成 double-如把 1729写成1729.00，或者在外围套一个 getMiddle(double... a)
          *
          * 所以尝试给 primitive 类型写泛型计算方法会产生各式各样的苦手问题。
          */
