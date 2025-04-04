@@ -45,4 +45,23 @@ public class MathUtil {
         return digit;
     }
 
+    public static <T> T getMiddle(T... a) {
+        /*
+         * 不可编译的原因是：编译器收到的参数以后先找 common super type，找到 Number 和 Comparable，这两者都无法转成 double
+         * double middle = MathUtil.getMiddle(3.17, 1729, 0); // 不兼容的类型: Number & Comparable<? extends Number & Comparable<?>> 无法转换为 double
+         * double middle = MathUtil.getMiddle(3, 1729, 0); // 可编译
+         * Number middle = MathUtil.<Number>getMiddle(3.18, 1729, 0); // 使用类型见证
+         * Number middle = MathUtil.getMiddle(3.18, 1729, 0); // 不使用类型见证
+         *
+         * 好的解法是：
+         * 1. 禁止转成 double，确实不合法
+         * 2. 尝试使用 bound 或者带有 bound 的 wildcard，这仍然会导致禁止赋值到 double 身上，虽然看起来几个数里找到中间数给 double 是合法的。
+         *
+         * 所以尝试给 primitive 类型写泛型计算方法会产生各式各样的苦手问题。
+         */
+
+        return a[a.length / 2];
+    }
+
+
 }
