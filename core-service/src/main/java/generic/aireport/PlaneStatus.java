@@ -1,4 +1,4 @@
-package aireport;
+package generic.aireport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

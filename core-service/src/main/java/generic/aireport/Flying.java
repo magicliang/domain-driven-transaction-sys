@@ -1,4 +1,4 @@
-package aireport;
+package generic.aireport;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -9,7 +9,9 @@ package aireport;
  *         <p>
  *         date: 2022-08-05 15:25
  */
-public interface FlightStatus {
+public interface Flying extends FlightStatus {
 
-    PlaneStatus getStatus();
+    default PlaneStatus getStatus() {
+        return PlaneStatus.Flying;
+    }
 }

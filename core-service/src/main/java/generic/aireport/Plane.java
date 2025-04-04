@@ -1,4 +1,4 @@
-package aireport;
+package generic.aireport;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

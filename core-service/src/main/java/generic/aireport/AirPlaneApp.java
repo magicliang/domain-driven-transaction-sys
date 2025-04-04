@@ -1,4 +1,4 @@
-package aireport;
+package generic.aireport;
 
 /**
  * project name: domain-driven-transaction-sys
