@@ -2,6 +2,7 @@ package generic;
 
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * @author liangchuan
@@ -34,6 +35,18 @@ public class Pair<T> {
 
     public void setSecond(T newValue) {
         second = newValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Pair<?> pair = (Pair<?>) o;
+        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 
     public static void main(String[] args) throws NoSuchMethodException {
