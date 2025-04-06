@@ -60,6 +60,9 @@ public class Pair<T> {
         System.out.println(method);
         Method[] methods = dateIntervalClass.getMethods();
         System.out.println(methods);
+
+        DateInterval[] arr = new DateInterval2[10];
+        arr[0] = new DateInterval();
     }
 }
 
@@ -73,6 +76,10 @@ class DateInterval extends Pair<LocalDate> {
             super.setSecond(second);
         }
     }
+}
+
+class DateInterval2 extends DateInterval {
+
 }
 
 
