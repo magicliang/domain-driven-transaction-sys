@@ -82,12 +82,6 @@ public class BigNumberCalculate {
         int tempLength = a.length;
         char[] temp = new char[tempLength + 1];
 
-        // 只写不读，是可以先删掉的，如果有必要再加回来
-        // 先赋0，而且要考虑多余的0的问题
-//        for (int i = 0; i < temp.length; i++) {
-//            temp[i] = '0';
-//        }
-
         int extra = 0;
 
         // 一起移动的指针不可以用嵌套for循环叉乘移动，而要在一个 while 里面
