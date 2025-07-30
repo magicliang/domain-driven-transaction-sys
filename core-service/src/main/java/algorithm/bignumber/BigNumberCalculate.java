@@ -52,7 +52,7 @@ public class BigNumberCalculate {
     }
 
     public static String add(String a, String b) {
-        return add(toCharArray(a), toCharArray(b));
+        return add(a.toCharArray(), b.toCharArray());
     }
 
     public static String add(char[] a, char[] b) {
@@ -81,6 +81,8 @@ public class BigNumberCalculate {
 
         int tempLength = a.length;
         char[] temp = new char[tempLength + 1];
+        // 这一步是必须的，不然前导空位不能当0去掉
+        Arrays.fill(temp, '0');
 
         int carry = 0;
 
@@ -115,16 +117,16 @@ public class BigNumberCalculate {
         // 如果较短的数组遍历完了，extra还没用尽，那么继续加下去，考虑连续进位问题，只对长数组做减法
         // 有可能 i 遍历完了，仍然要往下进一位
         while (carry > 0 && i >= 0) {
-                // 能从长数组里面取值就从长数组里面取值
+            // 能从长数组里面取值就从长数组里面取值
             // 用长数组继续进行 carry 加法
-                char cur = a[i--];
+            char cur = a[i--];
             int result = atoi(cur);
             result += carry;
             carry = 0;
-                if (result >= 10) {
-                    carry = 1;
-                    result -= 10;
-                }
+            if (result >= 10) {
+                carry = 1;
+                result -= 10;
+            }
 
             temp[k--] = itoa(result);
         }
@@ -148,7 +150,8 @@ public class BigNumberCalculate {
             return "0";
         }
 
-        return sb.toString();
+        String result = sb.toString();
+        return result;
     }
 
     private static Integer atoi(char c) {
@@ -164,16 +167,5 @@ public class BigNumberCalculate {
             throw new IllegalArgumentException("itoa error: " + i);
         }
         return (char) (i + '0');
-    }
-
-    private static char[] toCharArray(String a) {
-        if (a == null || a.isEmpty()) {
-            return new char[]{};
-        }
-        char[] result = new char[a.length()];
-        for (int i = 0; i < a.length(); i++) {
-            result[i] = a.charAt(i);
-        }
-        return result;
     }
 }
