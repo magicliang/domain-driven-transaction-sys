@@ -48,6 +48,20 @@ public class ExpandExperiment {
         System.out.println(results);
     }
 
+    /**
+     * 算法的本质是：
+     * 1. 从一个空的列表套列表 {{}} 开始
+     * 2. 然后用 originTypes 的每个元素进行叉乘
+     * 3. 每一轮就把这个 result 升级一次
+     * 4. 所以要在 originTypes 的每一行里准备一个 temp 替换新的 result
+     * 5. 遍历完这一轮的整个 originType 列表以后，才实现替换
+     * 6. 在遍历 originType 内部的时候，从 result 的内部用元素与元素乘出来我们需要的元素，然后作为结果的新行插进 temp 结果里
+     * 7. 然后完成替换
+     *
+     * @param originTypes 输入的列表套列表
+     * @param <T> 泛型类型
+     * @return 所有可能的组合结果
+     */
     public static <T> List<List<T>> expandToCombinations(List<List<T>> originTypes) {
         // 插入一个空集合进行迭代
         List<List<T>> result = new ArrayList<>();
