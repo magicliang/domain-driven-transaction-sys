@@ -163,9 +163,8 @@ public class BigNumberCalculate {
     }
 
     private static char itoa(int i) {
-        final Character c = itoaMap.get(i);
         if (i < 0 || i > 9) {
-            throw new IllegalArgumentException("itoa error: " + c);
+            throw new IllegalArgumentException("itoa error: " + i);
         }
         return (char) (i + '0');
     }
