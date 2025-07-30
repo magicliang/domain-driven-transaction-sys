@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public class BigNumberCalculate {
 
+    // 这两个 map 不如相对距离有用
     static Map<Character, Integer> atoiMap = new HashMap<>();
     static Map<Integer, Character> itoaMap = new HashMap<>();
 
@@ -66,6 +67,7 @@ public class BigNumberCalculate {
         //        5. 用 while 来代替 if 更好
         //        6. 最高位仍然可能越位，所以不能使用普通的 temp，最好使用更长的临时数组。每次相加其实是temp比长数组更长，长数组比短数组更长，计算到后面要保证extra能够和每一个更长数组继续处理的问题。
         //        7. 前导0只去掉前导位
+        //        8. atoi 和 itoa，可以用字符或者数字和0的相对距离来计算
         if (a == null || b == null || a.length == 0 || b.length == 0) {
             throw new IllegalArgumentException("illegal argument:" + Arrays.toString(a) + "," + Arrays.toString(b));
         }
