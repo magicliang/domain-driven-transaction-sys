@@ -108,19 +108,12 @@ public class BigNumberCalculate {
 
         StringBuilder sb = new StringBuilder();
 
-        boolean metNoneZero = false;
-        for (char c : temp) {
-            if (c != '0' || metNoneZero) {
-                metNoneZero = true;
-                sb.append(c);
-            }
+        // 找第一个非零位置
+        int start = 0;
+        while (start < temp.length - 1 && temp[start] == '0') {
+            start++;
         }
-        // 还要考虑全0相加的问题
-        if (sb.length() == 0) {
-            return "0";
-        }
-
-        String result = sb.toString();
+        String result = new String(temp, start, temp.length - start);
         return result;
     }
 
