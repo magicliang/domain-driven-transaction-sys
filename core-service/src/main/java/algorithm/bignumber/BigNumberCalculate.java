@@ -117,7 +117,7 @@ public class BigNumberCalculate {
         return result;
     }
 
-    private static Integer atoi(char c) {
+    private static int atoi(char c) {
         int i = c - '0';
         if (i < 0 || i > 9) {
             throw new IllegalArgumentException("atoi error: " + c);
