@@ -40,8 +40,8 @@ public class JwtUtil {
      */
     private static final String ISSUER = "MyAppAuthService";
 
-    // 定义过期时间 (例如：1小时)
-    private static final long EXPIRATION_TIME_MS = 3600 * 1000;
+    // 定义过期时间 (例如：1小时) 3600 * 1000
+    private static final long EXPIRATION_TIME_MS = 1000;
 
     /**
      * 创建一个JWT.
