@@ -73,10 +73,10 @@ public class BigNumberCalculate {
 
         int tempLength = a.length;
         // 更优的解可能是这里把长短数组分出来，而不是使用 a 来区分，这样说的话最好用个 temp 来交换 ab
-        char[] longArry = a;
         if (a.length < b.length) {
-            tempLength = b.length;
-            longArry = b;
+            char[] temp = a;
+            a = b;
+            b = temp;
         }
 
         char[] temp = new char[tempLength + 1];
@@ -94,6 +94,7 @@ public class BigNumberCalculate {
         int j = b.length - 1;
         int tempPiv = temp.length - 1;
 
+        // 默认 a 是更长的部分
         while (i >= 0 && j >= 0) {
             final Integer ai = atoi(a[i]);
             final Integer bj = atoi(b[j]);
@@ -119,7 +120,7 @@ public class BigNumberCalculate {
         // 这里面有个小 tricky，temp 天然比长数组要长一个格，所以要越界是长数组先越界
         while (extra > 0 && tempPiv - 1 >= 0) {
             // 用长数组继续进行 extra 加法
-            char cur = longArry[tempPiv];
+            char cur = a[i];
             int result = atoi(cur);
             result += extra;
             extra = 0;
@@ -129,6 +130,7 @@ public class BigNumberCalculate {
             }
             temp[tempPiv] = itoa(result);
             tempPiv--;
+            i--;
         }
 
         StringBuilder sb = new StringBuilder();
