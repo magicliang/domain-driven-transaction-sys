@@ -44,11 +44,10 @@ public class BigNumberCalculate {
     }
 
     public static void main(String[] args) {
-//        final String addResult = add("99", "197");
-//        System.out.println(addResult);
-
-        final String addResult2 = add("999", "1");
-        System.out.println(addResult2);
+        System.out.println(add("1", "999"));          // 1000 ✔
+        System.out.println(add("999", "1"));          // 1000 ✔
+        System.out.println(add("0", "0"));            // 0    ✔
+        System.out.println(add("123456789", "987654321")); // 1111111110 ✔
     }
 
     public static String add(String a, String b) {
@@ -71,7 +70,6 @@ public class BigNumberCalculate {
             throw new IllegalArgumentException("illegal argument:" + Arrays.toString(a) + "," + Arrays.toString(b));
         }
 
-        int tempLength = a.length;
         // 更优的解可能是这里把长短数组分出来，而不是使用 a 来区分，这样说的话最好用个 temp 来交换 ab
         if (a.length < b.length) {
             char[] temp = a;
@@ -79,6 +77,7 @@ public class BigNumberCalculate {
             b = temp;
         }
 
+        int tempLength = a.length;
         char[] temp = new char[tempLength + 1];
 
         // 先赋0，而且要考虑多余的0的问题
@@ -118,13 +117,11 @@ public class BigNumberCalculate {
 
         // 如果较短的数组遍历完了，extra还没用尽，那么继续加下去，考虑连续进位问题，只对长数组做减法
         // 有可能 i 遍历完了，仍然要往下进一位
-        while (extra > 0) {
-            int result = 0;
-            if (i >= 0) {
+        while (extra > 0 && i >= 0) {
                 // 能从长数组里面取值就从长数组里面取值
                 // 用长数组继续进行 extra 加法
                 char cur = a[i--];
-                result = atoi(cur);
+            int result = atoi(cur);
                 result += extra;
                 extra = 0;
                 if (result >= 10) {
@@ -132,17 +129,12 @@ public class BigNumberCalculate {
                     result -= 10;
                 }
 
-            } else {
-                // 否则从 temp 数组取值
-                result = atoi(temp[tempPiv]);
-                result += extra;
-                extra = 0;
-                if (result >= 10) {
-                    extra = 1;
-                    result -= 10;
-                }
-            }
             temp[tempPiv--] = itoa(result);
+        }
+
+        // 最后一位进位直接赋值就行，无需加法
+        if (extra > 0) {
+            temp[tempPiv--] = itoa(extra);
         }
 
         StringBuilder sb = new StringBuilder();
@@ -163,8 +155,8 @@ public class BigNumberCalculate {
     }
 
     private static Integer atoi(char c) {
-        final Integer i = atoiMap.get(c);
-        if (i == null) {
+        int i = c - '0';
+        if (i < 0 || i > 9) {
             throw new IllegalArgumentException("atoi error: " + c);
         }
         return i;
@@ -172,10 +164,10 @@ public class BigNumberCalculate {
 
     private static char itoa(int i) {
         final Character c = itoaMap.get(i);
-        if (c == null) {
-            throw new IllegalArgumentException("itoa error: " + i);
+        if (i < 0 || i > 9) {
+            throw new IllegalArgumentException("itoa error: " + c);
         }
-        return c;
+        return (char) (i + '0');
     }
 
     private static char[] toCharArray(String a) {
