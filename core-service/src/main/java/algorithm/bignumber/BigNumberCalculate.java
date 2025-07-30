@@ -2,8 +2,6 @@ package algorithm.bignumber;
 
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -15,34 +13,6 @@ import java.util.Map;
  *         date: 2025-07-30 21:10
  */
 public class BigNumberCalculate {
-
-    // 这两个 map 不如相对距离有用
-    static Map<Character, Integer> atoiMap = new HashMap<>();
-    static Map<Integer, Character> itoaMap = new HashMap<>();
-
-    static {
-        atoiMap.put('0', 0);
-        atoiMap.put('1', 1);
-        atoiMap.put('2', 2);
-        atoiMap.put('3', 3);
-        atoiMap.put('4', 4);
-        atoiMap.put('5', 5);
-        atoiMap.put('6', 6);
-        atoiMap.put('7', 7);
-        atoiMap.put('8', 8);
-        atoiMap.put('9', 9);
-
-        itoaMap.put(0, '0');
-        itoaMap.put(1, '1');
-        itoaMap.put(2, '2');
-        itoaMap.put(3, '3');
-        itoaMap.put(4, '4');
-        itoaMap.put(5, '5');
-        itoaMap.put(6, '6');
-        itoaMap.put(7, '7');
-        itoaMap.put(8, '8');
-        itoaMap.put(9, '9');
-    }
 
     public static void main(String[] args) {
         System.out.println(add("1", "999"));          // 1000 ✔
