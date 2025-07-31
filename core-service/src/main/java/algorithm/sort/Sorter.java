@@ -17,8 +17,6 @@ public class Sorter {
     public static void main(String[] args) {
         System.out.println("-----------mergeSort");
         System.out.println(Arrays.toString(mergeSort(new int[]{6, 3, 8, 5, 1, 7, 9, 2})));
-        System.out.println("-----------mergeSort2");
-        System.out.println(Arrays.toString(mergeSort2(new int[]{6, 3, 8, 5, 1, 7, 9, 2})));
     }
 
     public static int[] mergeSort(int[] arr) {
@@ -57,31 +55,23 @@ public class Sorter {
         // 易错的点：每轮迭代移动超过一张卡片导致越界
 
         while (i < a.length || j < b.length) {
-            Integer curA = null;
-            Integer curB = null;
-
-            if (i < a.length) {
-                curA = a[i];
-            }
-            if (j < b.length) {
-                curB = b[j];
-            }
-
             // 易错的点，逻辑分支如果是互斥的，则用 else-if 串起来，这样可以实现互斥
 
-            if (curA != null && curB != null) {
-                if (curA <= curB) {
-                    temp[k++] = curA;
+            if (i < a.length && j < b.length) {
+                if (a[i] <= b[j]) {
+                    temp[k++] = a[i];
                     i++;
                 } else {
-                    temp[k++] = curB;
+                    temp[k++] = b[j];
                     j++;
                 }
-            } else if (curA != null) {
-                temp[k++] = curA;
+            } else if (i < a.length) {
+
+                // 这里如果单独拆出 i < a.length，则可能同时满足上面的 && 条件
+                temp[k++] = a[i];
                 i++;
             } else {
-                temp[k++] = curB;
+                temp[k++] = b[j];
                 j++;
             }
         }
