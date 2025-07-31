@@ -15,15 +15,31 @@ import java.util.Arrays;
 public class BigNumberCalculate {
 
     public static void main(String[] args) {
+
+        System.out.println("-----------------------------add1"); // 12
+
         System.out.println(add("1", "999"));          // 1000 ✔
         System.out.println(add("999", "1"));          // 1000 ✔
         System.out.println(add("0", "0"));            // 0    ✔
         System.out.println(add("123456789", "987654321")); // 1111111110 ✔
         System.out.println(add("12345", "67")); // 12412 ✔
+
+        System.out.println("-----------------------------add2"); // 12
+
+        System.out.println(add2("1", "999"));          // 1000 ✔
+        System.out.println(add2("999", "1"));          // 1000 ✔
+        System.out.println(add2("0", "0"));            // 0    ✔
+        System.out.println(add2("123456789", "987654321")); // 1111111110 ✔
+        System.out.println(add2("12345", "67")); // 12412 ✔
+
     }
 
     public static String add(String a, String b) {
         return add(a.toCharArray(), b.toCharArray());
+    }
+
+    public static String add2(String a, String b) {
+        return add2(a.toCharArray(), b.toCharArray());
     }
 
     public static String add(char[] a, char[] b) {
@@ -119,6 +135,74 @@ public class BigNumberCalculate {
         }
         String result = new String(temp, start, temp.length - start);
         return result;
+    }
+
+    /**
+     * 只用一个循环来写作加法的 merge
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static String add2(char[] a, char[] b) {
+        if (a == null || b == null || a.length == 0 || b.length == 0) {
+            throw new IllegalArgumentException("illegal argument:" + Arrays.toString(a) + "," + Arrays.toString(b));
+        }
+
+        int tempLength = a.length;
+        if (b.length > tempLength) {
+            tempLength = b.length;
+        }
+        tempLength++;
+        char[] temp = new char[tempLength];
+
+        int i = a.length - 1;
+        int j = b.length - 1;
+
+        for (int tmp = 0; tmp < tempLength; tmp++) {
+            temp[tmp] = '0';
+        }
+
+        int carry = 0;
+        int k = tempLength - 1;
+        // 在一个 while 循环里，用 || 导出循环，用 if 再细分是不是符合循环条件
+        while (i >= 0 || j >= 0 || carry > 0 || k > 0) {
+            int sum = carry;
+            if (i >= 0) {
+                sum += a[i--] - '0';
+            }
+            if (j >= 0) {
+                sum += b[j--] - '0';
+            }
+            // 为下一轮的 carry 做准备
+            carry = sum / 10;
+            sum %= 10;
+            // 因为 i、j、k 走尽以前，k是不会走尽的，所以这里的 if (k >= 0) 和上面的 ||  k > 0 其实是不必要的，但是这里为了谨慎先留着
+            if (k >= 0) {
+                temp[k--] = (char) ('0' + sum);
+            }
+        }
+//        while (i >= 0 || j >= 0 || carry > 0) {
+//            int sum = carry;
+//            if (i >= 0) sum += a[i--] - '0';
+//            if (j >= 0) sum += b[j--] - '0';
+//
+//            carry = sum / 10;
+//            temp[k--] = (char)(sum % 10 + '0');
+//        }
+
+        StringBuilder sb = new StringBuilder();
+
+        int start = 0;
+        // 这里要引入一个寻找等于0的计算位，但是不去掉最后一位
+        while (start < tempLength - 1 && temp[start] == '0') {
+            start++;
+        }
+
+        for (int p = start; p < tempLength; p++) {
+            sb.append(temp[p]);
+        }
+        return sb.toString();
     }
 
     private static int atoi(char c) {
