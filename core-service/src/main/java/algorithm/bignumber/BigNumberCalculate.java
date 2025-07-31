@@ -19,6 +19,8 @@ public class BigNumberCalculate {
         System.out.println(add("999", "1"));          // 1000 ✔
         System.out.println(add("0", "0"));            // 0    ✔
         System.out.println(add("123456789", "987654321")); // 1111111110 ✔
+        System.out.println(add("12345", "67")); // 1111111110 ✔
+
     }
 
     public static String add(String a, String b) {
@@ -27,7 +29,7 @@ public class BigNumberCalculate {
 
     public static String add(char[] a, char[] b) {
         // 1. 找出两个数组中更长的作为写入的目标数组
-        // 2. 逆序从高位取值，直到两个数组中更短的遍历完
+        // 2. 逆序从高位取值，直到两个数组中更短的遍历完-类似一个 merge sort
         // 3. 把char转成int，然后做加法，得到结果以后如果大于10，求出余数存到 temp变量里，在下次循环以后用掉
 
         // 易错点：1. 是多指针同时移动，要用 while -- 的解法，而不能用嵌套 for 循环。而且 a、b、i、j 的搭配不能写错，复制粘贴最容易出错了。如果用 temp 移动，则还需要一个额外指针。不要共用指针。
@@ -64,8 +66,8 @@ public class BigNumberCalculate {
 
         // 默认 a 是更长的部分
         while (i >= 0 && j >= 0) {
-            final Integer ai = atoi(a[i]);
-            final Integer bj = atoi(b[j]);
+            final int ai = atoi(a[i]);
+            final int bj = atoi(b[j]);
 
             // 把上一轮的用在这里
             int result = carry + ai + bj;
@@ -86,10 +88,10 @@ public class BigNumberCalculate {
 
         // 如果较短的数组遍历完了，extra还没用尽，那么继续加下去，考虑连续进位问题，只对长数组做减法
         // 有可能 i 遍历完了，仍然要往下进一位
-        while (carry > 0 && i >= 0) {
+        while (i >= 0) {
             // 能从长数组里面取值就从长数组里面取值
             // 用长数组继续进行 carry 加法
-            char cur = a[i--];
+            char cur = a[i];
             int result = atoi(cur);
             result += carry;
             carry = 0;
@@ -98,7 +100,9 @@ public class BigNumberCalculate {
                 result -= 10;
             }
 
-            temp[k--] = itoa(result);
+            temp[k] = itoa(result);
+            i--;
+            k--;
         }
 
         // 最后一位进位直接赋值就行，无需加法
