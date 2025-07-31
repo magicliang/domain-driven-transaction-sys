@@ -19,8 +19,7 @@ public class BigNumberCalculate {
         System.out.println(add("999", "1"));          // 1000 ✔
         System.out.println(add("0", "0"));            // 0    ✔
         System.out.println(add("123456789", "987654321")); // 1111111110 ✔
-        System.out.println(add("12345", "67")); // 1111111110 ✔
-
+        System.out.println(add("12345", "67")); // 12412 ✔
     }
 
     public static String add(String a, String b) {
@@ -29,7 +28,7 @@ public class BigNumberCalculate {
 
     public static String add(char[] a, char[] b) {
         // 1. 找出两个数组中更长的作为写入的目标数组
-        // 2. 逆序从高位取值，直到两个数组中更短的遍历完-类似一个 merge sort
+        // 2. 逆序从高位取值，直到两个数组中更短的遍历完-类似一个 merge sort，所有要按照长短，多轮遍历到尽头-余数也可能是剩余的数据结构的一种
         // 3. 把char转成int，然后做加法，得到结果以后如果大于10，求出余数存到 temp变量里，在下次循环以后用掉
 
         // 易错点：1. 是多指针同时移动，要用 while -- 的解法，而不能用嵌套 for 循环。而且 a、b、i、j 的搭配不能写错，复制粘贴最容易出错了。如果用 temp 移动，则还需要一个额外指针。不要共用指针。
@@ -40,6 +39,7 @@ public class BigNumberCalculate {
         //        6. 最高位仍然可能越位，所以不能使用普通的 temp，最好使用更长的临时数组。每次相加其实是temp比长数组更长，长数组比短数组更长，计算到后面要保证extra能够和每一个更长数组继续处理的问题。
         //        7. 前导0只去掉前导位
         //        8. atoi 和 itoa，可以用字符或者数字和0的相对距离来计算
+        //        9. 不要写 i >= 0 && carry > 0 或者 i >= 0 || carry > 0，前者可能carry为0了，长数组还有后半部分没走完。后者可能carry不为0，导致 a 越位。
         if (a == null || b == null || a.length == 0 || b.length == 0) {
             throw new IllegalArgumentException("illegal argument:" + Arrays.toString(a) + "," + Arrays.toString(b));
         }
