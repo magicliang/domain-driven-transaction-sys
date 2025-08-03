@@ -1,14 +1,15 @@
 package com.magicliang.transaction.sys.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author liangchuan
@@ -267,8 +268,9 @@ public class AlgorithmTest {
             int j = i - 1;
             // 要详细比较所有的元素，包括0，在CLRS的伪代码里，j的起点是1，就会写作 > 0
             while (j >= 0 && arr[j] > key) {
+                // 先往高位移动，这样可以充电最小的i
                 arr[j + 1] = arr[j];
-                j--;
+                j--;// 然后移动指针
             }
             // 到这里要么 j 连 0 都大于 key，要么找到了一个不能进入的区间的终点
             arr[j + 1] = key;
