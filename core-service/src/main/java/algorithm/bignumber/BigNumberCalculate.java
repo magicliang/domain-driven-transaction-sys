@@ -269,7 +269,7 @@ public class BigNumberCalculate {
         }
 
         StringBuilder sb = new StringBuilder();
-        int x = 0;                       // 借位：-1 表示向高位借 1
+        int borrow = 0;                       // 借位：-1 表示向高位借 1
         int i = minuend.length() - 1;
         int j = subtrahend.length() - 1;
 
@@ -277,17 +277,17 @@ public class BigNumberCalculate {
         int k = temp.length - 1;
 
         // 在我们减化了大小顺序以后，其实 i 就是最大的数组长度，而且减法都是同期消除的，所以预防万一的答案是
-        while (i >= 0 || j >= 0 || x != 0) {
+        while (i >= 0 || j >= 0 || borrow != 0) {
             // 而最简单的条件是
 //        while (i >= 0) {
-            int a = (i >= 0 ? minuend.charAt(i--) - '0' : 0) + x;
-            x = 0;                       // 本轮回借位已用
+            int a = (i >= 0 ? minuend.charAt(i--) - '0' : 0) + borrow;
+            borrow = 0;                       // 本轮回借位已用
 
             int b = j >= 0 ? subtrahend.charAt(j--) - '0' : 0;
 
             if (a < b) {                 // 不够减，向更高位借 1
                 a += 10;
-                x = -1;                  // 下一轮高位再减 1
+                borrow = -1;                  // 下一轮高位再减 1
             }
 
             temp[k--] = a - b;
