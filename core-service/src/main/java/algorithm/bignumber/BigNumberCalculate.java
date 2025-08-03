@@ -302,11 +302,11 @@ public class BigNumberCalculate {
             sb.append(temp[m]);
         }
 
+        String result = sb.toString();
         if (isNegative) {
-            sb.insert(0, '-');
+            result = "-" + result;
         }
-
-        return sb.toString();
+        return result;
     }
 
     private static int compare(String minuend, String subtrahend) {
