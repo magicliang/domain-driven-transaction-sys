@@ -5,12 +5,15 @@ import java.util.Arrays;
 
 /**
  * project name: domain-driven-transaction-sys
- *
+ * <p>
  * description:
+ * 不管正负数，前导0都在字符串的前半部分，如
+ * 0043
+ * -005
  *
  * @author magicliang
- *
- *         date: 2025-07-30 21:10
+ * <p>
+ * date: 2025-07-30 21:10
  */
 public class BigNumberCalculate {
 
@@ -32,6 +35,45 @@ public class BigNumberCalculate {
         System.out.println(add2("123456789", "987654321")); // 1111111110 ✔
         System.out.println(add2("12345", "67")); // 12412 ✔
 
+        System.out.println("-----------------------------minus"); // 12
+        // 🔹 基础借位测试
+        System.out.println(minus("10", "1"));        // 期望: "9"
+        System.out.println(minus("5", "3"));         // 期望: "2"
+        System.out.println(minus("9", "9"));         // 期望: "0"
+        System.out.println(minus("20", "1"));        // 期望: "19"
+
+        // 🔸 连续借位（连锁借位）—— 最容易出错！
+        System.out.println(minus("1000", "1"));      // 期望: "999"
+        System.out.println(minus("100", "2"));       // 期望: "98"
+        System.out.println(minus("10000", "1"));     // 期望: "9999"
+        System.out.println(minus("1000", "999"));    // 期望: "1"
+        System.out.println(minus("1000", "100"));    // 期望: "900"
+
+        // 🔺 长数减短数
+        System.out.println(minus("2000", "100"));    // 期望: "1900"
+        System.out.println(minus("3000", "2"));      // 期望: "2998"
+        System.out.println(minus("5000", "499"));    // 期望: "4501"
+
+        // 🔻 负数结果测试（小减大）
+        System.out.println(minus("1", "2"));         // 期望: "-1"
+        System.out.println(minus("123", "456"));     // 期望: "-333"
+        System.out.println(minus("99", "100"));      // 期望: "-1"
+        System.out.println(minus("1", "1000"));      // 期望: "-999"
+
+        // 🔲 对称性测试
+        System.out.println(minus("456", "123"));     // 期望: "333"
+        System.out.println(minus("123", "456"));     // 期望: "-333"
+
+        // 🔷 极端情况
+        System.out.println(minus("1", "1"));          // 期望: "0"
+        System.out.println(minus("2", "1"));          // 期望: "1"
+        System.out.println(minus("10", "10"));        // 期望: "0"
+        System.out.println(minus("100", "99"));       // 期望: "1"
+        System.out.println(minus("1000", "99"));      // 期望: "901"
+
+        // 🔸 边界：全零情况（检验是否输出 "0"）
+        System.out.println(minus("0", "0"));          // 期望: "0"（如果允许输入）
+        System.out.println(minus("000", "0"));        // 可选：是否支持前导零？目前假设已去零
     }
 
     public static String add(String a, String b) {
@@ -203,6 +245,74 @@ public class BigNumberCalculate {
             sb.append(temp[p]);
         }
         return sb.toString();
+    }
+
+    /**
+     * 要把所有算式转成前大后小的竖式计算，最后才转到正负判断
+     *
+     * @param minuend
+     * @param subtrahend
+     * @return
+     */
+    public static String minus(String minuend, String subtrahend) {
+        if (minuend == null || subtrahend == null || minuend.isEmpty() || subtrahend.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        boolean isNegative = false;
+        int cmp = compare(minuend, subtrahend);
+        if (cmp < 0) {
+            String temp = minuend;
+            minuend = subtrahend;
+            subtrahend = temp;
+            isNegative = true;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int x = 0;                       // 借位：-1 表示向高位借 1
+        int i = minuend.length() - 1;
+        int j = subtrahend.length() - 1;
+
+        int[] temp = new int[minuend.length()];
+        int k = temp.length - 1;
+
+        while (i >= 0 || j >= 0) {
+            int a = (i >= 0 ? minuend.charAt(i--) - '0' : 0) + x;
+            x = 0;                       // 本轮回借位已用
+
+            int b = j >= 0 ? subtrahend.charAt(j--) - '0' : 0;
+
+            if (a < b) {                 // 不够减，向更高位借 1
+                a += 10;
+                x = -1;                  // 下一轮高位再减 1
+            }
+
+            temp[k--] = a - b;
+        }
+
+        int start = 0;
+        while (start < temp.length - 1 && temp[start] == 0) {
+            start++;
+        }
+
+        for (int m = start; m < temp.length; m++) {
+            sb.append(temp[m]);
+        }
+
+        if (isNegative) {
+            sb.insert(0, '-');
+        }
+
+        return sb.toString();
+    }
+
+    private static int compare(String minuend, String subtrahend) {
+        if (minuend.length() < subtrahend.length()) {
+            return -1;
+        } else if (minuend.length() == subtrahend.length()) { // 易错的点：只有等长的字符串可以用字典比较
+            return minuend.compareTo(subtrahend);
+        }
+        return 1;
     }
 
     private static int atoi(char c) {
