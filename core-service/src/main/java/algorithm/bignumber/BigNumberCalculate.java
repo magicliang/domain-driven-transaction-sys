@@ -276,7 +276,10 @@ public class BigNumberCalculate {
         int[] temp = new int[minuend.length()];
         int k = temp.length - 1;
 
-        while (i >= 0 || j >= 0) {
+        // 在我们减化了大小顺序以后，其实 i 就是最大的数组长度，而且减法都是同期消除的，所以预防万一的答案是
+        while (i >= 0 || j >= 0 || x != 0) {
+            // 而最简单的条件是
+//        while (i >= 0) {
             int a = (i >= 0 ? minuend.charAt(i--) - '0' : 0) + x;
             x = 0;                       // 本轮回借位已用
 
