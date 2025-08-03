@@ -268,7 +268,6 @@ public class BigNumberCalculate {
             isNegative = true;
         }
 
-        StringBuilder sb = new StringBuilder();
         int borrow = 0;                       // 借位：-1 表示向高位借 1
         int i = minuend.length() - 1;
         int j = subtrahend.length() - 1;
@@ -298,6 +297,7 @@ public class BigNumberCalculate {
             start++;
         }
 
+        StringBuilder sb = new StringBuilder();
         for (int m = start; m < temp.length; m++) {
             sb.append(temp[m]);
         }
