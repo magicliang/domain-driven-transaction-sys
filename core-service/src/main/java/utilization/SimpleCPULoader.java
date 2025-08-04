@@ -43,6 +43,7 @@ public class SimpleCPULoader {
 
             // 工作阶段 - 消耗CPU
             long workStart = System.currentTimeMillis();
+            // 基本思路，计算精度的实验时间，用实验时间进行 while 计算，在计算内使用一些空计算。开平方算法是常见的算法
             while (System.currentTimeMillis() - workStart < workTime) {
                 // 空循环消耗CPU
                 Math.sqrt(Math.random());
