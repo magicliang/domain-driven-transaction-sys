@@ -67,7 +67,9 @@ public class Chess {
     }
 
     public static void main(String[] args) {
-        method1();
+//        method1();
+//        method2();
+        method3();
     }
 
     private static void method1() {
@@ -103,6 +105,36 @@ public class Chess {
                 if (getColumn((lGet(b))) != getColumn((rGet(b)))) {
                     // 易错的点：容易把列和原始的数据搞错
                     System.out.println("A = " + lGet(b) + ", B = " + rGet(b));
+                }
+            }
+        }
+    }
+
+    private static void method2() {
+        for (int i = 1; i <= 81; i++) {
+            // 这个解法妙在向量本身也是矩阵，矩阵也可以换成向量
+
+            // 索引i:  0  1  2  3  4  5  6  7  8  9  10 11 ... 80
+            // 将(A):  1  1  1  1  1  1  1  1  1  2  2  2  ... 9
+            // 帅(B):  1  2  3  4  5  6  7  8  9  1  2  3  ... 9
+            // 一个二维矩阵可以拆解成若干组和数，可以认为将的数量是组，而帅的数量是组的长度，全部的组列出来就是全部的组合
+            // 那么总编号除以组数量（恰好是9）可以得到组号，而%组长度可以得到组内的编号，这样就可以还原出将帅在本向量内的位置
+            // %3 则可以用列宽获得列的位置-针对 base 1 的情形
+            // i / 9 得到将的"组号"（0-8）
+            // 1i % 9 将得到组内位置
+            // + 1 意味着转换为1base
+            if (i / 9 % 3 != i % 9 % 3) {
+                System.out.println("A = " + (i / 9 + 1) + ", B = " + (i % 9 + 1));
+            }
+        }
+    }
+
+    // 纯暴力法，允许使用多余的变量
+    private static void method3() {
+        for (int i = 1; i <= 9; i++) {
+            for (int j = 1; j <= 9; j++) {
+                if (i % 3 != j % 3) {
+                    System.out.println("A = " + i + ", B = " + j);
                 }
             }
         }
