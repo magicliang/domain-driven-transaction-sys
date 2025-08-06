@@ -18,8 +18,31 @@ import java.util.Set;
 public class Arrangement {
 
     public static void main(String[] args) {
+        // 测试用例1：基本测试
         int[] nums1 = {1, 2, 3};
-        System.out.println("全排列: " + arrange(nums1));
+        System.out.println("测试用例1 - 数组 [1,2,3] 的全排列: " + arrange(nums1));
+
+        // 测试用例2：单个元素
+        int[] nums2 = {5};
+        System.out.println("测试用例2 - 数组 [5] 的全排列: " + arrange(nums2));
+
+        // 测试用例3：两个元素
+        int[] nums3 = {1, 2};
+        System.out.println("测试用例3 - 数组 [1,2] 的全排列: " + arrange(nums3));
+
+        // 测试用例4：四个元素
+        int[] nums4 = {1, 2, 3, 4};
+        List<List<Integer>> result4 = arrange(nums4);
+        System.out.println("测试用例4 - 数组 [1,2,3,4] 的全排列数量: " + result4.size());
+        System.out.println("测试用例4 - 前5个排列: " + result4.subList(0, Math.min(5, result4.size())));
+
+        // 测试用例5：包含重复元素
+        int[] nums5 = {1, 1, 2};
+        System.out.println("测试用例5 - 数组 [1,1,2] 的全排列: " + arrange(nums5));
+
+        // 测试用例6：空数组
+        int[] nums6 = {};
+        System.out.println("测试用例6 - 空数组的全排列: " + arrange(nums6));
     }
 
     public static List<List<Integer>> arrange(int[] nums) {
@@ -42,7 +65,7 @@ public class Arrangement {
             List<List<Integer>> subResult = arrange(nums, used);
             for (List<Integer> list : subResult) {
                 // 把当前值作为结尾值放进来
-                list.add(i);
+                list.add(nums[i]);
             }
 
             // 在本层级更新结果，回溯法对每轮迭代都需要清理上一轮迭代的决策的，used 只在单一递归深度里增加
@@ -85,7 +108,7 @@ public class Arrangement {
             List<List<Integer>> subResult = arrange(nums, used);
             for (List<Integer> list : subResult) {
                 // 把当前值作为结尾值放进来
-                list.add(i);
+                list.add(nums[i]);
             }
 
             // 在本层级更新结果
