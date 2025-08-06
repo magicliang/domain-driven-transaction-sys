@@ -77,7 +77,7 @@ public class Arrangement {
             // 递归进入下一层
             backtrack(nums, used, current, result);
 
-            // 撤销选择（回溯），易错的点：used 和 current 两个要一起撤销
+            // 撤销选择（回溯），易错的点：used 和 current 两个要一起撤销。current意味着当前的数据要穿梭到下游的数据，当本轮结束后，current的路径点上是不应该包含本 nums[i] 了
             current.remove(current.size() - 1);
             used[i] = false;
         }
