@@ -1,10 +1,7 @@
 package algorithm.beautiful.backtracing;
 
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -47,75 +44,39 @@ public class Arrangement {
 
     public static List<List<Integer>> arrange(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
-
-        if (nums.length == 1) {
-            List<Integer> list = new ArrayList<>();
-            list.add(nums[0]);
-            result.add(list);
+        if (nums == null || nums.length == 0) {
             return result;
         }
 
-        Set<Integer> used = new HashSet<>();
-
-        // brutal force 暴力穷举
-        for (int i = 0; i < nums.length; i++) {
-            // 遍历数组，产生当前的决策，然后把子问题丢到递归函数里面去，用他们的返回值来更新结果
-            used.add(i);// 记录当前决策，如果有必要，把这个值传给下方，这里不保存实际值，保存索引页可以
-
-            List<List<Integer>> subResult = arrange(nums, used);
-            for (List<Integer> list : subResult) {
-                // 把当前值作为结尾值放进来
-                list.add(nums[i]);
-            }
-
-            // 在本层级更新结果，回溯法对每轮迭代都需要清理上一轮迭代的决策的，used 只在单一递归深度里增加
-            used.remove(i);
-            result.addAll(subResult);
-        }
+        boolean[] used = new boolean[nums.length];
+        List<Integer> current = new ArrayList<>();
+        backtrack(nums, used, current, result);
         return result;
     }
 
-    private static List<List<Integer>> arrange(int[] nums, Set<Integer> used) {
-        List<List<Integer>> result = new ArrayList<>();
-
-        if (nums.length == 1) {
-            List<Integer> list = new ArrayList<>();
-            list.add(nums[0]);
-            result.add(list);
-            return result;
-        }
-        List<List<Integer>> finalResult = null;
-        if (used.size() == nums.length - 1) {
-            finalResult = new ArrayList<>();
-            finalResult.add(new ArrayList<>());
+    private static void backtrack(int[] nums, boolean[] used, List<Integer> current, List<List<Integer>> result) {
+        // 终止条件：当前排列长度等于数组长度
+        if (current.size() == nums.length) {
+            result.add(new ArrayList<>(current));
+            return;
         }
 
-        // brutal force 暴力穷举
+        // 选择列表：遍历所有未被使用的元素
         for (int i = 0; i < nums.length; i++) {
-
-            if (used.contains(i)) {
+            if (used[i]) {
                 continue;
             }
 
-            if (finalResult != null) {
-                finalResult.get(0).add(nums[i]);
-                return finalResult;
-            }
+            // 做出选择
+            used[i] = true;
+            current.add(nums[i]);
 
-            // 遍历数组，产生当前的决策，然后把子问题丢到递归函数里面去，用他们的返回值来更新结果
-            used.add(i);// 记录当前决策，如果有必要，把这个值传给下方
+            // 递归进入下一层
+            backtrack(nums, used, current, result);
 
-            List<List<Integer>> subResult = arrange(nums, used);
-            for (List<Integer> list : subResult) {
-                // 把当前值作为结尾值放进来
-                list.add(nums[i]);
-            }
-
-            // 在本层级更新结果
-            used.remove(i);
-            result.addAll(subResult);
+            // 撤销选择（回溯）
+            current.remove(current.size() - 1);
+            used[i] = false;
         }
-        return result;
     }
-
 }
