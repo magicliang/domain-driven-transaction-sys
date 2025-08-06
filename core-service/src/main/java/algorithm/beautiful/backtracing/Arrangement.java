@@ -50,6 +50,9 @@ public class Arrangement {
 
         boolean[] used = new boolean[nums.length];
         List<Integer> current = new ArrayList<>();
+
+        // 好的递归 backtrack 不依赖于返回值，而依赖于全局变量或者传递变量
+        // 竞赛的方式是在第一层初始化全部数据结构，但真正使用数据结构在第二层方法
         backtrack(nums, used, current, result);
         return result;
     }
@@ -74,7 +77,7 @@ public class Arrangement {
             // 递归进入下一层
             backtrack(nums, used, current, result);
 
-            // 撤销选择（回溯）
+            // 撤销选择（回溯），易错的点：used 和 current 两个要一起撤销
             current.remove(current.size() - 1);
             used[i] = false;
         }
