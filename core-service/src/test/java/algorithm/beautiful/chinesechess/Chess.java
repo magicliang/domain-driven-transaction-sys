@@ -69,7 +69,9 @@ public class Chess {
     public static void main(String[] args) {
 //        method1();
 //        method2();
-        method3();
+//        method3();
+
+        System.out.println(hammingWeight(11));
     }
 
     private static void method1() {
@@ -138,5 +140,14 @@ public class Chess {
                 }
             }
         }
+    }
+
+    public static int hammingWeight(int n) {
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n = n & (n - 1);  // 消除n中最右边的1
+        }
+        return count;
     }
 }
