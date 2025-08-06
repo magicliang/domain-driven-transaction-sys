@@ -77,6 +77,9 @@ public class PancakeSorting {
     public void init(int[] pCakeArray, int cakeCount) {
         this.cakeCount = cakeCount;
         // 复制初始数组到只读的 cakeArray
+        // 为什么拷贝？答：防御性编程，确保内部状态不被外部意外修改。
+        // 虽然在此简单示例中直接赋值 this.cakeArray = pCakeArray 也能工作，
+        // 但拷贝提供了更好的封装性和安全性。
         this.cakeArray = Arrays.copyOf(pCakeArray, cakeCount);
 
         // 设置初始上界 (启发式值，保证足够大以容纳最优解)
@@ -85,6 +88,8 @@ public class PancakeSorting {
 
         // 初始化存储最优解的数组
         // 大小设为初始上界，确保空间足够。
+        // 为什么是 maxSwap 而不是 maxSwap + 1？
+        // 答：maxSwap 本身就是上界，代表最大可能的翻转次数。数组大小等于上界即可保证安全。
         this.swapArray = new int[this.maxSwap];
 
         // 初始化当前搜索状态数组 (工作区)
@@ -139,9 +144,13 @@ public class PancakeSorting {
     /**
      * 启发式函数：估算从当前烙饼状态到目标状态（升序）所需的最少翻转次数下界
      * 用于剪枝，减少不必要的搜索。
-     * 思路：检查相邻烙饼的顺序和大小关系。
-     * 如果相邻两个烙饼在大小上是连续递增的 (差值为1)，则认为它们相对位置较好。
-     * 如果不连续或顺序错误，则认为需要至少一次翻转来调整它们，增加估算值。
+     * 思路：检查相邻烙饼的顺序关系。
+     * 问题讨论：为什么检查 difference != 1 而不是 p[i-1] < p[i]？
+     * 答：原始 C++ 代码逻辑是检查相邻元素是否在“排序上相邻”（差值为1或-1），
+     *     可能是为配合其（略有不一致的）递减目标。本 Java 实现明确了目标是递增排序，
+     *     因此一个更通用的判断是检查 p[i-1] < p[i]。当前实现保留了原逻辑（检查 == 1），
+     *     但这隐含了输入数据是（或趋向于）连续整数的假设。一个更普适的 lowerBound
+     *     可能是：if (pCakeArray[i - 1] >= pCakeArray[i]) ret++;
      *
      * @param pCakeArray 当前烙饼状态数组
      * @param cakeCount 烙饼数量
@@ -149,6 +158,12 @@ public class PancakeSorting {
      */
     public int lowerBound(int[] pCakeArray, int cakeCount) {
         int ret = 0;
+        // 遍历所有相邻的元素对。
+        // 为什么循环是 for (int i = 1; i < cakeCount; ++i) ?
+        // 答：i 代表每对元素中的第二个元素索引。
+        //     从 i=1 开始是为了安全访问 p[i-1] (即索引 0)。
+        //     到 i < cakeCount 结束是为了避免访问 p[cakeCount] (越界)。
+        //     这样正好遍历了 (p[0],p[1]), (p[1],p[2]), ..., (p[n-2],p[n-1]) 共 n-1 对。
         for (int i = 1; i < cakeCount; ++i) {
             int difference = pCakeArray[i] - pCakeArray[i - 1];
             // 检查相邻元素是否是连续递增的 (例如 3, 4)
@@ -180,6 +195,18 @@ public class PancakeSorting {
      * reverseCakeArray 恢复到进入本次循环 (执行翻转 i 之前) 的状态。
      * reverseCakeArraySwap 中对应 step 的记录会被下一次循环覆盖，无需手动清除。
      *
+     * 关于返回点和状态管理的讨论：
+     * 问题：search 函数有两个返回点（剪枝返回和找到解返回），为什么不清理 reverseCakeArraySwap？
+     * 答：因为不需要。
+     * 1. reverseCakeArraySwap[step] 的值由 search(step) 自身在其 for 循环中写入。
+     * 2. 当 search(step) 从递归调用返回后，无论该调用是因剪枝还是找到解而返回，
+     *    search(step) 都会立即执行回溯操作 reverse(0, i) 恢复工作区状态。
+     * 3. 然后，search(step) 的 for 循环会进入下一次迭代，尝试下一个翻转位置 i'。
+     *    在这次迭代开始时，search(step) 会立刻执行 reverseCakeArraySwap[step] = i'。
+     *    这会覆盖掉上一次迭代（尝试 i）时留在该位置的任何“脏”数据。
+     * 4. 因此，清理旧数据的责任在于下一次写入操作（覆盖），而不是显式的清理。
+     *    这是回溯法中高效的状态管理方式：每个层级只关心自己的槽位，旧值会被新值自然覆盖。
+     *
      * @param step 当前已经执行的翻转步数
      */
     public void search(int step) {
@@ -190,7 +217,7 @@ public class PancakeSorting {
         estimate = lowerBound(reverseCakeArray, cakeCount);
         // 剪枝：如果 (已执行步数 + 估算剩余步数) >= 当前已知最优解步数，则此分支不可能更优，停止搜索
         if (step + estimate >= maxSwap) {
-            return;
+            return; // 返回点 1: 剪枝返回
         }
 
         // 检查当前状态是否已经排序完成 (目标：从上到下递增)
@@ -205,7 +232,7 @@ public class PancakeSorting {
                     swapArray[i] = reverseCakeArraySwap[i];
                 }
             }
-            return; // 找到解，返回上一层
+            return; // 返回点 2: 找到解并返回
         }
 
         // 递归尝试所有可能的翻转操作
@@ -220,6 +247,11 @@ public class PancakeSorting {
             // --- 关键步骤 2: 记录路径 ---
             // 记录本次翻转操作的位置 (即翻转了顶部 i+1 个饼，记录位置 i)
             // 这记录了当前搜索路径上的一个决策
+            // 为什么 reverseCakeArraySwap 的状态不会错乱？
+            // 答：因为 step 参数精确指定了每个递归层级操作的数组索引。
+            //     search(step) 只写 reverseCakeArraySwap[step]。
+            //     不同层级操作不同索引，同一层级在循环中更新同一索引（这是功能性的覆盖）。
+            //     回溯保证了工作区状态的恢复，使得不同分支的探索互不干扰。
             reverseCakeArraySwap[step] = i;
 
             // --- 关键步骤 3: 递归探索 ---
