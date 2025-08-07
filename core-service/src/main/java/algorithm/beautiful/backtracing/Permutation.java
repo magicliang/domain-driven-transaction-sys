@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
  *
  * description: 尝试使用球盒模型来获取全部的排列
  *
+ * 盒的视角是更好理解的，球的视角很容易搞出时间复杂度高的解决方案。
+ *
  * @author magicliang
  *
  *         date: 2025-08-07 11:38
