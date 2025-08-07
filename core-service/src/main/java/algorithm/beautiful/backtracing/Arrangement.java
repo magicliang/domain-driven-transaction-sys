@@ -39,6 +39,8 @@ public class Arrangement {
         int[] nums5 = {1, 1, 2};
         System.out.println("测试用例5 - 数组 [1,1,2] 的全排列: " + arrange(nums5));
 
+        System.out.println("测试用例5 - 数组 [1,1,2] 的 permutationsII 全排列: " + permutationsII(nums5));
+
         // 测试用例6：空数组
         int[] nums6 = {};
         System.out.println("测试用例6 - 空数组的全排列: " + arrange(nums6));
@@ -67,10 +69,14 @@ public class Arrangement {
         }
 
         // 选择列表：遍历所有未被使用的元素
+
+        // 这个列表可以过滤掉本轮用过的元素，如果全局有n个元素（比如2个1），那么剪枝过后，结果数量会/n。比如 [1,1,2] 原本输出6个排列，现在只剩下3个
         Set<Integer> duplicated = new HashSet<>();
         for (int i = 0; i < nums.length; i++) {
-            // 这是一个剪枝
-            if (used[i] || duplicated.contains(nums[i])) {
+            // 这是一个全路径剪枝和本轮剪枝结合的做法
+            if (used[i]
+                    || duplicated.contains(nums[i])
+            ) {
                 continue;
             }
 
@@ -88,5 +94,38 @@ public class Arrangement {
             current.remove(current.size() - 1);
             used[i] = false;
         }
+    }
+
+    /* 回溯算法：全排列 II */
+    static void backtrack(List<Integer> state, int[] choices, boolean[] selected, List<List<Integer>> res) {
+        // 当状态长度等于元素数量时，记录解
+        if (state.size() == choices.length) {
+            res.add(new ArrayList<Integer>(state));
+            return;
+        }
+        // 遍历所有选择
+        Set<Integer> duplicated = new HashSet<Integer>();
+        for (int i = 0; i < choices.length; i++) {
+            int choice = choices[i];
+            // 剪枝：不允许重复选择元素 且 不允许重复选择相等元素
+            if (!selected[i] && !duplicated.contains(choice)) {
+                // 尝试：做出选择，更新状态
+                duplicated.add(choice); // 记录选择过的元素值
+                selected[i] = true;
+                state.add(choice);
+                // 进行下一轮选择
+                backtrack(state, choices, selected, res);
+                // 回退：撤销选择，恢复到之前的状态
+                selected[i] = false;
+                state.remove(state.size() - 1);
+            }
+        }
+    }
+
+    /* 全排列 II */
+    static List<List<Integer>> permutationsII(int[] nums) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        backtrack(new ArrayList<Integer>(), nums, new boolean[nums.length], res);
+        return res;
     }
 }
