@@ -1,7 +1,9 @@
 package algorithm.beautiful.backtracing;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -33,7 +35,7 @@ public class Arrangement {
         System.out.println("测试用例4 - 数组 [1,2,3,4] 的全排列数量: " + result4.size());
         System.out.println("测试用例4 - 前5个排列: " + result4.subList(0, Math.min(5, result4.size())));
 
-        // 测试用例5：包含重复元素
+        // 测试用例5：包含重复元素，如果要去除重复元素，要有一个横跨所有函数的
         int[] nums5 = {1, 1, 2};
         System.out.println("测试用例5 - 数组 [1,1,2] 的全排列: " + arrange(nums5));
 
@@ -59,14 +61,16 @@ public class Arrangement {
 
     private static void backtrack(int[] nums, boolean[] used, List<Integer> current, List<List<Integer>> result) {
         // 终止条件：当前排列长度等于数组长度
-        if (current.size() == nums.length) {
+        if (current.size() == nums.length) {  // 这是一个剪枝
             result.add(new ArrayList<>(current));
             return;
         }
 
         // 选择列表：遍历所有未被使用的元素
+        Set<Integer> duplicated = new HashSet<>();
         for (int i = 0; i < nums.length; i++) {
-            if (used[i]) {
+            // 这是一个剪枝
+            if (used[i] || duplicated.contains(nums[i])) {
                 continue;
             }
 
@@ -74,6 +78,9 @@ public class Arrangement {
             used[i] = true;
             current.add(nums[i]);
 
+            // 在同层里用duplicated去重，这样这一层会少一个循环-这样剪枝意味着嵌套的层数变少
+
+            duplicated.add(nums[i]);
             // 递归进入下一层
             backtrack(nums, used, current, result);
 
