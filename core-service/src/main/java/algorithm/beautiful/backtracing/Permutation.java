@@ -103,7 +103,7 @@ class Permutation1 {
 
     public static void backtracing(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> result) {
         // 在找到特定的组合以后，在此处剪枝
-        if (path.size() == nums.length) {
+        if (path.size() == nums.length - 1) { // 提前返回是剪枝，“快排好”是一种翻煎饼式的剪枝
             // 这个复制深拷贝是为了上方的撤销决策的时候能够不影响输出数据，是必要的空间复杂度
             List<Integer> temp = new ArrayList<>(path);
             result.add(temp);
