@@ -41,15 +41,28 @@ import java.util.List;
  */
 public class NQueen {
 
-    public List<List<Integer>> nQueen(int n) {
+    public List<List<List<Integer>>> nQueen(int n) {
         // 先准备一个二维数组的结果集作为返回值
-        List<List<Integer>> result = new ArrayList<>();
+        List<List<List<Integer>>> result = new ArrayList<>();
+        List<List<Integer>> combination = new ArrayList<>();
+
         // 第一个used数组，n 列
         int[] cols = new int[n];
-        int[] diags = new int
+        final int diagLength = n - 1;
+        int[] diags1 = new int[diagLength];
+        int[] diags2 = new int[diagLength];
+
+        backtrack(n, 0, cols, diags1, diags2, combination, result);
 
         return result;
+    }
 
-        return result;
+    // 用递归和回溯的方式写入皇后的解
+    private void backtrack(int n, int i, int[] cols, int[] diags1, int[] diags2, List<List<Integer>> combination,
+            List<List<List<Integer>>> result) {
+        if (i == n - 1) {
+
+        }
+
     }
 }
