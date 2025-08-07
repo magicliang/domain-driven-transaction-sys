@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
  *
  * 盒的视角是更好理解的，球的视角很容易搞出时间复杂度高的解决方案。
  *
+ * 用「盒」的视角，即让索引取选元素的视角，可以用swap的方法把used数组给优化掉
+ *
  * @author magicliang
  *
  *         date: 2025-08-07 11:38
