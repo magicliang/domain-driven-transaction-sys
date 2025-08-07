@@ -60,7 +60,8 @@ public class NQueen {
     // 用递归和回溯的方式写入皇后的解
     private void backtrack(int n, int i, int[] cols, int[] diags1, int[] diags2, List<List<Integer>> combination,
             List<List<List<Integer>>> result) {
-        if (i == n - 1) {
+        // 第i层到了，可以收束输出结果了
+        if (i == n) {
 
         }
 
