@@ -74,8 +74,8 @@ public class Arrangement {
         Set<Integer> duplicated = new HashSet<>();
         for (int i = 0; i < nums.length; i++) {
             // 这是一个全路径剪枝和本轮剪枝结合的做法
-            if (used[i]
-                    || duplicated.contains(nums[i])
+            if (used[i] // 重复元素剪枝
+                    || duplicated.contains(nums[i]) // 相等元素剪枝
             ) {
                 continue;
             }
