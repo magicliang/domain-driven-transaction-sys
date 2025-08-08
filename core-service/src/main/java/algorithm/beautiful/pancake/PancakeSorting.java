@@ -138,7 +138,7 @@ public class PancakeSorting {
      */
     public int upperBound(int cakeCount) {
         // 使用 2 * n 作为初始上界 (比最坏情况 2*(n-1) 稍宽松)
-        return cakeCount * 2;
+        return (cakeCount - 1) * 2;
     }
 
     /**
