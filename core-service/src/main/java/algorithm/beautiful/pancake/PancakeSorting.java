@@ -216,7 +216,10 @@ public class PancakeSorting {
         // 估算从当前状态到目标状态所需的最少翻转次数
         estimate = lowerBound(reverseCakeArray, cakeCount);
         // 剪枝：如果 (已执行步数 + 估算剩余步数) >= 当前已知最优解步数，则此分支不可能更优，停止搜索
-        if (step + estimate >= maxSwap) {
+        if (step + estimate >= maxSwap) { // 如果用 step >= maxSwap 来代替这个条件，也可能得到一个更小的 minimum flips，但是这个问题已经被证明是一个 np
+            // hard 问题 煎饼排序的相关背景内容可以参考百度百科「煎饼排序」。2011年，劳伦特·比尔托（Laurent Bulteau）、纪尧姆·佛丁（Guillaume Fertin）和伊雷娜·鲁苏（Irena
+            // Rusu）证明了给定一叠煎饼的长度分布，找到最短解法是 NP 困难的，参考论文「Bulteau, Laurent; Fertin, Guillaume; Rusu, Irena. Pancake
+            // Flipping Is Hard. Journal of Computer and System Sciences: 1556–1574.」。
             return; // 返回点 1: 剪枝返回
         }
 
