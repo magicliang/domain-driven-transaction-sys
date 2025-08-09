@@ -64,6 +64,7 @@ public class ExpandExperiment {
      * 6. 在遍历 originType 内部的时候，从 result 的内部用元素与元素乘出来我们需要的元素，然后作为结果的新行插进 temp 结果里
      * 7. 然后完成替换
      *
+     * 自底向上或逐步构建的方式是内存的空间复杂更好的方式，即使有不可避免的内存拷贝。
      * @param originTypes 输入的列表套列表
      * @param <T> 泛型类型
      * @return 所有可能的组合结果
@@ -115,6 +116,7 @@ public class ExpandExperiment {
             return result;
         }
         List<T> currentList = originTypes.get(current);
+        // 递归意味着实际上会引入更多的临时内存，即使它不是堆内存，但仍然是有空间复杂度的
         List<List<T>> restList = expandToCombinations2(originTypes, current - 1);
 
         List<List<T>> result = new ArrayList<>(restList.size() * currentList.size());
