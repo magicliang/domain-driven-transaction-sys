@@ -44,11 +44,17 @@ public class ExpandExperiment {
         textComponents.add("txtY");
         componentLists.add(textComponents);
 
-        final List<List<String>> results = expandToCombinations1(componentLists);
-        System.out.println(results);
+        final List<List<String>> results1 = expandToCombinations1(componentLists);
+        System.out.println("results1: ");
+        System.out.println(results1);
+        final List<List<String>> results2 = expandToCombinations2(componentLists);
+        System.out.println("results2: ");
+        System.out.println(results2);
+
     }
 
     /**
+     * expandToCombinations1 算法是一个标准的迭代式笛卡尔积生成算法
      * 算法的本质是：
      * 1. 从一个空的列表套列表 {{}} 开始
      * 2. 然后用 originTypes 的每个元素进行叉乘
@@ -67,7 +73,6 @@ public class ExpandExperiment {
         List<List<T>> result = new ArrayList<>();
         result.add(new ArrayList<>());
 
-        //  这是一个类似贪心的展开吗？
         for (List<T> originType : originTypes) {
             // 每一个列的子元素全部插入，组件嵌套表升级一轮
             List<List<T>> tempResult = new ArrayList<>();
@@ -87,4 +92,36 @@ public class ExpandExperiment {
 
         return result;
     }
+
+    public static <T> List<List<T>> expandToCombinations2(List<List<T>> originTypes) {
+        return expandToCombinations2(originTypes, 0);
+    }
+
+    public static <T> List<List<T>> expandToCombinations2(List<List<T>> originTypes, int current) {
+        if (current == originTypes.size() - 1) {
+            List<T> basicElement = originTypes.get(current);
+            List<List<T>> result = new ArrayList<>(basicElement.size());
+            for (T e : basicElement) {
+                List<T> list = new ArrayList<>();
+                list.add(e);
+                result.add(list);
+            }
+            return result;
+        }
+        List<T> currentList = originTypes.get(current);
+        List<List<T>> restList = expandToCombinations2(originTypes, current + 1);
+
+        List<List<T>> result = new ArrayList<>(restList.size() * currentList.size());
+        for (T currentEle : currentList) {
+            for (List<T> list : restList) {
+                // 在二重嵌套里，为每一个外部的 currentEle 生成一个新list，再插入
+                List<T> newList = new ArrayList<>(list);
+                newList.add(currentEle);
+                result.add(newList);
+            }
+        }
+        return result;
+    }
+
+
 }
