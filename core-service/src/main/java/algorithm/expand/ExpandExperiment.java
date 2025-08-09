@@ -44,7 +44,7 @@ public class ExpandExperiment {
         textComponents.add("txtY");
         componentLists.add(textComponents);
 
-        final List<List<String>> results = expandToCombinations(componentLists);
+        final List<List<String>> results = expandToCombinations1(componentLists);
         System.out.println(results);
     }
 
@@ -62,7 +62,7 @@ public class ExpandExperiment {
      * @param <T> 泛型类型
      * @return 所有可能的组合结果
      */
-    public static <T> List<List<T>> expandToCombinations(List<List<T>> originTypes) {
+    public static <T> List<List<T>> expandToCombinations1(List<List<T>> originTypes) {
         // 插入一个空集合进行迭代
         List<List<T>> result = new ArrayList<>();
         result.add(new ArrayList<>());
@@ -73,7 +73,9 @@ public class ExpandExperiment {
             for (T originTypeEle : originType) {
                 // 如果把 升级放在这里，第一级的 size list 的嵌套元素的始终只有一个，只在一个嵌套元素里插入升级，最后结果就变成 [imgA, imgB, txtX, txtY]
                 for (List<T> currentRow : result) {
+                    // 化新元素为行
                     List<T> newRows = new ArrayList<>(currentRow.size());
+                    // 插入新行
                     newRows.addAll(currentRow);
                     newRows.add(originTypeEle);
                     tempResult.add(newRows);
