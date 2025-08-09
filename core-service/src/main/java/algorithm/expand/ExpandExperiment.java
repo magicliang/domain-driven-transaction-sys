@@ -67,6 +67,7 @@ public class ExpandExperiment {
         List<List<T>> result = new ArrayList<>();
         result.add(new ArrayList<>());
 
+        //  这是一个类似贪心的展开吗？
         for (List<T> originType : originTypes) {
             // 每一个列的子元素全部插入，组件嵌套表升级一轮
             List<List<T>> tempResult = new ArrayList<>();
