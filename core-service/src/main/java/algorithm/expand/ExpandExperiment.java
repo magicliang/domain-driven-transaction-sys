@@ -94,11 +94,17 @@ public class ExpandExperiment {
     }
 
     public static <T> List<List<T>> expandToCombinations2(List<List<T>> originTypes) {
-        return expandToCombinations2(originTypes, 0);
+        // 用逆序的方法保证正序
+        return expandToCombinations2(originTypes, originTypes.size() - 1);
     }
 
     public static <T> List<List<T>> expandToCombinations2(List<List<T>> originTypes, int current) {
-        if (current == originTypes.size() - 1) {
+        if (originTypes == null || originTypes.size() == 0) {
+            List<List<T>> result = new ArrayList<>();
+            result.add(new ArrayList<>());
+            return result;
+        }
+        if (current == 0) {
             List<T> basicElement = originTypes.get(current);
             List<List<T>> result = new ArrayList<>(basicElement.size());
             for (T e : basicElement) {
@@ -109,7 +115,7 @@ public class ExpandExperiment {
             return result;
         }
         List<T> currentList = originTypes.get(current);
-        List<List<T>> restList = expandToCombinations2(originTypes, current + 1);
+        List<List<T>> restList = expandToCombinations2(originTypes, current - 1);
 
         List<List<T>> result = new ArrayList<>(restList.size() * currentList.size());
         for (T currentEle : currentList) {
