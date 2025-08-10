@@ -1,4 +1,4 @@
-package algorithm.bignumber;
+package algorithm.math.bignumber;
 
 
 import java.util.Arrays;

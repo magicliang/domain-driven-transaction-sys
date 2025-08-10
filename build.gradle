@@ -1,4 +1,5 @@
-// 构建脚本
+// build.gradle (根项目)
+
 // gradle 官方不推荐这个脚本，但是把这个脚本拆解到子项目里比较麻烦：Some builds may contain a build.gradle(.kts) file in the root project but this is NOT recommended.
 // Generally, a build script details build configuration, tasks, and plugins.
 
@@ -15,21 +16,21 @@ plugins {
     // These plugins are not automatically applied.
     // They can be applied in subprojects as needed (in their respective build files).
 
-//    // 中文使用指南：https://www.jianshu.com/p/01588c396a29
+    //    // 中文使用指南：https://www.jianshu.com/p/01588c396a29
     id 'org.springframework.boot' version '2.7.18' // 在任意子项目里 id 这个插件不再需要版本
-//    // 这两个版本是如何搭配的，是 initializr 决定的吗？
+    //    // 这两个版本是如何搭配的，是 initializr 决定的吗？
     id("io.spring.dependency-management") version "1.1.7"
-//    // 大于等于 java/java-library，支持一个 CLI application，能够 bootRun
-//    id 'application'
-//    id 'idea'
-//    // 这些配置会让我们的项目可以从根部进行 gradle clean build，然后也能生成 report
-//
-//    // test 其实是一个 conventional test suit，它也是可配置的 https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:declare_an_additional_test_suite
-//    id 'jvm-test-suite'
-//    id 'test-report-aggregation'
+    //    // 大于等于 java/java-library，支持一个 CLI application，能够 bootRun
+    //    id 'application'
+    //    id 'idea'
+    //    // 这些配置会让我们的项目可以从根部进行 gradle clean build，然后也能生成 report
+    //
+    //    // test 其实是一个 conventional test suit，它也是可配置的 https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:declare_an_additional_test_suite
+    //    id 'jvm-test-suite'
+    //    id 'test-report-aggregation'
 
     // Script plugins are Groovy DSL or Kotlin DSL scripts that are applied directly to a Gradle build script using the apply from: syntax. They are applied inline within a build script to add functionality or customize the build process. They are not recommended but it’s important to understand how to work:
-    // apply from: 'https://sonatype.com/nexus3/repository/raw/gradle/nexus3_v7.gradle'
+    // apply from: '  https://sonatype.com/nexus3/repository/raw/gradle/nexus3_v7.gradle  '
 }
 
 group = 'com.magicliang'
@@ -51,23 +52,23 @@ version = '0.0.1-SNAPSHOT'
 //}
 
 // 这个项目不适合放在 allprojects 和 subprojects
-apply from: 'script-plugin.gradle'
+apply from: 'script-plugin.gradle' // 请确保此路径正确
 
 dependencies {
     // 非官方版本的 starter 列表：https://www.javatpoint.com/spring-boot-starters
     // 这些依赖列在这里，不会影响 subProjects，其一般用处是，列出潜在的 starter 依赖列表
-//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-//    implementation 'org.springframework.boot:spring-boot-devtools'
-//
-//    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testImplementation 'io.projectreactor:reactor-test'
+    //    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    //    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    //    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+    //    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    //    implementation 'org.springframework.boot:spring-boot-devtools'
+    //
+    //    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    //    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    //    testImplementation 'io.projectreactor:reactor-test'
 
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    //    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    //    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 // https://docs.gradle.org/current/userguide/toolchains.html#toolchains
@@ -91,18 +92,33 @@ allprojects {
     apply plugin: 'io.spring.dependency-management'
 
     ext {
-        // spring cloud 和 spring boot 的版本兼容性见：https://start.spring.io/actuator/info
+        // spring cloud 和 spring boot 的版本兼容性见：  https://start.spring.io/actuator/info
         set('springCloudVersion', "2021.0.8")
+        // --- 统一 JUnit 版本 ---
+        // 为了解决 NoClassDefFoundError: org.junit.jupiter.api.Named 错误，
+        // 我们将 JUnit Jupiter 和 Platform 版本统一设置为兼容且较新的版本 (5.9.3 / 1.9.3)
+        set('junitJupiterVersion', '5.9.3')
+        set('junitPlatformVersion', '1.9.3') // Platform 版本通常与 Jupiter 的次要版本匹配
+        // --- 结束 JUnit 版本配置 ---
     }
 
     dependencyManagement {
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
         }
+        // 可以在这里通过 dependencyManagement 统一管理 JUnit 版本，或者像下面一样显式声明
+        // dependencies {
+        //     dependency "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+        //     dependency "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+        //     dependency "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
+        //     dependency "org.junit.platform:junit-platform-engine:${junitPlatformVersion}"
+        //     dependency "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+        // }
     }
 
     repositories {
         // 参考：https://bbs.huaweicloud.com/blogs/257878
+        // 注意：确保 URL 正确且可访问。部分阿里云链接可能需要调整或验证。
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://maven.aliyun.com/repository/central" }
         maven { url "https://maven.aliyun.com/repository/jcenter" }
@@ -110,7 +126,7 @@ allprojects {
         maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
         maven { url "https://mirrors.163.com/maven/repository/maven-central" }
         maven { url "https://maven.aliyun.com/nexus/content/groups/public/" }
-//        maven { url "http://maven.oschina.net/content/groups/public/" }
+        //        maven { url "http://maven.oschina.net/content/groups/public/" }
         maven { url "https://maven.douban.com" }
         maven { url "https://mirrors.cloud.tencent.com/repository/maven-public" }
         maven { url "https://repo.huaweicloud.com/repository/maven" }
@@ -126,41 +142,46 @@ allprojects {
     }
 
     dependencies {
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        // --- 为所有项目（包括根项目）配置统一的 JUnit 5 依赖 ---
+        // 确保在根项目和所有子项目中使用一致的 JUnit 版本，覆盖潜在的冲突
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}" // 用于参数化测试
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+
+        // 显式管理 JUnit Platform 版本以确保与 Jupiter 版本匹配
+        testImplementation "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
+        testRuntimeOnly "org.junit.platform:junit-platform-engine:${junitPlatformVersion}"
+        // --- 结束 JUnit 5 配置 ---
     }
 
     tasks.withType(JavaCompile).configureEach {
         options.fork = true
+        // 示例：添加编译器警告 (如果需要)
+        // options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }
 }
-
-
-// 不在这一层使用这个配置，也能从根部运行全部的测试，但要运行具名的测试，需要 cd 到具体的目录下
-//test {
-//    // 这个配置很关键，会让 platform 找到 jupiter 包相关的测试
-//    useJUnitPlatform()
-//}
 
 // 指定插件作用于子项目
 subprojects {
 
     // 插件 apply plugin，version 语法不一样，在 subprojects 里只能用旧语法
-    // 如果在上下文的一处已经做过 artifact version resolve 的动作，则在另一处（在本例中是 subproject 里）可以使用这种老式的放来来 apply plugin
-//    apply plugin: 'java'
+    // 如果在上下文的一处已经做过 artifact version resolve 的动作，则在另一处（在本例中是 subproject 里）可以使用这种老式的方式来 apply plugin
+    //    apply plugin: 'java'
 
     // 只要子项目激活这两个 plugin 就可以启动，但如果子模块没有这两个配置，则不能使用 bootJar 之类的配置
     apply plugin: 'org.springframework.boot'
 
     apply plugin: 'application'
-    apply plugin: 'jvm-test-suite'
-    apply plugin: 'test-report-aggregation'
+    // apply plugin: 'jvm-test-suite' // 用于高级测试套件配置 (可选)
+    // apply plugin: 'test-report-aggregation' // 用于聚合来自子项目的测试报告 (可选)
 
     configurations {
-//		all*.exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+        //		all*.exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
         // 对排除 logback 而言，这个配置最有用，子项目必须排除掉这个依赖
         all*.exclude module: 'spring-boot-starter-logging'
-//		all*.exclude group:'org.springframework.boot', module: 'spring-boot-starter-logging'
+        //		all*.exclude group:'org.springframework.boot', module: 'spring-boot-starter-logging'
+        // 示例：排除其他潜在冲突的传递依赖 (如果需要)
+        // all*.exclude group: 'org.unwanted.group', module: 'unwanted-module'
     }
 
     repositories {
@@ -174,6 +195,9 @@ subprojects {
         // 一般的依赖则使用 scope 别名来引用
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+        testCompileOnly 'org.projectlombok:lombok:1.18.24' // 为测试固定版本
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
         // 让所有的子模块都拥有基本的 spring 依赖
         implementation 'org.springframework.boot:spring-boot-starter'
         // 这个依赖让底层能够拥有 log4j2，但并不去掉 logback 的影响
@@ -189,34 +213,43 @@ subprojects {
                 strictly("2.10")
             }
         }
+        // OpenTelemetry instrumentation BOM 用于统一版本
         implementation(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.10.0"))
-
         implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.10.0'
         implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-logback-mdc-1.0', version: '2.10.0-alpha'
 
         // 在这里实现了对 spring-boot-test jar 的引入，确切地讲，@SpringBootTest 这个注解依赖于本依赖
+        // --- 排除 spring-boot-starter-test 的 JUnit 依赖 ---
+        // 排除 starter-test 传递引入的旧 JUnit 依赖，以确保我们显式声明的版本 (5.9.3/1.9.3) 被使用。
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
-//					exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+            // 排除 starter-test 中的 JUnit Jupiter 和 Platform 依赖
+            exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
+            exclude group: 'org.junit.platform', module: 'junit-platform-commons'
+            exclude group: 'org.junit.platform', module: 'junit-platform-engine'
+            // exclude group: 'org.junit.vintage', module: 'junit-vintage-engine' // 如果不需要 Vintage
         }
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-
-        testCompileOnly 'org.projectlombok:lombok:1.18.24'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+        // --- 为子项目重新声明统一的 JUnit 5 依赖 ---
+        // 这加强了在 allprojects 中设置的版本，并确保它们覆盖 starter-test 的版本。
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+        testImplementation "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
+        testRuntimeOnly "org.junit.platform:junit-platform-engine:${junitPlatformVersion}"
+        // --- 结束子项目的 JUnit 5 配置 ---
     }
 
-/*
- * 对于测试来讲，子项目的配置是更重要的，这个配置写在外面不生效
- * 关于复合 sourceSet，可以参考：
- * https://groups.google.com/g/adt-dev/c/EXdoKIMX0wg
- * https://docs.gradle.org/current/userguide/building_java_projects.html#sec:custom_java_source_set_paths
- * 分离单元测试和集成测试需要仔细阅读这几个帖子：
- * https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
- * https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
- * https://docs.gradle.org/current/userguide/java_testing.html#sec:configuring_java_integration_tests
- * https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#jvm_test_suite_plugin
- * 搜索关键词为：separate unit test and integration test
- */
+    /*
+     * 对于测试来讲，子项目的配置是更重要的，这个配置写在外面不生效
+     * 关于复合 sourceSet，可以参考：
+     * https://groups.google.com/g/adt-dev/c/EXdoKIMX0wg
+     * https://docs.gradle.org/current/userguide/building_java_projects.html#sec:custom_java_source_set_paths
+     * 分离单元测试和集成测试需要仔细阅读这几个帖子：
+     *   https://discuss.gradle.org/t/separate-execution-for-java-unit-and-integration-tests/8713
+     * https://inspeerity.com/blog/separate-gradle-tasks-for-unit-and-integration-tests
+     * https://docs.gradle.org/current/userguide/java_testing.html#sec:configuring_java_integration_tests
+     *   https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#jvm_test_suite_plugin
+     * 搜索关键词为：separate unit test and integration test
+     */
     test {
         // 允许测试任务按照计算密集型（cpu-bound）的思路 fork process 执行
         maxParallelForks = Runtime.runtime.availableProcessors()
@@ -227,28 +260,27 @@ subprojects {
          */
         useJUnitPlatform {
             // 这里面任意一个不打开，即可以让 jupiter 相关的 api 自动搜索到相关测试
-//        includeEngines 'junit-vintage'
-//        includeEngines 'junit-jupiter'
+            //        includeEngines 'junit-vintage'
+            //        includeEngines 'junit-jupiter'
             // excludeEngines 'junit-jupiter'
             testLogging {
                 events("passed", "skipped", "failed")
+                // exceptionFormat "full" // 显示失败的完整堆栈跟踪 (可选)
             }
 
         }
     }
-//    task testReport(type: TestReport) {
-////        destinationDir = file("$buildDir/reports/allTests")
-//        // Include the results from the `test` task in all subprojects
-//    }
 
+    // Configure Java compilation for subprojects (if different from allprojects)
     tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        // 示例：为子项目添加特定的编译器参数
+        // options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }
 
-// make aggregate test report generation part of the 'check' lifecycle phase
-    tasks.named('check') {
-        dependsOn tasks.named('testAggregateTestReport', TestReport)
-    }
+    // 示例：如果应用了聚合报告插件，则集成
+    // tasks.named('check') {
+    //     dependsOn tasks.named('testAggregateTestReport', TestReport)
+    // }
 }
 
 bootJar {
@@ -263,14 +295,14 @@ bootJar {
 //}
 
 //// Configuring the wrapper, the old way (gradle < 4.8 )
-//// see https://docs.gradle.org/4.4/userguide/gradle_wrapper.html#sec:wrapper_generation
+//// see   https://docs.gradle.org/4.4/userguide/gradle_wrapper.html#sec:wrapper_generation
 //task wrapper(type: Wrapper) {
 //	gradleVersion = '4.4'
 //	distributionType = Wrapper.DistributionType.BIN
 //}
 
 // Configuring the wrapper, the new way (since Gradle 4.8)
-// see https://docs.gradle.org/current/userguide/gradle_wrapper.html#customizing_wrapper
+// see   https://docs.gradle.org/current/userguide/gradle_wrapper.html#customizing_wrapper
 wrapper {
     gradleVersion = '8.6'
     distributionType = Wrapper.DistributionType.BIN
