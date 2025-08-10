@@ -1,5 +1,8 @@
 package algorithm.dp;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 使用动态规划 (Kadane's Algorithm) 解决最大子数组和问题。
  *
@@ -69,6 +72,38 @@ public class MaxSubArray {
 
         /* 循环结束时，maxCurrent 存储了 max(dp[0], dp[1], ..., dp[n-1]) 的计算结果，即整个数组的最大子数组和 */
         return maxCurrent;
+    }
+
+    public static List<Integer> getMaxSubArraySumCoOrdination(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            throw new IllegalArgumentException("Input array must not be null or empty");
+        }
+
+        int currentDp = arr[0];
+        int maxDp = currentDp;
+        int begin = 0;
+        int end = 0;
+        int potentialBegin = 0; // 潜在的新起始位置
+
+        for (int i = 1; i < arr.length; i++) {
+            int newSum = currentDp + arr[i];
+            if (newSum > arr[i]) {
+                currentDp = newSum;
+            } else {
+                currentDp = arr[i];
+                // 记录可能的新起始点
+                // 易错的点：这里既然有了新起点，就应该记录潜在的点，但是不应该赋给 begin 和 end，这里不记录，只在 currentDp > maxDp 更新 begin 也是不对的-那样 begin 永远是0
+                potentialBegin = i;
+            }
+
+            if (currentDp > maxDp) {
+                maxDp = currentDp;
+                begin = potentialBegin; //只有进入这个逻辑分支，才改写 begin 和 end
+                end = i;
+            }
+        }
+
+        return Arrays.asList(begin, end);
     }
 
 }
