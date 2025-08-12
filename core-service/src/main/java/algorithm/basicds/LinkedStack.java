@@ -21,10 +21,9 @@ public class LinkedStack<T> implements Stack<T> {
 
         private T item;
 
-        private Node<T> next;
-
         /**
          * 为了方便操作，还是需要增加 prev 方便在尾部增减元素
+         * 易错的点：栈其实是个单向的链表，next是没用的，通常我们使用尾指针来反推其他元素就可以了
          */
         private Node<T> prev;
 
@@ -72,9 +71,9 @@ public class LinkedStack<T> implements Stack<T> {
             return;
         }
 
-        top.next = new Node<>(item);
-        top.next.prev = top;
-        top = top.next;
+        Node<T> newTop = new Node<>(item);
+        newTop.prev = top;
+        top = newTop;
     }
 
     /**
@@ -88,14 +87,11 @@ public class LinkedStack<T> implements Stack<T> {
         if (top == null) {
             throw new EmptyStackException();
         }
-        Node<T> oldTail = top;
+        Node<T> oldTop = top;
         top = top.prev;
-        oldTail.prev = null;
-        if (top != null) { // 易错的点：prev 和 next 都可能为 null，特别是只有一个元素或者跨越边界的时候
-            top.next = null;
-        }
+        oldTop.prev = null;
         size--;
-        return oldTail.getItem();
+        return oldTop.getItem();
     }
 
     /**
