@@ -15,14 +15,17 @@ import java.util.EmptyStackException;
  */
 public class ArrayStack<T> implements Stack<T> {
 
-    private static final int DEFAULT_SIZE = 10;
+    private static final int DEFAULT_CAPACITY = 10;
 
     private T[] elements;
 
     private int size;
 
+    private int capacity;
+
     public ArrayStack() {
-        elements = (T[]) new Object[DEFAULT_SIZE];
+        capacity = DEFAULT_CAPACITY;
+        elements = (T[]) new Object[capacity];
         size = 0; // 易错的点：忘记初始化
     }
 
@@ -30,7 +33,8 @@ public class ArrayStack<T> implements Stack<T> {
         if (capacity <= 0) { // 易错的点：不正确的初始化参数
             throw new IllegalArgumentException("Capacity must be positive");
         }
-        elements = (T[]) new Object[capacity];
+        this.capacity = capacity;
+        elements = (T[]) new Object[this.capacity];
         size = 0;
     }
 
@@ -60,10 +64,10 @@ public class ArrayStack<T> implements Stack<T> {
         if (item == null) {
             throw new IllegalArgumentException("Cannot push null item");
         }
-        if (size == elements.length) { // 易错的点：忘记扩容
-            resize(elements.length * 2); // 动态扩容
+        if (size == this.capacity) { // 易错的点：忘记扩容
+            resize(this.capacity * 2); // 动态扩容
         }
-        elements[size++] = item;
+        elements[size++] = item; // 易错的点：忘记修改 size
     }
 
     /**
@@ -99,10 +103,11 @@ public class ArrayStack<T> implements Stack<T> {
 
     /**
      * 动态扩容数组
-     *
+     * 基于数组的数据结构通常需要考虑扩容问题，包括各种list和散列表，而链表不需要考虑capacity 和扩容问题。
      * @param newCapacity 新的容量
      */
     private void resize(int newCapacity) {
+        this.capacity = newCapacity;
         T[] newElements = (T[]) new Object[newCapacity];
         System.arraycopy(elements, 0, newElements, 0, size);
         elements = newElements;
