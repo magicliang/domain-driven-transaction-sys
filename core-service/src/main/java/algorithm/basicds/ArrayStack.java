@@ -108,7 +108,7 @@ public class ArrayStack<T> implements Stack<T> {
      */
     private void resize(int newCapacity) {
         this.capacity = newCapacity;
-        T[] newElements = (T[]) new Object[newCapacity];
+        T[] newElements = (T[]) new Object[newCapacity]; // 易错的点：忘记切换数组
         System.arraycopy(elements, 0, newElements, 0, size);
         elements = newElements;
     }
