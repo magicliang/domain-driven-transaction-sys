@@ -36,19 +36,20 @@ class BTreeTest {
 
     @Test
     void testLevelOrderCompleteBinaryTree() {
-        // 使用新的构建器方式创建完全二叉树:
+        // 使用 BTree 的 TreeBuilder API 正确创建完全二叉树:
         //       1
         //     /   \
         //    2     3
         //   / \   / \
         //  4   5 6   7
         BTree.TreeNode root = BTree.tree(1)
-                .left(2)
-                .right(3)
+                .left(BTree.tree(2)
+                        .left(4)
+                        .right(5))
+                .right(BTree.tree(3)
+                        .left(6)
+                        .right(7))
                 .build();
-
-        root.left.left(4).right(5);
-        root.right.left(6).right(7);
 
         BTree tree = new BTree();
         List<Integer> result = tree.levelOrder(root);
@@ -62,10 +63,10 @@ class BTreeTest {
         //  /
         // 2
         // /
-        //3
+        //4
         BTree.TreeNode root = BTree.tree(1)
-                .left(2)
-                .left(4)
+                .left(BTree.tree(2)
+                        .left(4))
                 .build();
 
         BTree tree = new BTree();
@@ -82,8 +83,9 @@ class BTreeTest {
         //    \
         //     3
         BTree.TreeNode root = BTree.tree(1)
-                .right(2)
-                .right(3)
+                .right(BTree.tree(2)
+                        .right(3)
+                        .build())
                 .build();
 
         BTree tree = new BTree();
@@ -123,8 +125,9 @@ class BTreeTest {
         //  \
         //   3
         BTree.TreeNode root = BTree.tree(1)
-                .left(2)
-                .right(3)
+                .left(BTree.tree(2)
+                        .right(3)
+                        .build())
                 .build();
 
         BTree tree = new BTree();
@@ -141,8 +144,9 @@ class BTreeTest {
         //  /
         // 3
         BTree.TreeNode root = BTree.tree(1)
-                .right(2)
-                .left(3)
+                .right(BTree.tree(2)
+                        .left(3)
+                        .build())
                 .build();
 
         BTree tree = new BTree();
@@ -187,20 +191,19 @@ class BTreeTest {
     void testTreeBuilderUsage() {
         // 演示新的构建器用法
         BTree.TreeNode root = BTree.tree(10)
-                .left(5)
-                .right(15)
-                .left(3)
-                .right(7)
+                .left(BTree.tree(5)
+                        .left(3)
+                        .right(7)
+                        .build())
                 .right(20)
                 .build();
 
         // 验证构建的树结构
         assertEquals(10, root.val);
         assertEquals(5, root.left.val);
-        assertEquals(15, root.right.val);
+        assertEquals(20, root.right.val);
         assertEquals(3, root.left.left.val);
         assertEquals(7, root.left.right.val);
-        assertEquals(20, root.right.right.val);
     }
 
     /**

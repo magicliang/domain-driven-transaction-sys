@@ -109,6 +109,22 @@ public class BTree {
         }
 
         /**
+         * 设置左子树为已有节点
+         */
+        public TreeBuilder left(TreeNode node) {
+            root.left = node;
+            return this;
+        }
+
+        /**
+         * 设置右子树为已有节点
+         */
+        public TreeBuilder right(TreeNode node) {
+            root.right = node;
+            return this;
+        }
+
+        /**
          * 设置左子树为子构建器
          */
         public TreeBuilder left(TreeBuilder leftBuilder) {
