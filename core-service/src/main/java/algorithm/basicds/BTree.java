@@ -338,4 +338,36 @@ public class BTree {
         // 右：递归遍历右子树
         preOrder(result, root.right);
     }
+
+    public List<Integer> preOrderNonRecursive(TreeNode root) {
+
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+
+        // 使用栈实现前序遍历（根-左-右）
+        // 关键点：由于栈是后进先出，需要先压右子节点，再压左子节点
+        // 这样才能保证左子节点先被处理
+        LinkedList<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            final TreeNode current = stack.pop();
+            // 其实这步不一定需要存在，因为不会push null进栈里面
+            if (current == null) {
+                break;
+            }
+            result.add(current.val);
+            // 注意顺序：先右后左，这样左子节点会先被处理
+            if (current.right != null) {
+                stack.push(current.right);
+            }
+            if (current.left != null) {
+                stack.push(current.left);
+            }
+        }
+
+        return result;
+    }
+
 }
