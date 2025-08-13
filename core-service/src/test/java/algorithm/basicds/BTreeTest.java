@@ -246,4 +246,120 @@ class BTreeTest {
         List<Integer> result = tree.levelOrder(root);
         assertEquals(Arrays.asList(1, 2, 3, 4, 5), result);
     }
+
+    @Test
+    void testLevelOrderRecursiveEmptyTree() {
+        BTree tree = new BTree();
+        List<Integer> result = tree.levelOrderRecursive(null);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testLevelOrderRecursiveSingleNode() {
+        BTree.TreeNode root = BTree.tree(1).build();
+        BTree tree = new BTree();
+        List<Integer> result = tree.levelOrderRecursive(root);
+        assertEquals(Collections.singletonList(1), result);
+    }
+
+    @Test
+    void testLevelOrderRecursiveCompleteBinaryTree() {
+        // 测试完全二叉树
+        //       1
+        //     /   \
+        //    2     3
+        //   / \   / \
+        //  4   5 6   7
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(4)
+                        .right(5))
+                .right(BTree.tree(3)
+                        .left(6)
+                        .right(7))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.levelOrderRecursive(root);
+        assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7), result);
+    }
+
+    @Test
+    void testLevelOrderRecursiveLeftSkewedTree() {
+        // 测试左斜树
+        //   1
+        //  /
+        // 2
+        // /
+        //3
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.levelOrderRecursive(root);
+        assertEquals(Arrays.asList(1, 2, 3), result);
+    }
+
+    @Test
+    void testLevelOrderRecursiveRightSkewedTree() {
+        // 测试右斜树
+        // 1
+        //  \
+        //   2
+        //    \
+        //     3
+        BTree.TreeNode root = BTree.tree(1)
+                .right(BTree.tree(2)
+                        .right(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.levelOrderRecursive(root);
+        assertEquals(Arrays.asList(1, 2, 3), result);
+    }
+
+    @Test
+    void testLevelOrderRecursiveUnbalancedTree() {
+        // 测试不平衡树
+        //       1
+        //     /   \
+        //    2     3
+        //   /       \
+        //  4         5
+        // / \
+        //6   7
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(BTree.tree(4)
+                                .left(6)
+                                .right(7)))
+                .right(BTree.tree(3)
+                        .right(5))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.levelOrderRecursive(root);
+        assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7), result);
+    }
+
+    @Test
+    void testLevelOrderRecursiveCompareWithQueueMethod() {
+        // 对比测试：确保递归方法和队列方法结果一致
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(4)
+                        .right(5))
+                .right(BTree.tree(3)
+                        .left(6)
+                        .right(7))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> queueResult = tree.levelOrder(root);
+        List<Integer> recursiveResult = tree.levelOrderRecursive(root);
+
+        assertEquals(queueResult, recursiveResult);
+    }
 }

@@ -196,7 +196,19 @@ public class BTree {
 
     /**
      * 纯递归实现的层序遍历（不使用队列）
-     * 思路：计算树高，然后按层递归访问
+     *
+     * 算法核心：分层递归下探模式
+     * 1. 分层：将树按层分解（1,2,3...层）
+     * 2. 递归下探：通过level参数控制下探深度
+     * 3. 条件触发：level=1时收集节点值
+     *
+     * 工作流程：
+     * - 先计算树的总层数（最长路径节点数）
+     * - 从第1层到第totalLevel层，逐层处理
+     * - 每层都从根节点开始递归，level参数控制下探深度
+     *
+     * 时间复杂度：O(n²) - 每层都从根开始遍历，存在重复计算
+     * 空间复杂度：O(h) - 递归栈深度，h为树高
      */
     public List<Integer> levelOrderRecursive(TreeNode root) {
         List<Integer> result = new ArrayList<>();
@@ -204,66 +216,76 @@ public class BTree {
             return result;
         }
 
-        int height = getHeight(root);
+        // 计算树的总层数（最长路径上的节点数量，1-based）
+        // 例如：单节点树返回1，两层树返回2，以此类推
+        int totalLevel = getTotalLevel(root);
 
-        // 这里还是少不了迭代，增加了复杂度，用迭代制造层数，然后让递归在展开过程里展开到特定的层次后才输出，如果不展开到特定层次，则不执行，这样性能不好
-        for (int level = 1; level <= height; level++) {
-            traverseLevel(root, level, result);
+        // 逐层处理：从第1层到第totalLevel层
+        // 每层都从根节点开始递归，level参数控制下探深度
+        for (int level = 1; level <= totalLevel; level++) {
+            levelOrderLevel(result, root, level);
         }
+
         return result;
     }
 
     /**
-     * 计算树的高度
+     * 计算树的总层数（最长路径上的节点数量）
+     *
+     * 注意：这里计算的是节点高度（节点数），不是边高度（边数）
+     * 定义：从当前节点到最远叶子节点的节点数量
+     *
+     * @param root 当前子树的根节点
+     * @return 以root为根的子树的总层数
      */
-    private int getHeight(TreeNode root) {
-        if (root == null) {
+    private int getTotalLevel(TreeNode root) {
+        if (root == null) { // 易错的点：忘记处理根/子节点为空的情况
             return 0;
         }
-        // 消耗一个点，得到一个高度
-        return 1 + Math.max(getHeight(root.left), getHeight(root.right));
+
+        // 叶子节点（无左右子节点）返回1，表示当前层
+        if (root.left == null && root.right == null) {
+            return 1;
+        }
+
+        // 非叶子节点：当前层(1) + 左右子树的最大层数
+        return 1 + Math.max(getTotalLevel(root.left), getTotalLevel(root.right));
     }
 
     /**
-     * 通用迭代转递归模式：分层递归下探
+     * 递归访问指定层的所有节点
      *
-     * 模式核心思想：
-     * 1. 分层：将问题分解为多个层次（如树的层数、数组的索引等）
-     * 2. 递归下探：通过递归参数控制"下探"深度，每层递减参数
-     * 3. 条件触发：在特定层级（如level=1）执行实际工作，否则继续下探
+     * 分层递归下探模式的核心实现：
+     * - level参数就像"下探指令"，告诉函数还需要向下深入多少层
+     * - level=1：到达目标层，当前节点就是要收集的节点
+     * - level>1：继续向下传递，level-1传给子节点
      *
-     * 通用模板：
-     * void recursiveLayerProcess(Node node, int layerParam, Result result) {
-     * if (terminationCondition) return;
+     * 形象理解：就像逐层剥洋葱，level就是"剥几层才能看到核心"
+     * 每次递归调用level减1，模拟逐层深入的过程
      *
-     * if (layerParam == targetLayer) {
-     * // 到达目标层，执行实际工作
-     * doActualWork(node, result);
-     * } else {
-     * // 继续下探到下一层
-     * recursiveLayerProcess(node.left, layerParam - 1, result);
-     * recursiveLayerProcess(node.right, layerParam - 1, result);
-     * }
-     * }
-     *
-     * 这种模式适用于：
-     * - 层序遍历（当前场景）
-     * - 按层统计信息
-     * - 分层处理数据结构
-     * - 任何需要分层递归的场景
+     * @param result 结果收集器
+     * @param root 当前子树的根节点
+     * @param level 还需要下探的层数（1表示当前层就是要找的层）
      */
-    private void traverseLevel(TreeNode root, int level, List<Integer> result) {
+    private void levelOrderLevel(List<Integer> result, TreeNode root, int level) {
         if (root == null) {
             return;
         }
 
+        // 分层递归下探的核心逻辑：
+        // 当level=1时，表示已经"下探"到了目标层，当前节点就是要收集的节点
+        // 当level>1时，需要继续向下传递，让子节点在level-1时处理
+
         if (level == 1) {
-            // 到达目标层，执行实际工作：收集节点值
+            // 到达目标层，收集当前节点的值
             result.add(root.val);
-        } else {
-            // 继续下探到下一层，level参数递减控制下探深度
-            traverseLevel(root.left, level - 1, result);
-            traverseLevel(root.right, level - 1, result);
+            return;
         }
+
+        // 继续向下展开：将level-1传给左右子树
+        // 就像把"下探指令"传递给下一层工人
+        levelOrderLevel(result, root.left, level - 1);
+        levelOrderLevel(result, root.right, level - 1);
     }
+
 }
