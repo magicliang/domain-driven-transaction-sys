@@ -723,4 +723,199 @@ class BTreeTest {
 
         assertEquals(recursiveResult, nonRecursiveResult);
     }
+
+    @Test
+    void testMidOrderEmptyTree() {
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(null);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testMidOrderSingleNode() {
+        BTree.TreeNode root = BTree.tree(1).build();
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Collections.singletonList(1), result);
+    }
+
+    @Test
+    void testMidOrderCompleteBinaryTree() {
+        // 测试完全二叉树
+        //       1
+        //     /   \
+        //    2     3
+        //   / \   / \
+        //  4   5 6   7
+        // 中序遍历结果：4,2,5,1,6,3,7
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(4)
+                        .right(5))
+                .right(BTree.tree(3)
+                        .left(6)
+                        .right(7))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(4, 2, 5, 1, 6, 3, 7), result);
+    }
+
+    @Test
+    void testMidOrderLeftSkewedTree() {
+        // 测试左斜树
+        //   1
+        //  /
+        // 2
+        // /
+        //3
+        // 中序遍历结果：3,2,1
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(3, 2, 1), result);
+    }
+
+    @Test
+    void testMidOrderRightSkewedTree() {
+        // 测试右斜树
+        // 1
+        //  \
+        //   2
+        //    \
+        //     3
+        // 中序遍历结果：1,2,3
+        BTree.TreeNode root = BTree.tree(1)
+                .right(BTree.tree(2)
+                        .right(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(1, 2, 3), result);
+    }
+
+    @Test
+    void testMidOrderUnbalancedTree() {
+        // 测试不平衡树
+        //       1
+        //     /   \
+        //    2     3
+        //   /       \
+        //  4         5
+        // / \
+        //6   7
+        // 中序遍历结果：6,4,7,2,1,3,5
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(BTree.tree(4)
+                                .left(6)
+                                .right(7)))
+                .right(BTree.tree(3)
+                        .right(5))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(6, 4, 7, 2, 1, 3, 5), result);
+    }
+
+    @Test
+    void testMidOrderOnlyLeftSubtree() {
+        // 测试只有左子树的树
+        //   1
+        //  /
+        // 2
+        //  \
+        //   3
+        // 中序遍历结果：2,3,1
+        BTree.TreeNode root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .right(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(2, 3, 1), result);
+    }
+
+    @Test
+    void testMidOrderOnlyRightSubtree() {
+        // 测试只有右子树的树
+        // 1
+        //  \
+        //   2
+        //  /
+        // 3
+        // 中序遍历结果：1,3,2
+        BTree.TreeNode root = BTree.tree(1)
+                .right(BTree.tree(2)
+                        .left(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(1, 3, 2), result);
+    }
+
+    @Test
+    void testMidOrderLargeTree() {
+        // 测试较大的树
+        //         1
+        //       /   \
+        //      2     3
+        //     / \   / \
+        //    4   5 6   7
+        //   / \   /
+        //  8   9 10
+        //       \
+        //       11
+        // 中序遍历结果：8,4,9,11,2,10,5,1,6,3,7
+        BTree.TreeNode root = BTree.tree(1).build();
+        root.left = new BTree.TreeNode(2);
+        root.right = new BTree.TreeNode(3);
+
+        root.left.left = new BTree.TreeNode(4);
+        root.left.right = new BTree.TreeNode(5);
+        root.right.left = new BTree.TreeNode(6);
+        root.right.right = new BTree.TreeNode(7);
+
+        root.left.left.left = new BTree.TreeNode(8);
+        root.left.left.right = new BTree.TreeNode(9);
+        root.left.right.left = new BTree.TreeNode(10);
+        root.left.left.right.right = new BTree.TreeNode(11);
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(8, 4, 9, 11, 2, 10, 5, 1, 6, 3, 7), result);
+    }
+
+    @Test
+    void testMidOrderBinarySearchTree() {
+        // 测试二叉搜索树（BST）
+        // 构建一个BST：5,3,7,2,4,6,8
+        //       5
+        //     /   \
+        //    3     7
+        //   / \   / \
+        //  2   4 6   8
+        // 中序遍历结果应该是升序：2,3,4,5,6,7,8
+        BTree.TreeNode root = BTree.tree(5)
+                .left(BTree.tree(3)
+                        .left(2)
+                        .right(4))
+                .right(BTree.tree(7)
+                        .left(6)
+                        .right(8))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrder(root);
+        assertEquals(Arrays.asList(2, 3, 4, 5, 6, 7, 8), result);
+    }
 }

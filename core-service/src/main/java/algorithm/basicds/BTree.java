@@ -396,4 +396,56 @@ public class BTree {
         return result;
     }
 
+    /**
+     * 中序遍历（左根右）的公共接口
+     *
+     * 中序遍历顺序：左子树 → 根节点 → 右子树
+     * 对于二叉搜索树，中序遍历的结果是有序的（升序排列）
+     *
+     * 时间复杂度：O(n) - 每个节点访问一次
+     * 空间复杂度：O(h) - 递归栈深度，h为树高
+     *
+     * @param root 二叉树的根节点
+     * @return 中序遍历结果列表
+     */
+    public List<Integer> midOrder(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (null == root) {
+            return result;
+        }
+        midOrder(root.left, result);
+        result.add(root.val);
+        midOrder(root.right, result);
+
+        return result;
+    }
+
+    /**
+     * 中序遍历的递归辅助方法
+     *
+     * 递归终止条件：节点为null时返回
+     * 递归过程：
+     * 1. 递归遍历左子树
+     * 2. 访问当前节点（添加到结果列表）
+     * 3. 递归遍历右子树
+     *
+     * 对于二叉搜索树，这个过程会按照从小到大的顺序访问所有节点
+     *
+     * @param root 当前子树的根节点
+     * @param result 结果收集器
+     */
+    private void midOrder(TreeNode root, List<Integer> result) {
+        if (null == root) {
+            return;
+        }
+        // 左：递归遍历左子树
+        midOrder(root.left, result);
+
+        // 根：访问当前节点
+        result.add(root.val);
+
+        // 右：递归遍历右子树
+        midOrder(root.right, result);
+    }
+
 }
