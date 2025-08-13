@@ -15,20 +15,20 @@ import java.util.List;
  */
 public class BTree {
 
-    public static class TreeNode {
+    public static class Node {
 
         int val;
-        TreeNode left;
-        TreeNode right;
+        Node left;
+        Node right;
 
-        TreeNode() {
+        Node() {
         }
 
-        TreeNode(int val) {
+        Node(int val) {
             this.val = val;
         }
 
-        TreeNode(int val, TreeNode left, TreeNode right) {
+        Node(int val, Node left, Node right) {
             this.val = val;
             this.left = left;
             this.right = right;
@@ -37,23 +37,23 @@ public class BTree {
         /**
          * 链式设置左子节点
          */
-        public TreeNode left(int val) {
-            this.left = new TreeNode(val);
+        public Node left(int val) {
+            this.left = new Node(val);
             return this.left;
         }
 
         /**
          * 链式设置右子节点
          */
-        public TreeNode right(int val) {
-            this.right = new TreeNode(val);
+        public Node right(int val) {
+            this.right = new Node(val);
             return this.right;
         }
 
         /**
          * 链式设置左子节点为已有节点
          */
-        public TreeNode left(TreeNode node) {
+        public Node left(Node node) {
             this.left = node;
             return this;
         }
@@ -61,7 +61,7 @@ public class BTree {
         /**
          * 链式设置右子节点为已有节点
          */
-        public TreeNode right(TreeNode node) {
+        public Node right(Node node) {
             this.right = node;
             return this;
         }
@@ -69,7 +69,7 @@ public class BTree {
         /**
          * 返回父节点，用于链式调用的回溯
          */
-        public TreeNode up() {
+        public Node up() {
             // 注意：这里需要外部维护父节点引用，简化实现中返回this
             return this;
         }
@@ -80,10 +80,10 @@ public class BTree {
      */
     public static class TreeBuilder {
 
-        private TreeNode root;
+        private Node root;
 
         public TreeBuilder(int rootVal) {
-            this.root = new TreeNode(rootVal);
+            this.root = new Node(rootVal);
         }
 
         public static TreeBuilder create(int rootVal) {
@@ -95,7 +95,7 @@ public class BTree {
          * 示例：left(2).left(4).right(5)
          */
         public TreeBuilder left(int val) {
-            root.left = new TreeNode(val);
+            root.left = new Node(val);
             return this;
         }
 
@@ -104,14 +104,14 @@ public class BTree {
          * 示例：right(3).left(6).right(7)
          */
         public TreeBuilder right(int val) {
-            root.right = new TreeNode(val);
+            root.right = new Node(val);
             return this;
         }
 
         /**
          * 设置左子树为已有节点
          */
-        public TreeBuilder left(TreeNode node) {
+        public TreeBuilder left(Node node) {
             root.left = node;
             return this;
         }
@@ -119,7 +119,7 @@ public class BTree {
         /**
          * 设置右子树为已有节点
          */
-        public TreeBuilder right(TreeNode node) {
+        public TreeBuilder right(Node node) {
             root.right = node;
             return this;
         }
@@ -143,7 +143,7 @@ public class BTree {
         /**
          * 获取根节点
          */
-        public TreeNode build() {
+        public Node build() {
             return root;
         }
 
@@ -151,7 +151,7 @@ public class BTree {
          * 链式设置左子节点并返回子构建器
          */
         public TreeBuilder leftChild(int val) {
-            root.left = new TreeNode(val);
+            root.left = new Node(val);
             return new TreeBuilder(val);
         }
 
@@ -159,7 +159,7 @@ public class BTree {
          * 链式设置右子节点并返回子构建器
          */
         public TreeBuilder rightChild(int val) {
-            root.right = new TreeNode(val);
+            root.right = new Node(val);
             return new TreeBuilder(val);
         }
     }
@@ -171,16 +171,16 @@ public class BTree {
         return TreeBuilder.create(rootVal);
     }
 
-    public List<Integer> levelOrder(TreeNode root) {
+    public List<Integer> levelOrder(Node root) {
         List<Integer> result = new ArrayList<>();
         if (root == null) {
             return result;
         }
-        LinkedList<TreeNode> queue = new LinkedList<>();
+        LinkedList<Node> queue = new LinkedList<>();
         queue.offer(root);
 
         while (!queue.isEmpty()) {
-            final TreeNode current = queue.poll();
+            final Node current = queue.poll();
             result.add(current.val);
             if (current.left != null) {
                 queue.offer(current.left);
@@ -210,7 +210,7 @@ public class BTree {
      * 时间复杂度：O(n²) - 每层都从根开始遍历，存在重复计算
      * 空间复杂度：O(h) - 递归栈深度，h为树高
      */
-    public List<Integer> levelOrderRecursive(TreeNode root) {
+    public List<Integer> levelOrderRecursive(Node root) {
         List<Integer> result = new ArrayList<>();
         if (root == null) {
             return result;
@@ -238,7 +238,7 @@ public class BTree {
      * @param root 当前子树的根节点
      * @return 以root为根的子树的总层数
      */
-    private int getTotalLevel(TreeNode root) {
+    private int getTotalLevel(Node root) {
         if (root == null) { // 易错的点：忘记处理根/子节点为空的情况
             return 0;
         }
@@ -267,7 +267,7 @@ public class BTree {
      * @param root 当前子树的根节点
      * @param level 还需要下探的层数（1表示当前层就是要找的层）
      */
-    private void levelOrderLevel(List<Integer> result, TreeNode root, int level) {
+    private void levelOrderLevel(List<Integer> result, Node root, int level) {
         if (root == null) {
             return;
         }
@@ -301,7 +301,7 @@ public class BTree {
      * @param root 二叉树的根节点
      * @return 前序遍历结果列表
      */
-    public List<Integer> preOrder(TreeNode root) {
+    public List<Integer> preOrder(Node root) {
         List<Integer> result = new ArrayList<>();
         if (root == null) {
             return result;
@@ -324,7 +324,7 @@ public class BTree {
      * @param result 结果收集器
      * @param root 当前子树的根节点
      */
-    private void preOrder(List<Integer> result, TreeNode root) {
+    private void preOrder(List<Integer> result, Node root) {
         if (null == root) {
             return;
         }
@@ -365,7 +365,7 @@ public class BTree {
      * @param root 二叉树的根节点
      * @return 前序遍历结果列表
      */
-    public List<Integer> preOrderNonRecursive(TreeNode root) {
+    public List<Integer> preOrderNonRecursive(Node root) {
 
         List<Integer> result = new ArrayList<>();
         if (root == null) {
@@ -375,10 +375,10 @@ public class BTree {
         // 使用栈实现前序遍历（根-左-右）
         // 关键点：由于栈是后进先出，需要先压右子节点，再压左子节点
         // 这样才能保证左子节点先被处理
-        LinkedList<TreeNode> stack = new LinkedList<>();
+        LinkedList<Node> stack = new LinkedList<>();
         stack.push(root);
         while (!stack.isEmpty()) {
-            final TreeNode current = stack.pop();
+            final Node current = stack.pop();
             // 其实这步不一定需要存在，因为不会push null进栈里面
             if (current == null) {
                 break;
@@ -408,7 +408,7 @@ public class BTree {
      * @param root 二叉树的根节点
      * @return 中序遍历结果列表
      */
-    public List<Integer> midOrder(TreeNode root) {
+    public List<Integer> midOrder(Node root) {
         List<Integer> result = new ArrayList<>();
         if (null == root) {
             return result;
@@ -434,7 +434,7 @@ public class BTree {
      * @param root 当前子树的根节点
      * @param result 结果收集器
      */
-    private void midOrder(TreeNode root, List<Integer> result) {
+    private void midOrder(Node root, List<Integer> result) {
         if (null == root) {
             return;
         }
@@ -446,6 +446,67 @@ public class BTree {
 
         // 右：递归遍历右子树
         midOrder(root.right, result);
+    }
+
+    /**
+     * 非递归中序遍历（左-根-右）实现
+     * <p>
+     * 算法思路：使用栈模拟递归调用栈，实现深度优先遍历
+     * 中序遍历顺序：左子树 → 根节点 → 右子树
+     * <p>
+     * 实现要点：
+     * 1. 使用LinkedList作为栈结构（后进先出）
+     * 2. 关键点：需要先将所有左子节点压栈，直到最左叶子节点
+     * 3. 处理顺序：弹出栈顶节点（此时该节点的左子树已处理完）→ 访问该节点 → 处理右子树
+     * 4. 使用current指针跟踪当前处理的节点，避免重复压栈
+     * <p>
+     * 工作流程：
+     * 1. 初始化栈和current指针（指向根节点）
+     * 2. 循环直到栈为空且current为null：
+     * - 如果current不为null：压栈并继续向左深入（current = current.left）
+     * - 如果current为null：弹出栈顶节点并访问，然后转向右子树（current = current.right）
+     * <p>
+     * 形象理解：就像沿着左边界一直往下走，走到尽头后回溯，每回溯一步就处理一个节点，然后转向右子树
+     * <p>
+     * 时间复杂度：O(n) - 每个节点访问一次
+     * 空间复杂度：O(h) - 栈的最大深度为树高h，最坏情况下为O(n)（树退化为链表）
+     *
+     * @param root 二叉树的根节点
+     * @return 中序遍历结果列表
+     */
+    public List<Integer> midOrderNonRecursive(Node root) {
+        List<Integer> result = new ArrayList<>();
+
+        if (root == null) {
+            return result;
+        }
+
+        LinkedList<Node> stack = new LinkedList<>();
+        Node current = root;
+
+        // 核心循环：模拟递归的中序遍历过程
+        // 每个节点都是某棵子树的根，处理完左子树后处理根节点，再处理右子树
+        while (current != null || !stack.isEmpty()) {
+            // 阶段1：沿着左子树一直向下，将所有左子节点压栈
+            // 这一步模拟了递归中的"一直向左深入"过程
+            if (current != null) {
+                stack.push(current);
+                current = current.left;
+            } else {
+                // 阶段2：左子树已处理完，开始回溯
+                // 弹出栈顶节点（此时该节点的左子树已全部处理完）
+                current = stack.pop();
+                // 这个方法的神髓：访问当前节点（根节点），只有被 pop 出来的才处理
+                result.add(current.val);
+
+                // 阶段3：转向右子树
+                // 让右子树进入下一轮循环的处理流程
+                // 注意：这里不是直接处理右子树，而是让右子树在下一轮循环中
+                // 按照"左-根-右"的顺序被处理
+                current = current.right;
+            }
+        }
+        return result;
     }
 
 }

@@ -3,6 +3,7 @@ package algorithm.basicds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import algorithm.basicds.BTree.Node;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,7 @@ class BTreeTest {
 
     @Test
     void testLevelOrderSingleNode() {
-        BTree.TreeNode root = BTree.tree(1).build();
+        Node root = BTree.tree(1).build();
         BTree tree = new BTree();
         List<Integer> result = tree.levelOrder(root);
         assertEquals(Collections.singletonList(1), result);
@@ -42,7 +43,7 @@ class BTreeTest {
         //    2     3
         //   / \   / \
         //  4   5 6   7
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4)
                         .right(5))
@@ -64,7 +65,7 @@ class BTreeTest {
         // 2
         // /
         //4
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4))
                 .build();
@@ -82,7 +83,7 @@ class BTreeTest {
         //   2
         //    \
         //     3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .right(3)
                         .build())
@@ -103,7 +104,7 @@ class BTreeTest {
         //  4         5
         // /
         //6
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(2)
                 .right(3)
                 .build();
@@ -124,7 +125,7 @@ class BTreeTest {
         // 2
         //  \
         //   3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .right(3)
                         .build())
@@ -143,7 +144,7 @@ class BTreeTest {
         //   2
         //  /
         // 3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .left(3)
                         .build())
@@ -168,19 +169,19 @@ class BTreeTest {
         //       \
         //       11
 
-        BTree.TreeNode root = BTree.tree(1).build();
-        root.left = new BTree.TreeNode(2);
-        root.right = new BTree.TreeNode(3);
+        Node root = BTree.tree(1).build();
+        root.left = new Node(2);
+        root.right = new Node(3);
 
-        root.left.left = new BTree.TreeNode(4);
-        root.left.right = new BTree.TreeNode(5);
-        root.right.left = new BTree.TreeNode(6);
-        root.right.right = new BTree.TreeNode(7);
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
 
-        root.left.left.left = new BTree.TreeNode(8);
-        root.left.left.right = new BTree.TreeNode(9);
-        root.left.right.left = new BTree.TreeNode(10);
-        root.left.right.left.right = new BTree.TreeNode(11);
+        root.left.left.left = new Node(8);
+        root.left.left.right = new Node(9);
+        root.left.right.left = new Node(10);
+        root.left.right.left.right = new Node(11);
 
         BTree tree = new BTree();
         List<Integer> result = tree.levelOrder(root);
@@ -190,7 +191,7 @@ class BTreeTest {
     @Test
     void testTreeBuilderUsage() {
         // 演示新的构建器用法
-        BTree.TreeNode root = BTree.tree(10)
+        Node root = BTree.tree(10)
                 .left(BTree.tree(5)
                         .left(3)
                         .right(7)
@@ -209,27 +210,27 @@ class BTreeTest {
     /**
      * 辅助方法：快速创建测试树（保留旧方法用于兼容性）
      */
-    private BTree.TreeNode createTree(Integer... values) {
+    private Node createTree(Integer... values) {
         if (values == null || values.length == 0) {
             return null;
         }
 
-        BTree.TreeNode root = new BTree.TreeNode(values[0]);
-        java.util.Queue<BTree.TreeNode> queue = new java.util.LinkedList<>();
+        Node root = new Node(values[0]);
+        java.util.Queue<Node> queue = new java.util.LinkedList<>();
         queue.offer(root);
 
         int i = 1;
         while (!queue.isEmpty() && i < values.length) {
-            BTree.TreeNode current = queue.poll();
+            Node current = queue.poll();
 
             if (i < values.length && values[i] != null) {
-                current.left = new BTree.TreeNode(values[i]);
+                current.left = new Node(values[i]);
                 queue.offer(current.left);
             }
             i++;
 
             if (i < values.length && values[i] != null) {
-                current.right = new BTree.TreeNode(values[i]);
+                current.right = new Node(values[i]);
                 queue.offer(current.right);
             }
             i++;
@@ -242,7 +243,7 @@ class BTreeTest {
     void testLevelOrderWithNullValues() {
         BTree tree = new BTree();
         // 测试包含null值的树（null表示空节点）
-        BTree.TreeNode root = createTree(1, 2, 3, null, 4, null, 5);
+        Node root = createTree(1, 2, 3, null, 4, null, 5);
         List<Integer> result = tree.levelOrder(root);
         assertEquals(Arrays.asList(1, 2, 3, 4, 5), result);
     }
@@ -256,7 +257,7 @@ class BTreeTest {
 
     @Test
     void testLevelOrderRecursiveSingleNode() {
-        BTree.TreeNode root = BTree.tree(1).build();
+        Node root = BTree.tree(1).build();
         BTree tree = new BTree();
         List<Integer> result = tree.levelOrderRecursive(root);
         assertEquals(Collections.singletonList(1), result);
@@ -270,7 +271,7 @@ class BTreeTest {
         //    2     3
         //   / \   / \
         //  4   5 6   7
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4)
                         .right(5))
@@ -292,7 +293,7 @@ class BTreeTest {
         // 2
         // /
         //3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(3))
                 .build();
@@ -310,7 +311,7 @@ class BTreeTest {
         //   2
         //    \
         //     3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .right(3))
                 .build();
@@ -330,7 +331,7 @@ class BTreeTest {
         //  4         5
         // / \
         //6   7
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(BTree.tree(4)
                                 .left(6)
@@ -347,7 +348,7 @@ class BTreeTest {
     @Test
     void testLevelOrderRecursiveCompareWithQueueMethod() {
         // 对比测试：确保递归方法和队列方法结果一致
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4)
                         .right(5))
@@ -372,7 +373,7 @@ class BTreeTest {
 
     @Test
     void testPreOrderSingleNode() {
-        BTree.TreeNode root = BTree.tree(1).build();
+        Node root = BTree.tree(1).build();
         BTree tree = new BTree();
         List<Integer> result = tree.preOrder(root);
         assertEquals(Collections.singletonList(1), result);
@@ -387,7 +388,7 @@ class BTreeTest {
         //   / \   / \
         //  4   5 6   7
         // 前序遍历结果：1,2,4,5,3,6,7
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4)
                         .right(5))
@@ -410,7 +411,7 @@ class BTreeTest {
         // /
         //3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(3))
                 .build();
@@ -429,7 +430,7 @@ class BTreeTest {
         //    \
         //     3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .right(3))
                 .build();
@@ -450,7 +451,7 @@ class BTreeTest {
         // / \
         //6   7
         // 前序遍历结果：1,2,4,6,7,3,5
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(BTree.tree(4)
                                 .left(6)
@@ -473,7 +474,7 @@ class BTreeTest {
         //  \
         //   3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .right(3))
                 .build();
@@ -492,7 +493,7 @@ class BTreeTest {
         //  /
         // 3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .left(3))
                 .build();
@@ -515,19 +516,19 @@ class BTreeTest {
         //       \
         //       11
         // 前序遍历结果：1,2,4,8,9,11,5,10,3,6,7
-        BTree.TreeNode root = BTree.tree(1).build();
-        root.left = new BTree.TreeNode(2);
-        root.right = new BTree.TreeNode(3);
+        Node root = BTree.tree(1).build();
+        root.left = new Node(2);
+        root.right = new Node(3);
 
-        root.left.left = new BTree.TreeNode(4);
-        root.left.right = new BTree.TreeNode(5);
-        root.right.left = new BTree.TreeNode(6);
-        root.right.right = new BTree.TreeNode(7);
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
 
-        root.left.left.left = new BTree.TreeNode(8);
-        root.left.left.right = new BTree.TreeNode(9);
-        root.left.right.left = new BTree.TreeNode(10);
-        root.left.left.right.right = new BTree.TreeNode(11);
+        root.left.left.left = new Node(8);
+        root.left.left.right = new Node(9);
+        root.left.right.left = new Node(10);
+        root.left.left.right.right = new Node(11);
 
         BTree tree = new BTree();
         List<Integer> result = tree.preOrder(root);
@@ -543,7 +544,7 @@ class BTreeTest {
 
     @Test
     void testPreOrderNonRecursiveSingleNode() {
-        BTree.TreeNode root = BTree.tree(1).build();
+        Node root = BTree.tree(1).build();
         BTree tree = new BTree();
         List<Integer> result = tree.preOrderNonRecursive(root);
         assertEquals(Collections.singletonList(1), result);
@@ -558,7 +559,7 @@ class BTreeTest {
         //   / \   / \
         //  4   5 6   7
         // 前序遍历结果：1,2,4,5,3,6,7
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4)
                         .right(5))
@@ -581,7 +582,7 @@ class BTreeTest {
         // /
         //3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(3))
                 .build();
@@ -600,7 +601,7 @@ class BTreeTest {
         //    \
         //     3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .right(3))
                 .build();
@@ -621,7 +622,7 @@ class BTreeTest {
         // / \
         //6   7
         // 前序遍历结果：1,2,4,6,7,3,5
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(BTree.tree(4)
                                 .left(6)
@@ -644,7 +645,7 @@ class BTreeTest {
         //  \
         //   3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .right(3))
                 .build();
@@ -663,7 +664,7 @@ class BTreeTest {
         //  /
         // 3
         // 前序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .left(3))
                 .build();
@@ -686,19 +687,19 @@ class BTreeTest {
         //       \
         //       11
         // 前序遍历结果：1,2,4,8,9,11,5,10,3,6,7
-        BTree.TreeNode root = BTree.tree(1).build();
-        root.left = new BTree.TreeNode(2);
-        root.right = new BTree.TreeNode(3);
+        Node root = BTree.tree(1).build();
+        root.left = new Node(2);
+        root.right = new Node(3);
 
-        root.left.left = new BTree.TreeNode(4);
-        root.left.right = new BTree.TreeNode(5);
-        root.right.left = new BTree.TreeNode(6);
-        root.right.right = new BTree.TreeNode(7);
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
 
-        root.left.left.left = new BTree.TreeNode(8);
-        root.left.left.right = new BTree.TreeNode(9);
-        root.left.right.left = new BTree.TreeNode(10);
-        root.left.left.right.right = new BTree.TreeNode(11);
+        root.left.left.left = new Node(8);
+        root.left.left.right = new Node(9);
+        root.left.right.left = new Node(10);
+        root.left.left.right.right = new Node(11);
 
         BTree tree = new BTree();
         List<Integer> result = tree.preOrderNonRecursive(root);
@@ -708,7 +709,7 @@ class BTreeTest {
     @Test
     void testPreOrderNonRecursiveCompareWithRecursiveMethod() {
         // 对比测试：确保非递归方法和递归方法结果一致
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4)
                         .right(5))
@@ -733,7 +734,7 @@ class BTreeTest {
 
     @Test
     void testMidOrderSingleNode() {
-        BTree.TreeNode root = BTree.tree(1).build();
+        Node root = BTree.tree(1).build();
         BTree tree = new BTree();
         List<Integer> result = tree.midOrder(root);
         assertEquals(Collections.singletonList(1), result);
@@ -748,7 +749,7 @@ class BTreeTest {
         //   / \   / \
         //  4   5 6   7
         // 中序遍历结果：4,2,5,1,6,3,7
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(4)
                         .right(5))
@@ -771,7 +772,7 @@ class BTreeTest {
         // /
         //3
         // 中序遍历结果：3,2,1
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(3))
                 .build();
@@ -790,7 +791,7 @@ class BTreeTest {
         //    \
         //     3
         // 中序遍历结果：1,2,3
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .right(3))
                 .build();
@@ -811,7 +812,7 @@ class BTreeTest {
         // / \
         //6   7
         // 中序遍历结果：6,4,7,2,1,3,5
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .left(BTree.tree(4)
                                 .left(6)
@@ -834,7 +835,7 @@ class BTreeTest {
         //  \
         //   3
         // 中序遍历结果：2,3,1
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .left(BTree.tree(2)
                         .right(3))
                 .build();
@@ -853,7 +854,7 @@ class BTreeTest {
         //  /
         // 3
         // 中序遍历结果：1,3,2
-        BTree.TreeNode root = BTree.tree(1)
+        Node root = BTree.tree(1)
                 .right(BTree.tree(2)
                         .left(3))
                 .build();
@@ -876,19 +877,19 @@ class BTreeTest {
         //       \
         //       11
         // 中序遍历结果：8,4,9,11,2,10,5,1,6,3,7
-        BTree.TreeNode root = BTree.tree(1).build();
-        root.left = new BTree.TreeNode(2);
-        root.right = new BTree.TreeNode(3);
+        Node root = BTree.tree(1).build();
+        root.left = new Node(2);
+        root.right = new Node(3);
 
-        root.left.left = new BTree.TreeNode(4);
-        root.left.right = new BTree.TreeNode(5);
-        root.right.left = new BTree.TreeNode(6);
-        root.right.right = new BTree.TreeNode(7);
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
 
-        root.left.left.left = new BTree.TreeNode(8);
-        root.left.left.right = new BTree.TreeNode(9);
-        root.left.right.left = new BTree.TreeNode(10);
-        root.left.left.right.right = new BTree.TreeNode(11);
+        root.left.left.left = new Node(8);
+        root.left.left.right = new Node(9);
+        root.left.right.left = new Node(10);
+        root.left.left.right.right = new Node(11);
 
         BTree tree = new BTree();
         List<Integer> result = tree.midOrder(root);
@@ -905,7 +906,7 @@ class BTreeTest {
         //   / \   / \
         //  2   4 6   8
         // 中序遍历结果应该是升序：2,3,4,5,6,7,8
-        BTree.TreeNode root = BTree.tree(5)
+        Node root = BTree.tree(5)
                 .left(BTree.tree(3)
                         .left(2)
                         .right(4))
@@ -917,5 +918,219 @@ class BTreeTest {
         BTree tree = new BTree();
         List<Integer> result = tree.midOrder(root);
         assertEquals(Arrays.asList(2, 3, 4, 5, 6, 7, 8), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveEmptyTree() {
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(null);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testMidOrderNonRecursiveSingleNode() {
+        Node root = BTree.tree(1).build();
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Collections.singletonList(1), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveCompleteBinaryTree() {
+        // 测试完全二叉树
+        //       1
+        //     /   \
+        //    2     3
+        //   / \   / \
+        //  4   5 6   7
+        // 中序遍历结果：4,2,5,1,6,3,7
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(4)
+                        .right(5))
+                .right(BTree.tree(3)
+                        .left(6)
+                        .right(7))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(4, 2, 5, 1, 6, 3, 7), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveLeftSkewedTree() {
+        // 测试左斜树
+        //   1
+        //  /
+        // 2
+        // /
+        //3
+        // 中序遍历结果：3,2,1
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(3, 2, 1), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveRightSkewedTree() {
+        // 测试右斜树
+        // 1
+        //  \
+        //   2
+        //    \
+        //     3
+        // 中序遍历结果：1,2,3
+        Node root = BTree.tree(1)
+                .right(BTree.tree(2)
+                        .right(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(1, 2, 3), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveUnbalancedTree() {
+        // 测试不平衡树
+        //       1
+        //     /   \
+        //    2     3
+        //   /       \
+        //  4         5
+        // / \
+        //6   7
+        // 中序遍历结果：6,4,7,2,1,3,5
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(BTree.tree(4)
+                                .left(6)
+                                .right(7)))
+                .right(BTree.tree(3)
+                        .right(5))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(6, 4, 7, 2, 1, 3, 5), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveOnlyLeftSubtree() {
+        // 测试只有左子树的树
+        //   1
+        //  /
+        // 2
+        //  \
+        //   3
+        // 中序遍历结果：2,3,1
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .right(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(2, 3, 1), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveOnlyRightSubtree() {
+        // 测试只有右子树的树
+        // 1
+        //  \
+        //   2
+        //  /
+        // 3
+        // 中序遍历结果：1,3,2
+        Node root = BTree.tree(1)
+                .right(BTree.tree(2)
+                        .left(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(1, 3, 2), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveLargeTree() {
+        // 测试较大的树
+        //         1
+        //       /   \
+        //      2     3
+        //     / \   / \
+        //    4   5 6   7
+        //   / \   /
+        //  8   9 10
+        //       \
+        //       11
+        // 中序遍历结果：8,4,9,11,2,10,5,1,6,3,7
+        Node root = BTree.tree(1).build();
+        root.left = new Node(2);
+        root.right = new Node(3);
+
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
+
+        root.left.left.left = new Node(8);
+        root.left.left.right = new Node(9);
+        root.left.right.left = new Node(10);
+        root.left.left.right.right = new Node(11);
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(8, 4, 9, 11, 2, 10, 5, 1, 6, 3, 7), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveBinarySearchTree() {
+        // 测试二叉搜索树（BST）
+        // 构建一个BST：5,3,7,2,4,6,8
+        //       5
+        //     /   \
+        //    3     7
+        //   / \   / \
+        //  2   4 6   8
+        // 中序遍历结果应该是升序：2,3,4,5,6,7,8
+        Node root = BTree.tree(5)
+                .left(BTree.tree(3)
+                        .left(2)
+                        .right(4))
+                .right(BTree.tree(7)
+                        .left(6)
+                        .right(8))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.midOrderNonRecursive(root);
+        assertEquals(Arrays.asList(2, 3, 4, 5, 6, 7, 8), result);
+    }
+
+    @Test
+    void testMidOrderNonRecursiveCompareWithRecursiveMethod() {
+        // 对比测试：确保非递归方法和递归方法结果一致
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(4)
+                        .right(5))
+                .right(BTree.tree(3)
+                        .left(6)
+                        .right(7))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> recursiveResult = tree.midOrder(root);
+        List<Integer> nonRecursiveResult = tree.midOrderNonRecursive(root);
+
+        assertEquals(recursiveResult, nonRecursiveResult);
     }
 }
