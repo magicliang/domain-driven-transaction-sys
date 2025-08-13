@@ -1133,4 +1133,225 @@ class BTreeTest {
 
         assertEquals(recursiveResult, nonRecursiveResult);
     }
+
+    @Test
+    void testPostOrderEmptyTree() {
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(null);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testPostOrderSingleNode() {
+        Node root = BTree.tree(1).build();
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Collections.singletonList(1), result);
+    }
+
+    @Test
+    void testPostOrderCompleteBinaryTree() {
+        // 测试完全二叉树
+        //       1
+        //     /   \
+        //    2     3
+        //   / \   / \
+        //  4   5 6   7
+        // 后序遍历结果：4,5,2,6,7,3,1
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(4)
+                        .right(5))
+                .right(BTree.tree(3)
+                        .left(6)
+                        .right(7))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(4, 5, 2, 6, 7, 3, 1), result);
+    }
+
+    @Test
+    void testPostOrderLeftSkewedTree() {
+        // 测试左斜树
+        //   1
+        //  /
+        // 2
+        // /
+        //3
+        // 后序遍历结果：3,2,1
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(3, 2, 1), result);
+    }
+
+    @Test
+    void testPostOrderRightSkewedTree() {
+        // 测试右斜树
+        // 1
+        //  \
+        //   2
+        //    \
+        //     3
+        // 后序遍历结果：3,2,1
+        Node root = BTree.tree(1)
+                .right(BTree.tree(2)
+                        .right(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(3, 2, 1), result);
+    }
+
+    @Test
+    void testPostOrderUnbalancedTree() {
+        // 测试不平衡树
+        //       1
+        //     /   \
+        //    2     3
+        //   /       \
+        //  4         5
+        // / \
+        //6   7
+        // 后序遍历结果：6,7,4,2,5,3,1
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .left(BTree.tree(4)
+                                .left(6)
+                                .right(7)))
+                .right(BTree.tree(3)
+                        .right(5))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(6, 7, 4, 2, 5, 3, 1), result);
+    }
+
+    @Test
+    void testPostOrderOnlyLeftSubtree() {
+        // 测试只有左子树的树
+        //   1
+        //  /
+        // 2
+        //  \
+        //   3
+        // 后序遍历结果：3,2,1
+        Node root = BTree.tree(1)
+                .left(BTree.tree(2)
+                        .right(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(3, 2, 1), result);
+    }
+
+    @Test
+    void testPostOrderOnlyRightSubtree() {
+        // 测试只有右子树的树
+        // 1
+        //  \
+        //   2
+        //  /
+        // 3
+        // 后序遍历结果：3,2,1
+        Node root = BTree.tree(1)
+                .right(BTree.tree(2)
+                        .left(3))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(3, 2, 1), result);
+    }
+
+    @Test
+    void testPostOrderLargeTree() {
+        // 测试较大的树
+        //         1
+        //       /   \
+        //      2     3
+        //     / \   / \
+        //    4   5 6   7
+        //   / \   /
+        //  8   9 10
+        //       \
+        //       11
+        // 后序遍历结果：8,11,9,4,10,5,2,6,7,3,1
+        Node root = BTree.tree(1).build();
+        root.left = new Node(2);
+        root.right = new Node(3);
+
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
+
+        root.left.left.left = new Node(8);
+        root.left.left.right = new Node(9);
+        root.left.right.left = new Node(10);
+        root.left.left.right.right = new Node(11);
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(8, 11, 9, 4, 10, 5, 2, 6, 7, 3, 1), result);
+    }
+
+    @Test
+    void testPostOrderExpressionTree() {
+        // 测试表达式树（后序遍历用于后缀表达式计算）
+        // 表达式： (2 + 3) * (4 - 1)
+        // 对应的树：
+        //       *
+        //     /   \
+        //    +     -
+        //   / \   / \
+        //  2   3 4   1
+        // 后序遍历结果：2,3,+,4,1,-,*
+        Node root = BTree.tree('*')
+                .left(BTree.tree('+')
+                        .left(2)
+                        .right(3))
+                .right(BTree.tree('-')
+                        .left(4)
+                        .right(1))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList((int) '2', (int) '3', (int) '+', (int) '4', (int) '1', (int) '-', (int) '*'),
+                result);
+    }
+
+    @Test
+    void testPostOrderBinarySearchTree() {
+        // 测试二叉搜索树（BST）
+        // 构建一个BST：5,3,7,2,4,6,8
+        //       5
+        //     /   \
+        //    3     7
+        //   / \   / \
+        //  2   4 6   8
+        // 后序遍历结果：2,4,3,6,8,7,5
+        Node root = BTree.tree(5)
+                .left(BTree.tree(3)
+                        .left(2)
+                        .right(4))
+                .right(BTree.tree(7)
+                        .left(6)
+                        .right(8))
+                .build();
+
+        BTree tree = new BTree();
+        List<Integer> result = tree.postOrder(root);
+        assertEquals(Arrays.asList(2, 4, 3, 6, 8, 7, 5), result);
+    }
 }

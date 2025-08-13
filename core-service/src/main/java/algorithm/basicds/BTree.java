@@ -509,4 +509,63 @@ public class BTree {
         return result;
     }
 
+
+    /**
+     * 后序遍历（左-右-根）的公共接口
+     *
+     * 后序遍历顺序：左子树 → 右子树 → 根节点
+     * 对于二叉树，访问顺序为：递归遍历左子树 → 递归遍历右子树 → 访问当前节点
+     *
+     * 应用场景：
+     * 1. 删除二叉树（需要先删除子节点再删除父节点）
+     * 2. 计算目录大小（需要先计算子目录大小）
+     * 3. 后缀表达式计算
+     *
+     * 时间复杂度：O(n) - 每个节点访问一次
+     * 空间复杂度：O(h) - 递归栈深度，h为树高
+     *
+     * @param root 二叉树的根节点
+     * @return 后序遍历结果列表
+     */
+    public List<Integer> postOrder(Node root) {
+        List<Integer> result = new ArrayList<>();
+
+        if (root == null) {
+            return result;
+        }
+
+        postOrder(root.left, result);
+        postOrder(root.right, result);
+        result.add(root.val);
+        return result;
+    }
+
+    /**
+     * 后序遍历的递归辅助方法
+     *
+     * 递归终止条件：节点为null时返回
+     * 递归过程：
+     * 1. 递归遍历左子树
+     * 2. 递归遍历右子树
+     * 3. 访问当前节点（添加到结果列表）
+     *
+     * 关键理解：只有当一个节点的左右子树都处理完后，才处理该节点本身
+     * 这就像"先处理完所有后代，再处理祖先"
+     *
+     * @param root 当前子树的根节点
+     * @param result 结果收集器
+     */
+    private void postOrder(Node root, List<Integer> result) {
+        if (root == null) {
+            return;
+        }
+        // 左：递归遍历左子树
+        postOrder(root.left, result);
+
+        // 右：递归遍历右子树
+        postOrder(root.right, result);
+
+        // 根：访问当前节点（最后处理）
+        result.add(root.val);
+    }
 }
