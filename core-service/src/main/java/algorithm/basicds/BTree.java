@@ -288,4 +288,54 @@ public class BTree {
         levelOrderLevel(result, root.right, level - 1);
     }
 
+
+    /**
+     * 前序遍历（根左右）的公共接口
+     *
+     * 前序遍历顺序：根节点 → 左子树 → 右子树
+     * 对于二叉树，访问顺序为：当前节点 → 递归遍历左子树 → 递归遍历右子树
+     *
+     * 时间复杂度：O(n) - 每个节点访问一次
+     * 空间复杂度：O(h) - 递归栈深度，h为树高
+     *
+     * @param root 二叉树的根节点
+     * @return 前序遍历结果列表
+     */
+    public List<Integer> preOrder(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+
+        // 使用辅助方法进行递归遍历
+        preOrder(result, root);
+        return result;
+    }
+
+    /**
+     * 前序遍历的递归辅助方法
+     *
+     * 递归终止条件：节点为null时返回
+     * 递归过程：
+     * 1. 访问当前节点（添加到结果列表）
+     * 2. 递归遍历左子树
+     * 3. 递归遍历右子树
+     *
+     * @param result 结果收集器
+     * @param root 当前子树的根节点
+     */
+    private void preOrder(List<Integer> result, TreeNode root) {
+        if (null == root) {
+            return;
+        }
+
+        // 根：先访问当前节点
+        result.add(root.val);
+
+        // 左：递归遍历左子树
+        preOrder(result, root.left);
+
+        // 右：递归遍历右子树
+        preOrder(result, root.right);
+    }
 }
