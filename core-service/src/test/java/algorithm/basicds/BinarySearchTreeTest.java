@@ -339,4 +339,152 @@ class BinarySearchTreeTest {
         assertEquals(3, bst.height());
         assertEquals(7, bst.size());
     }
+
+    @Test
+    void testInsertNoneRecursiveEmptyTree() {
+        assertFalse(bst.search(5));
+        assertTrue(bst.isEmpty());
+
+        // 使用非递归插入
+        bst.insertNoneRecursive(5);
+        assertTrue(bst.search(5));
+        assertFalse(bst.isEmpty());
+        assertEquals(1, bst.size());
+    }
+
+    @Test
+    void testInsertNoneRecursiveSingleNode() {
+        bst.insertNoneRecursive(10);
+        assertTrue(bst.search(10));
+        assertFalse(bst.isEmpty());
+        assertEquals(1, bst.size());
+    }
+
+    @Test
+    void testInsertNoneRecursiveMultipleNodes() {
+        // 使用非递归方式构建BST: 50,30,70,20,40,60,80
+        bst.insertNoneRecursive(50);
+        bst.insertNoneRecursive(30);
+        bst.insertNoneRecursive(70);
+        bst.insertNoneRecursive(20);
+        bst.insertNoneRecursive(40);
+        bst.insertNoneRecursive(60);
+        bst.insertNoneRecursive(80);
+
+        // 验证所有值都存在
+        assertTrue(bst.search(50));
+        assertTrue(bst.search(30));
+        assertTrue(bst.search(70));
+        assertTrue(bst.search(20));
+        assertTrue(bst.search(40));
+        assertTrue(bst.search(60));
+        assertTrue(bst.search(80));
+
+        // 验证不存在的值
+        assertFalse(bst.search(25));
+        assertFalse(bst.search(90));
+
+        // 验证树的大小
+        assertEquals(7, bst.size());
+
+        // 验证中序遍历结果（升序排列）
+        assertEquals(Arrays.asList(20, 30, 40, 50, 60, 70, 80), bst.inOrder());
+    }
+
+    @Test
+    void testInsertNoneRecursiveDuplicateValues() {
+        bst.insertNoneRecursive(10);
+        bst.insertNoneRecursive(5);
+        bst.insertNoneRecursive(10); // 重复值
+        bst.insertNoneRecursive(5);  // 重复值
+        bst.insertNoneRecursive(15);
+
+        assertEquals(3, bst.size()); // 应该只有3个唯一值
+        assertTrue(bst.search(10));
+        assertTrue(bst.search(5));
+        assertTrue(bst.search(15));
+    }
+
+    @Test
+    void testInsertNoneRecursiveVsInsertConsistency() {
+        // 创建两个BST，一个用递归插入，一个用非递归插入
+        BinarySearchTree bstRecursive = new BinarySearchTree();
+        BinarySearchTree bstNoneRecursive = new BinarySearchTree();
+
+        int[] values = {50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45};
+
+        // 分别用两种方法插入相同的值
+        for (int val : values) {
+            bstRecursive.insert(val);
+            bstNoneRecursive.insertNoneRecursive(val);
+        }
+
+        // 验证两个树的大小相同
+        assertEquals(bstRecursive.size(), bstNoneRecursive.size());
+
+        // 验证两个树的遍历结果相同
+        assertEquals(bstRecursive.inOrder(), bstNoneRecursive.inOrder());
+        assertEquals(bstRecursive.preOrder(), bstNoneRecursive.preOrder());
+        assertEquals(bstRecursive.postOrder(), bstNoneRecursive.postOrder());
+
+        // 验证搜索行为相同
+        for (int val : values) {
+            assertEquals(bstRecursive.search(val), bstNoneRecursive.search(val));
+        }
+    }
+
+    @Test
+    void testInsertNoneRecursiveLeftSkewedTree() {
+        // 测试左斜树：5,4,3,2,1
+        bst.insertNoneRecursive(5);
+        bst.insertNoneRecursive(4);
+        bst.insertNoneRecursive(3);
+        bst.insertNoneRecursive(2);
+        bst.insertNoneRecursive(1);
+
+        assertEquals(5, bst.size());
+        assertEquals(Arrays.asList(1, 2, 3, 4, 5), bst.inOrder());
+        assertEquals(5, bst.height());
+    }
+
+    @Test
+    void testInsertNoneRecursiveRightSkewedTree() {
+        // 测试右斜树：1,2,3,4,5
+        bst.insertNoneRecursive(1);
+        bst.insertNoneRecursive(2);
+        bst.insertNoneRecursive(3);
+        bst.insertNoneRecursive(4);
+        bst.insertNoneRecursive(5);
+
+        assertEquals(5, bst.size());
+        assertEquals(Arrays.asList(1, 2, 3, 4, 5), bst.inOrder());
+        assertEquals(5, bst.height());
+    }
+
+    @Test
+    void testInsertNoneRecursiveComplexOperations() {
+        // 复杂操作序列测试
+        int[] values = {50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45};
+
+        for (int val : values) {
+            bst.insertNoneRecursive(val);
+        }
+
+        assertEquals(11, bst.size());
+        assertEquals(Arrays.asList(10, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80), bst.inOrder());
+
+        // 删除多个节点
+        bst.delete(20);
+        bst.delete(50);
+        bst.delete(80);
+
+        assertEquals(8, bst.size());
+        assertEquals(Arrays.asList(10, 25, 30, 35, 40, 45, 60, 70), bst.inOrder());
+
+        // 验证搜索
+        assertTrue(bst.search(30));
+        assertTrue(bst.search(45));
+        assertFalse(bst.search(20));
+        assertFalse(bst.search(50));
+    }
 }

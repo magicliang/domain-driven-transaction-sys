@@ -1,5 +1,6 @@
 package algorithm.basicds;
 
+import algorithm.basicds.BTree.Node;
 import java.util.List;
 
 /**
@@ -15,17 +16,31 @@ import java.util.List;
  */
 public class BinarySearchTree {
 
-    // 复用BTree的Node结构
+    /**
+     * 复用BTree的Node结构
+     */
     private BTree.Node root;
 
     /**
      * 插入新值到BST中
      * 如果值已存在，则不进行任何操作
+     * 普通二叉树没有办法通过插入实现自动建树的功能，但是搜索二叉树可以
      *
      * @param val 要插入的值
      */
     public void insert(int val) {
         root = insertRecursive(root, val);
+    }
+
+    /**
+     * 非递归方式插入新值到BST中
+     * 如果值已存在，则不进行任何操作
+     * 使用迭代方式替代递归，避免栈溢出风险
+     *
+     * @param val 要插入的值
+     */
+    public void insertNoneRecursive(int val) {
+        root = insertNoneRecursive(root, val);
     }
 
     /**
@@ -37,7 +52,7 @@ public class BinarySearchTree {
      */
     private BTree.Node insertRecursive(BTree.Node node, int val) {
         if (node == null) {
-            return new BTree.Node(val);
+            return new Node(val);
         }
 
         if (val < node.val) {
@@ -45,8 +60,50 @@ public class BinarySearchTree {
         } else if (val > node.val) {
             node.right = insertRecursive(node.right, val);
         }
-        // 如果val == node.val，不插入重复值
 
+        // 如果val == node.val，不插入重复值
+        return node;
+    }
+
+    /**
+     * 非递归插入的辅助方法
+     * 使用迭代方式遍历树结构，找到合适的插入位置
+     * 时间复杂度：O(h)，其中h是树的高度
+     * 空间复杂度：O(1)，只使用了常数个额外变量
+     *
+     * @param node 当前子树的根节点
+     * @param val 要插入的值
+     * @return 插入后的子树根节点
+     */
+    private BTree.Node insertNoneRecursive(BTree.Node node, int val) {
+        if (node == null) {
+            return new Node(val);
+        }
+
+        BTree.Node current = node;
+        BTree.Node prev = null;
+
+        // 遍历树结构，找到合适的插入位置
+        while (current != null) {
+            prev = current;
+            if (val < current.val) {
+                current = current.left;
+            } else if (val > current.val) {
+                current = current.right;
+            } else {
+                // 如果相等不用插入了直接返回
+                return node;
+            }
+        }
+
+        // 当current为null时，prev是其父节点
+        BTree.Node newNode = new Node(val);
+        if (val < prev.val) {
+            prev.left = newNode;
+        } else {
+            // 这里不可能再有相等的节点了，因为等于的情况在上面已经得到返回值了
+            prev.right = newNode;
+        }
         return node;
     }
 
