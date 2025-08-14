@@ -634,4 +634,206 @@ class BinarySearchTreeTest {
             assertFalse(bst.searchNoneRecursive(val));
         }
     }
+
+    @Test
+    void testDeleteLeftSkewedTree() {
+        // 测试左斜树删除
+        bst.insert(5);
+        bst.insert(4);
+        bst.insert(3);
+        bst.insert(2);
+        bst.insert(1);
+
+        bst.delete(3);
+        assertFalse(bst.search(3));
+        assertEquals(Arrays.asList(1, 2, 4, 5), bst.inOrder());
+    }
+
+    @Test
+    void testDeleteRightSkewedTree() {
+        // 测试右斜树删除
+        bst.insert(1);
+        bst.insert(2);
+        bst.insert(3);
+        bst.insert(4);
+        bst.insert(5);
+
+        bst.delete(3);
+        assertFalse(bst.search(3));
+        assertEquals(Arrays.asList(1, 2, 4, 5), bst.inOrder());
+    }
+
+    @Test
+    void testDeleteRootWithTwoChildren() {
+        // 测试删除有两个子节点的根节点
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(15);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(12);
+        bst.insert(18);
+
+        bst.delete(10);
+        assertFalse(bst.search(10));
+        assertEquals(Arrays.asList(3, 5, 7, 12, 15, 18), bst.inOrder());
+    }
+
+    @Test
+    void testDeleteAllNodes() {
+        // 测试删除所有节点
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(2);
+        bst.insert(4);
+        bst.insert(6);
+        bst.insert(8);
+
+        int[] values = {5, 3, 7, 2, 4, 6, 8};
+        for (int val : values) {
+            bst.delete(val);
+            assertFalse(bst.search(val));
+        }
+
+        assertTrue(bst.isEmpty());
+    }
+
+    @Test
+    void testDeleteAndReinsert() {
+        // 测试删除后重新插入
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(15);
+        bst.insert(3);
+        bst.insert(7);
+
+        bst.delete(5);
+        assertFalse(bst.search(5));
+        assertEquals(Arrays.asList(3, 7, 10, 15), bst.inOrder());
+
+        bst.insert(5);
+        assertTrue(bst.search(5));
+        assertEquals(Arrays.asList(3, 5, 7, 10, 15), bst.inOrder());
+    }
+
+    @Test
+    void testDeleteMinValue() {
+        // 测试删除最小值
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(1);
+        bst.insert(4);
+
+        bst.delete(1);
+        assertFalse(bst.search(1));
+        assertEquals(2, bst.findMin());
+    }
+
+    @Test
+    void testDeleteMaxValue() {
+        // 测试删除最大值
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(4);
+        bst.insert(9);
+
+        bst.delete(9);
+        assertFalse(bst.search(9));
+        assertEquals(7, bst.findMax());
+    }
+
+    @Test
+    void testDeleteComplexTreeStructure() {
+        // 测试复杂树结构的删除
+        // 构建如下树：
+        //        50
+        //      /    \
+        //    30      70
+        //   /  \    /  \
+        // 20   40  60   80
+        //  \   /   /   /  \
+        //  25 35  55  75  85
+        int[] values = {50, 30, 70, 20, 40, 60, 80, 25, 35, 55, 75, 85};
+
+        for (int val : values) {
+            bst.insert(val);
+        }
+
+        // 删除内部节点
+        bst.delete(30);
+        assertFalse(bst.search(30));
+        assertTrue(bst.search(20));
+        assertTrue(bst.search(25));
+        assertTrue(bst.search(35));
+        assertTrue(bst.search(40));
+
+        // 删除叶子节点
+        bst.delete(85);
+        assertFalse(bst.search(85));
+
+        // 验证树结构完整性
+        List<Integer> expected = Arrays.asList(20, 25, 35, 40, 50, 55, 60, 70, 75, 80);
+        assertEquals(expected, bst.inOrder());
+    }
+
+    @Test
+    void testDeleteWithDuplicates() {
+        // 测试删除重复值（虽然BST不允许重复，但测试删除不存在的值）
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+
+        bst.delete(10); // 不存在的值
+        assertEquals(3, bst.size());
+        assertEquals(Arrays.asList(3, 5, 7), bst.inOrder());
+    }
+
+    @Test
+    void testDeleteAndVerifyHeight() {
+        // 测试删除后树高变化
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(15);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(12);
+        bst.insert(20);
+
+        assertEquals(3, bst.height());
+
+        bst.delete(20); // 删除叶子节点，高度不变
+        assertEquals(3, bst.height());
+
+        bst.delete(15); // 删除内部节点，高度可能变化
+        assertEquals(3, bst.height());
+    }
+
+    @Test
+    void testDeleteRootMultipleTimes() {
+        // 测试连续删除根节点
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(2);
+        bst.insert(4);
+        bst.insert(6);
+        bst.insert(8);
+
+        bst.delete(5); // 删除根节点
+        assertFalse(bst.search(5));
+
+        bst.delete(6); // 删除新的根节点（可能是7）
+        assertFalse(bst.search(6));
+
+        // 验证剩余节点
+        List<Integer> remaining = bst.inOrder();
+        assertTrue(remaining.contains(2));
+        assertTrue(remaining.contains(3));
+        assertTrue(remaining.contains(4));
+        assertTrue(remaining.contains(7));
+        assertTrue(remaining.contains(8));
+    }
 }

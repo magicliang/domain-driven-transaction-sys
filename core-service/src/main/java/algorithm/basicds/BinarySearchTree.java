@@ -194,24 +194,26 @@ public class BinarySearchTree {
         }
 
         if (val < node.val) {
-            node.left = deleteRecursive(node.left, val);
+            return deleteRecursive(node.left, val);
         } else if (val > node.val) {
-            node.right = deleteRecursive(node.right, val);
-        } else {
-            // 找到要删除的节点
-            // 情况1：叶子节点或只有一个子节点
-            if (node.left == null) {
-                return node.right;
-            } else if (node.right == null) {
-                return node.left;
-            }
+            return deleteRecursive(node.right, val);
+        }
 
-            // 情况2：有两个子节点
-            // 找到右子树的最小值
-            int minVal = findMin(node.right);
-            node.val = minVal;
-            // 删除右子树中的最小值
-            node.right = deleteRecursive(node.right, minVal);
+        // 进入相等状况，要删除本节点
+
+        // 删除节点以后比较痛苦的是到底要拿哪个节点来替换节点的问题，要区分度为2或者非2的场景，度为2的场景非常麻烦
+
+        // 情况1：度非2
+        if (node.left == null) {
+            // 如果左节点为空，用右节点替代，而不用处理左子树问题
+            node = node.right;
+        } else if (node.right == null) {
+            node = node.left; // 注意：对于度为1的节点，走到这里整个节点就变成 null了
+        } else { // 易错的点：这里忘记用 else
+            // 情况2：有两个子节点，所以右子树必然是存在的，把那个最小值拿上来，把它在那个子树里删除就行了-
+            // 这个解似乎必然是递归最好，因为迭代法要处理很深的嵌套问题
+            node.val = findMin(node.right); // 用 val 来替换当前 node
+            deleteRecursive(node.right, node.val); // 删除这个子树的这个值
         }
 
         return node;
@@ -237,6 +239,7 @@ public class BinarySearchTree {
      * @return 最小值
      */
     private int findMin(BTree.Node node) {
+        // 探索算法，不用 current，用 left 来处理
         while (node.left != null) {
             node = node.left;
         }
