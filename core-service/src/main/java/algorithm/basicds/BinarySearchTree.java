@@ -216,7 +216,7 @@ public class BinarySearchTree {
             // 情况2：有两个子节点，所以右子树必然是存在的，把那个最小值拿上来，把它在那个子树里删除就行了-
             // 这个解似乎必然是递归最好，因为迭代法要处理很深的嵌套问题
             node.val = findMin(node.right); // 用 val 来替换当前 node
-            deleteRecursive(node.right, node.val); // 删除这个子树的这个值
+            node.right = deleteRecursive(node.right, node.val); // 删除这个子树的这个值，并将返回值赋给node.right
         }
 
         return node;
