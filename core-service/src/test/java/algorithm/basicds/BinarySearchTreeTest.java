@@ -487,4 +487,151 @@ class BinarySearchTreeTest {
         assertFalse(bst.search(20));
         assertFalse(bst.search(50));
     }
+
+    @Test
+    void testSearchNoneRecursiveEmptyTree() {
+        assertFalse(bst.searchNoneRecursive(5));
+    }
+
+    @Test
+    void testSearchNoneRecursiveSingleNodeFound() {
+        bst.insertNoneRecursive(10);
+        assertTrue(bst.searchNoneRecursive(10));
+    }
+
+    @Test
+    void testSearchNoneRecursiveSingleNodeNotFound() {
+        bst.insertNoneRecursive(10);
+        assertFalse(bst.searchNoneRecursive(5));
+        assertFalse(bst.searchNoneRecursive(15));
+    }
+
+    @Test
+    void testSearchNoneRecursiveMultipleNodes() {
+        // 构建BST: 50,30,70,20,40,60,80
+        bst.insertNoneRecursive(50);
+        bst.insertNoneRecursive(30);
+        bst.insertNoneRecursive(70);
+        bst.insertNoneRecursive(20);
+        bst.insertNoneRecursive(40);
+        bst.insertNoneRecursive(60);
+        bst.insertNoneRecursive(80);
+
+        // 测试存在的值
+        assertTrue(bst.searchNoneRecursive(50));
+        assertTrue(bst.searchNoneRecursive(30));
+        assertTrue(bst.searchNoneRecursive(70));
+        assertTrue(bst.searchNoneRecursive(20));
+        assertTrue(bst.searchNoneRecursive(40));
+        assertTrue(bst.searchNoneRecursive(60));
+        assertTrue(bst.searchNoneRecursive(80));
+
+        // 测试不存在的值
+        assertFalse(bst.searchNoneRecursive(25));
+        assertFalse(bst.searchNoneRecursive(90));
+        assertFalse(bst.searchNoneRecursive(0));
+        assertFalse(bst.searchNoneRecursive(100));
+    }
+
+    @Test
+    void testSearchNoneRecursiveLeftSkewedTree() {
+        // 构建左斜树：5,4,3,2,1
+        bst.insertNoneRecursive(5);
+        bst.insertNoneRecursive(4);
+        bst.insertNoneRecursive(3);
+        bst.insertNoneRecursive(2);
+        bst.insertNoneRecursive(1);
+
+        // 测试所有存在的值
+        assertTrue(bst.searchNoneRecursive(5));
+        assertTrue(bst.searchNoneRecursive(4));
+        assertTrue(bst.searchNoneRecursive(3));
+        assertTrue(bst.searchNoneRecursive(2));
+        assertTrue(bst.searchNoneRecursive(1));
+
+        // 测试不存在的值
+        assertFalse(bst.searchNoneRecursive(0));
+        assertFalse(bst.searchNoneRecursive(6));
+    }
+
+    @Test
+    void testSearchNoneRecursiveRightSkewedTree() {
+        // 构建右斜树：1,2,3,4,5
+        bst.insertNoneRecursive(1);
+        bst.insertNoneRecursive(2);
+        bst.insertNoneRecursive(3);
+        bst.insertNoneRecursive(4);
+        bst.insertNoneRecursive(5);
+
+        // 测试所有存在的值
+        assertTrue(bst.searchNoneRecursive(1));
+        assertTrue(bst.searchNoneRecursive(2));
+        assertTrue(bst.searchNoneRecursive(3));
+        assertTrue(bst.searchNoneRecursive(4));
+        assertTrue(bst.searchNoneRecursive(5));
+
+        // 测试不存在的值
+        assertFalse(bst.searchNoneRecursive(0));
+        assertFalse(bst.searchNoneRecursive(6));
+    }
+
+    @Test
+    void testSearchNoneRecursiveVsSearchConsistency() {
+        // 创建两个BST，一个用递归搜索，一个用非递归搜索
+        BinarySearchTree bst1 = new BinarySearchTree();
+        BinarySearchTree bst2 = new BinarySearchTree();
+
+        int[] values = {50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45};
+
+        // 构建相同的树
+        for (int val : values) {
+            bst1.insert(val);
+            bst2.insert(val);
+        }
+
+        // 测试所有存在的值
+        for (int val : values) {
+            assertEquals(bst1.search(val), bst2.searchNoneRecursive(val));
+        }
+
+        // 测试不存在的值
+        int[] nonExistentValues = {0, 15, 55, 90, 100};
+        for (int val : nonExistentValues) {
+            assertEquals(bst1.search(val), bst2.searchNoneRecursive(val));
+        }
+    }
+
+    @Test
+    void testSearchNoneRecursiveDuplicateValues() {
+        bst.insertNoneRecursive(10);
+        bst.insertNoneRecursive(10); // 重复插入
+        bst.insertNoneRecursive(5);
+        bst.insertNoneRecursive(15);
+
+        assertTrue(bst.searchNoneRecursive(10));
+        assertTrue(bst.searchNoneRecursive(5));
+        assertTrue(bst.searchNoneRecursive(15));
+        assertFalse(bst.searchNoneRecursive(20));
+    }
+
+    @Test
+    void testSearchNoneRecursiveLargeTree() {
+        // 测试较大规模的树
+        int[] values = {50, 25, 75, 12, 37, 62, 87, 6, 18, 31, 43, 56, 68, 81, 93};
+
+        for (int val : values) {
+            bst.insertNoneRecursive(val);
+        }
+
+        // 测试所有存在的值
+        for (int val : values) {
+            assertTrue(bst.searchNoneRecursive(val));
+        }
+
+        // 测试不存在的值
+        int[] nonExistentValues = {0, 1, 100, 99, 26, 74};
+        for (int val : nonExistentValues) {
+            assertFalse(bst.searchNoneRecursive(val));
+        }
+    }
 }

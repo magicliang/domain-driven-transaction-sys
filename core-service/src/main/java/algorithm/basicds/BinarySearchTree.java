@@ -117,8 +117,14 @@ public class BinarySearchTree {
         return searchRecursive(root, val);
     }
 
+    public boolean searchNoneRecursive(int val) {
+        return searchNoneRecursive(root, val);
+    }
+
     /**
      * 递归搜索的辅助方法
+     *
+     * 这里返回是否存在而不是返回具体的节点，是因为像 contains 之类的操作就是这样实现的
      *
      * @param node 当前子树的根节点
      * @param val 要搜索的值
@@ -128,14 +134,37 @@ public class BinarySearchTree {
         if (node == null) {
             return false;
         }
-
-        if (val == node.val) {
+        if (node.val == val) {
             return true;
         } else if (val < node.val) {
             return searchRecursive(node.left, val);
         } else {
             return searchRecursive(node.right, val);
         }
+    }
+
+    /**
+     * 非递归搜索的辅助方法
+     * 使用迭代方式遍历树结构，避免递归栈溢出风险
+     * 时间复杂度：O(h)，其中h是树的高度
+     * 空间复杂度：O(1)，只使用了常数个额外变量
+     *
+     * @param node 当前子树的根节点
+     * @param val 要搜索的值
+     * @return 如果找到返回true，否则返回false
+     */
+    private boolean searchNoneRecursive(BTree.Node node, int val) {
+        BTree.Node current = node;
+        while (current != null) {
+            if (current.val == val) {
+                return true;
+            } else if (val < current.val) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+        return false;
     }
 
     /**
