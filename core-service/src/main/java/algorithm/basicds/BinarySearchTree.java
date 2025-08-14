@@ -195,9 +195,11 @@ public class BinarySearchTree {
         }
 
         if (val < node.val) {
-            return deleteRecursive(node.left, val);
+            node.left = deleteRecursive(node.left, val);
+            return node;
         } else if (val > node.val) {
-            return deleteRecursive(node.right, val);
+            node.right = deleteRecursive(node.right, val);
+            return node;
         }
 
         // 进入相等状况，要删除本节点
