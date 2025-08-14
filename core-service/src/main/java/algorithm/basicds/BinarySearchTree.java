@@ -223,6 +223,98 @@ public class BinarySearchTree {
     }
 
     /**
+     * 实现一个返回值的删除
+     *
+     * @param val
+     */
+    void remove(int val) {
+        // 无法开始搜索的算法就不删除
+        if (root == null) {
+            return;
+        }
+
+        Node current = root;
+        Node prev = null;
+
+        // 第一阶段：搜索要删除的节点，同时记录其父节点
+        Node toRemove = null;
+        while (current != null) {
+            if (current.val == val) {
+                toRemove = current;
+                // 这里相当于一个小 return
+                break;
+            }
+            // 发生进一步探索才赋值
+            prev = current;
+            if (val < current.val) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        if (toRemove == null) {
+            return; // 易错的点：忘记 return
+        }
+
+        // 第二阶段：根据删除节点的子节点数量分情况处理
+        // 全子树的节点（度为2的节点）
+        if (toRemove.left != null && toRemove.right != null) {
+            // int newVal = findMin(toRemove.right);
+            // remove(newVal); // 这是一种做法，但是会有很复杂的递归
+
+            // 我们接下来实现一种纯迭代
+            // 关键思路：找到右子树的最小值节点，用它替换要删除的节点
+            Node minParent = toRemove;  // 最小值节点的父节点
+            Node minChild = minParent.right;  // 从右子树开始搜索最小值
+
+            // 右子树的最小值在左直线上
+            // 一直向左走，直到找到没有左子树的节点
+            while (minChild.left != null) {
+                minParent = minChild;
+                minChild = minChild.left;
+            }
+
+            // 关键：删除最小值节点，需要判断它是父节点的左子节点还是右子节点
+            if (minParent.right == minChild) {
+                // 极容易被遗忘的解法，这个结构是一个先右再左的折回，所以right的替代品肯定是右子树，可是到底赋给父的右还是左呢？
+                // 情况1：右子树的根节点就是最小值（while循环没有执行）
+                // 此时minChild是minParent的右子节点
+                minParent.right = minChild.right;
+            } else {
+                // 情况2：最小值节点在更深的左子树中（while循环执行了）
+                // 此时minChild是minParent的左子节点
+                minParent.left = minChild.right;
+            }
+
+            // 在删除完整棵树以后再重新赋值到这个节点
+            // 用最小值替换要删除节点的值，完成删除操作
+            toRemove.val = minChild.val;
+        } else {
+            // 第三阶段：处理度为0或1的节点（简单情况）
+            // 不全子树的节点处理比较简单，选一个子节点出来删除就行了
+            // 选择存在的子节点作为替换节点（可能为null）
+            Node newChild = toRemove.left != null ? toRemove.left : toRemove.right;
+
+            // 如果要删除节点是 root，则 prev 是没用的
+            if (toRemove == root) {
+                // 直接更新根节点
+                root = newChild;
+                return; // 易错的点：忘记 return，可能触发多次删除
+            }
+
+            if (toRemove == prev.left) {
+                // 否则必有 prev，就不用担心空指针问题
+                // 要删除的节点是父节点的左子节点
+                prev.left = newChild;
+            } else {
+                // 要删除的节点是父节点的右子节点
+                prev.right = newChild;
+            }
+        }
+    }
+
+    /**
      * 查找最小值
      *
      * @return 最小值

@@ -728,7 +728,7 @@ class BinarySearchTreeTest {
 
         bst.delete(1);
         assertFalse(bst.search(1));
-        assertEquals(2, bst.findMin());
+        assertEquals(3, bst.findMin());
     }
 
     @Test
@@ -835,5 +835,244 @@ class BinarySearchTreeTest {
         assertTrue(remaining.contains(4));
         assertTrue(remaining.contains(7));
         assertTrue(remaining.contains(8));
+    }
+
+    @Test
+    void testRemoveBasicCases() {
+        // 测试空树
+        bst.remove(5);
+        assertTrue(bst.isEmpty());
+
+        // 测试单节点删除
+        bst.insert(5);
+        bst.remove(5);
+        assertTrue(bst.isEmpty());
+        assertFalse(bst.search(5));
+    }
+
+    @Test
+    void testRemoveLeafNode() {
+        // 删除叶子节点
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+
+        bst.remove(7);
+        assertFalse(bst.search(7));
+        assertEquals(2, bst.size());
+        assertEquals(Arrays.asList(3, 5), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveNodeWithOneChild() {
+        // 删除只有一个子节点的节点
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(6);
+
+        bst.remove(7);
+        assertFalse(bst.search(7));
+        assertTrue(bst.search(6));
+        assertEquals(Arrays.asList(3, 5, 6), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveNodeWithTwoChildren() {
+        // 删除有两个子节点的节点
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(2);
+        bst.insert(4);
+        bst.insert(6);
+        bst.insert(8);
+
+        bst.remove(5); // 删除根节点
+        assertFalse(bst.search(5));
+        assertEquals(6, bst.size());
+        assertEquals(Arrays.asList(2, 3, 4, 6, 7, 8), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveRootWithTwoChildrenComplex() {
+        // 测试复杂情况：删除根节点，右子树有左子树
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(15);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(12);
+        bst.insert(18);
+        bst.insert(11);
+        bst.insert(13);
+
+        bst.remove(10);
+        assertFalse(bst.search(10));
+        assertEquals(Arrays.asList(3, 5, 7, 11, 12, 13, 15, 18), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveNonExistentValue() {
+        // 测试删除不存在的值
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+
+        bst.remove(10); // 不存在的值
+        assertEquals(3, bst.size());
+        assertEquals(Arrays.asList(3, 5, 7), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveLeftSkewedTree() {
+        // 测试左斜树删除
+        bst.insert(5);
+        bst.insert(4);
+        bst.insert(3);
+        bst.insert(2);
+        bst.insert(1);
+
+        bst.remove(3);
+        assertFalse(bst.search(3));
+        assertEquals(Arrays.asList(1, 2, 4, 5), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveRightSkewedTree() {
+        // 测试右斜树删除
+        bst.insert(1);
+        bst.insert(2);
+        bst.insert(3);
+        bst.insert(4);
+        bst.insert(5);
+
+        bst.remove(3);
+        assertFalse(bst.search(3));
+        assertEquals(Arrays.asList(1, 2, 4, 5), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveAllNodes() {
+        // 测试删除所有节点
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(2);
+        bst.insert(4);
+        bst.insert(6);
+        bst.insert(8);
+
+        int[] values = {5, 3, 7, 2, 4, 6, 8};
+        for (int val : values) {
+            bst.remove(val);
+            assertFalse(bst.search(val));
+        }
+
+        assertTrue(bst.isEmpty());
+    }
+
+    @Test
+    void testRemoveAndReinsert() {
+        // 测试删除后重新插入
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(15);
+        bst.insert(3);
+        bst.insert(7);
+
+        bst.remove(5);
+        assertFalse(bst.search(5));
+        assertEquals(Arrays.asList(3, 7, 10, 15), bst.inOrder());
+
+        bst.insert(5);
+        assertTrue(bst.search(5));
+        assertEquals(Arrays.asList(3, 5, 7, 10, 15), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveMinValue() {
+        // 测试删除最小值
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(1);
+        bst.insert(4);
+
+        bst.remove(1);
+        assertFalse(bst.search(1));
+        assertEquals(3, bst.findMin());
+    }
+
+    @Test
+    void testRemoveMaxValue() {
+        // 测试删除最大值
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(4);
+        bst.insert(9);
+
+        bst.remove(9);
+        assertFalse(bst.search(9));
+        assertEquals(7, bst.findMax());
+    }
+
+    @Test
+    void testRemoveConsistencyWithDelete() {
+        // 测试remove和delete的一致性
+        BinarySearchTree bst1 = new BinarySearchTree();
+        BinarySearchTree bst2 = new BinarySearchTree();
+
+        int[] values = {50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45};
+
+        // 构建相同的树
+        for (int val : values) {
+            bst1.insert(val);
+            bst2.insert(val);
+        }
+
+        // 分别用remove和delete删除相同的节点
+        bst1.remove(30);
+        bst2.delete(30);
+
+        // 验证结果一致
+        assertEquals(bst1.size(), bst2.size());
+        assertEquals(bst1.inOrder(), bst2.inOrder());
+        assertEquals(bst1.preOrder(), bst2.preOrder());
+    }
+
+    @Test
+    void testRemoveComplexTreeStructure() {
+        // 测试复杂树结构
+        // 构建如下树：
+        //        50
+        //      /    \
+        //    30      70
+        //   /  \    /  \
+        // 20   40  60   80
+        //  \   /   /   /  \
+        //  25 35  55  75  85
+        int[] values = {50, 30, 70, 20, 40, 60, 80, 25, 35, 55, 75, 85};
+
+        for (int val : values) {
+            bst.insert(val);
+        }
+
+        // 删除内部节点
+        bst.remove(30);
+        assertFalse(bst.search(30));
+        assertTrue(bst.search(20));
+        assertTrue(bst.search(25));
+        assertTrue(bst.search(35));
+        assertTrue(bst.search(40));
+
+        // 删除叶子节点
+        bst.remove(85);
+        assertFalse(bst.search(85));
+
+        // 验证树结构完整性
+        List<Integer> expected = Arrays.asList(20, 25, 35, 40, 50, 55, 60, 70, 75, 80);
+        assertEquals(expected, bst.inOrder());
     }
 }
