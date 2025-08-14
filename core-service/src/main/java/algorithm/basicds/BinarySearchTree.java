@@ -174,6 +174,7 @@ public class BinarySearchTree {
      * @param val 要删除的值
      */
     public void delete(int val) {
+        // 这个如果没有返回值，则需要考虑删除 root 的问题，就比较麻烦
         root = deleteRecursive(root, val);
     }
 
