@@ -1,7 +1,9 @@
 package algorithm.basicds;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -1074,5 +1076,153 @@ class BinarySearchTreeTest {
         // 验证树结构完整性
         List<Integer> expected = Arrays.asList(20, 25, 35, 40, 50, 55, 60, 70, 75, 80);
         assertEquals(expected, bst.inOrder());
+    }
+
+    @Test
+    void testRemoveRootOnlyNode() {
+        // 测试删除唯一的根节点
+        bst.insert(10);
+        bst.remove(10);
+        assertTrue(bst.isEmpty());
+        assertNull(bst.getRoot());
+    }
+
+    @Test
+    void testRemoveRootWithOnlyLeftChild() {
+        // 测试删除只有左子树的根节点
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(3);
+
+        bst.remove(10);
+        assertFalse(bst.search(10));
+        assertEquals(Arrays.asList(3, 5), bst.inOrder());
+        assertEquals(5, bst.getRoot().val); // 5成为新的根
+    }
+
+    @Test
+    void testRemoveRootWithOnlyRightChild() {
+        // 测试删除只有右子树的根节点
+        bst.insert(10);
+        bst.insert(15);
+        bst.insert(20);
+
+        bst.remove(10);
+        assertFalse(bst.search(10));
+        assertEquals(Arrays.asList(15, 20), bst.inOrder());
+        assertEquals(15, bst.getRoot().val); // 15成为新的根
+    }
+
+    @Test
+    void testRemoveNodeWithRightSubtreeMinAsRoot() {
+        // 测试右子树的最小值就是右子树的根节点的情况
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(15);  // 右子树的根就是最小值
+        bst.insert(20);
+
+        bst.remove(10);
+        assertFalse(bst.search(10));
+        assertEquals(Arrays.asList(5, 15, 20), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveNodeWithDeepRightMin() {
+        // 测试右子树的最小值在深层左子树的情况
+        bst.insert(20);
+        bst.insert(10);
+        bst.insert(30);
+        bst.insert(25);
+        bst.insert(35);
+        bst.insert(22);  // 右子树的最小值
+
+        bst.remove(20);
+        assertFalse(bst.search(20));
+        assertEquals(Arrays.asList(10, 22, 25, 30, 35), bst.inOrder());
+    }
+
+    @Test
+    void testRemoveEdgeCaseLargeTree() {
+        // 测试大规模树的删除
+        int[] values = {50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45, 55, 65, 75, 85};
+
+        for (int val : values) {
+            bst.insert(val);
+        }
+
+        // 删除各种位置的节点
+        bst.remove(10);  // 叶子节点
+        bst.remove(30);  // 有子树的内部节点
+        bst.remove(50);  // 根节点
+
+        List<Integer> expected = Arrays.asList(20, 25, 35, 40, 45, 55, 60, 65, 70, 75, 80, 85);
+        assertEquals(expected, bst.inOrder());
+        assertEquals(12, bst.size());
+    }
+
+    @Test
+    void testRemoveVsDeleteComprehensive() {
+        // 全面测试remove和delete的一致性
+        BinarySearchTree bst1 = new BinarySearchTree();
+        BinarySearchTree bst2 = new BinarySearchTree();
+
+        // 构建复杂树结构
+        int[] values = {50, 25, 75, 12, 37, 62, 87, 6, 18, 31, 43, 56, 68, 81, 93};
+
+        for (int val : values) {
+            bst1.insert(val);
+            bst2.insert(val);
+        }
+
+        // 测试删除各种位置的节点
+        int[] nodesToDelete = {50, 25, 75, 12, 87, 6, 93};
+
+        for (int val : nodesToDelete) {
+            BinarySearchTree bst1Copy = new BinarySearchTree();
+            BinarySearchTree bst2Copy = new BinarySearchTree();
+
+            // 复制原始树
+            for (int v : values) {
+                bst1Copy.insert(v);
+                bst2Copy.insert(v);
+            }
+
+            bst1Copy.remove(val);
+            bst2Copy.delete(val);
+
+            assertEquals(bst1Copy.size(), bst2Copy.size(), "Size mismatch after deleting " + val);
+            assertEquals(bst1Copy.inOrder(), bst2Copy.inOrder(), "InOrder mismatch after deleting " + val);
+            assertEquals(bst1Copy.preOrder(), bst2Copy.preOrder(), "PreOrder mismatch after deleting " + val);
+        }
+    }
+
+    @Test
+    void testRemoveNullSafety() {
+        // 测试空树删除
+        assertDoesNotThrow(() -> bst.remove(5));
+
+        // 测试删除不存在的值
+        bst.insert(10);
+        assertDoesNotThrow(() -> bst.remove(5));
+        assertEquals(1, bst.size());
+    }
+
+    @Test
+    void testRemovePerformanceWithLargeTree() {
+        // 测试大规模树的删除性能
+        int size = 1000;
+        for (int i = 1; i <= size; i++) {
+            bst.insert(i);
+        }
+
+        assertEquals(size, bst.size());
+
+        // 删除部分节点
+        for (int i = 1; i <= size; i += 10) {
+            bst.remove(i);
+            assertFalse(bst.search(i));
+        }
+
+        assertEquals(size - size / 10, bst.size());
     }
 }
