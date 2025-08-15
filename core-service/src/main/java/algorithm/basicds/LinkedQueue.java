@@ -1,6 +1,5 @@
 package algorithm.basicds;
 
-import algorithm.Queue;
 import java.util.NoSuchElementException;
 
 /**

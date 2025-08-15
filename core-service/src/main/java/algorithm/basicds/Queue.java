@@ -1,4 +1,4 @@
-package algorithm;
+package algorithm.basicds;
 
 /**
  * project name: domain-driven-transaction-sys

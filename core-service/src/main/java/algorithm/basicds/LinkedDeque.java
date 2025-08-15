@@ -1,6 +1,5 @@
 package algorithm.basicds;
 
-import algorithm.Deque;
 import java.util.NoSuchElementException;
 
 /**
