@@ -53,6 +53,8 @@ public class BinarySearch {
         //   - 所有 >= target 的候选都被 r 不断收缩保留下来
         // 因此 l（也就是 r）就是 target 应该插入的位置
         // 特别地，这个位置可以是 nums.length（插在末尾），也可以是 0（插在开头），完全合法
+        // 最终 l 和 r 撞在一起了，l 左边全是比 target 小的，r 右边全是比 target 大的
+        // 那么 l 这个位置，就是 target 正好可以插进去的地方
         return l;
     }
 }
