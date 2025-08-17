@@ -24,9 +24,33 @@ public class BinarySearch {
             }
         }
 
-        // 终结以后，r + 1 = l
+        // 终结以后，r + 1 = l，这里的 l 是理论插入位，可能是 nums.length，如果是二分搜索应该返回-1的。
         // nums[r] <= target <= nums[l]
+
         return l;
+    }
+
+    public int binarySearch(int nums[], int target) {
+
+        // 这道题易错的点在于插入位置可能是在现行数组边界之外的
+        int l = 0;
+        int r = nums.length - 1; // 易错的点：闭区间问题需要
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                // 区间右移
+                l = mid + 1;
+            } else if (nums[mid] > target) {
+                // 区间左移
+                r = mid - 1;
+            }
+        }
+
+        // 只有找到一种返回方式，如果找不到，一律返回-1，其实这时候 r + 1 = l 是有可能得到某一个指针越界的，但是这里我们先不检查指针越界的问题，一律返回-1
+        return -1;
     }
 
     public int searchInsert2(int[] nums, int target) {
@@ -116,6 +140,30 @@ public class BinarySearch {
     public int floor(int[] nums, int target) {
         int insertPos = searchInsert1(nums, target); // 第一个 >= target 的位置
         return insertPos - 1; // 它前面的位置就是最后一个 < target 的位置
+    }
+
+    public int leftBound2(int nums[], int target) {
+        int l = 0;
+        int r = nums.length - 1;
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                // 依照惯例，找左边界，区间向左收敛
+                r = mid - 1;
+            } else if (nums[mid] < target) {
+                l = mid + 1;
+            } else if (nums[mid] > target) {
+                r = mid - 1;
+            }
+        }
+
+        // 判断 target 是否存在于 nums 中，此时 r + 1 = l
+        if (l >= nums.length) {
+            return -1;
+        }
+
+        return nums[l] == target ? l : -1;
     }
 
 }
