@@ -57,4 +57,67 @@ public class BinarySearch {
         // 那么 l 这个位置，就是 target 正好可以插进去的地方
         return l;
     }
+
+    public int leftBound1(int nums[], int target) {
+        int l = 0;
+        int r = nums.length;
+
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                // 找到等价的值的时候先别处理，想一想要左搜索还是右搜索，因为 right 本身并不是一个确切的坐标，所以收窄左可能找不到，但是收窄右，我们还可以用现在 l 返回
+                r = mid;
+            } else if (nums[mid] < target) {
+                l = mid + 1;
+            } else if (nums[mid] > target) {
+                r = mid;
+            }
+        }
+
+        // 易错的的点：l==r也可能是非法的
+        if (l == nums.length) {
+            return -1;
+        }
+
+        // 当这个算法退出的时候，l==r。找得到还是找不到呢？找不到返回-1
+        // 这种搜索的最后一步通常没有校验nums[l]和target的关系，此时我们要教研一下是不是真的找到了target，并且是左边界；否则返回-1
+        return nums[l] == target ? l : -1;
+    }
+
+    /**
+     * 在一个升序数组中，找到小于 target 的最大元素的索引（即 floor 值）。
+     * <p>
+     * 如果不存在这样的元素（即所有元素都 >= target），则返回 -1。
+     * <p>
+     * 易错的点：
+     * floor 需要用到 searchInsert，而不能依赖 leftBound。
+     * 因为 leftBound 只有在 target 存在时才能返回有效索引；如果 target 不存在，它会返回 -1。
+     * <p>
+     * 举例：
+     * nums = [1, 3, 5, 7], target = 4
+     * 我们希望 floor 返回 1（因为 nums[1] = 3 是小于 4 的最大元素）
+     * 但 leftBound(4) 会返回 -1（因为 4 不存在）
+     * 如果基于 leftBound - 1 计算 floor，就会得到 -2，完全错误。
+     * <p>
+     * 关键区别：
+     * searchInsert 找的是“插入位置”——第一个 >= target 的位置，这是一种“理论边界”，即使 target 不存在也有意义。
+     * leftBound   找的是“第一个等于 target 的位置”——是一种“实际边界”，只有 target 存在时才有意义。
+     * <p>
+     * 因此，floor 应该基于 searchInsert 实现：floor = searchInsert(target) - 1
+     *
+     * @param nums   升序整数数组，不允许为 null
+     * @param target 要比较的目标值
+     * @return 小于 target 的最大元素的索引；如果不存在，返回 -1
+     * @example floor([1, 2, 2, 2, 3], 2)  → 返回 0（因为 1 是小于 2 的最大元素）
+     * floor([1,2,3,5,6], 4)  → 返回 2（因为 3 是小于 4 的最大元素）
+     * floor([1,2,3], 0)      → 返回 -1（没有元素小于 0）
+     * floor([1,2,3], 4)      → 返回 2（3 是小于 4 的最大元素）
+     */
+    public int floor(int[] nums, int target) {
+        int insertPos = searchInsert1(nums, target); // 第一个 >= target 的位置
+        return insertPos - 1; // 它前面的位置就是最后一个 < target 的位置
+    }
+
 }
+
+
