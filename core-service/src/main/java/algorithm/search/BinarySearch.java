@@ -92,7 +92,7 @@ public class BinarySearch {
         while (l < r) {
             int mid = l + (r - l) / 2;
             if (nums[mid] == target) {
-                // 找到等价的值的时候先别处理，想一想要左搜索还是右搜索，因为 right 本身并不是一个确切的坐标，所以收窄左可能找不到，但是收窄右，我们还可以用现在 l 返回
+                // 找到等价的值的时候先别处理，想一想要左搜索还是右搜索，我们要找左边界，任意一个点可能都是在左边界右边的，所以往左收敛
                 r = mid;
             } else if (nums[mid] < target) {
                 l = mid + 1;
@@ -102,7 +102,7 @@ public class BinarySearch {
         }
 
         // 易错的的点：l==r也可能是非法的
-        if (l == nums.length) {
+        if (l == nums.length || l == 0) {
             return -1;
         }
 
@@ -129,6 +129,7 @@ public class BinarySearch {
      * 关键区别：
      * searchInsert 找的是“插入位置”——第一个 >= target 的位置，这是一种“理论边界”，即使 target 不存在也有意义。
      * leftBound   找的是“第一个等于 target 的位置”——是一种“实际边界”，只有 target 存在时才有意义。
+     * floor 要找理论边界的另一个临界点
      * <p>
      * 因此，floor 应该基于 searchInsert 实现：floor = searchInsert(target) - 1
      *
@@ -147,26 +148,147 @@ public class BinarySearch {
 
     public int leftBound2(int nums[], int target) {
         int l = 0;
+        int r = nums.length - 1; // 闭区间 [l, r]，所以 r 初始化为最后一个合法索引
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                // 找到 target，但不一定是最左边的
+                // 为了找左边界，必须继续向左收缩：把右边界 r 拉到 mid 左边
+                r = mid - 1;
+            } else if (nums[mid] < target) {
+                // 当前值太小，说明左边界在 mid 右边
+                // mid 本身不满足 >= target，所以从 mid+1 开始
+                l = mid + 1;
+            } else if (nums[mid] > target) {
+                // 当前值太大，说明左边界在 mid 左边
+                // mid 本身大于 target，不是目标位置，可以排除
+                r = mid - 1;
+            }
+        }
+
+        // 循环结束时，l == r + 1
+        // 此时：
+        //   - l 是第一个 >= target 的位置（插入位置）
+        //   - r 是最后一个 < target 的位置
+        // 但我们不能直接返回 l，因为：
+        //   1. l 可能越界（比如 target 比所有数都大）
+        //   2. nums[l] 可能不等于 target（target 根本不存在）
+        if (l >= nums.length) {
+            return -1; // 越界了，说明 target 比所有元素都大
+        }
+
+        // 此时 l 在数组范围内，但 nums[l] 不一定是 target
+        // 比如 target = 4, nums = [1,2,3,5]，l=3，nums[3]=5 ≠ 4
+        // 所以必须再检查一下是否真的找到了 target
+        return nums[l] == target ? l : -1;
+    }
+
+
+    /**
+     * 在升序数组中查找 target 的右边界（即最后一个等于 target 的元素的索引）。
+     * <p>
+     * 如果 target 不存在于数组中，则返回 -1。
+     * <p>
+     * 使用左闭右开区间 [l, r) 模型实现。
+     * 核心口诀：l 永远是第一个 >= target 的位置 → 但右边界要靠“第一个 > target 的位置 - 1”
+     *
+     * @param nums   升序整数数组，不能为空或 null
+     * @param target 要查找的目标值
+     * @return target 的右边界索引；如果不存在，返回 -1
+     * @example rightBound1([1, 2, 2, 2, 3], 2) → 返回 3
+     * rightBound1([1,2,3,4,5], 6) → 返回 -1（不存在）
+     * rightBound1([2,3,4], 1)     → 返回 -1（比所有数都小）
+     * rightBound1([1], 1)         → 返回 0
+     */
+    public int rightBound1(int nums[], int target) {
+        int l = 0;
+        int r = nums.length; // 搜索区间 [l, r)：左闭右开，r 是“边界标记”，不是数据位置
+
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                // 找到 target，但不一定是最右边的
+                // 为了找右边界，必须继续向右找：把左边界提到 mid + 1
+                // 因为 right 本身不是确切坐标（是开区间），所以我们可以放心地让 l 走出去
+                // 想象我们找到了最后一个 target，仍然尝试“走出去一步”，所以最终 l 会停在第一个 > target 的位置
+                l = mid + 1;
+            } else if (nums[mid] < target) {
+                // 当前值太小，往右找
+                l = mid + 1;
+            } else if (nums[mid] > target) {
+                // 当前值太大，往左找
+                r = mid; // 收缩右边界，但不包含 mid
+            }
+        }
+
+        // 循环结束时 l == r
+        // 此时：
+        //   - l 是第一个 > target 的位置（注意：不是 >=，而是 >）
+        //   - 所以 l - 1 是最后一个 <= target 的位置
+        //   - 如果 nums[l - 1] == target，那它就是右边界
+        //
+        // 但我们必须检查：
+        //   1. l == 0？→ 说明所有元素都 > target，l-1 越界
+        //   2. nums[l - 1] == target？→ 否则 target 根本不存在
+        if (l == 0) {
+            return -1; // l - 1 = -1，越界，说明 target 比所有元素都小
+        }
+
+        // 想象极端情况：nums = [5], target = 5
+        //   l=0, r=1 → mid=0, nums[0]==5 → l = 1
+        //   l == r == 1，退出
+        //   l-1 = 0，nums[0] == 5 → 返回 0 ✅
+        //
+        // 所以即使 l == r，我们也要返回 l - 1 才是右边界
+        return nums[l - 1] == target ? l - 1 : -1;
+    }
+
+    /**
+     * 在升序数组中查找 target 的右边界（即最后一个等于 target 的元素的索引）。
+     * <p>
+     * 如果 target 不存在于数组中，则返回 -1。
+     * <p>
+     * 使用闭区间 [l, r] 模型实现，是二分查找的经典变种之一。
+     * 核心思想：通过不断向右推进左边界，让 l 最终停在“第一个大于 target 的位置”，
+     * 然后返回 l - 1 作为右边界候选。
+     *
+     * @param nums   升序排列的整数数组，不能为空或 null
+     * @param target 要查找的目标值
+     * @return target 的右边界索引；如果不存在，返回 -1
+     * @example rightBound2([1, 2, 2, 2, 3], 2) → 返回 3
+     * rightBound2([1,2,3,4,5], 6) → 返回 -1（target 不存在）
+     * rightBound2([2,3,4], 1)     → 返回 -1（target 比所有元素都小）
+     * rightBound2([1], 1)         → 返回 0
+     * rightBound2([1,2,3], 0)     → 返回 -1（越界）
+     * @note - 闭区间模型：循环结束时 l == r + 1
+     * - l 是第一个 > target 的位置
+     * - 因此 l - 1 是最后一个 <= target 的位置
+     * - 必须检查 l - 1 是否越界，以及 nums[l - 1] 是否等于 target
+     */
+    public int rightBound2(int nums[], int target) {
+        int l = 0;
         int r = nums.length - 1;
 
         while (l <= r) {
             int mid = l + (r - l) / 2;
             if (nums[mid] == target) {
-                // 依照惯例，找左边界，区间向左收敛
-                r = mid - 1;
+                l = mid + 1;  // 继续向右找，试图找到更靠右的 target
             } else if (nums[mid] < target) {
-                l = mid + 1;
+                l = mid + 1;  // 当前值太小，往右找
             } else if (nums[mid] > target) {
-                r = mid - 1;
+                r = mid - 1;  // 当前值太大，往左找
             }
         }
 
-        // 判断 target 是否存在于 nums 中，此时 r + 1 = l
-        if (l >= nums.length) {
-            return -1;
+        // 退出时，r + 1 = l
+        // 此时 l 是第一个 > target 的位置
+        // 所以 l - 1 是最后一个 <= target 的位置
+        // 如果 nums[l - 1] == target，那它就是右边界
+        if (l - 1 < 0) {
+            return -1; // 越界，说明 target 比所有元素都小，l-1 = -1 不合法
         }
-
-        return nums[l] == target ? l : -1;
+        return nums[l - 1] == target ? l - 1 : -1;
     }
 
 }
