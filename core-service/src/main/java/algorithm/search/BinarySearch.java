@@ -30,6 +30,15 @@ public class BinarySearch {
         return l;
     }
 
+    /**
+     * 在一个升序排列的整数数组中执行二分查找，返回目标值 target 的索引。
+     * 如果目标值不存在于数组中，则返回 -1。
+     *
+     * @param nums   升序排列的整数数组，不允许为 null，允许为空数组
+     * @param target 要查找的目标整数值
+     * @return 目标值在数组中的索引；若未找到，返回 -1
+     * @throws NullPointerException 如果 nums 为 null
+     */
     public int binarySearch(int nums[], int target) {
         // 二分查找标准实现：在有序数组中查找 target 的索引
         // 使用闭区间 [l, r]，所以 r 初始化为 nums.length - 1
@@ -51,8 +60,9 @@ public class BinarySearch {
 
         // 循环结束表示未找到 target
         // 此时 l > r，常见情况是 l = r + 1
-        // 其实这时候 r + 1 = l 是有可能得到某一个指针越界的，但是这里我们先不检查指针越界的问题
-        // 只返回 -1 表示未找到
+        // 其实这时候 r + 1 = l 是有可能得到某一个索引越界的情况（如 l 超出数组范围），
+        // 但由于我们只在合法范围内访问 nums[mid]，且循环条件保证了 l 和 r 的有效使用，
+        // 因此不会发生数组越界访问。这里只需返回 -1 表示未找到。
         return -1;
     }
 
@@ -102,7 +112,7 @@ public class BinarySearch {
         }
 
         // 易错的的点：l==r也可能是非法的
-        if (l == nums.length || l == 0) {
+        if (l == nums.length || l < 0) {
             return -1;
         }
 
