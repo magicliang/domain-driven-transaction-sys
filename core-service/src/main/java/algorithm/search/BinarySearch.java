@@ -7,9 +7,9 @@ public class BinarySearch {
 
     public int searchInsert1(int nums[], int target) {
 
-        // 这道题易错的点在于插入位置可能是在现行数组边界之外的
+        // 这道题易错的点在于理论插入位置可能是在现行数组边界之外的
         int l = 0;
-        int r = nums.length - 1; // 易错的点：闭区间问题需要
+        int r = nums.length - 1; // 易错的点：闭区间问题需要 -1
 
         while (l <= r) {
             int mid = l + (r - l) / 2;
@@ -31,25 +31,28 @@ public class BinarySearch {
     }
 
     public int binarySearch(int nums[], int target) {
-
-        // 这道题易错的点在于插入位置可能是在现行数组边界之外的
+        // 二分查找标准实现：在有序数组中查找 target 的索引
+        // 使用闭区间 [l, r]，所以 r 初始化为 nums.length - 1
         int l = 0;
-        int r = nums.length - 1; // 易错的点：闭区间问题需要
+        int r = nums.length - 1;
 
         while (l <= r) {
             int mid = l + (r - l) / 2;
             if (nums[mid] == target) {
-                return mid;
+                return mid;  // 找到目标，直接返回索引
             } else if (nums[mid] < target) {
-                // 区间右移
+                // 当前值太小，搜索右半部分
                 l = mid + 1;
             } else if (nums[mid] > target) {
-                // 区间左移
+                // 当前值太大，搜索左半部分
                 r = mid - 1;
             }
         }
 
-        // 只有找到一种返回方式，如果找不到，一律返回-1，其实这时候 r + 1 = l 是有可能得到某一个指针越界的，但是这里我们先不检查指针越界的问题，一律返回-1
+        // 循环结束表示未找到 target
+        // 此时 l > r，常见情况是 l = r + 1
+        // 其实这时候 r + 1 = l 是有可能得到某一个指针越界的，但是这里我们先不检查指针越界的问题
+        // 只返回 -1 表示未找到
         return -1;
     }
 
