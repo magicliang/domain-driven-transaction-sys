@@ -56,6 +56,35 @@ public class MaxHeap {
     }
 
     /**
+     * 合并两个最大堆
+     * <p>
+     * 将另一个最大堆的所有元素合并到当前堆中，使用Floyd建堆算法（从最后一个非叶子节点开始下沉）重新构建堆结构
+     * 时间复杂度为O(n)，其中n是两个堆的总元素数
+     * <p>
+     * 注意：此方法会修改当前堆，不会创建新的堆实例
+     *
+     * @param maxHeap 要合并的另一个最大堆
+     * @return 返回合并后的当前堆实例
+     * @throws IllegalArgumentException 如果maxHeap为null
+     */
+    public MaxHeap mergeHeap(MaxHeap maxHeap) {
+        if (maxHeap == null) {
+            throw new IllegalArgumentException("Cannot merge with null heap");
+        }
+
+        if (maxHeap.heap.isEmpty()) {
+            return this; // 如果另一个堆为空，直接返回当前堆
+        }
+
+        this.heap.addAll(maxHeap.toList());
+        int size = this.heap.size();
+        for (int i = parent(size - 1); i >= 0; i--) {
+            siftDown(i);
+        }
+        return this;
+    }
+
+    /**
      * 方法一：遍历选择（直接实现）
      * <p>
      * 通过遍历查找最大的k个元素，时间复杂度为O(n*k)
