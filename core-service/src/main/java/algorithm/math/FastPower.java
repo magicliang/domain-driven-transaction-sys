@@ -79,4 +79,32 @@ public class FastPower {
             return result;
         }
     }
+
+    public static int powerBottomUp(int base, int exponent) {
+        // base ^ exponent: exponent 如果是奇数，可以转成 base * base ^ exponent - 1
+        // 然后每次迭代给 base 升级，exponent/2
+        if (exponent == 0) {
+            return 1;
+        }
+
+        int result = 1;
+        if (exponent % 2 != 0) {
+            result *= base;
+            exponent -= 1;
+        }
+
+        while (exponent > 1) { // 易错的点： exp 降到 1 的时候就是乘的时候，降到0base会再得到一个平方
+            base = base * base;
+            exponent = exponent >>> 1;
+        }
+        if (exponent == 1) {
+            result *= base;
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(powerBottomUp(2, 1));
+    }
+
 }
