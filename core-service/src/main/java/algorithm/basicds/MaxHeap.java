@@ -43,7 +43,19 @@ public class MaxHeap {
         siftUp(heap.size() - 1);
     }
 
-    public void siftUp(int i) {
+    public int pop() {
+        if (heap.isEmpty()) {
+            throw new IllegalStateException("Heap is empty");
+        }
+
+        swap(0, heap.size() - 1);
+        int result = heap.remove(heap.size() - 1);
+        siftDown(0);
+
+        return result;
+    }
+
+    void siftUp(int i) {
         // 要考虑 i 已经是堆顶的情况
         if (i < 0 || i >= heap.size()) {
             return;
@@ -58,7 +70,11 @@ public class MaxHeap {
         }
     }
 
-    public void siftdown(int i) {
+    void siftDown(int i) {
+        if (i < 0 || i >= heap.size()) {
+            return;
+        }
+
         int size = heap.size();
         // i 还在合法的范围里，i往下走走到头就退出循环，或者堆的性质得到满足则退出循环
         while (i < size) {
@@ -93,3 +109,4 @@ public class MaxHeap {
         heap.set(b, tmp);
     }
 }
+
