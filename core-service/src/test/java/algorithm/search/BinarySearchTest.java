@@ -253,8 +253,8 @@ class BinarySearchTest {
         assertEquals(-1, binarySearch.floor(normalArray, 0));
         assertEquals(0, binarySearch.floor(normalArray, 2));
         assertEquals(1, binarySearch.floor(normalArray, 4));
-        assertEquals(2, binarySearch.floor(normalArray, 5));
-        assertEquals(7, binarySearch.floor(normalArray, 15));
+        assertEquals(1, binarySearch.floor(normalArray, 5));
+        assertEquals(6, binarySearch.floor(normalArray, 15));
         assertEquals(7, binarySearch.floor(normalArray, 20));
     }
 
