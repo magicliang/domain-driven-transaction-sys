@@ -243,7 +243,7 @@ class BinarySearchTest {
     @DisplayName("floor - 单元素数组")
     void testFloor_SingleElement() {
         assertEquals(-1, binarySearch.floor(singleElementArray, 3));
-        assertEquals(0, binarySearch.floor(singleElementArray, 5));
+        assertEquals(-1, binarySearch.floor(singleElementArray, 5));
         assertEquals(0, binarySearch.floor(singleElementArray, 7));
     }
 

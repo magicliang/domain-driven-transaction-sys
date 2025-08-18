@@ -176,7 +176,7 @@ public class BinarySearch {
         }
 
         // 易错的的点：l==r也可能是非法的
-        if (l == nums.length || l < 0) {
+        if (l == nums.length) {
             return -1;
         }
 
@@ -186,39 +186,17 @@ public class BinarySearch {
     }
 
     /**
-     * 查找左边界 - 闭区间实现
-     * <p>
-     * 在有序数组中查找目标值的左边界（即第一个等于目标值的元素索引）。
-     * 如果目标值不存在于数组中，则返回 -1。
-     * <p>
-     * 易错的点：
-     * floor 需要用到 searchInsert，而不能依赖 leftBound。
-     * 因为 leftBound 只有在 target 存在时才能返回有效索引；如果 target 不存在，它会返回 -1。
-     * <p>
-     * 举例：
-     * nums = [1, 3, 5, 7], target = 4
-     * 我们希望 floor 返回 1（因为 nums[1] = 3 是小于 4 的最大元素）
-     * 但 leftBound(4) 会返回 -1（因为 4 不存在）
-     * 如果基于 leftBound - 1 计算 floor，就会得到 -2，完全错误。
-     * <p>
-     * 关键区别：
-     * searchInsert 找的是“插入位置”——第一个 >= target 的位置，这是一种“理论边界”，即使 target 不存在也有意义。
-     * leftBound   找的是“第一个等于 target 的位置”——是一种“实际边界”，只有 target 存在时才有意义。
-     * floor 要找理论边界的另一个临界点
-     * <p>
-     * 因此，floor 应该基于 searchInsert 实现：floor = searchInsert(target) - 1
-     *
-     * @param nums   升序整数数组，不允许为 null
-     * @param target 要比较的目标值
-     * @return 小于 target 的最大元素的索引；如果不存在，返回 -1
-     * @example floor([1, 2, 2, 2, 3], 2)  → 返回 0（因为 1 是小于 2 的最大元素）
-     * floor([1,2,3,5,6], 4)  → 返回 2（因为 3 是小于 4 的最大元素）
-     * floor([1,2,3], 0)      → 返回 -1（没有元素小于 0）
-     * floor([1,2,3], 4)      → 返回 2（3 是小于 4 的最大元素）
+     * 在有序数组中查找小于目标值的最大元素索引
+     * @param nums 升序排列的整数数组
+     * @param target 要查找的目标值
+     * @return 小于target的最大元素索引；不存在则返回-1
+     * @example
+     *   floor([1, 3, 5], 4) → 1 (3<4)
+     *   floor([1,3,5], 1) → -1 (无小于1的元素)
      */
     public int floor(int[] nums, int target) {
-        int insertPos = searchInsert1(nums, target); // 第一个 >= target 的位置
-        return insertPos - 1; // 它前面的位置就是最后一个 < target 的位置
+        int insertPos = searchInsert1(nums, target);
+        return insertPos - 1;
     }
 
     public int leftBound2(int nums[], int target) {
