@@ -1,6 +1,5 @@
 package algorithm.basicds;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +22,9 @@ public class MaxHeap {
      */
     private List<Integer> heap;
 
+    /**
+     * 默认构造函数，创建一个空的最大堆
+     */
     public MaxHeap() {
         heap = new ArrayList<>();
     }
@@ -37,8 +39,10 @@ public class MaxHeap {
 
     /**
      * Floyd建堆算法
+     * <p>
+     * 使用给定的列表构建最大堆，时间复杂度为O(n)
      *
-     * @param queue
+     * @param queue 用于构建堆的整数列表
      */
     public MaxHeap(List<Integer> queue) {
         this();
@@ -51,10 +55,12 @@ public class MaxHeap {
 
     /**
      * 方法一：遍历选择（直接实现）
+     * <p>
+     * 通过遍历查找最大的k个元素，时间复杂度为O(n*k)
      *
-     * @param nums
-     * @param k
-     * @return
+     * @param nums 输入的整数列表
+     * @param k 需要返回的最大元素个数
+     * @return 包含最大的k个元素的列表
      */
     public static List<Integer> traversalTopK(List<Integer> nums, int k) {
         List<Integer> result = new ArrayList<>();
@@ -84,10 +90,12 @@ public class MaxHeap {
 
     /**
      * 方法二：排序选择（直接实现）
+     * <p>
+     * 通过排序后选择最大的k个元素，时间复杂度为O(n*log(n))
      *
-     * @param nums
-     * @param k
-     * @return
+     * @param nums 输入的整数列表
+     * @param k 需要返回的最大元素个数
+     * @return 包含最大的k个元素的列表
      */
     public static List<Integer> sortTopK(List<Integer> nums, int k) {
         if (k <= 0) {
@@ -105,6 +113,17 @@ public class MaxHeap {
         return copy.subList(copy.size() - k, copy.size());
     }
 
+    /**
+     * 使用最大堆查找最小的k个元素
+     * <p>
+     * 维护一个大小为k的最大堆，堆顶元素为当前k个最小元素中的最大值
+     * 遍历数组，当遇到比堆顶小的元素时替换堆顶并调整堆
+     * 时间复杂度为O(n*log(k))
+     *
+     * @param list 输入的整数列表
+     * @param k 需要返回的最小元素个数
+     * @return 包含最小的k个元素的列表
+     */
     public static List<Integer> heapMinK(List<Integer> list, int k) {
         List<Integer> result = new ArrayList<>();
         if (list == null || list.isEmpty() || k > list.size()) {
@@ -130,32 +149,79 @@ public class MaxHeap {
         return maxHeap.toList();
     }
 
+    /**
+     * 将堆转换为列表形式返回
+     *
+     * @return 包含堆中所有元素的列表
+     */
     public List<Integer> toList() {
         return heap;
     }
 
+    /**
+     * 获取左子节点的索引
+     *
+     * @param i 父节点的索引
+     * @return 左子节点的索引
+     */
     public int left(int i) {
         return 2 * i + 1;
     }
 
+    /**
+     * 获取右子节点的索引
+     *
+     * @param i 父节点的索引
+     * @return 右子节点的索引
+     */
     public int right(int i) {
         return 2 * i + 2;
     }
 
+    /**
+     * 获取父节点的索引
+     *
+     * @param i 子节点的索引
+     * @return 父节点的索引
+     */
     public int parent(int i) {
         // 堆的性质告诉我们怎样让2个数变成1个数
         return (i - 1) / 2;
     }
 
+    /**
+     * 查看堆顶元素（最大值）
+     *
+     * @return 堆顶的最大元素
+     * @throws IndexOutOfBoundsException 如果堆为空
+     */
     public int peek() {
+        if (heap.isEmpty()) {
+            throw new IndexOutOfBoundsException("Heap is empty");
+        }
         return heap.get(0);
     }
 
+    /**
+     * 向堆中插入一个新元素
+     * <p>
+     * 将元素添加到堆的末尾，然后通过上浮操作恢复堆的性质
+     *
+     * @param val 要插入的整数值
+     */
     public void push(int val) {
         heap.add(val);
         siftUp(heap.size() - 1);
     }
 
+    /**
+     * 移除并返回堆顶元素（最大值）
+     * <p>
+     * 将堆顶元素与最后一个元素交换，移除堆顶，然后通过下沉操作恢复堆的性质
+     *
+     * @return 堆顶的最大元素
+     * @throws IllegalStateException 如果堆为空
+     */
     public int pop() {
         if (heap.isEmpty()) {
             throw new IllegalStateException("Heap is empty");
@@ -168,6 +234,13 @@ public class MaxHeap {
         return result;
     }
 
+    /**
+     * 上浮操作，用于恢复堆的性质
+     * <p>
+     * 从给定的索引开始，向上比较并交换元素，直到满足最大堆性质
+     *
+     * @param i 开始上浮的索引
+     */
     void siftUp(int i) {
         // 要考虑 i 已经是堆顶的情况
         if (i < 0 || i >= heap.size()) {
@@ -183,6 +256,13 @@ public class MaxHeap {
         }
     }
 
+    /**
+     * 下沉操作，用于恢复堆的性质
+     * <p>
+     * 从给定的索引开始，向下比较并交换元素，直到满足最大堆性质
+     *
+     * @param i 开始下沉的索引
+     */
     void siftDown(int i) {
         if (i < 0 || i >= heap.size()) {
             return;
@@ -206,7 +286,7 @@ public class MaxHeap {
             }
 
             // 不可交换意味着 l r可能都超标，或者都满足性质
-            if (l == r) {
+            if (largest == i) {
                 // 性质已满足，不再下移
                 break;
             }
@@ -216,6 +296,12 @@ public class MaxHeap {
         }
     }
 
+    /**
+     * 交换堆中两个位置的元素
+     *
+     * @param a 第一个元素的索引
+     * @param b 第二个元素的索引
+     */
     private void swap(int a, int b) {
         Integer tmp = heap.get(a);
         heap.set(a, heap.get(b));
