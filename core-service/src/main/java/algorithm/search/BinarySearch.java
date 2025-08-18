@@ -1,10 +1,38 @@
 package algorithm.search;
 
 /**
+ * 二分查找算法集合类
+ * <p>
+ * 提供了多种二分查找的变体实现，包括：
+ * <ul>
+ *   <li>标准二分查找</li>
+ *   <li>搜索插入位置</li>
+ *   <li>查找左边界</li>
+ *   <li>查找右边界</li>
+ *   <li>查找floor值</li>
+ * </ul>
+ *
  * @author liangchuan
  */
 public class BinarySearch {
 
+    /**
+     * 搜索插入位置 - 闭区间实现
+     * <p>
+     * 在有序数组中查找目标值的插入位置。如果目标值已存在，返回其索引；
+     * 如果不存在，返回应该插入的位置索引。
+     * <p>
+     * 使用闭区间 [l, r] 模型实现，r 初始化为 nums.length - 1。
+     *
+     * @param nums 升序排列的整数数组，不允许为 null
+     * @param target 要查找的目标整数值
+     * @return 目标值的索引（如果存在）或应该插入的位置索引
+     * @throws NullPointerException 如果 nums 为 null
+     * @example searchInsert1([1, 3, 5, 6], 5) → 2
+     *         searchInsert1([1,3,5,6], 2) → 1
+     *         searchInsert1([1,3,5,6], 7) → 4
+     *         searchInsert1([1,3,5,6], 0) → 0
+     */
     public int searchInsert1(int nums[], int target) {
 
         // 这道题易错的点在于理论插入位置可能是在现行数组边界之外的
@@ -31,6 +59,8 @@ public class BinarySearch {
     }
 
     /**
+     * 标准二分查找
+     * <p>
      * 在一个升序排列的整数数组中执行二分查找，返回目标值 target 的索引。
      * 如果目标值不存在于数组中，则返回 -1。
      *
@@ -66,6 +96,23 @@ public class BinarySearch {
         return -1;
     }
 
+    /**
+     * 搜索插入位置 - 左闭右开区间实现
+     * <p>
+     * 在有序数组中查找目标值的插入位置。如果目标值已存在，返回其索引；
+     * 如果不存在，返回应该插入的位置索引。
+     * <p>
+     * 使用左闭右开区间 [l, r) 模型实现，r 初始化为 nums.length。
+     *
+     * @param nums   升序排列的整数数组，不允许为 null
+     * @param target 要查找的目标整数值
+     * @return 目标值的索引（如果存在）或应该插入的位置索引
+     * @throws NullPointerException 如果 nums 为 null
+     * @example searchInsert2([1, 3, 5, 6], 5) → 2
+     * searchInsert2([1,3,5,6], 2) → 1
+     * searchInsert2([1,3,5,6], 7) → 4
+     * searchInsert2([1,3,5,6], 0) → 0
+     */
     public int searchInsert2(int[] nums, int target) {
         // 这道题易错的点在于插入位置可能是在现行数组边界之外的
         int l = 0;
@@ -95,6 +142,23 @@ public class BinarySearch {
         return l;
     }
 
+    /**
+     * 查找左边界 - 左闭右开区间实现
+     * <p>
+     * 在有序数组中查找目标值的左边界（即第一个等于目标值的元素索引）。
+     * 如果目标值不存在于数组中，则返回 -1。
+     * <p>
+     * 使用左闭右开区间 [l, r) 模型实现。
+     *
+     * @param nums   升序排列的整数数组，不允许为 null
+     * @param target 要查找的目标整数值
+     * @return 目标值的左边界索引；若未找到，返回 -1
+     * @throws NullPointerException 如果 nums 为 null
+     * @example leftBound1([1, 2, 2, 2, 3], 2) → 1
+     * leftBound1([1,2,3,4,5], 6) → -1（不存在）
+     * leftBound1([2,3,4], 1) → -1（比所有数都小）
+     * leftBound1([1], 1) → 0
+     */
     public int leftBound1(int nums[], int target) {
         int l = 0;
         int r = nums.length;
@@ -122,9 +186,10 @@ public class BinarySearch {
     }
 
     /**
-     * 在一个升序数组中，找到小于 target 的最大元素的索引（即 floor 值）。
+     * 查找左边界 - 闭区间实现
      * <p>
-     * 如果不存在这样的元素（即所有元素都 >= target），则返回 -1。
+     * 在有序数组中查找目标值的左边界（即第一个等于目标值的元素索引）。
+     * 如果目标值不存在于数组中，则返回 -1。
      * <p>
      * 易错的点：
      * floor 需要用到 searchInsert，而不能依赖 leftBound。
@@ -193,7 +258,6 @@ public class BinarySearch {
         // 所以必须再检查一下是否真的找到了 target
         return nums[l] == target ? l : -1;
     }
-
 
     /**
      * 在升序数组中查找 target 的右边界（即最后一个等于 target 的元素的索引）。
