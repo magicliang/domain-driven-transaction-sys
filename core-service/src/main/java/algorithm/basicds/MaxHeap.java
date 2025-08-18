@@ -3,6 +3,8 @@ package algorithm.basicds;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -147,6 +149,56 @@ public class MaxHeap {
         }
 
         return maxHeap.toList();
+    }
+
+    /**
+     * 使用最小堆查找最大的k个元素
+     * <p>
+     * 维护一个大小为k的最小堆，堆顶元素为当前k个最大元素中的最小值
+     * 遍历数组，当遇到比堆顶大的元素时替换堆顶并调整堆
+     * 时间复杂度为O(n*log(k))
+     * <p>
+     * 注意：此方法使用Java内置的PriorityQueue（最小堆）实现
+     *
+     * @param nums 输入的整数数组
+     * @param k 需要返回的最大元素个数
+     * @return 包含最大的k个元素的优先队列（最小堆）
+     * @throws IllegalArgumentException 如果nums为null或k为负数
+     */
+    public Queue<Integer> topK(int[] nums, int k) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array cannot be null");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k must be non-negative");
+        }
+        if (k == 0) {
+            return new PriorityQueue<>();
+        }
+
+        // java 默认使用最小堆
+        Queue<Integer> heap = new PriorityQueue<>();
+
+        // 先把前k个元素放进最小堆里，当作当前最大的k个元素，其中堆顶是k个元素中的最小值
+        int limit = Math.min(k, nums.length);
+        for (int i = 0; i < limit; i++) {
+            heap.offer(nums[i]);
+        }
+
+        // 如果k大于数组长度，直接返回包含所有元素的堆
+        if (k >= nums.length) {
+            return heap;
+        }
+
+        // 处理剩余的元素
+        for (int i = k; i < nums.length; i++) {
+            if (nums[i] > heap.peek()) {
+                heap.poll();
+                heap.offer(nums[i]);
+            }
+        }
+
+        return heap;
     }
 
     /**
