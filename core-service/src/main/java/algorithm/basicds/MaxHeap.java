@@ -1,6 +1,8 @@
 package algorithm.basicds;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,6 +22,117 @@ public class MaxHeap {
      * 堆的内部存储，为了不解决扩容的问题，这里偷懒使用 list
      */
     private List<Integer> heap;
+
+    public MaxHeap() {
+        heap = new ArrayList<>();
+    }
+
+//    public MaxHeap(List<Integer> queue) {
+//       this();
+//       // 这个算法时间复杂度是 O(nlgn)
+//       for (Integer i : queue) {
+//           push(i);
+//       }
+//    }
+
+    /**
+     * Floyd建堆算法
+     *
+     * @param queue
+     */
+    public MaxHeap(List<Integer> queue) {
+        this();
+        this.heap.addAll(queue);
+        // 这个算法时间复杂度是 O(n)。小技巧，最后一个叶子结点的父是第一个父亲，所有父亲之后的节点已经是一个最大堆的根节点了，我们要确定父节点和它们的孩子是不是最大堆
+        for (int i = parent(heap.size() - 1); i >= 0; i--) {
+            siftDown(i);
+        }
+    }
+
+    /**
+     * 方法一：遍历选择（直接实现）
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static List<Integer> traversalTopK(List<Integer> nums, int k) {
+        List<Integer> result = new ArrayList<>();
+        if (k <= 0 || nums.isEmpty()) {
+            return result;
+        }
+
+        List<Integer> copy = new ArrayList<>(nums); // 复制原始数据
+        for (int i = 0; i < k; i++) {
+            if (copy.isEmpty()) {
+                break;
+            }
+
+            // 遍历寻找最大值
+            int maxIndex = 0;
+            for (int j = 1; j < copy.size(); j++) {
+                if (copy.get(j) > copy.get(maxIndex)) {
+                    maxIndex = j;
+                }
+            }
+            // 将最大值移到结果集并从副本中移除
+            result.add(copy.get(maxIndex));
+            copy.remove(maxIndex);
+        }
+        return result;
+    }
+
+    /**
+     * 方法二：排序选择（直接实现）
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static List<Integer> sortTopK(List<Integer> nums, int k) {
+        if (k <= 0) {
+            return new ArrayList<>();
+        }
+        if (k >= nums.size()) {
+            return new ArrayList<>(nums);
+        }
+
+        // 创建副本并排序（升序）
+        List<Integer> copy = new ArrayList<>(nums);
+        Collections.sort(copy);
+
+        // 取最大的k个元素（从末尾开始）
+        return copy.subList(copy.size() - k, copy.size());
+    }
+
+    public static List<Integer> heapMinK(List<Integer> list, int k) {
+        List<Integer> result = new ArrayList<>();
+        if (list == null || list.isEmpty() || k > list.size()) {
+            return result;
+        }
+
+        // 先把前k个数放进最大堆里，这k个数就是当前队列最小的k个数，其中堆顶是这k个数的边界
+        MaxHeap maxHeap = new MaxHeap();
+        for (int i = 0; i < k; i++) {
+            maxHeap.push(list.get(i));
+        }
+
+        for (int j = k; j < list.size(); j++) {
+            int current = list.get(j);
+
+            // 更小的数出现了，要淘汰堆顶
+            if (current < maxHeap.peek()) {
+                maxHeap.pop();
+                maxHeap.push(current);
+            }
+        }
+
+        return maxHeap.toList();
+    }
+
+    public List<Integer> toList() {
+        return heap;
+    }
 
     public int left(int i) {
         return 2 * i + 1;
@@ -83,7 +196,7 @@ public class MaxHeap {
 
             // 注意，不是先跟l比较，l比较大就交换l，最大堆的意思是，i节点的左右子节点中，最大的那个节点跟i交换
 
-            int largest = l;
+            int largest = i;
 
             if (l < size && heap.get(l) > heap.get(largest)) {
                 largest = l;
