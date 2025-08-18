@@ -152,6 +152,57 @@ public class MaxHeap {
     }
 
     /**
+     * 使用Java原生PriorityQueue实现用最大堆查找最小的k个元素
+     * <p>
+     * 通过传入自定义Comparator将PriorityQueue配置为最大堆
+     * 维护一个大小为k的最大堆，堆顶元素为当前k个最小元素中的最大值
+     * 遍历数组，当遇到比堆顶小的元素时替换堆顶并调整堆
+     * 时间复杂度为O(n*log(k))
+     * <p>
+     * 注意：此方法使用Java内置的PriorityQueue（通过Comparator实现最大堆）实现
+     *
+     * @param nums 输入的整数数组
+     * @param k 需要返回的最小元素个数
+     * @return 包含最小的k个元素的优先队列（最大堆）
+     * @throws IllegalArgumentException 如果nums为null或k为负数
+     */
+    public static Queue<Integer> minKWithPriorityQueue(int[] nums, int k) {
+        if (nums == null) {
+            throw new IllegalArgumentException("Input array cannot be null");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k must be non-negative");
+        }
+        if (k == 0) {
+            return new PriorityQueue<>(Collections.reverseOrder());
+        }
+
+        // 使用Collections.reverseOrder()创建最大堆
+        Queue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+
+        // 先把前k个元素放进最大堆里
+        int limit = Math.min(k, nums.length);
+        for (int i = 0; i < limit; i++) {
+            maxHeap.offer(nums[i]);
+        }
+
+        // 如果k大于数组长度，直接返回包含所有元素的堆
+        if (k >= nums.length) {
+            return maxHeap;
+        }
+
+        // 处理剩余的元素
+        for (int i = k; i < nums.length; i++) {
+            if (nums[i] < maxHeap.peek()) {
+                maxHeap.poll();
+                maxHeap.offer(nums[i]);
+            }
+        }
+
+        return maxHeap;
+    }
+
+    /**
      * 使用最小堆查找最大的k个元素
      * <p>
      * 维护一个大小为k的最小堆，堆顶元素为当前k个最大元素中的最小值
