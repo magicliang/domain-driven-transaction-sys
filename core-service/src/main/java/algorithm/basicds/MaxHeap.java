@@ -157,8 +157,13 @@ public class MaxHeap {
      */
     public static List<Integer> heapMinK(List<Integer> list, int k) {
         List<Integer> result = new ArrayList<>();
-        if (list == null || list.isEmpty() || k > list.size()) {
+        if (list == null || list.isEmpty() || k <= 0) {
             return result;
+        }
+
+        // 如果k大于等于列表大小，返回所有元素
+        if (k >= list.size()) {
+            return new ArrayList<>(list);
         }
 
         // 先把前k个数放进最大堆里，这k个数就是当前队列最小的k个数，其中堆顶是这k个数的边界
@@ -170,8 +175,8 @@ public class MaxHeap {
         for (int j = k; j < list.size(); j++) {
             int current = list.get(j);
 
-            // 更小的数出现了，要淘汰堆顶
-            if (current < maxHeap.peek()) {
+            // 确保堆不为空再进行比较
+            if (!maxHeap.toList().isEmpty() && current < maxHeap.peek()) {
                 maxHeap.pop();
                 maxHeap.push(current);
             }
