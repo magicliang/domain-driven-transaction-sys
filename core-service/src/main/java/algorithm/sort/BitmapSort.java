@@ -1,16 +1,14 @@
 package algorithm.sort;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.BitSet;
 
 public class BitmapSort {
 
     /**
      * 位图排序核心实现
+     * 位图排序只是我们“把数据插入一个自排序”数据结构的常规实践而已，我们计算插入位置的时候，就已经让他们排序了，当我们能够思考到桶的时候，位图就呼之欲出了。
+     * 字符串到整数再到位，是我们优化内存效率的好方案。
      *
      * @param inputFile 输入文件路径（每行一个整数）
      * @param outputFile 输出文件路径（排序结果）
