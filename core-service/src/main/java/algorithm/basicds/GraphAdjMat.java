@@ -149,4 +149,11 @@ public class GraphAdjMat {
         matrix.get(i).set(j, 0);
         matrix.get(j).set(i, 0);
     }
+
+    public void print() {
+        System.out.print("顶点列表 = ");
+        System.out.println(vertices);
+        System.out.println("邻接矩阵 =");
+        PrintUtil.printMatrix(matrix);
+    }
 }
