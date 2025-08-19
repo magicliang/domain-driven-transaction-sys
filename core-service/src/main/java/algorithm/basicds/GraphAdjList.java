@@ -169,6 +169,22 @@ public class GraphAdjList {
      * 因为邻接表是有重复节点的，所以我们为了遍历去重，必须借助数据结构
      * 使用HashSet记录已访问顶点避免重复遍历，使用队列实现层次遍历
      *
+     * 时间复杂度：O(V + E)
+     * 证明：每个顶点入队出队各一次(O(V))，每条边最多被检查两次(O(E))
+     *
+     * 空间复杂度：O(V)
+     * 证明：
+     * 1. 队列(queue)最坏情况下存储整层的顶点，最多存储O(V)个顶点
+     * 2. 集合(set)存储所有已访问顶点，最多存储O(V)个顶点
+     * 3. 结果列表(result)存储所有顶点，存储O(V)个顶点
+     * 4. 其他变量为常数空间O(1)
+     * 因此总空间复杂度为O(V)
+     *
+     * 关于已访问顶点的处理：
+     * BFS保证了一旦顶点被访问，就已经找到了从起点到它的最短路径。
+     * 再次访问该顶点不会产生新的有用信息，因此可以安全跳过已访问顶点。
+     * 这与回溯算法不同，回溯算法可能需要在不同路径中多次访问同一节点。
+     *
      * @param startVet 起始顶点
      * @return 按BFS顺序排列的顶点列表
      * @throws IllegalArgumentException 如果起始顶点不存在
@@ -185,6 +201,10 @@ public class GraphAdjList {
         List<Vertex> result = new ArrayList<>();
         while (!queue.isEmpty()) {
             Vertex current = queue.poll();
+            // 如果是用唯一路径访问过，可以认为只要访问过 current，它的剩余路径也被访问过了，可以直接在这里退出
+            // 1. BFS保证了一旦顶点被访问，就已经找到了从起点到它的最短路径
+            // 2. 再次访问该顶点不会产生新的有用信息
+            // 3. 这是为了避免重复处理和潜在的无限循环
             if (set.contains(current)) {
                 continue;
             }
@@ -200,6 +220,79 @@ public class GraphAdjList {
         }
 
         return result;
+    }
+
+    /**
+     * 深度优先搜索遍历图
+     * 从指定起始顶点开始进行DFS遍历，返回遍历顺序的顶点列表
+     * 使用HashSet记录已访问顶点避免重复遍历，使用递归实现深度优先探索
+     *
+     * 时间复杂度：O(V + E)
+     * 证明：每个顶点被访问一次(O(V))，每条边最多被检查两次(O(E))
+     *
+     * 空间复杂度：O(V)
+     * 证明：
+     * 1. 递归调用栈(call stack)最坏情况下存储从起点到最远叶子的路径，最多存储O(V)个顶点
+     * 2. 集合(visited)存储所有已访问顶点，最多存储O(V)个顶点
+     * 3. 结果列表(result)存储所有顶点，存储O(V)个顶点
+     * 4. 其他变量为常数空间O(1)
+     * 因此总空间复杂度为O(V)
+     *
+     * 关于已访问顶点的处理：
+     * DFS保证了一旦访问过某个顶点，其所有可达路径都已被探索。
+     * 再次访问该顶点不会产生新的有用信息，因此可以安全跳过已访问顶点。
+     * 这与回溯算法不同：回溯算法需要在不同路径中多次访问同一节点，
+     * 而DFS图遍历中每个顶点只需访问一次。
+     *
+     * @param startVet 起始顶点
+     * @return 按DFS顺序排列的顶点列表
+     * @throws IllegalArgumentException 如果起始顶点不存在
+     */
+    public List<Vertex> dfsTraversal(Vertex startVet) {
+        // 只访问图中的邻接节点，还是要搞递归下降
+        if (!adjList.containsKey(startVet)) {
+            throw new IllegalArgumentException("不存在的顶点");
+        }
+
+        Set<Vertex> visited = new HashSet<>();
+        List<Vertex> result = new ArrayList<>();
+
+        dfs(startVet, result, visited);
+
+        return result;
+    }
+
+    /**
+     * DFS递归辅助方法
+     * 从当前顶点开始进行深度优先搜索
+     *
+     * 空间复杂度：O(V) - 由递归调用栈深度决定，最坏情况下为图的高度
+     * 证明：递归调用栈深度等于从当前顶点到最远叶子的路径长度，最多为O(V)
+     *
+     * 关于已访问顶点的处理：
+     * DFS图遍历中，一旦顶点被访问，其所有可达路径都已被探索。
+     * 这与回溯算法形成对比：回溯算法需要在不同路径中多次访问同一节点，
+     * 而DFS遍历中每个顶点只需访问一次即可保证遍历完整性。
+     *
+     * @param current 当前访问的顶点
+     * @param result 存储遍历结果的列表
+     * @param visited 记录已访问顶点的集合
+     */
+    private void dfs(Vertex current, List<Vertex> result, Set<Vertex> visited) {
+        // 如果当前顶点已经访问过，跳过以避免重复处理；
+        // DFS保证了一旦访问过该顶点，其所有可达路径都已被探索
+        if (visited.contains(current)) {
+            return;
+        }
+        result.add(current);
+        visited.add(current);
+        final List<Vertex> vertices = adjList.get(current);
+        if (null == vertices) {
+            return;
+        }
+        for (Vertex vertex : vertices) {
+            dfs(vertex, result, visited);
+        }
     }
 
     /**
