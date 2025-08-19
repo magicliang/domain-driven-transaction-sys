@@ -45,26 +45,22 @@ public class FastPower {
 
         boolean isNegative = false;
         if (exponent < 0) {
-            exponent *= -1;
+            exponent = -exponent;
             isNegative = true;
         }
-        double result = 1.0; // 因为允许负次幂，所以这里初始化为 0
+
+        long result = 1L;
+        long currentBase = base; // 使用 long 避免整数溢出，仅在最后一步转换为 double
+
         while (exponent > 0) {
             if ((exponent & 1) == 1) {
-                result *= base;
-                exponent--;
+                result *= currentBase;
             }
-
-            // 此时 exponent 必为偶数
-            base *= base; // 在 1变0的过程里，base会超出预期，但是下一轮循环用不着了，所以不用管了
-            exponent = (exponent >>> 1);
+            currentBase *= currentBase;
+            exponent >>>= 1;
         }
 
-        if (isNegative) {
-            result = 1.0 / result;
-        }
-
-        return result;
+        return isNegative ? 1.0 / result : (double) result;
     }
 
     /**

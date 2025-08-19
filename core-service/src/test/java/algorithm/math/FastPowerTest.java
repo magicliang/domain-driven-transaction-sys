@@ -2,12 +2,10 @@ package algorithm.math; // 确保包名正确
 
 // 导入基础的 JUnit 5 注解和断言
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -18,127 +16,135 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author liangchuan
  * @version 1.1
  */
-// @DisplayName("FastPower Class Tests") // 移除顶层 DisplayName
-public class FastPowerTest { // 使用 public 类访问修饰符
+public class FastPowerTest {
 
     // --- 基本功能和正指数测试 (使用 double) ---
-    // @ParameterizedTest
-    // @DisplayName("Test basic power calculations with non-negative exponents") // 移除 DisplayName
-    @ParameterizedTest(name = "Base: {0}, Exponent: {1}, Expected: {2}") // 使用 name 属性提供描述，更基础
-    @CsvSource({
-            "2, 10, 1024.0",
-            "3, 0, 1.0",
-            "5, 1, 5.0",
-            "1, 100, 1.0",
-            "0, 5, 0.0",
-            "3, 5, 243.0",
-            "2, 30, 1073741824.0",
-            "-2, 3, -8.0",
-            "-2, 4, 16.0"
-    })
-    public void testPowerBottomUpWithNonNegativeExponents(int base, int exponent, double expected) {
-        double result = FastPower.powerBottomUpWithNegative(base, exponent);
-        // assertEquals(expected, result, 0.0); // 简化断言，不使用 lambda 消息
-        assertEquals(expected, result, 0.0, "Result of " + base + "^" + exponent + " is incorrect.");
+    @Test
+    public void testPowerBottomUpWithNonNegativeExponents() {
+        assertEquals(1024.0, FastPower.powerBottomUpWithNegative(2, 10), 0.0);
+        assertEquals(1.0, FastPower.powerBottomUpWithNegative(3, 0), 0.0);
+        assertEquals(5.0, FastPower.powerBottomUpWithNegative(5, 1), 0.0);
+        assertEquals(1.0, FastPower.powerBottomUpWithNegative(1, 100), 0.0);
+        assertEquals(0.0, FastPower.powerBottomUpWithNegative(0, 5), 0.0);
+        assertEquals(243.0, FastPower.powerBottomUpWithNegative(3, 5), 0.0);
+        assertEquals(1073741824.0, FastPower.powerBottomUpWithNegative(2, 30), 0.0);
+        assertEquals(-8.0, FastPower.powerBottomUpWithNegative(-2, 3), 0.0);
+        assertEquals(16.0, FastPower.powerBottomUpWithNegative(-2, 4), 0.0);
     }
 
     // --- 负指数测试 ---
-    // @ParameterizedTest
-    // @DisplayName("Test power calculations with negative exponents")
-    @ParameterizedTest(name = "Base: {0}, Exponent: {1}, Expected: {2}")
-    @CsvSource({
-            "2, -3, 0.125",
-            "10, -1, 0.1",
-            "5, -2, 0.04",
-            "-3, -2, 0.1111111111111111"
-    })
-    public void testPowerBottomUpWithNegativeExponents(int base, int exponent, double expected) {
-        double result = FastPower.powerBottomUpWithNegative(base, exponent);
+    @Test
+    public void testPowerBottomUpWithNegativeExponents() {
         double delta = 1e-12;
-        // assertEquals(expected, result, delta);
-        assertEquals(expected, result, delta, "Result of " + base + "^" + exponent + " is incorrect (within delta).");
+        assertEquals(0.125, FastPower.powerBottomUpWithNegative(2, -3), delta);
+        assertEquals(0.1, FastPower.powerBottomUpWithNegative(10, -1), delta);
+        assertEquals(0.04, FastPower.powerBottomUpWithNegative(5, -2), delta);
+        assertEquals(0.1111111111111111, FastPower.powerBottomUpWithNegative(-3, -2), delta);
     }
 
     // --- 边界和特殊情况测试 ---
-    // @Test
-    // @DisplayName("Test power with base 0 and exponent 0 (0^0)")
     @Test
     public void testPowerZeroToThePowerOfZero() {
-        double result = FastPower.powerBottomUpWithNegative(0, 0);
-        // assertEquals(1.0, result, 0.0);
-        assertEquals(1.0, result, 0.0, "0^0 should be 1.0");
+        assertEquals(1.0, FastPower.powerBottomUpWithNegative(0, 0), 0.0);
     }
 
-    // @Test
-    // @DisplayName("Test power with base 0 and negative exponent (should throw exception)")
     @Test
     public void testPowerZeroToNegativeExponent() {
-        int base = 0;
-        int negativeExponent = -2;
-
-        // 不使用 assertThrows，直接在 try-catch 中断言
-        try {
-            FastPower.powerBottomUpWithNegative(base, negativeExponent);
-            // 如果没有抛出异常，则测试失败
-            fail("Expected ArithmeticException to be thrown for 0^-n");
-        } catch (ArithmeticException e) {
-            // 预期捕获到 ArithmeticException，测试通过
-            // 可以进一步断言异常消息，如果需要的话
-            // assertEquals("Expected error message", e.getMessage());
-            // 这里只要捕获到异常就算通过
-        } catch (Exception e) {
-            // 如果抛出了其他类型的异常，则测试失败
-            fail("Expected ArithmeticException, but " + e.getClass().getSimpleName() + " was thrown.");
-        }
+        double result = FastPower.powerBottomUpWithNegative(0, -2);
+        assertTrue(Double.isInfinite(result), "0^-n should return Infinity");
     }
 
     // --- 大数值测试 ---
-    // @Test
-    // @DisplayName("Test power with larger exponent")
     @Test
     public void testPowerLargerExponent() {
-        int base = 2;
-        int exponent = 60;
-        double expected = 1152921504606846976.0;
-        double result = FastPower.powerBottomUpWithNegative(base, exponent);
-        // assertEquals(expected, result, 0.0);
-        assertEquals(expected, result, 0.0, "2^60 calculation failed.");
+        assertEquals(1152921504606846976.0, FastPower.powerBottomUpWithNegative(2, 60), 0.0);
     }
 
-    // @Test
-    // @DisplayName("Test power with larger negative exponent")
     @Test
     public void testPowerLargerNegativeExponent() {
-        int base = 2;
-        int exponent = -10;
-        double expected = 1.0 / 1024.0;
-        double result = FastPower.powerBottomUpWithNegative(base, exponent);
-        // assertEquals(expected, result, 0.0);
-        assertEquals(expected, result, 0.0, "2^-10 calculation failed.");
+        assertEquals(1.0 / 1024.0, FastPower.powerBottomUpWithNegative(2, -10), 0.0);
     }
 
     // --- 重复主函数中的测试逻辑 ---
-    // @Test
-    // @DisplayName("Replicate main method test case: (-2)^10")
     @Test
     public void testMainMethodCaseNegativeBaseEvenExponent() {
-        int base = -2;
-        int exp = 10;
-        double expected = 1024.0;
-        double result = FastPower.powerBottomUpWithNegative(base, exp);
-        // assertEquals(expected, result, 0.0);
-        assertEquals(expected, result, 0.0, "(-2)^10 calculation failed.");
+        assertEquals(1024.0, FastPower.powerBottomUpWithNegative(-2, 10), 0.0);
     }
 
-    // @Test
-    // @DisplayName("Replicate main method test case: (-3)^5")
     @Test
     public void testMainMethodCaseNegativeBaseOddExponent() {
-        int base = -3;
-        int exp = 5;
-        double expected = -243.0;
-        double result = FastPower.powerBottomUpWithNegative(base, exp);
-        // assertEquals(expected, result, 0.0);
-        assertEquals(expected, result, 0.0, "(-3)^5 calculation failed.");
+        assertEquals(-243.0, FastPower.powerBottomUpWithNegative(-3, 5), 0.0);
+    }
+
+    // --- 新增：powerBottomUp 方法专门测试 ---
+
+    /**
+     * 测试 powerBottomUp 方法的基本功能（非负指数）
+     */
+    @Test
+    public void testPowerBottomUpBasicCases() {
+        assertEquals(1, FastPower.powerBottomUp(2, 0));
+        assertEquals(2, FastPower.powerBottomUp(2, 1));
+        assertEquals(1024, FastPower.powerBottomUp(2, 10));
+        assertEquals(125, FastPower.powerBottomUp(5, 3));
+        assertEquals(10000, FastPower.powerBottomUp(10, 4));
+        assertEquals(1, FastPower.powerBottomUp(1, 100));
+        assertEquals(1, FastPower.powerBottomUp(0, 0));
+        assertEquals(0, FastPower.powerBottomUp(0, 5));
+        assertEquals(-8, FastPower.powerBottomUp(-2, 3));
+        assertEquals(16, FastPower.powerBottomUp(-2, 4));
+        assertEquals(-243, FastPower.powerBottomUp(-3, 5));
+    }
+
+    /**
+     * 测试 powerBottomUp 方法的大指数计算
+     */
+    @Test
+    public void testPowerBottomUpLargeExponent() {
+        assertEquals(1073741824, FastPower.powerBottomUp(2, 30));
+        assertEquals(2147483647, FastPower.powerBottomUp(2147483647, 1));
+    }
+
+    /**
+     * 测试 powerBottomUp 方法的边界值
+     */
+    @Test
+    public void testPowerBottomUpEdgeCases() {
+        // 测试最大int值的1次方
+        assertEquals(Integer.MAX_VALUE, FastPower.powerBottomUp(Integer.MAX_VALUE, 1));
+
+        // 测试最小int值的1次方
+        assertEquals(Integer.MIN_VALUE, FastPower.powerBottomUp(Integer.MIN_VALUE, 1));
+
+        // 测试-1的偶数次方
+        assertEquals(1, FastPower.powerBottomUp(-1, 100));
+
+        // 测试-1的奇数次方
+        assertEquals(-1, FastPower.powerBottomUp(-1, 99));
+    }
+
+    /**
+     * 测试 powerBottomUp 方法的性能（大指数）
+     */
+    @Test
+    public void testPowerBottomUpPerformance() {
+        long startTime = System.nanoTime();
+        int result = FastPower.powerBottomUp(3, 19); // 3^19 = 1,162,261,467
+        long endTime = System.nanoTime();
+
+        assertEquals(1162261467, result);
+        assertTrue((endTime - startTime) < 1_000_000, "Performance test took too long");
+    }
+
+    /**
+     * 验证两个方法在正指数情况下结果一致性
+     */
+    @Test
+    public void testConsistencyBetweenMethods() {
+        assertEquals(FastPower.powerBottomUp(2, 5), (int) FastPower.powerBottomUpWithNegative(2, 5));
+        assertEquals(FastPower.powerBottomUp(3, 10), (int) FastPower.powerBottomUpWithNegative(3, 10));
+        assertEquals(FastPower.powerBottomUp(-2, 4), (int) FastPower.powerBottomUpWithNegative(-2, 4));
+        assertEquals(FastPower.powerBottomUp(5, 0), (int) FastPower.powerBottomUpWithNegative(5, 0));
+        assertEquals(FastPower.powerBottomUp(10, 3), (int) FastPower.powerBottomUpWithNegative(10, 3));
     }
 }
