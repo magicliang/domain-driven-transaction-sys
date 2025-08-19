@@ -1,9 +1,9 @@
 package algorithm.divideconquer;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * MaxSubArray 类的 JUnit 5 测试用例。

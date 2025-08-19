@@ -50,7 +50,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(3, 3);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for all negative numbers sum");
         assertEquals(expectedCoords, actualCoords, "Failed for all negative numbers coordinates");
@@ -69,7 +69,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(3, 6);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for mixed numbers sum");
         assertEquals(expectedCoords, actualCoords, "Failed for mixed numbers coordinates");
@@ -95,7 +95,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(1, 1);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for array with zeros sum");
         assertEquals(expectedCoords, actualCoords, "Failed for array with zeros coordinates");
@@ -114,7 +114,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(0, 0);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for single positive element sum");
         assertEquals(expectedCoords, actualCoords, "Failed for single positive element coordinates");
@@ -133,7 +133,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(0, 0);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for single negative element sum");
         assertEquals(expectedCoords, actualCoords, "Failed for single negative element coordinates");
@@ -152,7 +152,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(0, 0);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for all zeros sum");
         assertEquals(expectedCoords, actualCoords, "Failed for all zeros coordinates");
@@ -171,7 +171,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(0, 0);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for max sum at beginning sum");
         assertEquals(expectedCoords, actualCoords, "Failed for max sum at beginning coordinates");
@@ -190,7 +190,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(2, 4);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for max sum at end sum");
         assertEquals(expectedCoords, actualCoords, "Failed for max sum at end coordinates");
@@ -216,7 +216,7 @@ public class MaxSubArrayTest {
         }, "Should throw IllegalArgumentException for empty array - sum method");
 
         assertThrows(IllegalArgumentException.class, () -> {
-            maxSubArray.getMaxSubArraySumCoOrdination(arr);
+            MaxSubArray.getMaxSubArraySumCoOrdination(arr);
         }, "Should throw IllegalArgumentException for empty array - coordinates method");
     }
 
@@ -233,7 +233,7 @@ public class MaxSubArrayTest {
         }, "Should throw IllegalArgumentException for null array - sum method");
 
         assertThrows(IllegalArgumentException.class, () -> {
-            maxSubArray.getMaxSubArraySumCoOrdination(arr);
+            MaxSubArray.getMaxSubArraySumCoOrdination(arr);
         }, "Should throw IllegalArgumentException for null array - coordinates method");
     }
 
@@ -250,7 +250,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(2, 3);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for restart better case sum");
         assertEquals(expectedCoords, actualCoords, "Failed for restart better case coordinates");
@@ -269,7 +269,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(0, 0);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for equal max values sum");
         assertEquals(expectedCoords, actualCoords, "Failed for equal max values coordinates");
@@ -281,7 +281,7 @@ public class MaxSubArrayTest {
     @Test
     public void testCoordinateValidity() {
         int[] arr = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
-        List<Integer> coords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> coords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         int begin = coords.get(0);
         int end = coords.get(1);

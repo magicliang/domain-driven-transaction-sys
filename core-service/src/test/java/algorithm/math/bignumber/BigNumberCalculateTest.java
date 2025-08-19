@@ -1,10 +1,10 @@
 package algorithm.math.bignumber;
 
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * project name: domain-driven-transaction-sys

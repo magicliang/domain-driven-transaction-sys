@@ -1318,11 +1318,11 @@ class BTreeTest {
         // 后序遍历结果：2,3,+,4,1,-,*
         Node root = BTree.tree('*')
                 .left(BTree.tree('+')
-                        .left((int) '2')
-                        .right((int) '3'))
+                        .left('2')
+                        .right('3'))
                 .right(BTree.tree('-')
-                        .left((int) '4')
-                        .right((int) '1'))
+                        .left('4')
+                        .right('1'))
                 .build();
 
         BTree tree = new BTree();
@@ -1539,11 +1539,11 @@ class BTreeTest {
         // 后序遍历结果：2,3,+,4,1,-,*
         Node root = BTree.tree('*')
                 .left(BTree.tree('+')
-                        .left((int) '2')
-                        .right((int) '3'))
+                        .left('2')
+                        .right('3'))
                 .right(BTree.tree('-')
-                        .left((int) '4')
-                        .right((int) '1'))
+                        .left('4')
+                        .right('1'))
                 .build();
 
         BTree tree = new BTree();
