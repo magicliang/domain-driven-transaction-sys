@@ -17,24 +17,9 @@ import java.util.NoSuchElementException;
  */
 public class LinkedQueue<T> implements Queue<T> {
 
-    /**
-     * 链表节点内部类
-     */
-    private static class Node<T> {
-
-        T item;
-        Node<T> next;
-
-        Node(T item) {
-            this.item = item;
-            this.next = null;
-        }
-    }
-
     private Node<T> head;  // 队列头部（出队端）
     private Node<T> tail;  // 队列尾部（入队端）
     private int size;      // 当前元素数量
-
     public LinkedQueue() {
         this.head = null;
         this.tail = null;
@@ -140,5 +125,19 @@ public class LinkedQueue<T> implements Queue<T> {
 
         sb.append("]");
         return sb.toString();
+    }
+
+    /**
+     * 链表节点内部类
+     */
+    private static class Node<T> {
+
+        T item;
+        Node<T> next;
+
+        Node(T item) {
+            this.item = item;
+            this.next = null;
+        }
     }
 }

@@ -8,6 +8,7 @@ import java.util.Objects;
  * @author liangchuan
  */
 public class Pair<T> {
+
     private T first;
     private T second;
 
@@ -19,34 +20,6 @@ public class Pair<T> {
     public Pair(T first, T second) {
         this.first = first;
         this.second = second;
-    }
-
-    public T getFirst() {
-        return first;
-    }
-
-    public T getSecond() {
-        return second;
-    }
-
-    public void setFirst(T newValue) {
-        first = newValue;
-    }
-
-    public void setSecond(T newValue) {
-        second = newValue;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Pair<?> pair = (Pair<?>) o;
-        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(first, second);
     }
 
     public static void main(String[] args) throws NoSuchMethodException {
@@ -64,6 +37,36 @@ public class Pair<T> {
         DateInterval[] arr = new DateInterval2[10];
         arr[0] = new DateInterval();
     }
+
+    public T getFirst() {
+        return first;
+    }
+
+    public void setFirst(T newValue) {
+        first = newValue;
+    }
+
+    public T getSecond() {
+        return second;
+    }
+
+    public void setSecond(T newValue) {
+        second = newValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Pair<?> pair = (Pair<?>) o;
+        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
+    }
 }
 
 class DateInterval extends Pair<LocalDate> {
@@ -72,7 +75,7 @@ class DateInterval extends Pair<LocalDate> {
     public void setSecond(LocalDate second) {
         Throwable x = new Throwable();
         System.out.println(x);
-        if (second.compareTo(getFirst()) > 0) {
+        if (second.isAfter(getFirst())) {
             super.setSecond(second);
         }
     }

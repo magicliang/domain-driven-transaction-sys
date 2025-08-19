@@ -57,9 +57,9 @@ public class Sorter {
      * - 使用 begin >= end 作为递归终止条件，防止 pivotal±1 导致的无限递归
      * - 所有操作均在原数组上进行，空间复杂度 O(log n)（仅递归栈）
      *
-     * @param arr   待排序数组
+     * @param arr 待排序数组
      * @param begin 当前排序区间的起始索引（包含）
-     * @param end   当前排序区间的结束索引（包含）
+     * @param end 当前排序区间的结束索引（包含）
      * @return 排序完成后的原数组引用
      */
     public static int[] quickSort(int[] arr, int begin, int end) {
@@ -102,9 +102,9 @@ public class Sorter {
      * <p>
      * 使用 Lomuto 方案（以末尾元素为 pivot），逻辑清晰，易于理解
      *
-     * @param arr   待分区的数组
+     * @param arr 待分区的数组
      * @param begin 当前处理区间的起始索引（包含）
-     * @param end   当前处理区间的结束索引（包含）
+     * @param end 当前处理区间的结束索引（包含）
      * @return pivot 元素排序后所在的索引位置（分割点）
      */
     private static int partition(int[] arr, int begin, int end) {
@@ -167,12 +167,8 @@ public class Sorter {
         int mid = arr.length / 2;
         int[] a = new int[mid];
         int[] b = new int[arr.length - mid];
-        for (int i = 0; i < mid; i++) {
-            a[i] = arr[i];
-        }
-        for (int j = 0; j < b.length; j++) {
-            b[j] = arr[j + mid];
-        }
+        System.arraycopy(arr, 0, a, 0, mid);
+        System.arraycopy(arr, 0 + mid, b, 0, b.length);
 
 //        return merge2Arrays(mergeSort(a), mergeSort(b));
         return merge2Arrays2(mergeSort(a), mergeSort(b));
@@ -227,8 +223,8 @@ public class Sorter {
         // 原地内存操作的核心思想是：准备一个和现空间一样大的空间，先把数据拷贝过去，然后再拷贝回这个共享数据段
 
         // 如果数组完全和原始 arr 总长相等，则可以一对一映射，否则，这里面的 temp 要从0开始，而 arr要从 left 开始
-        for (int i = left; i <= right; i++) {
-            temp[i - left] = arr[i];
+        if (right + 1 - left >= 0) {
+            System.arraycopy(arr, left, temp, left - left, right + 1 - left);
         }
 
         // 设置两个游标，分别在区间的起点

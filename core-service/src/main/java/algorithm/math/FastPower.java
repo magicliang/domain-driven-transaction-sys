@@ -33,7 +33,7 @@ public class FastPower {
      * 空间复杂度: O(1) - 只使用了常数级别的额外空间。
      * </p>
      *
-     * @param base     底数 (整数)
+     * @param base 底数 (整数)
      * @param exponent 指数 (整数，可正可负可为零)
      * @return base 的 exponent 次方的结果 (double 类型)
      * @see <a href="https://en.wikipedia.org/wiki/Exponentiation_by_squaring">Exponentiation by squaring</a>

@@ -14,23 +14,9 @@ import java.util.NoSuchElementException;
  */
 public class LinkedDeque<T> implements Deque<T> {
 
-    private static class Node<T> {
-
-        T item;
-        Node<T> prev;
-        Node<T> next;
-
-        Node(T item) {
-            this.item = item;
-            this.prev = null;
-            this.next = null;
-        }
-    }
-
     private Node<T> head;
     private Node<T> tail;
     private int size;
-
     public LinkedDeque() {
         head = null;
         tail = null;
@@ -151,5 +137,18 @@ public class LinkedDeque<T> implements Deque<T> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    private static class Node<T> {
+
+        T item;
+        Node<T> prev;
+        Node<T> next;
+
+        Node(T item) {
+            this.item = item;
+            this.prev = null;
+            this.next = null;
+        }
     }
 }

@@ -4,7 +4,6 @@ package generic;
  * @author liangchuan
  */
 interface Task {
-    void run() throws Exception;
 
     @SuppressWarnings("unchecked")
     static <T extends Throwable> void throwAs(Throwable t) throws T {
@@ -17,13 +16,16 @@ interface Task {
             try {
                 task.run();
             } catch (Exception e) {
-                Task.<RuntimeException>throwAs(e);
+                Task.throwAs(e);
             }
         };
     }
+
+    void run() throws Exception;
 }
 
 public class DefeatCheckedExceptionChecking {
+
     public static void main(String[] args) {
         Thread thread = new Thread(Task.asRunnable(() ->
         {

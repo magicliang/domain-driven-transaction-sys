@@ -12,8 +12,8 @@ import java.util.Arrays;
  * -005
  *
  * @author magicliang
- * <p>
- * date: 2025-07-30 21:10
+ *         <p>
+ *         date: 2025-07-30 21:10
  */
 public class BigNumberCalculate {
 

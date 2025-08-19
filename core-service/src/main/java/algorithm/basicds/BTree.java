@@ -15,155 +15,6 @@ import java.util.List;
  */
 public class BTree {
 
-    public static class Node {
-
-        int val;
-        Node left;
-        Node right;
-
-        Node() {
-        }
-
-        Node(int val) {
-            this.val = val;
-        }
-
-        Node(int val, Node left, Node right) {
-            this.val = val;
-            this.left = left;
-            this.right = right;
-        }
-
-        /**
-         * 链式设置左子节点
-         */
-        public Node left(int val) {
-            this.left = new Node(val);
-            return this.left;
-        }
-
-        /**
-         * 链式设置右子节点
-         */
-        public Node right(int val) {
-            this.right = new Node(val);
-            return this.right;
-        }
-
-        /**
-         * 链式设置左子节点为已有节点
-         */
-        public Node left(Node node) {
-            this.left = node;
-            return this;
-        }
-
-        /**
-         * 链式设置右子节点为已有节点
-         */
-        public Node right(Node node) {
-            this.right = node;
-            return this;
-        }
-
-        /**
-         * 返回父节点，用于链式调用的回溯
-         */
-        public Node up() {
-            // 注意：这里需要外部维护父节点引用，简化实现中返回this
-            return this;
-        }
-    }
-
-    /**
-     * 二叉树构建器 - 提供可读性强的构造方式
-     */
-    public static class TreeBuilder {
-
-        private Node root;
-
-        public TreeBuilder(int rootVal) {
-            this.root = new Node(rootVal);
-        }
-
-        public static TreeBuilder create(int rootVal) {
-            return new TreeBuilder(rootVal);
-        }
-
-        /**
-         * 设置左子树
-         * 示例：left(2).left(4).right(5)
-         */
-        public TreeBuilder left(int val) {
-            root.left = new Node(val);
-            return this;
-        }
-
-        /**
-         * 设置右子树
-         * 示例：right(3).left(6).right(7)
-         */
-        public TreeBuilder right(int val) {
-            root.right = new Node(val);
-            return this;
-        }
-
-        /**
-         * 设置左子树为已有节点
-         */
-        public TreeBuilder left(Node node) {
-            root.left = node;
-            return this;
-        }
-
-        /**
-         * 设置右子树为已有节点
-         */
-        public TreeBuilder right(Node node) {
-            root.right = node;
-            return this;
-        }
-
-        /**
-         * 设置左子树为子构建器
-         */
-        public TreeBuilder left(TreeBuilder leftBuilder) {
-            root.left = leftBuilder.build();
-            return this;
-        }
-
-        /**
-         * 设置右子树为子构建器
-         */
-        public TreeBuilder right(TreeBuilder rightBuilder) {
-            root.right = rightBuilder.build();
-            return this;
-        }
-
-        /**
-         * 获取根节点
-         */
-        public Node build() {
-            return root;
-        }
-
-        /**
-         * 链式设置左子节点并返回子构建器
-         */
-        public TreeBuilder leftChild(int val) {
-            root.left = new Node(val);
-            return new TreeBuilder(val);
-        }
-
-        /**
-         * 链式设置右子节点并返回子构建器
-         */
-        public TreeBuilder rightChild(int val) {
-            root.right = new Node(val);
-            return new TreeBuilder(val);
-        }
-    }
-
     /**
      * 快速创建树的工具方法
      */
@@ -288,7 +139,6 @@ public class BTree {
         levelOrderLevel(result, root.right, level - 1);
     }
 
-
     /**
      * 前序遍历（根左右）的公共接口
      *
@@ -338,7 +188,6 @@ public class BTree {
         // 右：递归遍历右子树
         preOrder(result, root.right);
     }
-
 
     /**
      * 非递归前序遍历（根-左-右）实现
@@ -511,7 +360,6 @@ public class BTree {
         return result;
     }
 
-
     /**
      * 后序遍历（左-右-根）的公共接口
      *
@@ -653,5 +501,154 @@ public class BTree {
         }
 
         return result;
+    }
+
+    public static class Node {
+
+        int val;
+        Node left;
+        Node right;
+
+        Node() {
+        }
+
+        Node(int val) {
+            this.val = val;
+        }
+
+        Node(int val, Node left, Node right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+
+        /**
+         * 链式设置左子节点
+         */
+        public Node left(int val) {
+            this.left = new Node(val);
+            return this.left;
+        }
+
+        /**
+         * 链式设置右子节点
+         */
+        public Node right(int val) {
+            this.right = new Node(val);
+            return this.right;
+        }
+
+        /**
+         * 链式设置左子节点为已有节点
+         */
+        public Node left(Node node) {
+            this.left = node;
+            return this;
+        }
+
+        /**
+         * 链式设置右子节点为已有节点
+         */
+        public Node right(Node node) {
+            this.right = node;
+            return this;
+        }
+
+        /**
+         * 返回父节点，用于链式调用的回溯
+         */
+        public Node up() {
+            // 注意：这里需要外部维护父节点引用，简化实现中返回this
+            return this;
+        }
+    }
+
+    /**
+     * 二叉树构建器 - 提供可读性强的构造方式
+     */
+    public static class TreeBuilder {
+
+        private final Node root;
+
+        public TreeBuilder(int rootVal) {
+            this.root = new Node(rootVal);
+        }
+
+        public static TreeBuilder create(int rootVal) {
+            return new TreeBuilder(rootVal);
+        }
+
+        /**
+         * 设置左子树
+         * 示例：left(2).left(4).right(5)
+         */
+        public TreeBuilder left(int val) {
+            root.left = new Node(val);
+            return this;
+        }
+
+        /**
+         * 设置右子树
+         * 示例：right(3).left(6).right(7)
+         */
+        public TreeBuilder right(int val) {
+            root.right = new Node(val);
+            return this;
+        }
+
+        /**
+         * 设置左子树为已有节点
+         */
+        public TreeBuilder left(Node node) {
+            root.left = node;
+            return this;
+        }
+
+        /**
+         * 设置右子树为已有节点
+         */
+        public TreeBuilder right(Node node) {
+            root.right = node;
+            return this;
+        }
+
+        /**
+         * 设置左子树为子构建器
+         */
+        public TreeBuilder left(TreeBuilder leftBuilder) {
+            root.left = leftBuilder.build();
+            return this;
+        }
+
+        /**
+         * 设置右子树为子构建器
+         */
+        public TreeBuilder right(TreeBuilder rightBuilder) {
+            root.right = rightBuilder.build();
+            return this;
+        }
+
+        /**
+         * 获取根节点
+         */
+        public Node build() {
+            return root;
+        }
+
+        /**
+         * 链式设置左子节点并返回子构建器
+         */
+        public TreeBuilder leftChild(int val) {
+            root.left = new Node(val);
+            return new TreeBuilder(val);
+        }
+
+        /**
+         * 链式设置右子节点并返回子构建器
+         */
+        public TreeBuilder rightChild(int val) {
+            root.right = new Node(val);
+            return new TreeBuilder(val);
+        }
     }
 }

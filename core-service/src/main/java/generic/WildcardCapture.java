@@ -6,6 +6,7 @@ import java.util.List;
  * @author liangchuan
  */
 public class WildcardCapture {
+
     // 辅助泛型方法：捕获通配符类型
     private static <T> T swapHelper(List<T> list, int i, int j) {
         // 只要不返回这个 temp，就不会有编译问题，在方法体内可以随意使用 a。用有值的实例来获取泛型变量。

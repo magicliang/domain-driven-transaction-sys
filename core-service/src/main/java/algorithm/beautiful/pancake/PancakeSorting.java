@@ -69,6 +69,22 @@ public class PancakeSorting {
     }
 
     /**
+     * 主函数，用于测试煎饼排序求解器
+     *
+     * @param args 命令行参数
+     */
+    public static void main(String[] args) {
+        // 示例输入: 烙饼大小从上到下为 {4,2,3,1,5,6,7,9,8}
+        // 目标是通过从顶部翻转，使其变为 {1,2,3,4,5,6,7,8,9} (顶端最小，底端最大)
+        int[] cakeArrayInput = {3, 2, 1, 6, 5, 4, 9, 8, 7, 0};
+        int size = cakeArrayInput.length;
+
+        PancakeSorting sorter = new PancakeSorting();
+        sorter.run(cakeArrayInput, size);
+        sorter.output();
+    }
+
+    /**
      * 初始化求解器状态
      *
      * @param pCakeArray 初始烙饼大小数组 (从上到下)
@@ -147,10 +163,10 @@ public class PancakeSorting {
      * 思路：检查相邻烙饼的顺序关系。
      * 问题讨论：为什么检查 difference != 1 而不是 p[i-1] < p[i]？
      * 答：原始 C++ 代码逻辑是检查相邻元素是否在“排序上相邻”（差值为1或-1），
-     *     可能是为配合其（略有不一致的）递减目标。本 Java 实现明确了目标是递增排序，
-     *     因此一个更通用的判断是检查 p[i-1] < p[i]。当前实现保留了原逻辑（检查 == 1），
-     *     但这隐含了输入数据是（或趋向于）连续整数的假设。一个更普适的 lowerBound
-     *     可能是：if (pCakeArray[i - 1] >= pCakeArray[i]) ret++;
+     * 可能是为配合其（略有不一致的）递减目标。本 Java 实现明确了目标是递增排序，
+     * 因此一个更通用的判断是检查 p[i-1] < p[i]。当前实现保留了原逻辑（检查 == 1），
+     * 但这隐含了输入数据是（或趋向于）连续整数的假设。一个更普适的 lowerBound
+     * 可能是：if (pCakeArray[i - 1] >= pCakeArray[i]) ret++;
      *
      * @param pCakeArray 当前烙饼状态数组
      * @param cakeCount 烙饼数量
@@ -200,12 +216,12 @@ public class PancakeSorting {
      * 答：因为不需要。
      * 1. reverseCakeArraySwap[step] 的值由 search(step) 自身在其 for 循环中写入。
      * 2. 当 search(step) 从递归调用返回后，无论该调用是因剪枝还是找到解而返回，
-     *    search(step) 都会立即执行回溯操作 reverse(0, i) 恢复工作区状态。
+     * search(step) 都会立即执行回溯操作 reverse(0, i) 恢复工作区状态。
      * 3. 然后，search(step) 的 for 循环会进入下一次迭代，尝试下一个翻转位置 i'。
-     *    在这次迭代开始时，search(step) 会立刻执行 reverseCakeArraySwap[step] = i'。
-     *    这会覆盖掉上一次迭代（尝试 i）时留在该位置的任何“脏”数据。
+     * 在这次迭代开始时，search(step) 会立刻执行 reverseCakeArraySwap[step] = i'。
+     * 这会覆盖掉上一次迭代（尝试 i）时留在该位置的任何“脏”数据。
      * 4. 因此，清理旧数据的责任在于下一次写入操作（覆盖），而不是显式的清理。
-     *    这是回溯法中高效的状态管理方式：每个层级只关心自己的槽位，旧值会被新值自然覆盖。
+     * 这是回溯法中高效的状态管理方式：每个层级只关心自己的槽位，旧值会被新值自然覆盖。
      *
      * @param step 当前已经执行的翻转步数
      */
@@ -230,9 +246,9 @@ public class PancakeSorting {
                 maxSwap = step; // 更新最少翻转次数
                 // 记录当前找到的最优翻转序列
                 // 将当前路径临时记录的翻转序列 (reverseCakeArraySwap) 复制到最终结果 (swapArray)
-                for (int i = 0; i < maxSwap; ++i) {
-                    // 存储翻转的位置索引 (即翻转顶部 k 个饼的 k 值)
-                    swapArray[i] = reverseCakeArraySwap[i];
+                // 存储翻转的位置索引 (即翻转顶部 k 个饼的 k 值)
+                if (maxSwap >= 0) {
+                    System.arraycopy(reverseCakeArraySwap, 0, swapArray, 0, maxSwap);
                 }
             }
             return; // 返回点 2: 找到解并返回
@@ -305,21 +321,5 @@ public class PancakeSorting {
             begin++;
             end--;
         }
-    }
-
-    /**
-     * 主函数，用于测试煎饼排序求解器
-     *
-     * @param args 命令行参数
-     */
-    public static void main(String[] args) {
-        // 示例输入: 烙饼大小从上到下为 {4,2,3,1,5,6,7,9,8}
-        // 目标是通过从顶部翻转，使其变为 {1,2,3,4,5,6,7,8,9} (顶端最小，底端最大)
-        int[] cakeArrayInput = {3, 2, 1, 6, 5, 4, 9, 8, 7, 0};
-        int size = cakeArrayInput.length;
-
-        PancakeSorting sorter = new PancakeSorting();
-        sorter.run(cakeArrayInput, size);
-        sorter.output();
     }
 }

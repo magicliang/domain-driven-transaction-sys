@@ -25,21 +25,6 @@ import lombok.Data;
 public class GraphAdjList {
 
     /**
-     * 顶点定义
-     * 使用Lombok自动生成getter/setter和全参构造方法
-     */
-    @Data
-    @AllArgsConstructor
-    public static class Vertex {
-
-        /**
-         * 顶点值
-         * 用于标识顶点，允许重复值存在
-         */
-        private int val;
-    }
-
-    /**
      * 邻接表数据结构
      * key：顶点对象
      * value：与该顶点相邻的所有顶点列表
@@ -364,5 +349,20 @@ public class GraphAdjList {
             }
             System.out.println(pair.getKey().val + ": " + tmp + ",");
         }
+    }
+
+    /**
+     * 顶点定义
+     * 使用Lombok自动生成getter/setter和全参构造方法
+     */
+    @Data
+    @AllArgsConstructor
+    public static class Vertex {
+
+        /**
+         * 顶点值
+         * 用于标识顶点，允许重复值存在
+         */
+        private int val;
     }
 }

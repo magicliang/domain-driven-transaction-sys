@@ -12,6 +12,49 @@ public class MaxSubArray {
 
 
     /**
+     * 获取最大子数组和的起始和结束索引坐标。
+     * <p>
+     * 实现正确性说明：
+     * 1. potentialBegin 机制：当 currentDp 需要重新开始时（即 arr[i] > currentDp + arr[i]），
+     * 记录潜在的新起始位置，但不立即更新 begin，避免错误地修改当前最大子数组的起始位置。
+     * 2. 延迟更新：只有当 currentDp 超过 maxDp 时，才将 potentialBegin 赋给 begin，
+     * 确保 begin 始终指向当前最大子数组的正确起始位置。
+     * 3. 边界处理：正确处理了数组只有一个元素的情况。
+     * </p>
+     */
+    public static List<Integer> getMaxSubArraySumCoOrdination(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            throw new IllegalArgumentException("Input array must not be null or empty");
+        }
+
+        int currentDp = arr[0];
+        int maxDp = currentDp;
+        int begin = 0;
+        int end = 0;
+        int potentialBegin = 0; // 潜在的新起始位置
+
+        for (int i = 1; i < arr.length; i++) {
+            int newSum = currentDp + arr[i];
+            if (newSum > arr[i]) {
+                currentDp = newSum;
+            } else {
+                currentDp = arr[i];
+                // 记录可能的新起始点
+                // 易错的点：这里既然有了新起点，就应该记录潜在的点，但是不应该赋给 begin 和 end，这里不记录，只在 currentDp > maxDp 更新 begin 也是不对的-那样 begin 永远是0
+                potentialBegin = i;
+            }
+
+            if (currentDp > maxDp) {
+                maxDp = currentDp;
+                begin = potentialBegin; //只有进入这个逻辑分支，才改写 begin 和 end
+                end = i;
+            }
+        }
+
+        return Arrays.asList(begin, end);
+    }
+
+    /**
      * 使用 Kadane 的动态规划方式计算数组中连续子数组的最大和。
      * <p>
      * 算法思路 (Kadane's Algorithm):
@@ -72,49 +115,6 @@ public class MaxSubArray {
 
         /* 循环结束时，maxCurrent 存储了 max(dp[0], dp[1], ..., dp[n-1]) 的计算结果，即整个数组的最大子数组和 */
         return maxCurrent;
-    }
-
-    /**
-     * 获取最大子数组和的起始和结束索引坐标。
-     * <p>
-     * 实现正确性说明：
-     * 1. potentialBegin 机制：当 currentDp 需要重新开始时（即 arr[i] > currentDp + arr[i]），
-     * 记录潜在的新起始位置，但不立即更新 begin，避免错误地修改当前最大子数组的起始位置。
-     * 2. 延迟更新：只有当 currentDp 超过 maxDp 时，才将 potentialBegin 赋给 begin，
-     * 确保 begin 始终指向当前最大子数组的正确起始位置。
-     * 3. 边界处理：正确处理了数组只有一个元素的情况。
-     * </p>
-     */
-    public static List<Integer> getMaxSubArraySumCoOrdination(int[] arr) {
-        if (arr == null || arr.length == 0) {
-            throw new IllegalArgumentException("Input array must not be null or empty");
-        }
-
-        int currentDp = arr[0];
-        int maxDp = currentDp;
-        int begin = 0;
-        int end = 0;
-        int potentialBegin = 0; // 潜在的新起始位置
-
-        for (int i = 1; i < arr.length; i++) {
-            int newSum = currentDp + arr[i];
-            if (newSum > arr[i]) {
-                currentDp = newSum;
-            } else {
-                currentDp = arr[i];
-                // 记录可能的新起始点
-                // 易错的点：这里既然有了新起点，就应该记录潜在的点，但是不应该赋给 begin 和 end，这里不记录，只在 currentDp > maxDp 更新 begin 也是不对的-那样 begin 永远是0
-                potentialBegin = i;
-            }
-
-            if (currentDp > maxDp) {
-                maxDp = currentDp;
-                begin = potentialBegin; //只有进入这个逻辑分支，才改写 begin 和 end
-                end = i;
-            }
-        }
-
-        return Arrays.asList(begin, end);
     }
 
 }

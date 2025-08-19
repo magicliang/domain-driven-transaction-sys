@@ -20,14 +20,14 @@ public class GraphAdjMat {
      * 存储图中所有顶点的值
      * 顶点的索引对应其在邻接矩阵中的行/列索引
      */
-    private List<Integer> vertices;
+    private final List<Integer> vertices;
 
     /**
      * 邻接矩阵，表示图的连接关系
      * matrix[i][j] = 1 表示顶点i和顶点j之间有边
      * matrix[i][j] = 0 表示顶点i和顶点j之间没有边
      */
-    private List<List<Integer>> matrix;
+    private final List<List<Integer>> matrix;
 
     /**
      * 默认构造函数

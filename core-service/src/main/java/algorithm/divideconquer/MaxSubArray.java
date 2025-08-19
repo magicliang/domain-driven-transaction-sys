@@ -42,8 +42,8 @@ public class MaxSubArray {
      * - "合并结果定乾坤"
      * </p>
      *
-     * @param arr  输入数组
-     * @param low  区间左边界 (inclusive)
+     * @param arr 输入数组
+     * @param low 区间左边界 (inclusive)
      * @param high 区间右边界 (inclusive)
      * @return 区间 [low, high] 内的最大子数组和
      */
@@ -84,9 +84,9 @@ public class MaxSubArray {
      * 将这两部分的最大和相加即得跨越中点的最大子数组和。
      * </p>
      *
-     * @param arr  输入数组
-     * @param low  区间左边界
-     * @param mid  中点
+     * @param arr 输入数组
+     * @param low 区间左边界
+     * @param mid 中点
      * @param high 区间右边界
      * @return 跨越中点的最大子数组和
      */

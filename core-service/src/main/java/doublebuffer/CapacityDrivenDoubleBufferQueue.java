@@ -13,6 +13,7 @@ import java.util.concurrent.BlockingQueue;
  * 2. 在读写遇到瓶颈以后，直接触发切换。
  *
  * 也可以设计为使用两个 size 来维护 buffer 的容量，有一个 buffer 触发阈值以后就直接切换
+ *
  * @author magicliang
  *
  *         date: 2025-08-12 16:48

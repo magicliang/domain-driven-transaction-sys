@@ -65,6 +65,7 @@ public class ExpandExperiment {
      * 7. 然后完成替换
      *
      * 自底向上或逐步构建的方式是内存的空间复杂更好的方式，即使有不可避免的内存拷贝。
+     *
      * @param originTypes 输入的列表套列表
      * @param <T> 泛型类型
      * @return 所有可能的组合结果

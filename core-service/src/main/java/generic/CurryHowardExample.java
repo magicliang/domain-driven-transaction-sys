@@ -14,41 +14,6 @@ import java.util.function.Function;
  */
 public class CurryHowardExample {
 
-    // 逻辑与（A ∧ B）的乘积类型
-    public static class Pair<A, B> {
-
-        public final A a;
-        public final B b;
-
-        public Pair(A a, B b) {
-            this.a = a;
-            this.b = b;
-        }
-    }
-
-    // 逻辑或（A ∨ B）的联合类型
-    public interface Either<A, B> {
-
-    }
-
-    public static class Left<A, B> implements Either<A, B> {
-
-        public final A a;
-
-        public Left(A a) {
-            this.a = a;
-        }
-    }
-
-    public static class Right<A, B> implements Either<A, B> {
-
-        public final B b;
-
-        public Right(B b) {
-            this.b = b;
-        }
-    }
-
     // 逻辑蕴含的实践：函数组合 (B → C) → (A → B) → (A → C)
     public static <A, B, C> Function<A, C> compose(
             Function<B, C> g,
@@ -101,5 +66,40 @@ public class CurryHowardExample {
 
         Pair<Integer, String> result = proof.apply("Test");
         System.out.println(result.a + ", " + result.b); // 输出 4, Test!
+    }
+
+    // 逻辑或（A ∨ B）的联合类型
+    public interface Either<A, B> {
+
+    }
+
+    // 逻辑与（A ∧ B）的乘积类型
+    public static class Pair<A, B> {
+
+        public final A a;
+        public final B b;
+
+        public Pair(A a, B b) {
+            this.a = a;
+            this.b = b;
+        }
+    }
+
+    public static class Left<A, B> implements Either<A, B> {
+
+        public final A a;
+
+        public Left(A a) {
+            this.a = a;
+        }
+    }
+
+    public static class Right<A, B> implements Either<A, B> {
+
+        public final B b;
+
+        public Right(B b) {
+            this.b = b;
+        }
     }
 }

@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
  */
 public class Plane<St extends FlightStatus> extends GenericType<St> {
 
-    private int passenger;
+    private final int passenger;
 
     /**
      * 禁掉了除工厂方法和指定的状态构造方法以外的所有其他构造方法。当然，防不了反射攻击（reflection attack）。

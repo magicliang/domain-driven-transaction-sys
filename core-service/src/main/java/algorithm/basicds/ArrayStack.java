@@ -103,6 +103,7 @@ public class ArrayStack<T> implements Stack<T> {
     /**
      * 动态扩容数组
      * 基于数组的数据结构通常需要考虑扩容问题，包括各种list和散列表，而链表不需要考虑capacity 和扩容问题。
+     *
      * @param newCapacity 新的容量
      */
     private void resize(int newCapacity) {

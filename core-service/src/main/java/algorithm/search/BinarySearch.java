@@ -22,7 +22,7 @@ public class BinarySearch {
      *         searchInsert1([1,3,5,6], 7) → 返回 4
      *         searchInsert1([1,3,5,6], 0) → 返回 0
      */
-    public int searchInsert1(int nums[], int target) {
+    public int searchInsert1(int[] nums, int target) {
 
         // 这道题易错的点在于理论插入位置可能是在现行数组边界之外的
         int l = 0;
@@ -57,12 +57,12 @@ public class BinarySearch {
      * 在一个升序排列的整数数组中执行二分查找，返回目标值 target 的索引。
      * 如果目标值不存在于数组中，则返回 -1。
      *
-     * @param nums   升序排列的整数数组，不允许为 null，允许为空数组
+     * @param nums 升序排列的整数数组，不允许为 null，允许为空数组
      * @param target 要查找的目标整数值
      * @return 目标值在数组中的索引；若未找到，返回 -1
      * @throws NullPointerException 如果 nums 为 null
      */
-    public int binarySearch(int nums[], int target) {
+    public int binarySearch(int[] nums, int target) {
         // 二分查找标准实现：在有序数组中查找 target 的索引
         // 使用闭区间 [l, r]，所以 r 初始化为 nums.length - 1
         int l = 0;
@@ -98,14 +98,14 @@ public class BinarySearch {
      * <p>
      * 使用左闭右开区间 [l, r) 模型实现二分查找。
      *
-     * @param nums   升序排列的整数数组，不允许为 null
+     * @param nums 升序排列的整数数组，不允许为 null
      * @param target 要查找或插入的目标整数值
      * @return 目标值的索引或其应该插入的位置索引
      * @throws NullPointerException 如果 nums 为 null
      * @example searchInsert2([1, 3, 5, 6], 5) → 返回 2
-     * searchInsert2([1,3,5,6], 2) → 返回 1
-     * searchInsert2([1,3,5,6], 7) → 返回 4
-     * searchInsert2([1,3,5,6], 0) → 返回 0
+     *         searchInsert2([1,3,5,6], 2) → 返回 1
+     *         searchInsert2([1,3,5,6], 7) → 返回 4
+     *         searchInsert2([1,3,5,6], 0) → 返回 0
      */
     public int searchInsert2(int[] nums, int target) {
         // 这道题易错的点在于插入位置可能是在现行数组边界之外的
@@ -147,15 +147,15 @@ public class BinarySearch {
      * <p>
      * 使用左闭右开区间 [l, r) 模型实现二分查找。
      *
-     * @param nums   升序排列的整数数组，不允许为 null
+     * @param nums 升序排列的整数数组，不允许为 null
      * @param target 要查找的目标整数值
      * @return 目标值的左边界索引；如果不存在，返回 -1
      * @throws NullPointerException 如果 nums 为 null
      * @example leftBound1([1, 2, 2, 2, 3], 2) → 返回 1
-     * leftBound1([1,2,3,4,5], 6) → 返回 -1（不存在）
-     * leftBound1([2,3,4], 1)     → 返回 -1（比所有数都小）
+     *         leftBound1([1,2,3,4,5], 6) → 返回 -1（不存在）
+     *         leftBound1([2,3,4], 1)     → 返回 -1（比所有数都小）
      */
-    public int leftBound1(int nums[], int target) {
+    public int leftBound1(int[] nums, int target) {
         int l = 0;
         int r = nums.length;
 
@@ -207,13 +207,13 @@ public class BinarySearch {
      * <p>
      * 因此，floor 应该基于 searchInsert 实现：floor = searchInsert(target) - 1
      *
-     * @param nums   升序整数数组，不允许为 null
+     * @param nums 升序整数数组，不允许为 null
      * @param target 要比较的目标值
      * @return 小于 target 的最大元素的索引；如果不存在，返回 -1
      * @example floor([1, 2, 2, 2, 3], 2)  → 返回 0（因为 1 是小于 2 的最大元素）
-     * floor([1,2,3,5,6], 4)  → 返回 2（因为 3 是小于 4 的最大元素）
-     * floor([1,2,3], 0)      → 返回 -1（没有元素小于 0）
-     * floor([1,2,3], 4)      → 返回 2（3 是小于 4 的最大元素）
+     *         floor([1,2,3,5,6], 4)  → 返回 2（因为 3 是小于 4 的最大元素）
+     *         floor([1,2,3], 0)      → 返回 -1（没有元素小于 0）
+     *         floor([1,2,3], 4)      → 返回 2（3 是小于 4 的最大元素）
      */
     public int floor(int[] nums, int target) {
         // 使用 searchInsert1 找到第一个 >= target 的位置
@@ -229,15 +229,15 @@ public class BinarySearch {
      * <p>
      * 使用闭区间 [l, r] 模型实现二分查找。
      *
-     * @param nums   升序排列的整数数组，不允许为 null
+     * @param nums 升序排列的整数数组，不允许为 null
      * @param target 要查找的目标整数值
      * @return 目标值的左边界索引；如果不存在，返回 -1
      * @throws NullPointerException 如果 nums 为 null
      * @example leftBound2([1, 2, 2, 2, 3], 2) → 返回 1
-     * leftBound2([1,2,3,4,5], 6) → 返回 -1（不存在）
-     * leftBound2([2,3,4], 1)     → 返回 -1（比所有数都小）
+     *         leftBound2([1,2,3,4,5], 6) → 返回 -1（不存在）
+     *         leftBound2([2,3,4], 1)     → 返回 -1（比所有数都小）
      */
-    public int leftBound2(int nums[], int target) {
+    public int leftBound2(int[] nums, int target) {
         int l = 0;
         int r = nums.length - 1; // 闭区间 [l, r]，所以 r 初始化为最后一个合法索引
 
@@ -284,16 +284,16 @@ public class BinarySearch {
      * 使用左闭右开区间 [l, r) 模型实现二分查找。
      * 核心口诀：l 永远是第一个 >= target 的位置 → 但右边界要靠"第一个 > target 的位置 - 1"
      *
-     * @param nums   升序整数数组，不能为空或 null
+     * @param nums 升序整数数组，不能为空或 null
      * @param target 要查找的目标值
      * @return target 的右边界索引；如果不存在，返回 -1
      * @throws NullPointerException 如果 nums 为 null
      * @example rightBound1([1, 2, 2, 2, 3], 2) → 返回 3
-     * rightBound1([1,2,3,4,5], 6) → 返回 -1（不存在）
-     * rightBound1([2,3,4], 1)     → 返回 -1（比所有数都小）
-     * rightBound1([1], 1)         → 返回 0
+     *         rightBound1([1,2,3,4,5], 6) → 返回 -1（不存在）
+     *         rightBound1([2,3,4], 1)     → 返回 -1（比所有数都小）
+     *         rightBound1([1], 1)         → 返回 0
      */
-    public int rightBound1(int nums[], int target) {
+    public int rightBound1(int[] nums, int target) {
         int l = 0;
         int r = nums.length; // 搜索区间 [l, r)：左闭右开，r 是"边界标记"，不是数据位置
 
@@ -346,21 +346,21 @@ public class BinarySearch {
      * 核心思想：通过不断向右推进左边界，让 l 最终停在"第一个大于 target 的位置"，
      * 然后返回 l - 1 作为右边界候选。
      *
-     * @param nums   升序排列的整数数组，不能为空或 null
+     * @param nums 升序排列的整数数组，不能为空或 null
      * @param target 要查找的目标值
      * @return target 的右边界索引；如果不存在，返回 -1
      * @throws NullPointerException 如果 nums 为 null
      * @example rightBound2([1, 2, 2, 2, 3], 2) → 返回 3
-     * rightBound2([1,2,3,4,5], 6) → 返回 -1（target 不存在）
-     * rightBound2([2,3,4], 1)     → 返回 -1（target 比所有元素都小）
-     * rightBound2([1], 1)         → 返回 0
-     * rightBound2([1,2,3], 0)     → 返回 -1（越界）
+     *         rightBound2([1,2,3,4,5], 6) → 返回 -1（target 不存在）
+     *         rightBound2([2,3,4], 1)     → 返回 -1（target 比所有元素都小）
+     *         rightBound2([1], 1)         → 返回 0
+     *         rightBound2([1,2,3], 0)     → 返回 -1（越界）
      * @note - 闭区间模型：循环结束时 l == r + 1
-     * - l 是第一个 > target 的位置
-     * - 因此 l - 1 是最后一个 <= target 的位置
-     * - 必须检查 l - 1 是否越界，以及 nums[l - 1] 是否等于 target
+     *         - l 是第一个 > target 的位置
+     *         - 因此 l - 1 是最后一个 <= target 的位置
+     *         - 必须检查 l - 1 是否越界，以及 nums[l - 1] 是否等于 target
      */
-    public int rightBound2(int nums[], int target) {
+    public int rightBound2(int[] nums, int target) {
         int l = 0;
         int r = nums.length - 1;
 

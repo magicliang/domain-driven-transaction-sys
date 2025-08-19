@@ -15,28 +15,10 @@ import lombok.Getter;
  */
 public class LinkedStack<T> implements Stack<T> {
 
-    @Getter
-    class Node<T> {
-
-        private T item;
-
-        /**
-         * 为了方便操作，还是需要增加 prev 方便在尾部增减元素
-         * 易错的点：栈其实是个单向的链表，next是没用的，通常我们使用尾指针来反推其他元素就可以了
-         */
-        private Node<T> prev;
-
-
-        public Node(T item) {
-            this.item = item;
-        }
-    }
-
     /**
      * 通常栈只需要尾指针就行
      */
     private Node<T> top;
-
     /**
      * 通常基于链表的数据结构不需要知道容量，也就没有 resize 函数
      */
@@ -110,6 +92,23 @@ public class LinkedStack<T> implements Stack<T> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Getter
+    class Node<T> {
+
+        private final T item;
+
+        /**
+         * 为了方便操作，还是需要增加 prev 方便在尾部增减元素
+         * 易错的点：栈其实是个单向的链表，next是没用的，通常我们使用尾指针来反推其他元素就可以了
+         */
+        private Node<T> prev;
+
+
+        public Node(T item) {
+            this.item = item;
+        }
     }
 
 }
