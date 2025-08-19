@@ -39,72 +39,103 @@ public class FastPower {
      * @see <a href="https://en.wikipedia.org/wiki/Exponentiation_by_squaring">Exponentiation by squaring</a>
      */
     public static double powerBottomUpWithNegative(int base, int exponent) {
-        // 处理 0 的负数次幂，这是未定义的
-        if (base == 0 && exponent < 0) {
-            throw new ArithmeticException("Cannot raise zero to a negative power.");
-        }
-
-        // 根据数学定义，任何非零数的 0 次幂都是 1，0^0 在此也定义为 1.0
         if (exponent == 0) {
-            return 1.0;
+            return 1;
         }
 
-        // 记录指数是否为负数
-        boolean isNegativeExponent = exponent < 0;
-        // 将指数转换为正数进行计算
-        int positiveExponent = Math.abs(exponent);
-
-        // 使用 double 类型存储结果和底数，以支持小数结果和防止中间溢出
-        double result = 1.0;
-        // 将底数转换为 double 进行计算
-        double currentBase = (double) base;
-        int currentExponent = positiveExponent;
-
-        // 迭代过程：计算 base^|exponent|
-        while (currentExponent > 0) {
-            // 检查指数的最低二进制位是否为 1 (即指数是否为奇数)
-            if (currentExponent % 2 == 1) {
-                result *= currentBase;
+        boolean isNegative = false;
+        if (exponent < 0) {
+            exponent *= -1;
+            isNegative = true;
+        }
+        double result = 1.0; // 因为允许负次幂，所以这里初始化为 0
+        while (exponent > 0) {
+            if ((exponent & 1) == 1) {
+                result *= base;
+                exponent--;
             }
-            // 将指数右移一位
-            currentExponent /= 2;
-            // 将当前底数平方
-            currentBase *= currentBase;
+
+            // 此时 exponent 必为偶数
+            base *= base; // 在 1变0的过程里，base会超出预期，但是下一轮循环用不着了，所以不用管了
+            exponent = (exponent >>> 1);
         }
 
-        // 如果原指数是负数，则返回倒数
-        if (isNegativeExponent) {
-            return 1.0 / result;
-        } else {
-            return result;
+        if (isNegative) {
+            result = 1.0 / result;
         }
+
+        return result;
     }
 
+    /**
+     * 使用自底向上的快速幂算法计算 base 的 exponent 次方 (base^exponent)。
+     * <p>
+     * 算法步骤：
+     * 1. 处理特殊情况：指数为 0 时，返回 1。
+     * 2. 初始化结果 result 为 1。
+     * 3. 当指数 exponent 大于 0 时，循环执行：
+     * a. 如果 exponent 是奇数 (exponent & 1 == 1)，
+     * 则将当前的 base 乘入 result，并将 exponent 减 1- 类似于 2^5 = 2 * 2 ^4。左边单拉出一个2出来乘，到最后一步，指数从4变1，base变成16。此时相当于 result * 4 ^
+     * 1 但拉出来就乘好了。然后消耗掉幂，1变0，循环结束。
+     * b. 如果 exponent 是偶数，则将 base 平方，并将 exponent 右移一位（相当于除以 2）。
+     * 4. 循环结束，返回 result。
+     * </p>
+     * <p>
+     * 时间复杂度: O(log exponent) - 因为每次循环都将指数减半。
+     * 空间复杂度: O(1) - 只使用了常数级别的额外空间。
+     * </p>
+     * <p>
+     * 注意：此方法只支持非负整数指数。如果需要支持负指数，请使用 {@link #powerBottomUpWithNegative(int, int)}。
+     * </p>
+     *
+     * @param base 底数 (整数)
+     * @param exponent 指数 (非负整数)
+     * @return base 的 exponent 次方的结果 (整数)
+     * @throws ArithmeticException 如果结果超出int范围
+     * @see <a href="https://en.wikipedia.org/wiki/Exponentiation_by_squaring">Exponentiation by squaring</a>
+     */
     public static int powerBottomUp(int base, int exponent) {
         // base ^ exponent: exponent 如果是奇数，可以转成 base * base ^ exponent - 1
         // 然后每次迭代给 base 升级，exponent/2
+
         if (exponent == 0) {
             return 1;
         }
 
         int result = 1;
-        if (exponent % 2 != 0) {
-            result *= base;
-            exponent -= 1;
+        // 把 2^5 拆解成 2 * 2^4 4 下折成1要循环2次，所以 base 2 要平方2次，4 变成 1 的时候，需要乘以结果了
+        while (exponent > 0) {
+            if ((exponent & 1) == 1) { // 另一种求奇偶的方法，最初的奇数1和最后1个1会触发一次乘法
+                result *= base;
+                exponent--; // 这一步减等于0就需要直接退出了
+            } else {
+                base *= base;
+                exponent = exponent >>> 1;
+            }
         }
 
-        while (exponent > 1) { // 易错的点： exp 降到 1 的时候就是乘的时候，降到0base会再得到一个平方
-            base = base * base;
-            exponent = exponent >>> 1;
-        }
-        if (exponent == 1) {
-            result *= base;
-        }
         return result;
     }
 
+    /**
+     * 快速幂算法的主函数，用于演示和测试基本的快速幂计算。
+     * <p>
+     * 测试用例包括：
+     * - 2^1 = 2
+     * - 2^4 = 16
+     * - 2^5 = 32
+     * </p>
+     * <p>
+     * 注意：此方法仅用于演示{@link #powerBottomUp(int, int)}方法的基本功能。
+     * 如需测试负数指数，请使用{@link #powerBottomUpWithNegative(int, int)}方法。
+     * </p>
+     *
+     * @param args 命令行参数（未使用）
+     */
     public static void main(String[] args) {
         System.out.println(powerBottomUp(2, 1));
+        System.out.println(powerBottomUp(2, 4));
+        System.out.println(powerBottomUp(2, 5));
     }
 
 }
