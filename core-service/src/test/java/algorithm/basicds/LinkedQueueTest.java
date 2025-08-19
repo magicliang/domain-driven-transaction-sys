@@ -166,6 +166,20 @@ class LinkedQueueTest {
         assertEquals("[42]", intQueue.toString());
     }
 
+    @Test
+    void testCustomObjectQueue() {
+        LinkedQueue<Person> personQueue = new LinkedQueue<>();
+        Person alice = new Person("Alice", 25);
+        Person bob = new Person("Bob", 30);
+
+        personQueue.enqueue(alice);
+        personQueue.enqueue(bob);
+
+        assertEquals(alice, personQueue.dequeue());
+        assertEquals(bob, personQueue.dequeue());
+        assertTrue(personQueue.isEmpty());
+    }
+
     // 测试自定义对象
     static class Person {
 
@@ -193,19 +207,5 @@ class LinkedQueueTest {
             Person person = (Person) obj;
             return age == person.age && name.equals(person.name);
         }
-    }
-
-    @Test
-    void testCustomObjectQueue() {
-        LinkedQueue<Person> personQueue = new LinkedQueue<>();
-        Person alice = new Person("Alice", 25);
-        Person bob = new Person("Bob", 30);
-
-        personQueue.enqueue(alice);
-        personQueue.enqueue(bob);
-
-        assertEquals(alice, personQueue.dequeue());
-        assertEquals(bob, personQueue.dequeue());
-        assertTrue(personQueue.isEmpty());
     }
 }
