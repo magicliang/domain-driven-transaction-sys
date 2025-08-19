@@ -1,6 +1,8 @@
 package algorithm.basicds;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -148,6 +150,117 @@ public class GraphAdjMat {
 
         matrix.get(i).set(j, 0);
         matrix.get(j).set(i, 0);
+    }
+
+    /**
+     * 广度优先搜索遍历图
+     * 从指定起始顶点开始进行BFS遍历，返回遍历顺序的顶点索引列表
+     * 使用boolean数组记录已访问顶点避免重复遍历，使用队列实现层次遍历
+     *
+     * 时间复杂度：O(V²)
+     * 证明：对于邻接矩阵，检查每个顶点的所有邻接顶点需要O(V)时间，共V个顶点
+     *
+     * 空间复杂度：O(V)
+     * 证明：
+     * 1. 队列(queue)最坏情况下存储整层的顶点，最多存储O(V)个顶点
+     * 2. 数组(visited)存储所有已访问顶点的标记，需要O(V)空间
+     * 3. 结果列表(result)存储所有顶点索引，存储O(V)个顶点
+     * 4. 其他变量为常数空间O(1)
+     * 因此总空间复杂度为O(V)
+     *
+     * @param startIndex 起始顶点的索引
+     * @return 按BFS顺序排列的顶点索引列表
+     * @throws IndexOutOfBoundsException 如果起始顶点索引不存在
+     */
+    public List<Integer> bfsTraversal(int startIndex) {
+        if (startIndex < 0 || startIndex >= size()) {
+            throw new IndexOutOfBoundsException("起始顶点索引超出范围");
+        }
+
+        boolean[] visited = new boolean[size()];
+        Deque<Integer> queue = new LinkedList<>();
+        queue.offer(startIndex);
+
+        List<Integer> result = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+
+            if (visited[current]) {
+                continue;
+            }
+
+            result.add(current);
+            visited[current] = true;
+
+            // 遍历邻接矩阵的当前行，找到所有邻接顶点
+            for (int i = 0; i < size(); i++) {
+                if (matrix.get(current).get(i) == 1 && !visited[i]) {
+                    queue.offer(i);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 深度优先搜索遍历图
+     * 从指定起始顶点开始进行DFS遍历，返回遍历顺序的顶点索引列表
+     * 使用boolean数组记录已访问顶点避免重复遍历，使用递归实现深度优先探索
+     *
+     * 时间复杂度：O(V²)
+     * 证明：对于邻接矩阵，检查每个顶点的所有邻接顶点需要O(V)时间，共V个顶点
+     *
+     * 空间复杂度：O(V)
+     * 证明：
+     * 1. 递归调用栈(call stack)最坏情况下存储从起点到最远叶子的路径，最多存储O(V)个顶点
+     * 2. 数组(visited)存储所有已访问顶点的标记，需要O(V)空间
+     * 3. 结果列表(result)存储所有顶点索引，存储O(V)个顶点
+     * 4. 其他变量为常数空间O(1)
+     * 因此总空间复杂度为O(V)
+     *
+     * @param startIndex 起始顶点的索引
+     * @return 按DFS顺序排列的顶点索引列表
+     * @throws IndexOutOfBoundsException 如果起始顶点索引不存在
+     */
+    public List<Integer> dfsTraversal(int startIndex) {
+        if (startIndex < 0 || startIndex >= size()) {
+            throw new IndexOutOfBoundsException("起始顶点索引超出范围");
+        }
+
+        boolean[] visited = new boolean[size()];
+        List<Integer> result = new ArrayList<>();
+
+        dfs(startIndex, visited, result);
+
+        return result;
+    }
+
+    /**
+     * DFS递归辅助方法
+     * 从当前顶点开始进行深度优先搜索
+     *
+     * 空间复杂度：O(V) - 由递归调用栈深度决定，最坏情况下为图的高度
+     *
+     * @param current 当前访问的顶点索引
+     * @param visited 记录已访问顶点的数组
+     * @param result 存储遍历结果的列表
+     */
+    private void dfs(int current, boolean[] visited, List<Integer> result) {
+        if (visited[current]) {
+            return;
+        }
+
+        result.add(current);
+        visited[current] = true;
+
+        // 遍历邻接矩阵的当前行，找到所有邻接顶点
+        for (int i = 0; i < size(); i++) {
+            if (matrix.get(current).get(i) == 1 && !visited[i]) {
+                dfs(i, visited, result);
+            }
+        }
     }
 
     public void print() {
