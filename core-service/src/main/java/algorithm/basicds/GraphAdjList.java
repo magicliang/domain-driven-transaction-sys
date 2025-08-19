@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -293,6 +294,37 @@ public class GraphAdjList {
         for (Vertex vertex : vertices) {
             dfs(vertex, result, visited);
         }
+    }
+
+    public List<Vertex> dfsTraversalNonRecursive(Vertex startVet) {
+        // 只访问图中的邻接节点，还是要搞递归下降
+        if (!adjList.containsKey(startVet)) {
+            throw new IllegalArgumentException("不存在的顶点");
+        }
+
+        Set<Vertex> visited = new HashSet<>();
+        List<Vertex> result = new ArrayList<>();
+        Stack<Vertex> stack = new Stack<>();
+        Vertex current = startVet;
+        stack.push(current);
+        // 用栈来实现层序遍历的方法，每一层只处理第一个元素，逆序入栈，弹出来以后处理本节点，又把本节点的孩子入栈，这样等孩子级的列表处理完了，就处理本层的下一个兄弟
+        while (!stack.isEmpty()) {
+            current = stack.pop();
+            if (current == null || visited.contains(current)) {
+                continue;
+            }
+            result.add(current);
+            visited.add(current);
+            final List<Vertex> vertices = adjList.get(current);
+            if (vertices == null) {
+                continue;
+            }
+            int n = vertices.size();
+            for (int i = n - 1; i >= 0; i--) {
+                stack.push(vertices.get(i));
+            }
+        }
+        return result;
     }
 
     /**
