@@ -372,4 +372,243 @@ class GraphAdjListTest {
         assertEquals(valuesFromV1, valuesFromV3);
         assertEquals(3, valuesFromV1.size());
     }
+
+    // ===== DFS遍历测试用例 =====
+
+    @Test
+    void testDfsTraversalSimplePath() {
+        // 测试简单路径图: 1-2-3-4
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v4);
+
+        List<GraphAdjList.Vertex> result = graph.dfsTraversal(v1);
+        assertEquals(4, result.size());
+        assertEquals(1, result.get(0).getVal());
+    }
+
+    @Test
+    void testDfsTraversalStarGraph() {
+        // 测试星形图: 1为中心，连接2,3,4
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v1, v4);
+
+        List<GraphAdjList.Vertex> result = graph.dfsTraversal(v1);
+        assertEquals(4, result.size());
+        assertEquals(1, result.get(0).getVal());
+    }
+
+    @Test
+    void testDfsTraversalDisconnectedGraph() {
+        // 测试非连通图: 1-2 和 3-4 两个独立子图
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v3, v4);
+
+        List<GraphAdjList.Vertex> result = graph.dfsTraversal(v1);
+        assertEquals(2, result.size());
+        assertEquals(1, result.get(0).getVal());
+        assertEquals(2, result.get(1).getVal());
+    }
+
+    @Test
+    void testDfsTraversalSingleVertex() {
+        // 测试单顶点图
+        graph.addVertex(v1);
+
+        List<GraphAdjList.Vertex> result = graph.dfsTraversal(v1);
+        assertEquals(1, result.size());
+        assertEquals(1, result.get(0).getVal());
+    }
+
+    @Test
+    void testDfsTraversalEmptyGraph() {
+        // 测试空图 - 应该抛出异常
+        assertThrows(IllegalArgumentException.class, () -> graph.dfsTraversal(v1));
+    }
+
+    @Test
+    void testDfsTraversalNonExistentVertex() {
+        // 测试不存在的顶点 - 应该抛出异常
+        graph.addVertex(v1);
+
+        GraphAdjList.Vertex nonExistent = new GraphAdjList.Vertex(999);
+        assertThrows(IllegalArgumentException.class, () -> graph.dfsTraversal(nonExistent));
+    }
+
+    @Test
+    void testDfsTraversalComplexGraph() {
+        // 测试复杂图结构
+        // 图结构:
+        //     1
+        //    / \
+        //   2   3
+        //  / \   \
+        // 4   5   6
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+        graph.addVertex(v6);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v2, v4);
+        graph.addEdge(v2, v5);
+        graph.addEdge(v3, v6);
+
+        List<GraphAdjList.Vertex> result = graph.dfsTraversal(v1);
+        assertEquals(6, result.size());
+        assertEquals(1, result.get(0).getVal());
+    }
+
+    @Test
+    void testDfsTraversalWithCycle() {
+        // 测试包含环的图
+        // 图结构: 1-2-3-1 (三角形)
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v1);
+
+        List<GraphAdjList.Vertex> result = graph.dfsTraversal(v1);
+        assertEquals(3, result.size());
+        assertEquals(1, result.get(0).getVal());
+
+        // 验证所有节点都被访问且没有重复
+        Set<Integer> visitedValues = new HashSet<>();
+        for (GraphAdjList.Vertex vertex : result) {
+            visitedValues.add(vertex.getVal());
+        }
+        assertEquals(3, visitedValues.size());
+        assertTrue(visitedValues.contains(1));
+        assertTrue(visitedValues.contains(2));
+        assertTrue(visitedValues.contains(3));
+    }
+
+    @Test
+    void testDfsTraversalTreeStructure() {
+        // 测试树形结构
+        // 图结构:
+        //     1
+        //    / \
+        //   2   3
+        //  / \
+        // 4   5
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v2, v4);
+        graph.addEdge(v2, v5);
+
+        List<GraphAdjList.Vertex> result = graph.dfsTraversal(v1);
+        assertEquals(5, result.size());
+        assertEquals(1, result.get(0).getVal());
+    }
+
+    @Test
+    void testDfsTraversalFromDifferentStartPoints() {
+        // 测试从不同起点遍历同一图
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+
+        // 从v1开始遍历
+        List<GraphAdjList.Vertex> resultFromV1 = graph.dfsTraversal(v1);
+        assertEquals(3, resultFromV1.size());
+
+        // 从v3开始遍历
+        List<GraphAdjList.Vertex> resultFromV3 = graph.dfsTraversal(v3);
+        assertEquals(3, resultFromV3.size());
+
+        // 验证两个结果包含相同的节点
+        Set<Integer> valuesFromV1 = new HashSet<>();
+        Set<Integer> valuesFromV3 = new HashSet<>();
+
+        for (GraphAdjList.Vertex vertex : resultFromV1) {
+            valuesFromV1.add(vertex.getVal());
+        }
+        for (GraphAdjList.Vertex vertex : resultFromV3) {
+            valuesFromV3.add(vertex.getVal());
+        }
+
+        assertEquals(valuesFromV1, valuesFromV3);
+        assertEquals(3, valuesFromV1.size());
+    }
+
+    @Test
+    void testBfsDfsTraversalComparison() {
+        // 测试BFS和DFS遍历的差异
+        // 图结构:
+        //     1
+        //    / \
+        //   2   3
+        //  / \
+        // 4   5
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v2, v4);
+        graph.addEdge(v2, v5);
+
+        List<GraphAdjList.Vertex> bfsResult = graph.bfsTraversal(v1);
+        List<GraphAdjList.Vertex> dfsResult = graph.dfsTraversal(v1);
+
+        // 两种遍历都应该访问所有顶点
+        assertEquals(5, bfsResult.size());
+        assertEquals(5, dfsResult.size());
+
+        // 验证BFS的层次遍历特性
+        assertEquals(1, bfsResult.get(0).getVal()); // 第一层
+        // 第二层应该是2和3
+        Set<Integer> secondLevel = new HashSet<>();
+        secondLevel.add(bfsResult.get(1).getVal());
+        secondLevel.add(bfsResult.get(2).getVal());
+        assertTrue(secondLevel.contains(2));
+        assertTrue(secondLevel.contains(3));
+
+        // 验证DFS的深度优先特性
+        assertEquals(1, dfsResult.get(0).getVal()); // 起始点
+        // DFS会先深入一条路径
+        Set<Integer> allValues = new HashSet<>();
+        for (GraphAdjList.Vertex vertex : dfsResult) {
+            allValues.add(vertex.getVal());
+        }
+        assertTrue(allValues.contains(2));
+        assertTrue(allValues.contains(3));
+        assertTrue(allValues.contains(4));
+        assertTrue(allValues.contains(5));
+    }
 }
