@@ -1,9 +1,13 @@
 package algorithm.basicds;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -157,6 +161,45 @@ public class GraphAdjList {
         // 移除双向边
         adjList.get(vet1).remove(vet2);
         adjList.get(vet2).remove(vet1);
+    }
+
+    /**
+     * 广度优先搜索遍历图
+     * 从指定起始顶点开始进行BFS遍历，返回遍历顺序的顶点列表
+     * 因为邻接表是有重复节点的，所以我们为了遍历去重，必须借助数据结构
+     * 使用HashSet记录已访问顶点避免重复遍历，使用队列实现层次遍历
+     *
+     * @param startVet 起始顶点
+     * @return 按BFS顺序排列的顶点列表
+     * @throws IllegalArgumentException 如果起始顶点不存在
+     */
+    public List<Vertex> bfsTraversal(Vertex startVet) {
+        if (!adjList.containsKey(startVet)) {
+            throw new IllegalArgumentException("不存在的顶点");
+        }
+
+        Set<Vertex> set = new HashSet<>();
+        Deque<Vertex> queue = new LinkedList<>();
+        queue.offer(startVet);
+
+        List<Vertex> result = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            Vertex current = queue.poll();
+            if (set.contains(current)) {
+                continue;
+            }
+            result.add(current);
+            set.add(current);
+            final List<Vertex> adjacentVertices = adjList.get(current);
+            for (Vertex vertex : adjacentVertices) {
+                if (set.contains(vertex)) {
+                    continue;
+                }
+                queue.offer(vertex);
+            }
+        }
+
+        return result;
     }
 
     /**
