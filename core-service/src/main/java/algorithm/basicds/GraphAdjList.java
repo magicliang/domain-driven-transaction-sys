@@ -296,6 +296,30 @@ public class GraphAdjList {
         }
     }
 
+    /**
+     * 非递归深度优先搜索遍历图
+     * 使用栈实现DFS遍历，避免递归调用栈溢出问题
+     * 从指定起始顶点开始进行DFS遍历，返回遍历顺序的顶点列表
+     *
+     * 时间复杂度：O(V + E)
+     * 证明：每个顶点被访问一次(O(V))，每条边最多被检查两次(O(E))
+     *
+     * 空间复杂度：O(V)
+     * 证明：
+     * 1. 栈(stack)最坏情况下存储从起点到最远叶子的路径，最多存储O(V)个顶点
+     * 2. 集合(visited)存储所有已访问顶点，最多存储O(V)个顶点
+     * 3. 结果列表(result)存储所有顶点，存储O(V)个顶点
+     * 4. 其他变量为常数空间O(1)
+     * 因此总空间复杂度为O(V)
+     *
+     * 实现说明：
+     * 使用栈的后进先出(LIFO)特性模拟递归调用栈
+     * 为保证遍历顺序与递归DFS一致，邻接顶点按逆序压栈
+     *
+     * @param startVet 起始顶点
+     * @return 按DFS顺序排列的顶点列表
+     * @throws IllegalArgumentException 如果起始顶点不存在
+     */
     public List<Vertex> dfsTraversalNonRecursive(Vertex startVet) {
         // 只访问图中的邻接节点，还是要搞递归下降
         if (!adjList.containsKey(startVet)) {
@@ -307,7 +331,7 @@ public class GraphAdjList {
         Stack<Vertex> stack = new Stack<>();
         Vertex current = startVet;
         stack.push(current);
-        // 用栈来实现层序遍历的方法，每一层只处理第一个元素，逆序入栈，弹出来以后处理本节点，又把本节点的孩子入栈，这样等孩子级的列表处理完了，就处理本层的下一个兄弟
+        // 用栈来实现深度优先遍历的方法，每次处理栈顶节点，逆序入栈保证遍历顺序
         while (!stack.isEmpty()) {
             current = stack.pop();
             if (current == null || visited.contains(current)) {
