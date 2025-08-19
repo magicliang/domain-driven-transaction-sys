@@ -53,13 +53,28 @@ public class Kmp {
         return next;
     }
 
+    /**
+     * 找 j：在文本里一路扫，把 j 推到 pattern 的长度就赢了。
+     * 推不动就按 next 回退 j，继续推。
+     * <p>
+     * 模式匹配口诀：
+     * - j 就是「已匹配前缀」的长度，从 0 开始攒
+     * - 攒到 j == pattern.length() 时，说明整个模式串都对上了
+     * - 回退时 next[j-1] 告诉你「最长可复用前缀」有多长，避免从头再来
+     * <p>
+     * 时间复杂度：O(n + m)，其中 n 为文本长度，m 为模式长度。
+     *
+     * @param text 待搜索文本
+     * @param pattern 要匹配的模式
+     * @return 找到就返回起始下标；没找到返回 -1
+     */
     public int search(String text, String pattern) {
         int[] next = buildNextArray(pattern);
         int m = pattern.length();
         int n = text.length();
         int j = 0;
 
-        for (int i = 0; i + m - 1 < n; i++) { // i 本身占一个字符，加上m-1个字符，坐标必须小于 n 才合法
+        for (int i = 0; i < n; i++) { // i 本身占一个字符，加上m-1个字符，坐标必须小于 n 才合法
             while (j > 0 && text.charAt(i) != pattern.charAt(j)) {
                 j = next[j - 1]; // 最大共同前缀长度回退
             }
