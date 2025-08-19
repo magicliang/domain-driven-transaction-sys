@@ -280,9 +280,7 @@ class GraphAdjMatTest {
         assertEquals(0, result.get(0).intValue());
 
         // 验证第二层节点（1,2,3）都在结果中
-        List<Integer> secondLevel = Arrays.asList(
-                result.get(1), result.get(2), result.get(3)
-        );
+        List<Integer> secondLevel = Arrays.asList(result.get(1), result.get(2), result.get(3));
         assertTrue(secondLevel.contains(1));
         assertTrue(secondLevel.contains(2));
         assertTrue(secondLevel.contains(3));

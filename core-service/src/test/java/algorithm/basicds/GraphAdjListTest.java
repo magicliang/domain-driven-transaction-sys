@@ -2,7 +2,7 @@ package algorithm.basicds;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,11 +51,7 @@ class GraphAdjListTest {
 
     @Test
     void testConstructorWithEdges() {
-        GraphAdjList.Vertex[][] edges = {
-                {v1, v2},
-                {v2, v3},
-                {v1, v3}
-        };
+        GraphAdjList.Vertex[][] edges = {{v1, v2}, {v2, v3}, {v1, v3}};
 
         GraphAdjList g = new GraphAdjList(edges);
         assertEquals(3, g.size());
@@ -183,8 +179,7 @@ class GraphAdjListTest {
     void testConstructorWithInvalidEdges() {
         // 测试无效边数组
         assertThrows(IllegalArgumentException.class, () -> {
-            GraphAdjList.Vertex[][] invalidEdges = {
-                    {v1}  // 只有1个顶点
+            GraphAdjList.Vertex[][] invalidEdges = {{v1}  // 只有1个顶点
             };
             new GraphAdjList(invalidEdges);
         });
@@ -229,11 +224,8 @@ class GraphAdjListTest {
         assertEquals(1, result.get(0).getVal());
 
         // 验证第二层节点（2,3,4）都在结果中
-        List<Integer> secondLevel = Arrays.asList(
-                result.get(1).getVal(),
-                result.get(2).getVal(),
-                result.get(3).getVal()
-        );
+        List<Integer> secondLevel = Arrays.asList(result.get(1).getVal(), result.get(2).getVal(),
+                result.get(3).getVal());
         assertTrue(secondLevel.contains(2));
         assertTrue(secondLevel.contains(3));
         assertTrue(secondLevel.contains(4));
@@ -848,13 +840,13 @@ class GraphAdjListTest {
 
         // 测试值相等但对象不同
         assertEquals(vertex1.getVal(), vertex2.getVal());
-        assertTrue(vertex1.getVal() == vertex2.getVal()); // 值相等
+        assertEquals(vertex1.getVal(), vertex2.getVal()); // 值相等
 
         // 测试对象引用不同
         assertNotSame(vertex1, vertex2); // 不同的对象实例
 
         // 测试值不相等
-        assertFalse(vertex1.getVal() == vertex3.getVal());
+        assertNotEquals(vertex1.getVal(), vertex3.getVal());
     }
 
     /**
@@ -875,11 +867,8 @@ class GraphAdjListTest {
 
         // 模拟反序列化：重建图
         GraphAdjList reconstructed = new GraphAdjList();
-        GraphAdjList.Vertex[] newVertices = {
-                new GraphAdjList.Vertex(1),
-                new GraphAdjList.Vertex(2),
-                new GraphAdjList.Vertex(3)
-        };
+        GraphAdjList.Vertex[] newVertices = {new GraphAdjList.Vertex(1), new GraphAdjList.Vertex(2),
+                new GraphAdjList.Vertex(3)};
 
         for (GraphAdjList.Vertex v : newVertices) {
             reconstructed.addVertex(v);
@@ -899,11 +888,9 @@ class GraphAdjListTest {
         // 创建3个连通分量
         GraphAdjList multiComponentGraph = new GraphAdjList();
 
-        GraphAdjList.Vertex[][] components = {
-                {new GraphAdjList.Vertex(1), new GraphAdjList.Vertex(2)},
+        GraphAdjList.Vertex[][] components = {{new GraphAdjList.Vertex(1), new GraphAdjList.Vertex(2)},
                 {new GraphAdjList.Vertex(3), new GraphAdjList.Vertex(4)},
-                {new GraphAdjList.Vertex(5), new GraphAdjList.Vertex(6)}
-        };
+                {new GraphAdjList.Vertex(5), new GraphAdjList.Vertex(6)}};
 
         // 添加所有顶点
         for (GraphAdjList.Vertex[] component : components) {
@@ -961,13 +948,8 @@ class GraphAdjListTest {
         // 构建一个包含割点的图
         GraphAdjList graphWithCutVertex = new GraphAdjList();
 
-        GraphAdjList.Vertex[] vertices = {
-                new GraphAdjList.Vertex(1),
-                new GraphAdjList.Vertex(2),
-                new GraphAdjList.Vertex(3),
-                new GraphAdjList.Vertex(4),
-                new GraphAdjList.Vertex(5)
-        };
+        GraphAdjList.Vertex[] vertices = {new GraphAdjList.Vertex(1), new GraphAdjList.Vertex(2),
+                new GraphAdjList.Vertex(3), new GraphAdjList.Vertex(4), new GraphAdjList.Vertex(5)};
 
         for (GraphAdjList.Vertex v : vertices) {
             graphWithCutVertex.addVertex(v);
@@ -1048,11 +1030,8 @@ class GraphAdjListTest {
     void testGraphEquivalence() {
         // 创建两个等价的图
         GraphAdjList graph1 = new GraphAdjList();
-        GraphAdjList.Vertex[] vertices1 = {
-                new GraphAdjList.Vertex(1),
-                new GraphAdjList.Vertex(2),
-                new GraphAdjList.Vertex(3)
-        };
+        GraphAdjList.Vertex[] vertices1 = {new GraphAdjList.Vertex(1), new GraphAdjList.Vertex(2),
+                new GraphAdjList.Vertex(3)};
 
         for (GraphAdjList.Vertex v : vertices1) {
             graph1.addVertex(v);
@@ -1061,11 +1040,8 @@ class GraphAdjListTest {
         graph1.addEdge(vertices1[1], vertices1[2]);
 
         GraphAdjList graph2 = new GraphAdjList();
-        GraphAdjList.Vertex[] vertices2 = {
-                new GraphAdjList.Vertex(1),
-                new GraphAdjList.Vertex(2),
-                new GraphAdjList.Vertex(3)
-        };
+        GraphAdjList.Vertex[] vertices2 = {new GraphAdjList.Vertex(1), new GraphAdjList.Vertex(2),
+                new GraphAdjList.Vertex(3)};
 
         for (GraphAdjList.Vertex v : vertices2) {
             graph2.addVertex(v);
