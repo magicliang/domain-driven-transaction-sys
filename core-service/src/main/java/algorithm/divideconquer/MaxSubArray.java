@@ -3,6 +3,10 @@ package algorithm.divideconquer;
 /**
  * 求解最大子数组问题
  * “一分为二看全局，三种情况须记牢，跨越边界莫忘记，合并结果定乾坤。”
+ * 这个问题在 leetcode 是通过不过的。
+ * 因为 leetcode 的数组还有如下特点：
+ * 1. 可能长度为1-也就是允许不交易
+ * 2. 整个总的子数组和也可能是负数，所以也应该允许不交易
  *
  * @author liangchuan
  * @version 1.1 // 标记版本更新
@@ -65,8 +69,8 @@ public class MaxSubArray {
 
         // 合 (Combine): 返回三种情况下的最大值，得到当前区间 [low, high] 的全局最大和
         // "合并结果定乾坤"
-        int max = lowBest >= highBest ? lowBest : highBest;
-        max = max >= midBest ? max : midBest;
+        int max = Math.max(lowBest, highBest);
+        max = Math.max(max, midBest);
         return max;
     }
 
@@ -102,14 +106,21 @@ public class MaxSubArray {
 
         // --- 计算右半部分包含 arr[mid+1] 的最大和 (向右扩展) ---
         // 初始化为 arr[mid+1]，确保至少包含中点右边的元素
-        int highBest = arr[mid + 1];
-        sum = highBest;
-        // 从 mid+2 开始，向右遍历到 high
-        for (int i = mid + 2; i <= high; i++) {
-            sum += arr[i];
-            if (sum > highBest) {
-                highBest = sum;
+        int highBest;
+        if (mid + 1 <= high) { // 易错的点：这里面右区间是可能在 +1的地方越界的
+            // 右半部分存在
+            highBest = arr[mid + 1];
+            sum = highBest;
+            // 从 mid+2 开始，向右遍历到 high
+            for (int i = mid + 2; i <= high; i++) {
+                sum += arr[i];
+                if (sum > highBest) {
+                    highBest = sum;
+                }
             }
+        } else {
+            // 右半部分不存在（理论上不应该发生，但为了安全）
+            highBest = 0;
         }
 
         // --- 合并结果 ---
