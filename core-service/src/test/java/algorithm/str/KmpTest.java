@@ -159,7 +159,7 @@ public class KmpTest {
         String text = "a@b#c$d%e";
         String pattern = "#c$";
         int result = kmp.search(text, pattern);
-        assertEquals(2, result);
+        assertEquals(3, result);
     }
 
     @Test

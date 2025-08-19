@@ -14,6 +14,10 @@ public class Kmp {
 
     public int[] buildNextArray(String pattern) {
         int m = pattern.length();
+        if (m == 0) {
+            return new int[0];
+        }
+
         int[] next = new int[m];
         // next[i] 的定义：存储子串 pattern[0...i] 的「最长相等前后缀」的长度。
         // "前缀"指不包含最后一个字符的子串，"后缀"指不包含第一个字符的子串。
@@ -69,6 +73,16 @@ public class Kmp {
      * @return 找到就返回起始下标；没找到返回 -1
      */
     public int search(String text, String pattern) {
+        // 处理空模式串的情况
+        if (pattern == null || pattern.length() == 0) {
+            return 0; // 空字符串在任何位置都匹配，返回0
+        }
+
+        // 处理空文本的情况
+        if (text == null || text.length() == 0) {
+            return -1;
+        }
+
         int[] next = buildNextArray(pattern);
         int m = pattern.length();
         int n = text.length();
