@@ -1,11 +1,12 @@
 package algorithm.dp;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * MaxSubArray 类的测试用例。
@@ -30,7 +31,7 @@ public class MaxSubArrayTest {
         List<Integer> expectedCoords = Arrays.asList(0, 4);
 
         int actualSum = maxSubArray.getMaxSubArraySum(arr);
-        List<Integer> actualCoords = maxSubArray.getMaxSubArraySumCoOrdination(arr);
+        List<Integer> actualCoords = MaxSubArray.getMaxSubArraySumCoOrdination(arr);
 
         assertEquals(expectedSum, actualSum, "Failed for all positive numbers sum");
         assertEquals(expectedCoords, actualCoords, "Failed for all positive numbers coordinates");
