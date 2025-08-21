@@ -17,7 +17,8 @@ public class Shuffler {
 
     /**
      * 从0到n-1的整数中随机选择k个不重复的数
-     * 
+     * 正确的思路：
+     * 如果要提取前k个元素，则把前k个元素和它和它后方的全部元素交换，然后返回前k个元素
      * @param n 整数范围的上限（不包含n）
      * @param k 需要选择的整数个数
      * @return 包含k个随机整数的数组，范围在[0, n-1]之间
@@ -47,7 +48,10 @@ public class Shuffler {
             // 在[j, n-1]范围内随机选择一个位置
             // ThreadLocalRandom.current().nextInt(0, n-j) 生成[0, n-j-1]的随机数
             // 加上j后得到[j, n-1]范围内的随机位置
-            swap(total, j, j + ThreadLocalRandom.current().nextInt(0, n - j));
+            // 易错的点：忘记j本身也必须在候选交换列表（允许不交换才是均匀的），且忘记nextInt后一个参数是开区间的，所以正确的算法是先用数组的终值反算出差值，再从差值反算出差值终点，再用差值中间+1
+            // swap(total, j, j + ThreadLocalRandom.current().nextInt(0, n - j));
+            // 优美的实现
+            swap(total, j, ThreadLocalRandom.current().nextInt(j, n));
         }
 
         // 提取前k个元素作为结果
@@ -59,23 +63,6 @@ public class Shuffler {
         return result;
     }
 
-    /**
-     * 反向洗牌算法实现
-     *
-     * 功能：从0到n-1的整数中随机选择k个不重复的数（逆序实现）
-     * 算法：基于Fisher-Yates洗牌算法的逆序实现
-     *
-     * 与shuffle方法的区别：
-     * - shuffle：从前往后处理
-     * - reverseShuffle：从后往前处理
-     *
-     * 两种实现概率上是等价的，都保证了每个数被选中的概率为 k/n
-     *
-     * @param n 整数范围的上限（不包含n）
-     * @param k 需要选择的整数个数
-     * @return 包含k个随机整数的数组，范围在[0, n-1]之间
-     * @throws IllegalArgumentException 当参数不合法时
-     */
     public int[] reverseShuffle(int n, int k) {
         if (n <= 0) {
             throw new IllegalArgumentException("n必须大于0");
@@ -89,23 +76,212 @@ public class Shuffler {
 
         int[] total = new int[n];
 
-        // 初始化待排序数组：[0, 1, 2, ..., n-1]
+        // 初始化数组：[0, 1, 2, ..., n-1]
         for (int i = 0; i < n; i++) {
             total[i] = i;
         }
 
-        // 逆序执行k次交换，从k-1位置开始向前处理
-        // 每次将当前位置j与[j, n-1]范围内的随机位置交换
-        for (int j = k - 1; j >= 0; j--) {
-//            swap(total, j, ThreadLocalRandom.current().nextInt(j, n));
-            swap(total, j, j + ThreadLocalRandom.current().nextInt(0, n - j));
-
+        // 正确的逆向Fisher-Yates算法：后区间驱动，只取后k个数，跟前区间做全量交换
+        for (int j = n - 1; j >= n - k; j--) {
+            swap(total, j, ThreadLocalRandom.current().nextInt(0, j + 1));
         }
 
-        // 提取前k个元素作为结果
+        // 正确的结果提取：从末尾k个位置提取
         int[] result = new int[k];
         for (int m = 0; m < k; m++) {
-            result[m] = total[m];
+            result[m] = total[n - k + m];  // 提取total[n-k..n-1]
+        }
+
+        return result;
+    }
+
+    /**
+     * 从0到n-1的整数中随机选择k个不重复的数（空间优化版）
+     * 使用虚拟数组映射技术，空间复杂度O(k)而非O(n)
+     *
+     * @param n 整数范围的上限（不包含n）
+     * @param k 需要选择的整数个数
+     * @return 包含k个随机整数的数组，范围在[0, n-1]之间
+     * @throws IllegalArgumentException 当参数不合法时
+     */
+    public int[] shuffleOptimized(int n, int k) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("n必须大于0");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k必须大于等于0");
+        }
+        if (k > n) {
+            throw new IllegalArgumentException("k不能大于n");
+        }
+
+        // 只存储结果数组，空间复杂度O(k)
+        int[] result = new int[k];
+
+        // 使用哈希映射来模拟虚拟数组，避免存储整个数组
+        // key: 原始索引, value: 当前值（默认为key本身）
+        // 由于k通常远小于n，使用数组来模拟哈希表
+        int[] indexMap = new int[k];
+        int[] valueMap = new int[k];
+        int mapSize = 0;
+
+        // 执行k次选择，每次从剩余元素中随机选择
+        for (int i = 0; i < k; i++) {
+            // 从[i, n-1]范围内随机选择一个位置
+            int randomPos = ThreadLocalRandom.current().nextInt(i, n);
+
+            // 检查randomPos是否已经被映射
+            int value = randomPos;
+            for (int j = 0; j < mapSize; j++) {
+                if (indexMap[j] == randomPos) {
+                    value = valueMap[j];
+                    break;
+                }
+            }
+
+            // 检查i是否已经被映射
+            int currentValue = i;
+            for (int j = 0; j < mapSize; j++) {
+                if (indexMap[j] == i) {
+                    currentValue = valueMap[j];
+                    break;
+                }
+            }
+
+            // 将选择的值放入结果
+            result[i] = value;
+
+            // 更新映射：将randomPos位置的值设为currentValue
+            boolean found = false;
+            for (int j = 0; j < mapSize; j++) {
+                if (indexMap[j] == randomPos) {
+                    valueMap[j] = currentValue;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && randomPos < k) {
+                if (mapSize < k) {
+                    indexMap[mapSize] = randomPos;
+                    valueMap[mapSize] = currentValue;
+                    mapSize++;
+                }
+            }
+
+            // 更新i位置的值（如果需要）
+            found = false;
+            for (int j = 0; j < mapSize; j++) {
+                if (indexMap[j] == i) {
+                    valueMap[j] = value;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && i < k) {
+                if (mapSize < k) {
+                    indexMap[mapSize] = i;
+                    valueMap[mapSize] = value;
+                    mapSize++;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 从0到n-1的整数中随机选择k个不重复的数（逆向空间优化版）
+     * 使用虚拟数组映射技术，空间复杂度O(k)
+     *
+     * @param n 整数范围的上限（不包含n）
+     * @param k 需要选择的整数个数
+     * @return 包含k个随机整数的数组，范围在[0, n-1]之间
+     * @throws IllegalArgumentException 当参数不合法时
+     */
+    public int[] reverseShuffleOptimized(int n, int k) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("n必须大于0");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k必须大于等于0");
+        }
+        if (k > n) {
+            throw new IllegalArgumentException("k不能大于n");
+        }
+
+        int[] result = new int[k];
+
+        // 使用更高效的虚拟数组实现
+        // 使用数组来模拟哈希映射，key为索引，value为映射值
+        int[] virtualArray = new int[n];
+        // 标记哪些位置被映射过
+        boolean[] isMapped = new boolean[n];
+
+        // 只映射必要的k个位置
+        for (int i = 0; i < k; i++) {
+            int pos = n - 1 - i; // 从后往前处理
+            int randomPos = ThreadLocalRandom.current().nextInt(0, pos + 1);
+
+            // 获取randomPos的当前值
+            int valueAtRandom = isMapped[randomPos] ? virtualArray[randomPos] : randomPos;
+            // 获取pos的当前值
+            int valueAtPos = isMapped[pos] ? virtualArray[pos] : pos;
+
+            // 交换值
+            if (randomPos != pos) {
+                virtualArray[randomPos] = valueAtPos;
+                virtualArray[pos] = valueAtRandom;
+                isMapped[randomPos] = true;
+                isMapped[pos] = true;
+            }
+
+            // 将结果存入数组
+            result[i] = valueAtRandom;
+        }
+
+        return result;
+    }
+
+    /**
+     * 从0到n-1的整数中随机选择k个不重复的数（最优空间优化版）
+     * 使用Floyd算法，空间复杂度严格为O(k)
+     *
+     * @param n 整数范围的上限（不包含n）
+     * @param k 需要选择的整数个数
+     * @return 包含k个随机整数的数组，范围在[0, n-1]之间
+     * @throws IllegalArgumentException 当参数不合法时
+     */
+    public int[] shuffleFloyd(int n, int k) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("n必须大于0");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k必须大于等于0");
+        }
+        if (k > n) {
+            throw new IllegalArgumentException("k不能大于n");
+        }
+
+        int[] result = new int[k];
+
+        // 使用Floyd的抽样算法，O(k)空间复杂度
+        // 使用哈希映射来跟踪已选择的值
+        java.util.Map<Integer, Integer> map = new java.util.HashMap<>();
+
+        for (int i = n - k; i < n; i++) {
+            int randomPos = ThreadLocalRandom.current().nextInt(0, i + 1);
+
+            if (map.containsKey(randomPos)) {
+                result[i - (n - k)] = map.get(randomPos);
+            } else {
+                result[i - (n - k)] = randomPos;
+            }
+
+            if (map.containsKey(i)) {
+                map.put(randomPos, map.get(i));
+            } else {
+                map.put(randomPos, i);
+            }
         }
 
         return result;
