@@ -49,6 +49,50 @@ public class BubbleSort {
     }
 
     /**
+     * 冒泡排序（标志优化版）
+     *
+     * 算法原理：通过重复遍历数组，比较相邻元素并交换逆序对，
+     * 每次遍历将最大元素"冒泡"到正确位置。
+     *
+     * 标志优化：当一轮遍历中没有发生任何交换时，说明数组已经有序，
+     * 可以提前终止算法，避免不必要的比较。
+     *
+     * 时间复杂度：
+     * - 最坏情况：O(n²) - 数组完全逆序
+     * - 最好情况：O(n) - 数组已经有序（标志优化生效）
+     * - 平均情况：O(n²)
+     *
+     * 空间复杂度：O(1) - 原地排序
+     * 稳定性：稳定排序算法
+     *
+     * @param nums 待排序的整数数组，可以为null
+     */
+    void bubbleSortWithFlag(int[] nums) {
+        // 空数组或null数组直接返回
+        if (nums == null || nums.length <= 1) {
+            return;
+        }
+
+        // 外循环：未排序区间为 [0, i]
+        for (int i = nums.length - 1; i > 0; i--) {
+            boolean flag = false; // 初始化标志位
+            // 内循环：将未排序区间 [0, i] 中的最大元素交换至该区间的最右端
+            for (int j = 0; j < i; j++) {
+                if (nums[j] > nums[j + 1]) {
+                    // 交换 nums[j] 与 nums[j + 1]
+                    int tmp = nums[j];
+                    nums[j] = nums[j + 1];
+                    nums[j + 1] = tmp;
+                    flag = true; // 记录交换元素
+                }
+            }
+            if (!flag) {
+                break; // 此轮"冒泡"未交换任何元素，直接跳出
+            }
+        }
+    }
+
+    /**
      * 交换数组中两个位置的元素
      *
      * @param nums 整数数组
