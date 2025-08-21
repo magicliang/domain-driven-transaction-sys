@@ -48,7 +48,8 @@ public class BinarySearch {
         }
 
         // 终结以后，r + 1 = l，这里的 l 是理论插入位，可能是 nums.length，如果是二分搜索应该返回-1的。
-        // nums[r] <= target <= nums[l]
+        // 如果 r >= 0，则 nums[r] < target
+        // 如果 l < nums.length，则 nums[l] >= target
         // 循环结束时，l == r + 1，此时：
         // - 如果 r >= 0，则 nums[r] < target
         // - l 是第一个 >= target 的位置，即插入位置
