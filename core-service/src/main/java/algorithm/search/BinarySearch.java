@@ -583,4 +583,71 @@ public class BinarySearch {
         return -1;
     }
 
+    /**
+     * 通过构造不存在的元素来查找左边界
+     * 查找最左一个 target：转化为查找 target - 0.5，并返回指针
+     * 利用整数数组中永远不会存在 target - 0.5 的特性
+     *
+     * @param nums 升序整数数组
+     * @param target 目标值
+     * @return 第一个等于 target 的位置，不存在返回 -1
+     */
+    public int leftBoundByVirtualElement(int[] nums, int target) {
+        // 构造不存在的元素 target - 0.5
+        double virtualTarget = target - 0.5;
+
+        int left = 0;
+        int right = nums.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < virtualTarget) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        // left 是第一个 >= virtualTarget 的位置
+        // 由于 virtualTarget = target - 0.5，所以 left 就是第一个等于 target 的位置
+        if (left < nums.length && nums[left] == target) {
+            return left;
+        }
+        return -1;
+    }
+
+    /**
+     * 通过构造不存在的元素来查找右边界
+     * 查找最右一个 target：转化为查找 target + 0.5，并返回指针 - 1
+     * 利用整数数组中永远不会存在 target + 0.5 的特性
+     *
+     * @param nums 升序整数数组
+     * @param target 目标值
+     * @return 最后一个等于 target 的位置，不存在返回 -1
+     */
+    public int rightBoundByVirtualElement(int[] nums, int target) {
+        // 构造不存在的元素 target + 0.5
+        double virtualTarget = target + 0.5;
+
+        int left = 0;
+        int right = nums.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < virtualTarget) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        // left 是第一个 >= virtualTarget 的位置
+        // 所以 left - 1 就是最后一个 <= virtualTarget 的位置
+        // 由于 virtualTarget = target + 0.5，所以 left - 1 就是最后一个等于 target 的位置
+        if (left - 1 >= 0 && left - 1 < nums.length && nums[left - 1] == target) {
+            return left - 1;
+        }
+        return -1;
+    }
+
 }

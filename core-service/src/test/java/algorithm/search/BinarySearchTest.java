@@ -581,4 +581,104 @@ class BinarySearchTest {
         assertEquals(-1, binarySearch.rightBound3(edgeCases, 3));
         assertEquals(2, binarySearch.floor(edgeCases, 3));
     }
+
+    // ==================== 虚拟元素边界测试 ====================
+
+    @Test
+    @DisplayName("虚拟元素测试 - 左边界")
+    void testLeftBoundByVirtualElement() {
+        // 测试用例1：正常情况，存在重复元素
+        int[] nums1 = {1, 2, 2, 2, 3, 4};
+        assertEquals(1, binarySearch.leftBoundByVirtualElement(nums1, 2));
+
+        // 测试用例2：单个元素
+        int[] nums2 = {5};
+        assertEquals(0, binarySearch.leftBoundByVirtualElement(nums2, 5));
+
+        // 测试用例3：元素不存在
+        int[] nums3 = {1, 3, 5, 7};
+        assertEquals(-1, binarySearch.leftBoundByVirtualElement(nums3, 4));
+
+        // 测试用例4：target比所有元素都小
+        int[] nums4 = {2, 3, 4, 5};
+        assertEquals(-1, binarySearch.leftBoundByVirtualElement(nums4, 1));
+
+        // 测试用例5：target比所有元素都大
+        int[] nums5 = {1, 2, 3, 4};
+        assertEquals(-1, binarySearch.leftBoundByVirtualElement(nums5, 5));
+
+        // 测试用例6：空数组
+        int[] nums6 = {};
+        assertEquals(-1, binarySearch.leftBoundByVirtualElement(nums6, 1));
+
+        // 测试用例7：边界情况 - 第一个元素
+        int[] nums7 = {1, 2, 3, 4};
+        assertEquals(0, binarySearch.leftBoundByVirtualElement(nums7, 1));
+
+        // 测试用例8：边界情况 - 最后一个元素
+        int[] nums8 = {1, 2, 3, 4};
+        assertEquals(3, binarySearch.leftBoundByVirtualElement(nums8, 4));
+    }
+
+    @Test
+    @DisplayName("虚拟元素测试 - 右边界")
+    void testRightBoundByVirtualElement() {
+        // 测试用例1：正常情况，存在重复元素
+        int[] nums1 = {1, 2, 2, 2, 3, 4};
+        assertEquals(3, binarySearch.rightBoundByVirtualElement(nums1, 2));
+
+        // 测试用例2：单个元素
+        int[] nums2 = {5};
+        assertEquals(0, binarySearch.rightBoundByVirtualElement(nums2, 5));
+
+        // 测试用例3：元素不存在
+        int[] nums3 = {1, 3, 5, 7};
+        assertEquals(-1, binarySearch.rightBoundByVirtualElement(nums3, 4));
+
+        // 测试用例4：target比所有元素都小
+        int[] nums4 = {2, 3, 4, 5};
+        assertEquals(-1, binarySearch.rightBoundByVirtualElement(nums4, 1));
+
+        // 测试用例5：target比所有元素都大
+        int[] nums5 = {1, 2, 3, 4};
+        assertEquals(-1, binarySearch.rightBoundByVirtualElement(nums5, 5));
+
+        // 测试用例6：空数组
+        int[] nums6 = {};
+        assertEquals(-1, binarySearch.rightBoundByVirtualElement(nums6, 1));
+
+        // 测试用例7：边界情况 - 第一个元素
+        int[] nums7 = {1, 2, 3, 4};
+        assertEquals(0, binarySearch.rightBoundByVirtualElement(nums7, 1));
+
+        // 测试用例8：边界情况 - 最后一个元素
+        int[] nums8 = {1, 2, 3, 4};
+        assertEquals(3, binarySearch.rightBoundByVirtualElement(nums8, 4));
+
+        // 测试用例9：多个重复元素
+        int[] nums9 = {1, 2, 2, 2, 2, 2, 3};
+        assertEquals(5, binarySearch.rightBoundByVirtualElement(nums9, 2));
+    }
+
+    @Test
+    @DisplayName("虚拟元素测试 - 方法一致性验证")
+    void testVirtualElementMethodsConsistency() {
+        // 验证虚拟元素方法与标准方法的一致性
+        int[] nums = {1, 2, 2, 2, 3, 4, 4, 5};
+
+        // 测试各种target值
+        int[] targets = {1, 2, 3, 4, 5, 0, 6};
+
+        for (int target : targets) {
+            int leftVirtual = binarySearch.leftBoundByVirtualElement(nums, target);
+            int leftStandard = binarySearch.leftBound3(nums, target);
+            assertEquals(leftStandard, leftVirtual,
+                    "左边界方法结果不一致，target=" + target);
+
+            int rightVirtual = binarySearch.rightBoundByVirtualElement(nums, target);
+            int rightStandard = binarySearch.rightBound3(nums, target);
+            assertEquals(rightStandard, rightVirtual,
+                    "右边界方法结果不一致，target=" + target);
+        }
+    }
 }
