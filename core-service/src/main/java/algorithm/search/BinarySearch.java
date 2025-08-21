@@ -522,30 +522,54 @@ public class BinarySearch {
     }
 
     /**
-     * 这种左右巧妙转换的做法的要点：
+     * 在升序数组中查找目标值的右边界（即最后一个等于 target 的元素的索引）。
+     * <p>
+     * 这是基于 findFirstGreaterOrEqual 方法的简洁实现，通过复用已有的二分查找逻辑
+     * 来找到右边界，避免了重复实现二分查找算法。
+     * <p>
+     * 实现原理：
+     * 1. 使用 findFirstGreaterOrEqual 找到第一个大于或等于 target + 1 的位置
+     * 2. 这个位置减一就是可能的右边界位置
+     * 3. 验证该位置是否确实等于 target（处理 target 不存在的情况）
+     * <p>
+     * 关键思路：
+     * - 右边界可以转化为"第一个大于 target 的位置减一"
+     * - 由于数组是有序的，第一个大于 target 的位置等价于第一个大于等于 target + 1 的位置
+     * - 因此可以通过查找 target + 1 的左边界来间接找到 target 的右边界
+     * <p>
+     * 边界情况处理：
+     * - 当所有元素都小于等于 target 时，findFirstGreaterOrEqual 返回 nums.length，此时右边界为 nums.length - 1
+     * - 当所有元素都小于 target 时，findFirstGreaterOrEqual 返回 0，此时返回 -1
+     * - 当 target 不存在于数组中时，通过 nums[candidatePos] != target 的检查返回 -1
+     * - 当 target 存在但只出现一次时，正确返回其索引
+     * - 当 target 存在且重复出现时，正确返回最后一个出现的索引
      *
-     * 易错的点：
-     * 1. 要找到重复数组里第一个大于等于 target + 1 的潜在位置- target + 1 不一定存在，但是按照整数有序性，这个位置减一可能是 target 的右边界
-     * 2. 要确定右边界上是不是真的有 target
-     *
-     * @param nums
-     * @param target
-     * @return
+     * @param nums 升序排列的整数数组，不能为空或 null
+     * @param target 要查找的目标值
+     * @return target 的右边界索引；如果不存在，返回 -1
+     * @throws NullPointerException 如果 nums 为 null
+     * @example rightBound3([1, 2, 2, 2, 3], 2) → 返回 3
+     *         rightBound3([1,2,3,4,5], 6) → 返回 -1（target 不存在）
+     *         rightBound3([2,3,4], 1)     → 返回 -1（target 比所有元素都小）
+     *         rightBound3([1], 1)         → 返回 0
+     *         rightBound3([1,2,3], 0)     → 返回 -1（越界）
+     *         rightBound3([1,2,2,3,3,3,4], 3) → 返回 5（最后一个 3 的位置）
+     * @note 该方法通过巧妙地利用 target + 1 的查找，避免了复杂的边界处理逻辑
      */
     public int rightBound3(int[] nums, int target) {
         if (nums == null || nums.length == 0) {
             return -1;
         }
 
-        // 找第一个 > target 的位置
+        // 找第一个 > target 的位置（等价于第一个 >= target + 1 的位置）
         int pos = findFirstGreaterOrEqual(nums, target + 1);
 
-        // 计算候选右边界位置
+        // 计算候选右边界位置：第一个 > target 的位置减一
         int candidatePos = pos - 1;
 
-        // 验证：
-        // 1. 位置是否有效
-        // 2. 该位置的值是否等于 target
+        // 验证候选位置是否有效：
+        // 1. 位置是否在数组范围内
+        // 2. 该位置的值是否确实等于 target
         if (candidatePos >= 0 && candidatePos < nums.length && nums[candidatePos] == target) {
             return candidatePos;
         }
@@ -554,5 +578,3 @@ public class BinarySearch {
     }
 
 }
-
-

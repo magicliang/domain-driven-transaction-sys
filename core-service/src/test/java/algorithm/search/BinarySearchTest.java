@@ -275,6 +275,112 @@ class BinarySearchTest {
         assertEquals(-1, binarySearch.rightBound2(duplicateArray, 0));
     }
 
+    // ==================== rightBound3 测试 ====================
+
+    @Test
+    @DisplayName("rightBound3 - 空数组")
+    void testRightBound3_EmptyArray() {
+        assertEquals(-1, binarySearch.rightBound3(emptyArray, 5));
+    }
+
+    @Test
+    @DisplayName("rightBound3 - 单元素数组")
+    void testRightBound3_SingleElement() {
+        assertEquals(0, binarySearch.rightBound3(singleElementArray, 5));
+        assertEquals(-1, binarySearch.rightBound3(singleElementArray, 3));
+    }
+
+    @Test
+    @DisplayName("rightBound3 - 重复元素数组")
+    void testRightBound3_DuplicateArray() {
+        assertEquals(3, binarySearch.rightBound3(duplicateArray, 2));
+        assertEquals(6, binarySearch.rightBound3(duplicateArray, 4));
+        assertEquals(0, binarySearch.rightBound3(duplicateArray, 1));
+        assertEquals(-1, binarySearch.rightBound3(duplicateArray, 0));
+    }
+
+    @Test
+    @DisplayName("rightBound3 - 正常数组")
+    void testRightBound3_NormalArray() {
+        assertEquals(0, binarySearch.rightBound3(normalArray, 1));
+        assertEquals(7, binarySearch.rightBound3(normalArray, 15));
+        assertEquals(-1, binarySearch.rightBound3(normalArray, 0));
+        assertEquals(-1, binarySearch.rightBound3(normalArray, 16));
+    }
+
+    @Test
+    @DisplayName("rightBound3 - 负数数组")
+    void testRightBound3_NegativeArray() {
+        assertEquals(0, binarySearch.rightBound3(negativeArray, -5));
+        assertEquals(6, binarySearch.rightBound3(negativeArray, 6));
+        assertEquals(-1, binarySearch.rightBound3(negativeArray, -6));
+    }
+
+    // ==================== rightBound3 一致性测试 ====================
+
+    @Test
+    @DisplayName("一致性测试 - rightBound1、rightBound2和rightBound3结果一致")
+    void testRightBound3Consistency() {
+        int[] testArray = {1, 2, 2, 3, 3, 3, 4, 5};
+
+        for (int target = 0; target <= 6; target++) {
+            int right1 = binarySearch.rightBound1(testArray, target);
+            int right2 = binarySearch.rightBound2(testArray, target);
+            int right3 = binarySearch.rightBound3(testArray, target);
+
+            assertEquals(right1, right3,
+                    "rightBound1和rightBound3在target=" + target + "时不一致");
+            assertEquals(right2, right3,
+                    "rightBound2和rightBound3在target=" + target + "时不一致");
+        }
+    }
+
+    @Test
+    @DisplayName("rightBound3 - 边界值行为")
+    void testRightBound3_BoundaryBehavior() {
+        int[] edgeCases = {2, 2, 2};
+
+        // 测试小于所有元素
+        assertEquals(-1, binarySearch.rightBound3(edgeCases, 1));
+
+        // 测试等于所有元素
+        assertEquals(2, binarySearch.rightBound3(edgeCases, 2));
+
+        // 测试大于所有元素
+        assertEquals(-1, binarySearch.rightBound3(edgeCases, 3));
+    }
+
+    @Test
+    @DisplayName("rightBound3 - 连续重复块")
+    void testRightBound3_ContinuousBlocks() {
+        int[] blocks = {1, 1, 1, 3, 3, 5, 5, 5, 5, 7, 7};
+
+        // 测试1的边界
+        assertEquals(2, binarySearch.rightBound3(blocks, 1));
+
+        // 测试3的边界
+        assertEquals(4, binarySearch.rightBound3(blocks, 3));
+
+        // 测试5的边界
+        assertEquals(8, binarySearch.rightBound3(blocks, 5));
+
+        // 测试7的边界
+        assertEquals(10, binarySearch.rightBound3(blocks, 7));
+
+        // 测试不存在的target
+        assertEquals(-1, binarySearch.rightBound3(blocks, 4));
+    }
+
+    @Test
+    @DisplayName("rightBound3 - 全重复数组")
+    void testRightBound3_AllSame() {
+        int[] allSame = {5, 5, 5, 5, 5};
+
+        assertEquals(4, binarySearch.rightBound3(allSame, 5));
+        assertEquals(-1, binarySearch.rightBound3(allSame, 4));
+        assertEquals(-1, binarySearch.rightBound3(allSame, 6));
+    }
+
     // ==================== floor 测试 ====================
 
     @Test
@@ -465,18 +571,14 @@ class BinarySearchTest {
         assertEquals(0, binarySearch.searchInsert1(edgeCases, 1));
         assertEquals(-1, binarySearch.leftBound1(edgeCases, 1));
         assertEquals(-1, binarySearch.rightBound1(edgeCases, 1));
+        assertEquals(-1, binarySearch.rightBound3(edgeCases, 1));
         assertEquals(-1, binarySearch.floor(edgeCases, 1));
-
-        // 测试等于最小元素 - 删除这些，因为 target=2 重复
-        // assertEquals(0, binarySearch.searchInsert1(edgeCases, 2));
-        // assertEquals(0, binarySearch.leftBound1(edgeCases, 2));
-        // assertEquals(2, binarySearch.rightBound1(edgeCases, 2));
-        // assertEquals(-1, binarySearch.floor(edgeCases, 2));
 
         // 测试大于所有元素 - 保留，因为 target=3 不重复
         assertEquals(3, binarySearch.searchInsert1(edgeCases, 3));
         assertEquals(-1, binarySearch.leftBound1(edgeCases, 3));
         assertEquals(-1, binarySearch.rightBound1(edgeCases, 3));
+        assertEquals(-1, binarySearch.rightBound3(edgeCases, 3));
         assertEquals(2, binarySearch.floor(edgeCases, 3));
     }
 }
