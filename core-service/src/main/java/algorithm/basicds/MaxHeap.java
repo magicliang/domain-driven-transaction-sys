@@ -55,6 +55,14 @@ public class MaxHeap {
         }
     }
 
+    public boolean isEmpty() {
+        return heap.isEmpty();
+    }
+
+    public int size() {
+        return heap.size();
+    }
+
     /**
      * 方法一：遍历选择（直接实现）
      * <p>
@@ -431,6 +439,44 @@ public class MaxHeap {
             swap(i, largest);
             i = largest;
         }
+    }
+
+    /**
+     * 堆排序算法实现
+     * <p>
+     * 使用最大堆实现排序功能，将输入列表按升序排列。
+     * 算法步骤：
+     * 1. 使用Floyd建堆算法构建最大堆（时间复杂度O(n)）
+     * 2. 重复执行pop操作取出堆顶元素（最大元素），共执行n次
+     * 3. 将结果列表反转，得到升序排列的结果
+     * <p>
+     * 时间复杂度：O(n log n)，其中n是列表长度
+     * 空间复杂度：O(n)，需要额外的空间存储结果
+     * <p>
+     * 使用示例：
+     * <pre>{@code
+     * MaxHeap maxHeap = new MaxHeap();
+     * List<Integer> input = Arrays.asList(3, 1, 4, 1, 5, 9, 2, 6);
+     * List<Integer> sorted = maxHeap.heapSort(input);
+     * // 结果: [1, 1, 2, 3, 4, 5, 6, 9]
+     * }</pre>
+     *
+     * @param list 需要排序的整数列表
+     * @return 按升序排列的整数列表
+     * @throws IllegalArgumentException 如果输入列表为null
+     */
+    public List<Integer> heapSort(List<Integer> list) {
+        if (list == null) {
+            throw new IllegalArgumentException("Input list cannot be null");
+        }
+
+        MaxHeap maxHeap = new MaxHeap(list);
+        List<Integer> result = new ArrayList<>(list.size());
+        while (!maxHeap.isEmpty()) {
+            result.add(maxHeap.pop());
+        }
+        Collections.reverse(result);
+        return result;
     }
 
     /**

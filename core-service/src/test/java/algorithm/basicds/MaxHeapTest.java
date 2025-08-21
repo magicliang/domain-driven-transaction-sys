@@ -1,6 +1,7 @@
 package algorithm.basicds;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import org.junit.jupiter.api.BeforeEach;
@@ -355,5 +357,158 @@ class MaxHeapTest {
                 assertTrue(list.get(i) >= list.get(right));
             }
         }
+    }
+
+    // ==================== 堆排序测试 ====================
+
+    @Test
+    @DisplayName("测试堆排序 - 正常情况")
+    void testHeapSort_NormalCase() {
+        List<Integer> input = Arrays.asList(3, 1, 4, 1, 5, 9, 2, 6);
+        List<Integer> expected = Arrays.asList(1, 1, 2, 3, 4, 5, 6, 9);
+
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertEquals(expected, result, "堆排序结果应该与预期升序排列一致");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 空列表")
+    void testHeapSort_EmptyList() {
+        List<Integer> input = Collections.emptyList();
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertTrue(result.isEmpty(), "空列表的排序结果应该是空列表");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 单元素列表")
+    void testHeapSort_SingleElement() {
+        List<Integer> input = Collections.singletonList(42);
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertEquals(1, result.size(), "单元素列表排序后应该只有一个元素");
+        assertEquals(42, result.get(0), "单元素列表排序后元素值应该保持不变");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 已排序列表")
+    void testHeapSort_AlreadySorted() {
+        List<Integer> input = Arrays.asList(1, 2, 3, 4, 5);
+        List<Integer> expected = Arrays.asList(1, 2, 3, 4, 5);
+
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertEquals(expected, result, "已排序列表的排序结果应该保持不变");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 逆序列表")
+    void testHeapSort_ReverseSorted() {
+        List<Integer> input = Arrays.asList(5, 4, 3, 2, 1);
+        List<Integer> expected = Arrays.asList(1, 2, 3, 4, 5);
+
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertEquals(expected, result, "逆序列表应该被正确排序为升序");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 包含重复元素")
+    void testHeapSort_WithDuplicates() {
+        List<Integer> input = Arrays.asList(3, 3, 3, 1, 1, 2, 2);
+        List<Integer> expected = Arrays.asList(1, 1, 2, 2, 3, 3, 3);
+
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertEquals(expected, result, "包含重复元素的列表应该被正确排序");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 包含负数")
+    void testHeapSort_WithNegativeNumbers() {
+        List<Integer> input = Arrays.asList(-3, 5, -1, 0, 2, -8);
+        List<Integer> expected = Arrays.asList(-8, -3, -1, 0, 2, 5);
+
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertEquals(expected, result, "包含负数的列表应该被正确排序");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 大列表")
+    void testHeapSort_LargeList() {
+        List<Integer> input = new ArrayList<>();
+        for (int i = 1000; i >= 0; i--) {
+            input.add(i);
+        }
+
+        List<Integer> result = emptyHeap.heapSort(input);
+
+        assertEquals(1001, result.size(), "大列表排序后元素数量应该保持不变");
+
+        // 验证排序结果
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(i, result.get(i), "大列表应该被正确排序");
+        }
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - null输入应该抛出异常")
+    void testHeapSort_NullInput() {
+        assertThrows(IllegalArgumentException.class,
+                () -> emptyHeap.heapSort(null),
+                "null输入应该抛出IllegalArgumentException");
+    }
+
+    @Test
+    @DisplayName("测试堆排序 - 性能测试")
+    void testHeapSort_Performance() {
+        // 测试中等规模数据的性能
+        List<Integer> input = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            input.add((int) (Math.random() * 10000));
+        }
+
+        long startTime = System.currentTimeMillis();
+        List<Integer> result = emptyHeap.heapSort(input);
+        long endTime = System.currentTimeMillis();
+
+        // 验证排序正确性
+        assertEquals(10000, result.size());
+        for (int i = 1; i < result.size(); i++) {
+            assertTrue(result.get(i) >= result.get(i - 1),
+                    "结果应该是升序排列");
+        }
+
+        // 性能应该在合理范围内（1万条数据应该小于1秒）
+        assertTrue(endTime - startTime < 1000,
+                "排序1万条数据应该在1秒内完成");
+    }
+
+    @Test
+    @DisplayName("测试堆基本操作 - push和pop")
+    void testBasicOperations() {
+        emptyHeap.push(5);
+        emptyHeap.push(3);
+        emptyHeap.push(7);
+        emptyHeap.push(1);
+
+        assertEquals(7, emptyHeap.pop(), "应该弹出最大值7");
+        assertEquals(5, emptyHeap.pop(), "应该弹出次大值5");
+        assertEquals(3, emptyHeap.pop(), "应该弹出3");
+        assertEquals(1, emptyHeap.pop(), "应该弹出1");
+    }
+
+    @Test
+    @DisplayName("测试堆基本操作 - isEmpty")
+    void testIsEmpty() {
+        assertTrue(emptyHeap.isEmpty(), "新创建的堆应该是空的");
+
+        emptyHeap.push(1);
+        assertFalse(emptyHeap.isEmpty(), "添加元素后堆不应该为空");
+
+        emptyHeap.pop();
+        assertTrue(emptyHeap.isEmpty(), "移除所有元素后堆应该为空");
     }
 }
