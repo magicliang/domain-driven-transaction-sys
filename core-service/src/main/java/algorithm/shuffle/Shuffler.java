@@ -243,6 +243,16 @@ public class Shuffler {
         return result;
     }
 
+    public void shuffleBackward(int[] arr) {
+
+        int n = arr.length;
+        for (int i = n - 1; i > 0; i--) {
+            // 在 [0, i] 中随机选一个位置 j
+            int j = ThreadLocalRandom.current().nextInt(i + 1);
+            swap(arr, i, j);
+        }
+    }
+
     /**
      * 交换数组中两个位置的元素
      *
