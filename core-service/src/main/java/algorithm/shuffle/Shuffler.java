@@ -244,7 +244,6 @@ public class Shuffler {
     }
 
     public void shuffleBackward(int[] arr) {
-
         int n = arr.length;
         for (int i = n - 1; i > 0; i--) {
             // 在 [0, i] 中随机选一个位置 j
