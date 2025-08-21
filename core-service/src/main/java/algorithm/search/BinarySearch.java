@@ -1,12 +1,87 @@
 package algorithm.search;
 
+import java.util.Arrays;
+
 /**
  * @author liangchuan
  */
 public class BinarySearch {
 
+    public static void main(String[] args) {
+        BinarySearch bs = new BinarySearch();
+
+        // 测试用例：包含重复 target 的数组
+        int[] nums = {1, 2, 2, 2, 3, 5};
+        int target = 2;  // target 重复出现
+
+        System.out.println("=== 重复 target 测试 ===");
+        System.out.printf("数组: %s%n", Arrays.toString(nums));
+        System.out.printf("target: %d%n", target);
+        System.out.println();
+
+        // 执行您的 floor 算法
+        int result = bs.floor(nums, target);
+
+        System.out.println("算法执行过程：");
+        System.out.println("1. searchInsert1(nums, 2) 找第一个 >= 2 的位置");
+
+        // 手动执行 searchInsert 看过程
+        int insertPos = bs.searchInsert1(nums, target);
+        System.out.printf("   结果: insertPos = %d (nums[%d] = %d)%n",
+                insertPos, insertPos, nums[insertPos]);
+
+        System.out.printf("2. floor = insertPos - 1 = %d - 1 = %d%n", insertPos, result);
+
+        if (result >= 0) {
+            System.out.printf("3. 验证: nums[%d] = %d%n", result, nums[result]);
+            System.out.printf("   %d < %d ? %s ✅%n", nums[result], target,
+                    nums[result] < target ? "是" : "否");
+        } else {
+            System.out.println("3. result = -1，说明没有小于 target 的元素 ✅");
+        }
+    }
+
+    /**
+     * 在一个升序排列的整数数组中执行二分查找，返回目标值 target 的索引。
+     * 如果目标值不存在于数组中，则返回 -1。
+     * 一个一般的二分查找在找不到的时候返回-1，只要这个地方不返回-1，而返回下标，就得到了插入点算法
+     *
+     * @param nums 升序排列的整数数组，不允许为 null，允许为空数组
+     * @param target 要查找的目标整数值
+     * @return 目标值在数组中的索引；若未找到，返回 -1
+     * @throws NullPointerException 如果 nums 为 null
+     */
+    public int binarySearch(int[] nums, int target) {
+        // 二分查找标准实现：在有序数组中查找 target 的索引
+        // 使用闭区间 [l, r]，所以 r 初始化为 nums.length - 1
+        int l = 0;
+        int r = nums.length - 1;
+
+        // 标准二分查找循环
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                return mid;  // 找到目标，直接返回索引
+            } else if (nums[mid] < target) {
+                // 当前值太小，搜索右半部分
+                l = mid + 1;
+            } else if (nums[mid] > target) {
+                // 当前值太大，搜索左半部分
+                r = mid - 1;
+            }
+        }
+
+        // 循环结束表示未找到 target
+        // 此时 l > r，常见情况是 l = r + 1
+        // 其实这时候 r + 1 = l 是有可能得到某一个索引越界的情况（如 l 超出数组范围），
+        // 但由于我们只在合法范围内访问 nums[mid]，且循环条件保证了 l 和 r 的有效使用，
+        // 因此不会发生数组越界访问。这里只需返回 -1 表示未找到。
+        return -1;
+    }
+
     /**
      * 在有序数组中查找目标值的插入位置。
+     * 这个实现只能在不重复target的数组里找到第一个target的位置。如果target很多，则返回位置随机，不一定在什么边界上
      * <p>
      * 如果目标值存在于数组中，则返回其索引；
      * 如果不存在，则返回目标值应该插入的位置索引，保持数组有序。
@@ -59,44 +134,8 @@ public class BinarySearch {
     }
 
     /**
-     * 在一个升序排列的整数数组中执行二分查找，返回目标值 target 的索引。
-     * 如果目标值不存在于数组中，则返回 -1。
-     *
-     * @param nums 升序排列的整数数组，不允许为 null，允许为空数组
-     * @param target 要查找的目标整数值
-     * @return 目标值在数组中的索引；若未找到，返回 -1
-     * @throws NullPointerException 如果 nums 为 null
-     */
-    public int binarySearch(int[] nums, int target) {
-        // 二分查找标准实现：在有序数组中查找 target 的索引
-        // 使用闭区间 [l, r]，所以 r 初始化为 nums.length - 1
-        int l = 0;
-        int r = nums.length - 1;
-
-        // 标准二分查找循环
-        while (l <= r) {
-            int mid = l + (r - l) / 2;
-            if (nums[mid] == target) {
-                return mid;  // 找到目标，直接返回索引
-            } else if (nums[mid] < target) {
-                // 当前值太小，搜索右半部分
-                l = mid + 1;
-            } else if (nums[mid] > target) {
-                // 当前值太大，搜索左半部分
-                r = mid - 1;
-            }
-        }
-
-        // 循环结束表示未找到 target
-        // 此时 l > r，常见情况是 l = r + 1
-        // 其实这时候 r + 1 = l 是有可能得到某一个索引越界的情况（如 l 超出数组范围），
-        // 但由于我们只在合法范围内访问 nums[mid]，且循环条件保证了 l 和 r 的有效使用，
-        // 因此不会发生数组越界访问。这里只需返回 -1 表示未找到。
-        return -1;
-    }
-
-    /**
      * 在有序数组中查找目标值的插入位置。
+     * 这个实现只能在不重复target的数组里找到第一个target的位置。如果target很多，则返回位置随机，不一定在什么边界上
      * <p>
      * 如果目标值存在于数组中，则返回其索引；
      * 如果不存在，则返回目标值应该插入的位置索引，保持数组有序。
@@ -146,6 +185,88 @@ public class BinarySearch {
     }
 
     /**
+     * 在一个升序的无重复数据的数组中，找到小于 target 的最大元素的索引（即 floor 值）。
+     * <p>
+     * 如果不存在这样的元素（即所有元素都 >= target），则返回 -1。
+     * <p>
+     * 易错的点：
+     * floor 需要用到 searchInsert，而不能依赖 leftBound。
+     * 因为 leftBound 只有在 target 存在时才能返回有效索引；如果 target 不存在，它会返回 -1。
+     * 还有，这个实现默认只能找到数组中只有一个 target 的情形，得到第一个 target 插入点的前一个位置
+     * 如果要找最左边的 target 的前一个位置，需要另外的实现。
+     * <p>
+     * 举例：
+     * nums = [1, 3, 5, 7], target = 4
+     * 我们希望 floor 返回 1（因为 nums[1] = 3 是小于 4 的最大元素）
+     * 但 leftBound(4) 会返回 -1（因为 4 不存在）
+     * 如果基于 leftBound - 1 计算 floor，就会得到 -2，完全错误。
+     * <p>
+     * 关键区别：
+     * searchInsert 找的是"插入位置"——第一个 >= target 的位置，这是一种"理论边界"，即使 target 不存在也有意义。
+     * leftBound   找的是"第一个等于 target 的位置"——是一种"实际边界"，只有 target 存在时才有意义。
+     * floor 要找理论边界的另一个临界点
+     * <p>
+     * 因此，floor 应该基于 searchInsert 实现：floor = searchInsert(target) - 1
+     *
+     * @param nums 升序整数数组，不允许为 null
+     * @param target 要比较的目标值
+     * @return 小于 target 的最大元素的索引；如果不存在，返回 -1
+     * @example floor([1, 2, 2, 2, 3], 2)  → 返回 0（因为 1 是小于 2 的最大元素）
+     *         floor([1,2,3,5,6], 4)  → 返回 2（因为 3 是小于 4 的最大元素）
+     *         floor([1,2,3], 0)      → 返回 -1（没有元素小于 0）
+     *         floor([1,2,3], 4)      → 返回 2（3 是小于 4 的最大元素）
+     */
+    public int floor(int[] nums, int target) {
+        // 使用 searchInsert1 找到第一个 >= target 的位置
+        int insertPos = searchInsert1(nums, target); // 第一个 >= target 的位置
+        // 这个位置的前一个位置就是最后一个 < target 的位置，即 floor 值
+        return insertPos - 1; // 它前面的位置就是最后一个 < target 的位置
+    }
+
+    /**
+     * 找到第一个 >= target 的位置
+     * 关键：即使找到等于 target 的值，也要继续向左找
+     */
+    private int findFirstGreaterOrEqual(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] >= target) {
+                // 核心：即使找到 >= target，也要继续向左找第一个
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        // left 是第一个 >= target 的位置，或者 nums.length（所有元素都 < target）
+        return left;
+    }
+
+    /**
+     * 通用 floor 实现
+     * 适合数组中 1个或者多个 target 的实现
+     *
+     * @param nums 有序数组
+     * @param target 目标值
+     * @return 最后一个小于 target 的元素位置，不存在则返回 -1
+     */
+    public int floor2(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+
+        int firstGE = findFirstGreaterOrEqual(nums, target);
+
+        // firstGE - 1 就是最后一个 < target 的位置
+        int floorPos = firstGE - 1;
+
+        // 边界检查：如果 < 0，说明没有小于 target 的元素
+        return floorPos >= 0 ? floorPos : -1;
+    }
+
+    /**
      * 在升序数组中查找目标值的左边界（即第一个等于 target 的元素的索引）。
      * <p>
      * 如果目标值不存在于数组中，则返回 -1。
@@ -188,43 +309,6 @@ public class BinarySearch {
         // 当这个算法退出的时候，l==r。找得到还是找不到呢？找不到返回-1
         // 这种搜索的最后一步通常没有校验nums[l]和target的关系，此时我们要教研一下是不是真的找到了target，并且是左边界；否则返回-1
         return nums[l] == target ? l : -1;
-    }
-
-    /**
-     * 在一个升序数组中，找到小于 target 的最大元素的索引（即 floor 值）。
-     * <p>
-     * 如果不存在这样的元素（即所有元素都 >= target），则返回 -1。
-     * <p>
-     * 易错的点：
-     * floor 需要用到 searchInsert，而不能依赖 leftBound。
-     * 因为 leftBound 只有在 target 存在时才能返回有效索引；如果 target 不存在，它会返回 -1。
-     * <p>
-     * 举例：
-     * nums = [1, 3, 5, 7], target = 4
-     * 我们希望 floor 返回 1（因为 nums[1] = 3 是小于 4 的最大元素）
-     * 但 leftBound(4) 会返回 -1（因为 4 不存在）
-     * 如果基于 leftBound - 1 计算 floor，就会得到 -2，完全错误。
-     * <p>
-     * 关键区别：
-     * searchInsert 找的是"插入位置"——第一个 >= target 的位置，这是一种"理论边界"，即使 target 不存在也有意义。
-     * leftBound   找的是"第一个等于 target 的位置"——是一种"实际边界"，只有 target 存在时才有意义。
-     * floor 要找理论边界的另一个临界点
-     * <p>
-     * 因此，floor 应该基于 searchInsert 实现：floor = searchInsert(target) - 1
-     *
-     * @param nums 升序整数数组，不允许为 null
-     * @param target 要比较的目标值
-     * @return 小于 target 的最大元素的索引；如果不存在，返回 -1
-     * @example floor([1, 2, 2, 2, 3], 2)  → 返回 0（因为 1 是小于 2 的最大元素）
-     *         floor([1,2,3,5,6], 4)  → 返回 2（因为 3 是小于 4 的最大元素）
-     *         floor([1,2,3], 0)      → 返回 -1（没有元素小于 0）
-     *         floor([1,2,3], 4)      → 返回 2（3 是小于 4 的最大元素）
-     */
-    public int floor(int[] nums, int target) {
-        // 使用 searchInsert1 找到第一个 >= target 的位置
-        int insertPos = searchInsert1(nums, target); // 第一个 >= target 的位置
-        // 这个位置的前一个位置就是最后一个 < target 的位置，即 floor 值
-        return insertPos - 1; // 它前面的位置就是最后一个 < target 的位置
     }
 
     /**
@@ -279,6 +363,47 @@ public class BinarySearch {
         // 比如 target = 4, nums = [1,2,3,5]，l=3，nums[3]=5 ≠ 4
         // 所以必须再检查一下是否真的找到了 target
         return nums[l] == target ? l : -1;
+    }
+
+    /**
+     * 在升序数组中查找目标值的左边界（即第一个等于 target 的元素的索引）。
+     * <p>
+     * 这是基于 findFirstGreaterOrEqual 方法的简洁实现，通过复用已有的二分查找逻辑
+     * 来找到左边界，避免了重复实现二分查找算法。
+     * <p>
+     * 实现原理：
+     * 1. 使用 findFirstGreaterOrEqual 找到第一个大于或等于 target 的位置
+     * 2. 检查该位置是否确实等于 target（处理 target 不存在的情况）
+     * 3. 如果等于 target，则该位置就是左边界；否则返回 -1
+     * <p>
+     * 边界情况处理：
+     * - 当所有元素都小于 target 时，findFirstGreaterOrEqual 返回 nums.length，此时返回 -1
+     * - 当所有元素都大于 target 时，findFirstGreaterOrEqual 返回 0，此时检查 nums[0] 是否等于 target
+     * - 当 target 不存在于数组中时，通过 nums[i] != target 的检查返回 -1
+     *
+     * @param nums 升序排列的整数数组，不允许为 null
+     * @param target 要查找的目标整数值
+     * @return 目标值的左边界索引；如果不存在，返回 -1
+     * @throws NullPointerException 如果 nums 为 null
+     * @example leftBound3([1, 2, 2, 2, 3], 2) → 返回 1
+     *         leftBound3([1,2,3,4,5], 6) → 返回 -1（不存在）
+     *         leftBound3([2,3,4], 1)     → 返回 -1（比所有数都小）
+     *         leftBound3([1,2,3], 2)     → 返回 1
+     */
+    public int leftBound3(int[] nums, int target) {
+        // 使用 findFirstGreaterOrEqual 找到第一个 >= target 的位置
+        int i = findFirstGreaterOrEqual(nums, target);
+
+        // 边界检查：
+        // 1. i < 0：理论上不会发生，因为 findFirstGreaterOrEqual 返回 0 到 nums.length
+        // 2. i >= nums.length：所有元素都小于 target，target 不存在
+        // 3. nums[i] != target：虽然找到了 >= target 的位置，但不等于 target，说明 target 不存在
+        if (i < 0 || i >= nums.length || nums[i] != target) {
+            return -1;
+        }
+
+        // 此时 i 指向第一个等于 target 的位置，即左边界
+        return i;
     }
 
     /**
