@@ -271,17 +271,9 @@ public class Shuffler {
         for (int i = n - k; i < n; i++) {
             int randomPos = ThreadLocalRandom.current().nextInt(0, i + 1);
 
-            if (map.containsKey(randomPos)) {
-                result[i - (n - k)] = map.get(randomPos);
-            } else {
-                result[i - (n - k)] = randomPos;
-            }
+            result[i - (n - k)] = map.getOrDefault(randomPos, randomPos);
 
-            if (map.containsKey(i)) {
-                map.put(randomPos, map.get(i));
-            } else {
-                map.put(randomPos, i);
-            }
+            map.put(randomPos, map.getOrDefault(i, i));
         }
 
         return result;
