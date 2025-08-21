@@ -4,6 +4,12 @@ import java.util.Arrays;
 
 /**
  * @author liangchuan
+ *
+ * 具有处理不存在target或存在多个target适应性的方法：
+ * 1. findFirstGreaterOrEqual - 找到第一个大于等于target的位置，适用于边界情况
+ * 2. floor2 - 通用floor实现，适合数组中1个或多个target的情况
+ * 3. leftBound3 - 基于findFirstGreaterOrEqual的左边界查找实现
+ * 4. rightBound3 - 基于findFirstGreaterOrEqual的右边界查找实现
  */
 public class BinarySearch {
 
