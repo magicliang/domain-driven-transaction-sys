@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class BinarySearch {
 
     public static void main(String[] args) {
+
         BinarySearch bs = new BinarySearch();
 
         // 测试用例：包含重复 target 的数组
@@ -518,6 +519,38 @@ public class BinarySearch {
         }
         // 检查 l-1 位置是否确实等于 target
         return nums[l - 1] == target ? l - 1 : -1;
+    }
+
+    /**
+     * 这种左右巧妙转换的做法的要点：
+     *
+     * 易错的点：
+     * 1. 要找到重复数组里第一个大于等于 target + 1 的潜在位置- target + 1 不一定存在，但是按照整数有序性，这个位置减一可能是 target 的右边界
+     * 2. 要确定右边界上是不是真的有 target
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int rightBound3(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+
+        // 找第一个 > target 的位置
+        int pos = findFirstGreaterOrEqual(nums, target + 1);
+
+        // 计算候选右边界位置
+        int candidatePos = pos - 1;
+
+        // 验证：
+        // 1. 位置是否有效
+        // 2. 该位置的值是否等于 target
+        if (candidatePos >= 0 && candidatePos < nums.length && nums[candidatePos] == target) {
+            return candidatePos;
+        }
+
+        return -1;
     }
 
 }

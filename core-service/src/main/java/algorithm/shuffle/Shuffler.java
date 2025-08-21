@@ -115,74 +115,28 @@ public class Shuffler {
             throw new IllegalArgumentException("k不能大于n");
         }
 
-        // 只存储结果数组，空间复杂度O(k)
         int[] result = new int[k];
 
-        // 使用哈希映射来模拟虚拟数组，避免存储整个数组
-        // key: 原始索引, value: 当前值（默认为key本身）
-        // 由于k通常远小于n，使用数组来模拟哈希表
-        int[] indexMap = new int[k];
-        int[] valueMap = new int[k];
-        int mapSize = 0;
-
-        // 执行k次选择，每次从剩余元素中随机选择
+        // 使用更简洁高效的虚拟数组实现
+        // 使用HashMap来跟踪已交换的位置，避免重复
+        java.util.Map<Integer, Integer> virtualArray = new java.util.HashMap<>();
+        
         for (int i = 0; i < k; i++) {
             // 从[i, n-1]范围内随机选择一个位置
             int randomPos = ThreadLocalRandom.current().nextInt(i, n);
 
-            // 检查randomPos是否已经被映射
-            int value = randomPos;
-            for (int j = 0; j < mapSize; j++) {
-                if (indexMap[j] == randomPos) {
-                    value = valueMap[j];
-                    break;
-                }
-            }
-
-            // 检查i是否已经被映射
-            int currentValue = i;
-            for (int j = 0; j < mapSize; j++) {
-                if (indexMap[j] == i) {
-                    currentValue = valueMap[j];
-                    break;
-                }
-            }
-
+            // 获取i位置的当前值（可能是虚拟值或实际值）
+            int valueAtI = virtualArray.getOrDefault(i, i);
+            // 获取randomPos位置的当前值（可能是虚拟值或实际值）
+            int valueAtRandom = virtualArray.getOrDefault(randomPos, randomPos);
+            
             // 将选择的值放入结果
-            result[i] = value;
+            result[i] = valueAtRandom;
 
-            // 更新映射：将randomPos位置的值设为currentValue
-            boolean found = false;
-            for (int j = 0; j < mapSize; j++) {
-                if (indexMap[j] == randomPos) {
-                    valueMap[j] = currentValue;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found && randomPos < k) {
-                if (mapSize < k) {
-                    indexMap[mapSize] = randomPos;
-                    valueMap[mapSize] = currentValue;
-                    mapSize++;
-                }
-            }
-
-            // 更新i位置的值（如果需要）
-            found = false;
-            for (int j = 0; j < mapSize; j++) {
-                if (indexMap[j] == i) {
-                    valueMap[j] = value;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found && i < k) {
-                if (mapSize < k) {
-                    indexMap[mapSize] = i;
-                    valueMap[mapSize] = value;
-                    mapSize++;
-                }
+            // 交换i和randomPos位置的值
+            if (valueAtI != valueAtRandom) {
+                virtualArray.put(i, valueAtRandom);
+                virtualArray.put(randomPos, valueAtI);
             }
         }
 
@@ -264,16 +218,26 @@ public class Shuffler {
 
         int[] result = new int[k];
 
-        // 使用Floyd的抽样算法，O(k)空间复杂度
-        // 使用哈希映射来跟踪已选择的值
+        // 使用正确的Floyd抽样算法
+        // 该算法确保从0到n-1中选择k个不重复的随机数
         java.util.Map<Integer, Integer> map = new java.util.HashMap<>();
 
-        for (int i = n - k; i < n; i++) {
-            int randomPos = ThreadLocalRandom.current().nextInt(0, i + 1);
+        for (int j = 0; j < k; j++) {
+            int t = ThreadLocalRandom.current().nextInt(j, n);
 
-            result[i - (n - k)] = map.getOrDefault(randomPos, randomPos);
+            // 获取t位置的值（可能是映射值或实际值）
+            int valueAtT = map.getOrDefault(t, t);
+            // 获取j位置的值（可能是映射值或实际值）
+            int valueAtJ = map.getOrDefault(j, j);
 
-            map.put(randomPos, map.getOrDefault(i, i));
+            // 将选择的值放入结果
+            result[j] = valueAtT;
+
+            // 交换j和t位置的值
+            if (valueAtT != valueAtJ) {
+                map.put(t, valueAtJ);
+                map.put(j, valueAtT);
+            }
         }
 
         return result;

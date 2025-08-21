@@ -127,4 +127,222 @@ public class ShufflerTest {
         assertEquals(1000, result.length);
         assertTrue(duration < 1000, "性能测试应在1秒内完成，实际耗时: " + duration + "ms");
     }
+
+    @Test
+    @DisplayName("reverseShuffle - 基本功能测试")
+    void testReverseShuffleBasicFunctionality() {
+        // 测试正常情况
+        int[] result = shuffler.reverseShuffle(10, 5);
+        assertEquals(5, result.length, "结果长度应为5");
+
+        // 验证所有元素在正确范围内
+        for (int num : result) {
+            assertTrue(num >= 0 && num < 10, "元素应在[0,9]范围内");
+        }
+
+        // 测试边界情况
+        assertEquals(0, shuffler.reverseShuffle(10, 0).length);
+        assertEquals(5, shuffler.reverseShuffle(5, 5).length);
+    }
+
+    @Test
+    @DisplayName("reverseShuffle - 唯一性测试")
+    void testReverseShuffleUniqueness() {
+        int[] result = shuffler.reverseShuffle(100, 50);
+        Set<Integer> uniqueSet = new HashSet<>();
+
+        for (int num : result) {
+            assertFalse(uniqueSet.contains(num), "发现重复元素: " + num);
+            uniqueSet.add(num);
+        }
+
+        assertEquals(50, uniqueSet.size(), "应该有50个唯一元素");
+    }
+
+    @Test
+    @DisplayName("reverseShuffle - 参数验证")
+    void testReverseShuffleParameterValidation() {
+        assertThrows(IllegalArgumentException.class, () -> shuffler.reverseShuffle(-1, 5));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.reverseShuffle(10, -1));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.reverseShuffle(5, 10));
+    }
+
+    @Test
+    @DisplayName("shuffleOptimized - 基本功能测试")
+    void testShuffleOptimizedBasicFunctionality() {
+        int[] result = shuffler.shuffleOptimized(10, 5);
+        assertEquals(5, result.length);
+
+        for (int num : result) {
+            assertTrue(num >= 0 && num < 10);
+        }
+
+        assertEquals(0, shuffler.shuffleOptimized(10, 0).length);
+        assertEquals(5, shuffler.shuffleOptimized(5, 5).length);
+    }
+
+    @Test
+    @DisplayName("shuffleOptimized - 唯一性测试")
+    void testShuffleOptimizedUniqueness() {
+        int[] result = shuffler.shuffleOptimized(100, 50);
+        Set<Integer> uniqueSet = new HashSet<>();
+
+        for (int num : result) {
+            assertFalse(uniqueSet.contains(num));
+            uniqueSet.add(num);
+        }
+
+        assertEquals(50, uniqueSet.size());
+    }
+
+    @Test
+    @DisplayName("shuffleOptimized - 参数验证")
+    void testShuffleOptimizedParameterValidation() {
+        assertThrows(IllegalArgumentException.class, () -> shuffler.shuffleOptimized(-1, 5));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.shuffleOptimized(10, -1));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.shuffleOptimized(5, 10));
+    }
+
+    @Test
+    @DisplayName("reverseShuffleOptimized - 基本功能测试")
+    void testReverseShuffleOptimizedBasicFunctionality() {
+        int[] result = shuffler.reverseShuffleOptimized(10, 5);
+        assertEquals(5, result.length);
+
+        for (int num : result) {
+            assertTrue(num >= 0 && num < 10);
+        }
+
+        assertEquals(0, shuffler.reverseShuffleOptimized(10, 0).length);
+        assertEquals(5, shuffler.reverseShuffleOptimized(5, 5).length);
+    }
+
+    @Test
+    @DisplayName("reverseShuffleOptimized - 唯一性测试")
+    void testReverseShuffleOptimizedUniqueness() {
+        int[] result = shuffler.reverseShuffleOptimized(100, 50);
+        Set<Integer> uniqueSet = new HashSet<>();
+
+        for (int num : result) {
+            assertFalse(uniqueSet.contains(num));
+            uniqueSet.add(num);
+        }
+
+        assertEquals(50, uniqueSet.size());
+    }
+
+    @Test
+    @DisplayName("reverseShuffleOptimized - 参数验证")
+    void testReverseShuffleOptimizedParameterValidation() {
+        assertThrows(IllegalArgumentException.class, () -> shuffler.reverseShuffleOptimized(-1, 5));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.reverseShuffleOptimized(10, -1));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.reverseShuffleOptimized(5, 10));
+    }
+
+    @Test
+    @DisplayName("shuffleFloyd - 基本功能测试")
+    void testShuffleFloydBasicFunctionality() {
+        int[] result = shuffler.shuffleFloyd(10, 5);
+        assertEquals(5, result.length);
+
+        for (int num : result) {
+            assertTrue(num >= 0 && num < 10);
+        }
+
+        assertEquals(0, shuffler.shuffleFloyd(10, 0).length);
+        assertEquals(5, shuffler.shuffleFloyd(5, 5).length);
+    }
+
+    @Test
+    @DisplayName("shuffleFloyd - 唯一性测试")
+    void testShuffleFloydUniqueness() {
+        int[] result = shuffler.shuffleFloyd(100, 50);
+        Set<Integer> uniqueSet = new HashSet<>();
+
+        for (int num : result) {
+            assertFalse(uniqueSet.contains(num));
+            uniqueSet.add(num);
+        }
+
+        assertEquals(50, uniqueSet.size());
+    }
+
+    @Test
+    @DisplayName("shuffleFloyd - 参数验证")
+    void testShuffleFloydParameterValidation() {
+        assertThrows(IllegalArgumentException.class, () -> shuffler.shuffleFloyd(-1, 5));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.shuffleFloyd(10, -1));
+        assertThrows(IllegalArgumentException.class, () -> shuffler.shuffleFloyd(5, 10));
+    }
+
+    @Test
+    @DisplayName("所有洗牌算法结果一致性验证")
+    void testAllAlgorithmsConsistency() {
+        int n = 20;
+        int k = 10;
+
+        // 测试所有算法都能产生有效结果
+        int[] result1 = shuffler.shuffle(n, k);
+        int[] result2 = shuffler.reverseShuffle(n, k);
+        int[] result3 = shuffler.shuffleOptimized(n, k);
+        int[] result4 = shuffler.reverseShuffleOptimized(n, k);
+        int[] result5 = shuffler.shuffleFloyd(n, k);
+
+        // 验证所有结果长度正确
+        assertEquals(k, result1.length);
+        assertEquals(k, result2.length);
+        assertEquals(k, result3.length);
+        assertEquals(k, result4.length);
+        assertEquals(k, result5.length);
+
+        // 验证所有元素都在正确范围内
+        for (int[] result : new int[][]{result1, result2, result3, result4, result5}) {
+            Set<Integer> uniqueSet = new HashSet<>();
+            for (int num : result) {
+                assertTrue(num >= 0 && num < n);
+                assertFalse(uniqueSet.contains(num));
+                uniqueSet.add(num);
+            }
+            assertEquals(k, uniqueSet.size());
+        }
+    }
+
+    @Test
+    @DisplayName("性能对比测试 - 所有算法")
+    void testAllAlgorithmsPerformance() {
+        int n = 100000;
+        int k = 1000;
+
+        // 测试shuffle
+        long start1 = System.currentTimeMillis();
+        shuffler.shuffle(n, k);
+        long time1 = System.currentTimeMillis() - start1;
+
+        // 测试reverseShuffle
+        long start2 = System.currentTimeMillis();
+        shuffler.reverseShuffle(n, k);
+        long time2 = System.currentTimeMillis() - start2;
+
+        // 测试shuffleOptimized
+        long start3 = System.currentTimeMillis();
+        shuffler.shuffleOptimized(n, k);
+        long time3 = System.currentTimeMillis() - start3;
+
+        // 测试reverseShuffleOptimized
+        long start4 = System.currentTimeMillis();
+        shuffler.reverseShuffleOptimized(n, k);
+        long time4 = System.currentTimeMillis() - start4;
+
+        // 测试shuffleFloyd
+        long start5 = System.currentTimeMillis();
+        shuffler.shuffleFloyd(n, k);
+        long time5 = System.currentTimeMillis() - start5;
+
+        // 所有算法应在合理时间内完成
+        assertTrue(time1 < 2000, "shuffle耗时过长: " + time1 + "ms");
+        assertTrue(time2 < 2000, "reverseShuffle耗时过长: " + time2 + "ms");
+        assertTrue(time3 < 2000, "shuffleOptimized耗时过长: " + time3 + "ms");
+        assertTrue(time4 < 2000, "reverseShuffleOptimized耗时过长: " + time4 + "ms");
+        assertTrue(time5 < 2000, "shuffleFloyd耗时过长: " + time5 + "ms");
+    }
 }
