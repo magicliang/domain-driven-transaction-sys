@@ -1,10 +1,13 @@
 package algorithm.shuffle;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
@@ -344,5 +347,197 @@ public class ShufflerTest {
         assertTrue(time3 < 2000, "shuffleOptimized耗时过长: " + time3 + "ms");
         assertTrue(time4 < 2000, "reverseShuffleOptimized耗时过长: " + time4 + "ms");
         assertTrue(time5 < 2000, "shuffleFloyd耗时过长: " + time5 + "ms");
+    }
+
+    @Test
+    void testShuffleBackwardWithK() {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int k = 5;
+
+        int[] original = arr.clone();
+        shuffler.shuffleBackward(arr, k);
+
+        // 验证前k个元素被洗牌，后5个元素保持不变
+        assertArrayEquals(Arrays.copyOfRange(original, k, original.length),
+                Arrays.copyOfRange(arr, k, arr.length));
+
+        // 验证前k个元素仍然是原来的元素，只是顺序不同
+        Set<Integer> originalFirstK = new HashSet<>();
+        Set<Integer> shuffledFirstK = new HashSet<>();
+        for (int i = 0; i < k; i++) {
+            originalFirstK.add(original[i]);
+            shuffledFirstK.add(arr[i]);
+        }
+        assertEquals(originalFirstK, shuffledFirstK);
+    }
+
+    @Test
+    void testShuffleBackwardWithK_EqualsArrayLength() {
+        int[] arr = {1, 2, 3, 4, 5};
+        int k = 5;
+
+        int[] original = arr.clone();
+        shuffler.shuffleBackward(arr, k);
+
+        // 验证所有元素都被洗牌
+        Set<Integer> originalSet = new HashSet<>();
+        Set<Integer> shuffledSet = new HashSet<>();
+        for (int i = 0; i < arr.length; i++) {
+            originalSet.add(original[i]);
+            shuffledSet.add(arr[i]);
+        }
+        assertEquals(originalSet, shuffledSet);
+    }
+
+    @Test
+    void testShuffleBackwardWithK_Zero() {
+        int[] arr = {1, 2, 3, 4, 5};
+        int k = 0;
+
+        int[] original = arr.clone();
+        shuffler.shuffleBackward(arr, k);
+
+        // 验证数组保持不变
+        assertArrayEquals(original, arr);
+    }
+
+    @Test
+    void testShuffleBackwardWithK_One() {
+        int[] arr = {1, 2, 3, 4, 5};
+        int k = 1;
+
+        int[] original = arr.clone();
+        shuffler.shuffleBackward(arr, k);
+
+        // 验证只有第一个元素可能改变位置
+        assertEquals(original[0], arr[0]); // 只有一个元素，洗牌后位置不变
+
+        // 验证其余元素保持不变
+        assertArrayEquals(Arrays.copyOfRange(original, 1, original.length),
+                Arrays.copyOfRange(arr, 1, arr.length));
+    }
+
+    @Test
+    void testShuffleBackwardWithK_InvalidK_Negative() {
+        int[] arr = {1, 2, 3, 4, 5};
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.shuffleBackward(arr, -1);
+        });
+    }
+
+    @Test
+    void testShuffleBackwardWithK_InvalidK_TooLarge() {
+        int[] arr = {1, 2, 3, 4, 5};
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.shuffleBackward(arr, 6);
+        });
+    }
+
+    @Test
+    void testShuffleBackwardWithK_NullArray() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.shuffleBackward(null, 3);
+        });
+    }
+
+    @Test
+    void testShuffleBackwardFromEnd() {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int k = 4;
+
+        int[] original = arr.clone();
+        shuffler.shuffleBackwardFromEnd(arr, k);
+
+        // 验证前6个元素保持不变
+        assertArrayEquals(Arrays.copyOfRange(original, 0, original.length - k),
+                Arrays.copyOfRange(arr, 0, arr.length - k));
+
+        // 验证后4个元素是原来的元素，只是顺序不同
+        Set<Integer> originalLastK = new HashSet<>();
+        Set<Integer> shuffledLastK = new HashSet<>();
+        for (int i = arr.length - k; i < arr.length; i++) {
+            originalLastK.add(original[i]);
+            shuffledLastK.add(arr[i]);
+        }
+        assertEquals(originalLastK, shuffledLastK);
+    }
+
+    @Test
+    void testShuffleBackwardFromEnd_Zero() {
+        int[] arr = {1, 2, 3, 4, 5};
+        int k = 0;
+
+        int[] original = arr.clone();
+        shuffler.shuffleBackwardFromEnd(arr, k);
+
+        // 验证数组保持不变
+        assertArrayEquals(original, arr);
+    }
+
+    @Test
+    void testShuffleBackwardFromEnd_EqualsArrayLength() {
+        int[] arr = {1, 2, 3, 4, 5};
+        int k = 5;
+
+        int[] original = arr.clone();
+        shuffler.shuffleBackwardFromEnd(arr, k);
+
+        // 验证所有元素都被洗牌
+        Set<Integer> originalSet = new HashSet<>();
+        Set<Integer> shuffledSet = new HashSet<>();
+        for (int i = 0; i < arr.length; i++) {
+            originalSet.add(original[i]);
+            shuffledSet.add(arr[i]);
+        }
+        assertEquals(originalSet, shuffledSet);
+    }
+
+    @Test
+    void testShuffleBackwardFromEnd_InvalidParameters() {
+        int[] arr = {1, 2, 3, 4, 5};
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.shuffleBackwardFromEnd(arr, -1);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.shuffleBackwardFromEnd(arr, 6);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.shuffleBackwardFromEnd(null, 3);
+        });
+    }
+
+    @Test
+    void testShuffleBackwardCompatibility() {
+        int[] arr = {1, 2, 3, 4, 5};
+
+        // 测试向后兼容的方法
+        assertDoesNotThrow(() -> {
+            shuffler.shuffleBackward(arr);
+        });
+
+        // 验证数组长度不变
+        assertEquals(5, arr.length);
+    }
+
+    @Test
+    void testShuffleBackwardRandomness() {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int k = 5;
+
+        // 运行多次洗牌，验证随机性
+        Set<String> results = new HashSet<>();
+        for (int i = 0; i < 100; i++) {
+            int[] testArr = arr.clone();
+            shuffler.shuffleBackward(testArr, k);
+            results.add(Arrays.toString(testArr));
+        }
+
+        // 验证产生了不同的结果（概率上应该产生多种排列）
+        assertTrue(results.size() > 1, "洗牌应该产生不同的排列");
     }
 }

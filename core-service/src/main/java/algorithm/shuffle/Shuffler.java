@@ -243,6 +243,78 @@ public class Shuffler {
         return result;
     }
 
+    /**
+     * 对数组的前k个元素进行逆向Fisher-Yates洗牌
+     *
+     * 功能：只对数组的前k个元素进行随机洗牌，保持其余元素位置不变
+     * 算法：基于Fisher-Yates洗牌算法的逆向实现
+     *
+     * 时间复杂度：O(k) - 只需要对前k个元素进行k次交换
+     * 空间复杂度：O(1) - 原地交换，不需要额外空间
+     *
+     * @param arr 需要洗牌的数组
+     * @param k 需要洗牌的前k个元素，必须满足 0 <= k <= arr.length
+     * @throws IllegalArgumentException 当k < 0 或 k > arr.length时抛出
+     */
+    public void shuffleBackward(int[] arr, int k) {
+        if (arr == null) {
+            throw new IllegalArgumentException("数组不能为null");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k必须大于等于0");
+        }
+        if (k > arr.length) {
+            throw new IllegalArgumentException("k不能大于数组长度");
+        }
+
+        // 只对前k个元素进行洗牌
+        for (int i = k - 1; i > 0; i--) {
+            // 在 [0, i] 范围内随机选择一个位置 j
+            int j = ThreadLocalRandom.current().nextInt(i + 1);
+            swap(arr, i, j);
+        }
+    }
+
+    /**
+     * 对数组的后k个元素进行逆向Fisher-Yates洗牌
+     *
+     * 功能：只对数组的后k个元素进行随机洗牌，保持其余元素位置不变
+     * 算法：基于Fisher-Yates洗牌算法的逆向实现，从数组末尾开始
+     *
+     * 时间复杂度：O(k) - 只需要对后k个元素进行k次交换
+     * 空间复杂度：O(1) - 原地交换，不需要额外空间
+     *
+     * @param arr 需要洗牌的数组
+     * @param k 需要洗牌的后k个元素，必须满足 0 <= k <= arr.length
+     * @throws IllegalArgumentException 当k < 0 或 k > arr.length时抛出
+     */
+    public void shuffleBackwardFromEnd(int[] arr, int k) {
+        if (arr == null) {
+            throw new IllegalArgumentException("数组不能为null");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k必须大于等于0");
+        }
+        if (k > arr.length) {
+            throw new IllegalArgumentException("k不能大于数组长度");
+        }
+
+        int n = arr.length;
+        // 只对后k个元素进行洗牌，从倒数第k个位置开始
+        for (int i = n - 1; i >= n - k + 1; i--) {
+            // 在 [n-k, i] 范围内随机选择一个位置 j
+            int j = ThreadLocalRandom.current().nextInt(n - k, i + 1);
+            swap(arr, i, j);
+        }
+    }
+
+    /**
+     * 保留原始的全数组洗牌方法，用于向后兼容
+     *
+     * @param arr 需要洗牌的数组
+     * @deprecated 建议使用新的shuffleBackward(int[] arr, int k)方法
+     */
+    @Deprecated
     public void shuffleBackward(int[] arr) {
         int n = arr.length;
         for (int i = n - 1; i > 0; i--) {
