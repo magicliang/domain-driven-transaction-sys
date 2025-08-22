@@ -139,4 +139,57 @@ public class QuickSort {
         // 这个位置的元素已经"排好序"，后续不再变动
         return i;
     }
+
+    /**
+     * 另一种 partition 方法
+     *
+     * @param arr
+     * @param begin
+     * @param end
+     * @return
+     */
+    private static int partition2(int[] arr, int begin, int end) {
+        if (begin == end) {
+            return begin;
+        }
+
+        // 先选左边作为基准，这个位置会影响第一个i
+        int pivotal = arr[begin];
+
+        int i = begin;
+        int j = end;
+
+        // 假设我们选了左边作为基准，则先从右边开始选区间
+        while (i < j) {
+            // 维持本区间性质，j继续移动。=号是必须的，这样才能恰好找到必须交换的值
+            while (i < j && arr[j] >= pivotal) { // 易错的点：在区间 while 内继续 while 是需要把父条件拷贝进来的
+                j--;
+            }
+            // 维持本区间性质，i继续移动
+            while (i < j && arr[i] <= pivotal) { // 易错的点：在区间 while 内继续 while 是需要把父条件拷贝进来的
+                i++;
+            }
+            swap(arr, i, j);
+        }
+        swap(arr, begin, i);
+
+        return i;
+    }
+
+    /**
+     * 交换数组中两个位置的元素
+     *
+     * @param array 目标数组
+     * @param i 第一个位置
+     * @param j 第二个位置
+     */
+    private static void swap(int[] array, int i, int j) {
+        if (i == j) {
+            return;
+        }
+        int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+
 }
