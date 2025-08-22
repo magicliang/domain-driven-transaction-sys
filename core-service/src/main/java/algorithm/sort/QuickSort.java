@@ -72,6 +72,91 @@ public class QuickSort {
     }
 
     /**
+     * 使用partition2的快速排序入口方法
+     * 基于Hoare分区方案的快速排序实现
+     *
+     * @param arr 待排序的整型数组（允许 null 或空）
+     * @return 排序后的原数组（null 或已排序）
+     */
+    public static int[] quickSort2(int[] arr) {
+        if (arr == null || arr.length <= 1) {
+            return arr;
+        }
+        return quickSort2(arr, 0, arr.length - 1);
+    }
+
+    /**
+     * 使用partition2的快速排序递归主函数
+     * 基于Hoare分区方案的快速排序实现
+     *
+     * @param arr 待排序数组
+     * @param begin 当前排序区间的起始索引（包含）
+     * @param end 当前排序区间的结束索引（包含）
+     * @return 排序完成后的原数组引用
+     */
+    public static int[] quickSort2(int[] arr, int begin, int end) {
+        if (arr == null || begin >= end) {
+            return arr;
+        }
+
+        // 使用partition2进行分区
+        int pivotal = partition2(arr, begin, end);
+
+        // 递归处理左半部分：[begin, pivotal-1]
+        quickSort2(arr, begin, pivotal - 1);
+
+        // 递归处理右半部分：[pivotal+1, end]
+        quickSort2(arr, pivotal + 1, end);
+
+        return arr;
+    }
+
+    /**
+     * 使用partition3的快速排序入口方法
+     * 基于三数取中法和Hoare分区方案的高效快速排序实现
+     *
+     * 特点：
+     * - 使用三数取中法选择pivot，避免最坏情况
+     * - 使用Hoare分区方案，减少交换次数
+     * - 对于大数据集有更好的性能表现
+     *
+     * @param arr 待排序的整型数组（允许 null 或空）
+     * @return 排序后的原数组（null 或已排序）
+     */
+    public static int[] quickSort3(int[] arr) {
+        if (arr == null || arr.length <= 1) {
+            return arr;
+        }
+        return quickSort3(arr, 0, arr.length - 1);
+    }
+
+    /**
+     * 使用partition3的快速排序递归主函数
+     * 基于三数取中法和Hoare分区方案的高效快速排序实现
+     *
+     * @param arr 待排序数组
+     * @param begin 当前排序区间的起始索引（包含）
+     * @param end 当前排序区间的结束索引（包含）
+     * @return 排序完成后的原数组引用
+     */
+    public static int[] quickSort3(int[] arr, int begin, int end) {
+        if (arr == null || begin >= end) {
+            return arr;
+        }
+
+        // 使用partition3进行分区（三数取中法+Hoare分区）
+        int pivotal = partition3(arr, begin, end);
+
+        // 递归处理左半部分：[begin, pivotal-1]
+        quickSort3(arr, begin, pivotal - 1);
+
+        // 递归处理右半部分：[pivotal+1, end]
+        quickSort3(arr, pivotal + 1, end);
+
+        return arr;
+    }
+
+    /**
      * 快速排序的核心分区操作：Lomuto 分区方案
      * 将子数组 [begin, end] 按 pivot 值划分为：
      * [ 小于 pivot ]  [ pivot ]  [ 大于等于 pivot ]
@@ -148,7 +233,7 @@ public class QuickSort {
      * @param end
      * @return
      */
-    private static int partition2(int[] arr, int begin, int end) {
+    static int partition2(int[] arr, int begin, int end) {
         if (begin == end) {
             return begin;
         }
@@ -159,9 +244,13 @@ public class QuickSort {
         int i = begin;
         int j = end;
 
+        // 哨兵划分 partition() 的最后一步是交换 nums[left] 和 nums[i] 。完成交换后，基准数左边的元素都 <= 基准数，这就要求最后一步交换前 nums[left] >= nums[i]
+        // 必须成立。假设我们先"从左往右查找"，那么如果找不到比基准数更大的元素，则会在 i == j 时跳出循环，此时可能 nums[j] == nums[i] >
+        // nums[left]。也就是说，此时最后一步交换操作会把一个比基准数更大的元素交换至数组最左端，导致哨兵划分失败。
+
         // 假设我们选了左边作为基准，则先从右边开始选区间
         while (i < j) {
-            // 维持本区间性质，j继续移动。=号是必须的，这样才能恰好找到必须交换的值
+            // 维持本区间性质，j继续移动。=号是必须的，这样才能恰好找到必须交换的值，排除等号的值
             while (i < j && arr[j] >= pivotal) { // 易错的点：在区间 while 内继续 while 是需要把父条件拷贝进来的
                 j--;
             }
@@ -174,6 +263,61 @@ public class QuickSort {
         swap(arr, begin, i);
 
         return i;
+    }
+
+    /**
+     * 使用三数取中法的Hoare分区方案
+     *
+     * 该分区方法通过以下步骤实现：
+     * 1. 使用三数取中法选择pivot，避免最坏情况
+     * 2. 将pivot交换到区间起始位置
+     * 3. 使用Hoare双指针方案进行分区
+     * 4. 最后将pivot交换到最终位置
+     *
+     * 分区完成后满足：
+     * - pivot左边的所有元素 <= pivot
+     * - pivot右边的所有元素 >= pivot
+     * - pivot位于其最终排序位置
+     *
+     * @param arr 待分区的数组
+     * @param begin 分区区间的起始索引（包含）
+     * @param end 分区区间的结束索引（包含）
+     * @return pivot的最终位置索引
+     */
+    static int partition3(int[] arr, int begin, int end) {
+        if (begin >= end) {
+            return begin;
+        }
+
+        int mid = begin + (end - begin) / 2;
+        final int median = medianThree(arr, begin, mid, end);
+
+        // 标准的左交换方案：即使是使用随机化的 pivotal，找到以后都要和开头交换
+        int target = arr[median];
+        swap(arr, median, begin);
+        int l = begin;
+        int r = end;
+
+        // 如果l和r相遇了，那么不要循环了
+        while (l < r) {
+            // 根据 hoare partition 的逻辑，pivot放在开头，就先从右边开始找起
+
+            // 这样可以保证在最后一个循环的时候：
+            // 1. 如果r走向l，导致 l == r，而 l 不会向右走。因为此时 l 仍然是上一轮结束的时候交换的结果，所以l必然小于等于target，这样最终与begin交换就可以保证begin的位置仍然小于等于
+            // target 的。
+            // 2. 如果l走向r，而r不走，那么r保持交换以前的性质，r 大于等于 target
+            while (l < r && arr[r] >= target) {
+                r--;
+            }
+            while (l < r && arr[l] <= target) {
+                l++;
+            }
+            swap(arr, l, r);
+        }
+
+        // 退出以后，l==r，此时将pivot交换到最终位置，交换前 arr[l]必定小于等于 target
+        swap(arr, begin, l);
+        return l;
     }
 
     /**
@@ -190,6 +334,31 @@ public class QuickSort {
         int tmp = array[i];
         array[i] = array[j];
         array[j] = tmp;
+    }
+
+    /**
+     * 三数取中法：找到三个位置中中位数的索引
+     * 用于快速排序中选择更好的pivot，避免最坏情况
+     *
+     * @param nums 数组
+     * @param left 左索引
+     * @param mid 中间索引
+     * @param right 右索引
+     * @return 中位数所在的索引
+     */
+    static int medianThree(int[] nums, int left, int mid, int right) {
+        int a = nums[left];
+        int b = nums[mid];
+        int c = nums[right];
+
+        // 找出中位数对应的索引，这种中位数的比对方法是唯一正确的，尝试简化if语句都会出错
+        if ((a >= b && a <= c) || (a >= c && a <= b)) {
+            return left;
+        } else if ((b >= a && b <= c) || (b >= c && b <= a)) {
+            return mid;
+        } else {
+            return right;
+        }
     }
 
 }
