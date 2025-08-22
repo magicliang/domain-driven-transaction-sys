@@ -72,6 +72,62 @@ public class QuickSort {
     }
 
     /**
+     * 为了防止栈帧空间的累积，我们可以在每轮哨兵排序完成后，比较两个子数组的长度，仅对较短的子数组进行递归。
+     * 由于较短子数组的长度不会超过 n/2，因此这种方法能确保递归深度不超过 logn
+     *
+     * 尾递归优化的快速排序实现：
+     * - 使用迭代+递归混合模式，将递归深度控制在O(log n)
+     * - 每次只递归处理较短的子区间，避免栈溢出
+     * - 较长的子区间通过迭代处理，减少栈帧创建
+     *
+     * 算法流程：
+     * 1. 使用while循环替代纯递归，处理当前区间
+     * 2. 每次分区后，比较左右子区间长度
+     * 3. 递归处理较短的子区间（保证递归深度）
+     * 4. 通过修改begin/end迭代处理较长的子区间
+     *
+     * 时间复杂度：平均O(n log n)，最坏O(n²)（但概率极低，因使用三数取中法）
+     * 空间复杂度：O(log n)（栈空间，最坏情况）
+     *
+     * @param arr 待排序数组
+     * @param begin 当前排序区间的起始索引（包含）
+     * @param end 当前排序区间的结束索引（包含）
+     * @return 排序完成后的原数组引用
+     */
+    public static int[] quickSortShortest(int[] arr, int begin, int end) {
+        // ======== 递归终止条件：无需排序的情况 ========
+        // 以下情况直接返回，不再递归：
+        // 1. 数组为空或未初始化
+        // 2. 区间无效（begin >= end）——这是 pivotal±1 不越界崩溃的关键防护！
+        //    - pivotal-1 可能 < begin（如 pivotal == begin）
+        //    - pivotal+1 可能 > end（如 pivotal == end）
+        //    若无此判断，将导致无限递归 → StackOverflowError
+        if (arr == null || begin >= end) {
+            return arr;
+        }
+
+        // 递归排序要像二分一样，迭代处理一个区间
+        while (begin < end) {
+            // 每一轮查找开始，会重新计算 pivotal
+            int pivotal = partitionMedian(arr, begin, end); // 使用 partition3
+            // 只排序短区间
+            if (pivotal - begin < end - pivotal) {
+                quickSortShortest(arr, begin, pivotal - 1);
+                // 左区间排好，收窄左区间，进入下一轮循环
+                begin = pivotal + 1;
+            } else {
+                quickSortShortest(arr, pivotal + 1, end);
+                // 右区间排好，收窄右区间，进入下一轮循环
+                end = pivotal - 1;
+            }
+        }
+
+        // 当二分结束以后，所有子区间都排好序了
+        return arr;
+
+    }
+
+    /**
      * 使用partition2的快速排序入口方法
      * 基于Hoare分区方案的快速排序实现
      *
@@ -145,7 +201,7 @@ public class QuickSort {
         }
 
         // 使用partition3进行分区（三数取中法+Hoare分区）
-        int pivotal = partition3(arr, begin, end);
+        int pivotal = partitionMedian(arr, begin, end);
 
         // 递归处理左半部分：[begin, pivotal-1]
         quickSort3(arr, begin, pivotal - 1);
@@ -173,13 +229,13 @@ public class QuickSort {
      * @param end 当前处理区间的结束索引（包含）
      * @return pivot 元素排序后所在的索引位置（分割点）
      */
-    private static int partition(int[] arr, int begin, int end) {
+    static int partition(int[] arr, int begin, int end) {
         // 特殊情况：区间只有一个元素，无需分区，直接返回其位置
         if (begin == end) {
             return begin;
         }
 
-        // 【选择基准】以最后一个元素作为 pivot（目标值）
+        // 【选择基准】以最后一个元素作为 pivot（目标值），这样开闭区间的伸缩就从第一个元素开始
         int target = arr[end];
 
         // 【初始化双游标】
@@ -284,7 +340,7 @@ public class QuickSort {
      * @param end 分区区间的结束索引（包含）
      * @return pivot的最终位置索引
      */
-    static int partition3(int[] arr, int begin, int end) {
+    static int partitionMedian(int[] arr, int begin, int end) {
         if (begin >= end) {
             return begin;
         }
