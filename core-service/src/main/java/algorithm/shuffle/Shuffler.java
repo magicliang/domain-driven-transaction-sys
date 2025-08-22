@@ -325,6 +325,178 @@ public class Shuffler {
     }
 
     /**
+     * Knuth洗牌算法（Fisher-Yates的另一种实现）
+     *
+     * 功能：对数组进行完全随机洗牌
+     * 算法：从数组开头开始，依次将每个元素与后面随机位置的元素交换
+     *
+     * 时间复杂度：O(n) - 需要遍历整个数组
+     * 空间复杂度：O(1) - 原地交换，不需要额外空间
+     *
+     * @param arr 需要洗牌的数组
+     * @throws IllegalArgumentException 当数组为null时抛出
+     */
+    public void knuthShuffle(int[] arr) {
+        if (arr == null) {
+            throw new IllegalArgumentException("数组不能为null");
+        }
+
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            // 在 [i, n-1] 范围内随机选择一个位置 j
+            int j = ThreadLocalRandom.current().nextInt(i, n);
+            swap(arr, i, j);
+        }
+    }
+
+    /**
+     * 内洗牌算法（In-place shuffle）
+     *
+     * 功能：对数组进行原地随机洗牌，保持原有元素不变
+     * 算法：基于Fisher-Yates算法的内洗牌实现
+     *
+     * 时间复杂度：O(n) - 需要遍历整个数组
+     * 空间复杂度：O(1) - 完全原地操作，不需要额外空间
+     *
+     * @param arr 需要洗牌的数组
+     * @throws IllegalArgumentException 当数组为null时抛出
+     */
+    public void inPlaceShuffle(int[] arr) {
+        if (arr == null) {
+            throw new IllegalArgumentException("数组不能为null");
+        }
+
+        int n = arr.length;
+        for (int i = n - 1; i > 0; i--) {
+            // 在 [0, i] 范围内随机选择一个位置 j
+            int j = ThreadLocalRandom.current().nextInt(i + 1);
+            swap(arr, i, j);
+        }
+    }
+
+    /**
+     * 蓄水池抽样算法（Reservoir Sampling）
+     *
+     * 功能：从数据流中随机选择k个元素，每个元素被选中的概率相等
+     * 算法：蓄水池抽样算法，适用于大数据流场景
+     *
+     * 时间复杂度：O(n) - 需要遍历整个数据流
+     * 空间复杂度：O(k) - 只需要存储k个结果
+     *
+     * @param data 数据流数组
+     * @param k 需要选择的元素个数
+     * @return 包含k个随机选择元素的数组
+     * @throws IllegalArgumentException 当参数不合法时抛出
+     */
+    public int[] reservoirSampling(int[] data, int k) {
+        if (data == null) {
+            throw new IllegalArgumentException("数据数组不能为null");
+        }
+        if (k < 0) {
+            throw new IllegalArgumentException("k必须大于等于0");
+        }
+        if (k > data.length) {
+            throw new IllegalArgumentException("k不能大于数据长度");
+        }
+
+        int[] reservoir = new int[k];
+
+        // 初始化蓄水池，存储前k个元素
+        for (int i = 0; i < k; i++) {
+            reservoir[i] = data[i];
+        }
+
+        // 对剩余的元素进行随机选择
+        for (int i = k; i < data.length; i++) {
+            // 生成 [0, i] 范围内的随机数
+            int j = ThreadLocalRandom.current().nextInt(i + 1);
+
+            // 如果随机数小于k，则替换蓄水池中的对应元素
+            if (j < k) {
+                reservoir[j] = data[i];
+            }
+        }
+
+        return reservoir;
+    }
+
+    /**
+     * 加权洗牌算法（Weighted Shuffle）
+     *
+     * 功能：根据权重对数组元素进行随机洗牌，权重越大的元素出现在前面的概率越高
+     * 算法：基于权重指数的随机洗牌算法
+     *
+     * 时间复杂度：O(n log n) - 需要排序
+     * 空间复杂度：O(n) - 需要存储权重和索引
+     *
+     * @param arr 需要洗牌的数组
+     * @param weights 对应的权重数组，必须与arr长度相同
+     * @throws IllegalArgumentException 当参数不合法时抛出
+     */
+    public void weightedShuffle(int[] arr, double[] weights) {
+        if (arr == null || weights == null) {
+            throw new IllegalArgumentException("数组和权重数组都不能为null");
+        }
+        if (arr.length != weights.length) {
+            throw new IllegalArgumentException("数组长度必须与权重数组长度相同");
+        }
+        if (arr.length == 0) {
+            return;
+        }
+
+        int n = arr.length;
+
+        // 创建索引数组和对应的随机键值
+        Integer[] indices = new Integer[n];
+        double[] keys = new double[n];
+
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+            // 使用指数分布生成随机键值，权重越大，键值越小
+            keys[i] = -Math.log(ThreadLocalRandom.current().nextDouble()) / weights[i];
+        }
+
+        // 根据键值进行排序
+        java.util.Arrays.sort(indices, (a, b) -> Double.compare(keys[a], keys[b]));
+
+        // 根据排序后的索引重新排列数组
+        int[] temp = new int[n];
+        for (int i = 0; i < n; i++) {
+            temp[i] = arr[indices[i]];
+        }
+        System.arraycopy(temp, 0, arr, 0, n);
+    }
+
+    /**
+     * 部分洗牌算法（Partial Shuffle）
+     *
+     * 功能：只对数组的指定子区间进行洗牌
+     * 算法：基于Fisher-Yates算法的区间洗牌实现
+     *
+     * 时间复杂度：O(end - start) - 只需要对指定区间进行洗牌
+     * 空间复杂度：O(1) - 原地交换，不需要额外空间
+     *
+     * @param arr 需要洗牌的数组
+     * @param start 洗牌区间的起始索引（包含）
+     * @param end 洗牌区间的结束索引（不包含）
+     * @throws IllegalArgumentException 当参数不合法时抛出
+     */
+    public void partialShuffle(int[] arr, int start, int end) {
+        if (arr == null) {
+            throw new IllegalArgumentException("数组不能为null");
+        }
+        if (start < 0 || end > arr.length || start >= end) {
+            throw new IllegalArgumentException("无效的区间范围");
+        }
+
+        for (int i = end - 1; i > start; i--) {
+            // 在 [start, i] 范围内随机选择一个位置 j
+            int j = ThreadLocalRandom.current().nextInt(start, i + 1);
+            swap(arr, i, j);
+        }
+    }
+
+    /**
      * 交换数组中两个位置的元素
      *
      * @param array 目标数组

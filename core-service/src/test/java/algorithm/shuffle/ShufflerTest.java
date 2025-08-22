@@ -10,17 +10,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Shuffler类的单元测试
+ * Shuffler类的测试类
  *
- * 使用JUnit 5进行测试，包含功能测试、边界测试、异常测试等
+ * 测试覆盖范围：
+ * 1. 正常场景测试：验证洗牌逻辑正确性
+ * 2. 边界条件测试：k=0、k=1、k=数组长度等边界情况
+ * 3. 异常测试：参数验证、非法输入处理
+ * 4. 随机性测试：验证洗牌的随机性
+ * 5. 兼容性测试：确保向后兼容
+ *
+ * @author liangchuan
  */
-public class ShufflerTest {
+class ShufflerTest {
 
-    private final Shuffler shuffler = new Shuffler();
+    private Shuffler shuffler;
+
+    @BeforeEach
+    void setUp() {
+        shuffler = new Shuffler();
+    }
 
     @Test
     @DisplayName("基本功能测试 - 正常洗牌")
@@ -539,5 +552,330 @@ public class ShufflerTest {
 
         // 验证产生了不同的结果（概率上应该产生多种排列）
         assertTrue(results.size() > 1, "洗牌应该产生不同的排列");
+    }
+
+    @Test
+    void testKnuthShuffle() {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] original = arr.clone();
+
+        shuffler.knuthShuffle(arr);
+
+        // 验证洗牌后数组长度不变
+        assertEquals(original.length, arr.length);
+
+        // 验证元素集合不变（只是顺序改变）
+        Set<Integer> originalSet = new HashSet<>();
+        Set<Integer> shuffledSet = new HashSet<>();
+        for (int value : original) {
+            originalSet.add(value);
+        }
+        for (int value : arr) {
+            shuffledSet.add(value);
+        }
+        assertEquals(originalSet, shuffledSet);
+
+        // 验证洗牌确实发生了（虽然有小概率失败，但概率极低）
+        boolean changed = false;
+        for (int i = 0; i < original.length; i++) {
+            if (original[i] != arr[i]) {
+                changed = true;
+                break;
+            }
+        }
+        assertTrue(changed, "洗牌应该改变数组顺序");
+    }
+
+    @Test
+    void testInPlaceShuffle() {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] original = arr.clone();
+
+        shuffler.inPlaceShuffle(arr);
+
+        // 验证洗牌后数组长度不变
+        assertEquals(original.length, arr.length);
+
+        // 验证元素集合不变
+        Set<Integer> originalSet = new HashSet<>();
+        Set<Integer> shuffledSet = new HashSet<>();
+        for (int value : original) {
+            originalSet.add(value);
+        }
+        for (int value : arr) {
+            shuffledSet.add(value);
+        }
+        assertEquals(originalSet, shuffledSet);
+
+        // 验证洗牌确实发生了
+        boolean changed = false;
+        for (int i = 0; i < original.length; i++) {
+            if (original[i] != arr[i]) {
+                changed = true;
+                break;
+            }
+        }
+        assertTrue(changed, "洗牌应该改变数组顺序");
+    }
+
+    @Test
+    void testReservoirSampling() {
+        int[] data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+        // 测试正常情况
+        int[] result = shuffler.reservoirSampling(data, 5);
+        assertEquals(5, result.length);
+
+        // 验证所有结果元素都来自原始数据
+        Set<Integer> dataSet = new HashSet<>();
+        for (int value : data) {
+            dataSet.add(value);
+        }
+        for (int value : result) {
+            assertTrue(dataSet.contains(value), "结果元素必须来自原始数据");
+        }
+
+        // 测试边界情况
+        int[] allResult = shuffler.reservoirSampling(data, 10);
+        assertEquals(10, allResult.length);
+
+        int[] emptyResult = shuffler.reservoirSampling(data, 0);
+        assertEquals(0, emptyResult.length);
+
+        // 测试单元素选择
+        int[] singleResult = shuffler.reservoirSampling(data, 1);
+        assertEquals(1, singleResult.length);
+        assertTrue(dataSet.contains(singleResult[0]));
+    }
+
+    @Test
+    void testReservoirSamplingInvalidParameters() {
+        int[] data = {1, 2, 3, 4, 5};
+
+        // 测试null数组
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.reservoirSampling(null, 3);
+        });
+
+        // 测试负数k
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.reservoirSampling(data, -1);
+        });
+
+        // 测试k大于数组长度
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.reservoirSampling(data, 10);
+        });
+    }
+
+    @Test
+    void testWeightedShuffle() {
+        int[] arr = {1, 2, 3, 4, 5};
+        double[] weights = {1.0, 2.0, 3.0, 4.0, 5.0}; // 权重递增
+
+        int[] original = arr.clone();
+
+        shuffler.weightedShuffle(arr, weights);
+
+        // 验证洗牌后数组长度不变
+        assertEquals(original.length, arr.length);
+
+        // 验证元素集合不变
+        Set<Integer> originalSet = new HashSet<>();
+        Set<Integer> shuffledSet = new HashSet<>();
+        for (int value : original) {
+            originalSet.add(value);
+        }
+        for (int value : arr) {
+            shuffledSet.add(value);
+        }
+        assertEquals(originalSet, shuffledSet);
+
+        // 验证洗牌确实发生了
+        boolean changed = false;
+        for (int i = 0; i < original.length; i++) {
+            if (original[i] != arr[i]) {
+                changed = true;
+                break;
+            }
+        }
+        assertTrue(changed, "加权洗牌应该改变数组顺序");
+    }
+
+    @Test
+    void testWeightedShuffleInvalidParameters() {
+        int[] arr = {1, 2, 3};
+        double[] weights = {1.0, 2.0, 3.0};
+
+        // 测试null数组
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.weightedShuffle(null, weights);
+        });
+
+        // 测试null权重
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.weightedShuffle(arr, null);
+        });
+
+        // 测试长度不匹配
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.weightedShuffle(arr, new double[]{1.0, 2.0});
+        });
+
+        // 测试空数组
+        int[] emptyArr = {};
+        double[] emptyWeights = {};
+        assertDoesNotThrow(() -> {
+            shuffler.weightedShuffle(emptyArr, emptyWeights);
+        });
+    }
+
+    @Test
+    void testPartialShuffle() {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] original = arr.clone();
+
+        // 测试部分洗牌（索引2到7）
+        shuffler.partialShuffle(arr, 2, 7);
+
+        // 验证洗牌后数组长度不变
+        assertEquals(original.length, arr.length);
+
+        // 验证区间外的元素位置不变
+        assertEquals(original[0], arr[0]);
+        assertEquals(original[1], arr[1]);
+        assertEquals(original[7], arr[7]);
+        assertEquals(original[8], arr[8]);
+        assertEquals(original[9], arr[9]);
+
+        // 验证区间内的元素集合不变
+        Set<Integer> originalSubset = new HashSet<>();
+        Set<Integer> shuffledSubset = new HashSet<>();
+        for (int i = 2; i < 7; i++) {
+            originalSubset.add(original[i]);
+            shuffledSubset.add(arr[i]);
+        }
+        assertEquals(originalSubset, shuffledSubset);
+    }
+
+    @Test
+    void testPartialShuffleInvalidParameters() {
+        int[] arr = {1, 2, 3, 4, 5};
+
+        // 测试null数组
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.partialShuffle(null, 1, 3);
+        });
+
+        // 测试无效区间
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.partialShuffle(arr, -1, 3);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.partialShuffle(arr, 3, 1);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            shuffler.partialShuffle(arr, 0, 10);
+        });
+
+        // 测试有效边界
+        assertDoesNotThrow(() -> {
+            shuffler.partialShuffle(arr, 0, 5);
+        });
+
+        assertDoesNotThrow(() -> {
+            shuffler.partialShuffle(arr, 2, 3);
+        });
+    }
+
+    @Test
+    void testShuffleAlgorithmsConsistency() {
+        // 测试不同洗牌算法的一致性
+        int[] arr1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] arr2 = arr1.clone();
+        int[] arr3 = arr1.clone();
+
+        // 使用不同算法洗牌
+        shuffler.knuthShuffle(arr1);
+        shuffler.inPlaceShuffle(arr2);
+        shuffler.shuffleBackward(arr3);
+
+        // 验证所有算法都保持了元素集合
+        Set<Integer> originalSet = new HashSet<>();
+        Set<Integer> set1 = new HashSet<>();
+        Set<Integer> set2 = new HashSet<>();
+        Set<Integer> set3 = new HashSet<>();
+
+        for (int i = 1; i <= 10; i++) {
+            originalSet.add(i);
+        }
+
+        for (int value : arr1) {
+            set1.add(value);
+        }
+        for (int value : arr2) {
+            set2.add(value);
+        }
+        for (int value : arr3) {
+            set3.add(value);
+        }
+
+        assertEquals(originalSet, set1);
+        assertEquals(originalSet, set2);
+        assertEquals(originalSet, set3);
+    }
+
+    @Test
+    void testReservoirSamplingDistribution() {
+        // 测试蓄水池抽样的分布均匀性
+        int[] data = {1, 2, 3, 4, 5};
+        int k = 3;
+        int trials = 10000;
+
+        // 统计每个元素被选中的次数
+        int[] counts = new int[data.length];
+
+        for (int t = 0; t < trials; t++) {
+            int[] result = shuffler.reservoirSampling(data, k);
+            for (int value : result) {
+                counts[value - 1]++;
+            }
+        }
+
+        // 验证每个元素都有被选中
+        for (int count : counts) {
+            assertTrue(count > 0, "每个元素都应该有机会被选中");
+        }
+
+        // 验证总选择次数
+        int totalSelections = 0;
+        for (int count : counts) {
+            totalSelections += count;
+        }
+        assertEquals(trials * k, totalSelections);
+    }
+
+    @Test
+    void testWeightedShuffleBias() {
+        // 测试加权洗牌的偏向性
+        int[] arr = {1, 2, 3};
+        double[] weights = {1.0, 10.0, 1.0}; // 中间元素权重最高
+
+        int trials = 10000;
+        int[] counts = new int[arr.length];
+
+        for (int t = 0; t < trials; t++) {
+            int[] testArr = arr.clone();
+            shuffler.weightedShuffle(testArr, weights);
+            // 统计第一个位置的元素
+            counts[testArr[0] - 1]++;
+        }
+
+        // 验证权重高的元素出现在前面的概率更高
+        // 元素2（权重10.0）应该比元素1和3（权重1.0）更频繁地出现在前面
+        assertTrue(counts[1] > counts[0], "权重高的元素应该更频繁地出现在前面");
+        assertTrue(counts[1] > counts[2], "权重高的元素应该更频繁地出现在前面");
     }
 }
