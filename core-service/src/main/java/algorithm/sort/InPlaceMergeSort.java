@@ -82,7 +82,7 @@ public class InPlaceMergeSort {
 
         // 如果数组完全和原始 arr 总长相等，则可以一对一映射，否则，这里面的 temp 要从0开始，而 arr要从 left 开始
         if (right + 1 - left >= 0) {
-            System.arraycopy(arr, left, temp, left - left, right + 1 - left);
+            System.arraycopy(arr, left, temp, 0, right + 1 - left);
         }
 
         // 设置两个游标，分别在区间的起点
