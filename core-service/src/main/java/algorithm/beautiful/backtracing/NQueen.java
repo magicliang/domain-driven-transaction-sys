@@ -67,6 +67,9 @@ public class NQueen {
      * @return 所有有效的解，每个解是一个 N x N 的棋盘表示
      */
     public static List<List<List<String>>> nQueen(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("棋盘大小必须为正整数");
+        }
         // 1. 准备存储所有解的结果集
         List<List<List<String>>> result = new ArrayList<>();
 
