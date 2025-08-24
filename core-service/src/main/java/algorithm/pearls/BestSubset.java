@@ -3,7 +3,16 @@ package algorithm.pearls;
 import java.util.Arrays;
 
 /**
- * 子集和组合优化问题
+ * 解决实数和的子集问题：判断是否存在大小为k的子集，其和不超过目标值t。
+ * 实数和的子集问题有以下特点：
+ * 1. 状态爆炸：实数是连续的，无法用有限的离散状态表示，导致动态规划（DP）的状态空间无限大。
+ * 2. 精度问题：浮点数比较存在误差，需要引入容差（如Math.abs(a + b - c) < epsilon）来比较。
+ * 3. 存储困难：无法直接用数组索引表示连续的实数区间。
+ *
+ * 因此，实数和的子集问题不适合用动态规划解决。
+ * 当前实现采用贪心算法和快速选择算法，避免了DP的局限性：
+ * - 贪心算法：通过排序和选择最小的k个元素，快速判断是否存在满足条件的子集。
+ * - 快速选择算法：通过部分排序（QuickSelect）优化性能，避免完全排序的开销。
  *
  * @author liangchuan
  */
@@ -12,13 +21,12 @@ public class BestSubset {
     /**
      * 判断是否存在一个 k 元子集，其元素之和不超过 t。
      * 使用贪心算法，先对数组排序，然后取前 k 个最小的元素求和，判断是否满足条件。
-     *
      * @param t   目标值，子集和的上限
      * @param k   子集的大小
      * @param arr 输入的整数数组
      * @return 如果存在满足条件的子集，返回 true；否则返回 false
      */
-    public boolean greedyLessOrEqual(int t, int k, int[] arr) {
+    public boolean greedyLessOrEqual(double t, int k, double[] arr) {
         // 检查输入有效性
         if (arr == null || arr.length < k) {
             return false;
@@ -26,14 +34,10 @@ public class BestSubset {
 
         // 对数组进行排序，以便取前 k 个最小的元素
         Arrays.sort(arr);
-        int sum = 0;
+        double sum = 0.0;
         // 计算前 k 个最小元素的和
         for (int i = 0; i < k; i++) {
             sum += arr[i];
-            // 如果和超过 t，立即返回 false
-            if (sum > t) {
-                return false;
-            }
         }
         // 最终检查是否满足条件
         return sum <= t;
@@ -49,7 +53,7 @@ public class BestSubset {
      * @param arr 输入的整数数组
      * @return 如果存在满足条件的子集，返回 true；否则返回 false
      */
-    public boolean quickSelectLessOrEqual(int t, int k, int[] arr) {
+    public boolean quickSelectLessOrEqual(double t, int k, double[] arr) {
         // 检查输入有效性
         if (arr == null || arr.length < k) {
             return false;
@@ -58,14 +62,10 @@ public class BestSubset {
         // 使用快速选择算法，将前 k 个最小的元素移动到数组的前 k 个位置
         quickSelect(arr, k, 0, arr.length - 1);
 
-        int sum = 0;
+        double sum = 0.0;
         // 计算前 k 个最小元素的和
         for (int i = 0; i < k; i++) {
             sum += arr[i];
-            // 如果和超过 t，立即返回 false
-            if (sum > t) {
-                return false;
-            }
         }
         // 最终检查是否满足条件
         return sum <= t;
@@ -88,7 +88,7 @@ public class BestSubset {
      * @param begin 当前处理的子数组起始索引
      * @param end   当前处理的子数组结束索引
      */
-    private void quickSelect(int[] arr, int k, int begin, int end) {
+    private void quickSelect(double[] arr, int k, int begin, int end) {
         // 获取当前 pivotal 的位置
         int pivotal = partition(arr, begin, end);
         // 如果 pivotal 的位置不等于 k-1，继续调整区间
@@ -112,9 +112,9 @@ public class BestSubset {
      * @param end   当前处理的子数组结束索引
      * @return pivotal 的最终位置
      */
-    private int partition(int[] arr, int begin, int end) {
+    private int partition(double[] arr, int begin, int end) {
         // 选择最后一个元素作为 pivotal
-        int target = arr[end];
+        double target = arr[end];
         int i = begin - 1; // i 是小于 pivotal 的元素的边界
         int j = begin; // j 是当前遍历的索引
 
@@ -133,8 +133,8 @@ public class BestSubset {
         return i;
     }
 
-    void swap(int[] arr, int i, int j) {
-        int tmp = arr[i];
+    void swap(double[] arr, int i, int j) {
+        double tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }
