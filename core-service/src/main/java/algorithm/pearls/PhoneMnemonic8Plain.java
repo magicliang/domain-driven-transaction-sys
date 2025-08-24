@@ -258,6 +258,18 @@ public class PhoneMnemonic8Plain {
         }
     }
 
+    /**
+     * 根据按键编码返回所有可能的匹配名字
+     * 示例：输入 "3569377"，返回 ["FLOWERS"]
+     *
+     * @param key   输入的按键编码
+     * @param index 词典索引
+     * @return 所有可能的匹配名字集合
+     */
+    public static Set<String> findMatchesByKey(String key, Map<String, Set<String>> index) {
+        return index.getOrDefault(key, Collections.emptySet());
+    }
+
     /* ---------- 演示 ---------- */
     public static void main(String[] args) {
         // 1. 生成数字串对应的所有字母组合

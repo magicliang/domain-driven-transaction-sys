@@ -40,28 +40,20 @@ class PhoneMnemonic8PlainTest {
     }
 
     @Test
-    void testNumberToPhrase() {
-        // 测试数字串转单词串
-        String[] dict = {"FLOWERS", "FLOW", "LOWERS", "LOWER", "FLO", "WER", "ER", "S"};
+    void testFindMatchesByKey() {
+        // 构建词典索引
+        String[] dict = {"FLOWERS", "FLOW", "LOWERS", "LOWER", "FLO", "WER", "S"};
         Map<String, Set<String>> index = PhoneMnemonic8Plain.buildIndex(dict);
 
-        List<List<String>> phrases = PhoneMnemonic8Plain.numberToPhrase("3569377", index);
+        // 测试按键编码 "3569377" 的匹配结果
+        Set<String> matches = PhoneMnemonic8Plain.findMatchesByKey("3569377", index);
+        assertTrue(matches.contains("FLOWERS"));
+        assertFalse(matches.contains("FLOW")); // 确保不匹配其他单词
 
-        // 调试输出
-        System.out.println("Generated " + phrases.size() + " phrases:");
-        for (List<String> phrase : phrases) {
-            System.out.println(phrase);
-        }
-
-        // 验证结果是否包含预期的单词组合
-        boolean found = phrases.stream().anyMatch(
-                phrase -> phrase.equals(Arrays.asList("FLOWERS"))
-        );
-        assertTrue(found, "Should contain [FLOWERS]");
-
-        found = phrases.stream().anyMatch(
-                phrase -> phrase.equals(Arrays.asList("FLOW", "ER", "S"))
-        );
-        assertTrue(found, "Should contain [FLOW, ER, S]");
+        // 测试按键编码 "3569" 的匹配结果
+        matches = PhoneMnemonic8Plain.findMatchesByKey("3569", index);
+        assertTrue(matches.contains("FLOW"));
+        assertFalse(matches.contains("FLOWERS")); // 确保不匹配其他单词
     }
+
 }
