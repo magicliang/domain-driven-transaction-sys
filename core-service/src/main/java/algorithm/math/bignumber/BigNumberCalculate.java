@@ -77,10 +77,14 @@ public class BigNumberCalculate {
     }
 
     public static String add(String a, String b) {
+        a = removeLeadingZeros(a);
+        b = removeLeadingZeros(b);
         return add(a.toCharArray(), b.toCharArray());
     }
 
     public static String add2(String a, String b) {
+        a = removeLeadingZeros(a);
+        b = removeLeadingZeros(b);
         return add2(a.toCharArray(), b.toCharArray());
     }
 
@@ -255,6 +259,8 @@ public class BigNumberCalculate {
      * @return
      */
     public static String minus(String minuend, String subtrahend) {
+        minuend = removeLeadingZeros(minuend);
+        subtrahend = removeLeadingZeros(subtrahend);
         if (minuend == null || subtrahend == null || minuend.isEmpty() || subtrahend.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -316,6 +322,24 @@ public class BigNumberCalculate {
             return minuend.compareTo(subtrahend);
         }
         return 1;
+    }
+
+    private static String removeLeadingZeros(String s) {
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
+        int start = 0;
+        boolean isNegative = s.charAt(0) == '-';
+        if (isNegative) {
+            start = 1;
+        }
+        while (start < s.length() - 1 && s.charAt(start) == '0') {
+            start++;
+        }
+        if (isNegative) {
+            return "-" + s.substring(start);
+        }
+        return s.substring(start);
     }
 
     private static int atoi(char c) {
