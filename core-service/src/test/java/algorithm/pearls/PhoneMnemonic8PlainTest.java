@@ -47,15 +47,21 @@ class PhoneMnemonic8PlainTest {
 
         List<List<String>> phrases = PhoneMnemonic8Plain.numberToPhrase("3569377", index);
 
+        // 调试输出
+        System.out.println("Generated " + phrases.size() + " phrases:");
+        for (List<String> phrase : phrases) {
+            System.out.println(phrase);
+        }
+
         // 验证结果是否包含预期的单词组合
         boolean found = phrases.stream().anyMatch(
                 phrase -> phrase.equals(Arrays.asList("FLOWERS"))
         );
-        assertTrue(found);
+        assertTrue(found, "Should contain [FLOWERS]");
 
         found = phrases.stream().anyMatch(
                 phrase -> phrase.equals(Arrays.asList("FLOW", "ER", "S"))
         );
-        assertTrue(found);
+        assertTrue(found, "Should contain [FLOW, ER, S]");
     }
 }

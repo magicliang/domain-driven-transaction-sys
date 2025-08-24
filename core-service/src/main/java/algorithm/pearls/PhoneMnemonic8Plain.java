@@ -109,8 +109,8 @@ public class PhoneMnemonic8Plain {
                 }
             }
         }
-        // 尝试匹配长度为3到4的单词
-        for (int len = 3; len <= 4 && pos + len <= num.length; len++) {
+        // 尝试匹配长度为3到任意长度的单词（支持完整单词匹配）
+        for (int len = 3; len <= num.length - pos; len++) {
             String key = new String(num, pos, len);
             Set<String> words = index.get(key);
             if (words != null) {
