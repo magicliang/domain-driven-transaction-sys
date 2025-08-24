@@ -17,6 +17,7 @@ public class ThreeBlockSwapDemo {
 
     /**
      * 把 αβγ 变成 γβα，β 保持原序。
+     * 其实所有不相连的区间最多可以分成三块进行旋转所以实现这个 threeReverse 就足够了
      *
      * @param a 字符数组
      * @param i α 结束下标（不含）
