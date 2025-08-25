@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
  * project name: domain-driven-transaction-sys
  *
@@ -350,6 +351,7 @@ public class BTree {
                 result.add(current.val);
 
                 // 阶段3：转向右子树
+                // 每一个节点处理完以后都要考虑先处理自己的右节点，然后才到父节点，父节点已经在栈里了，最终能弹出来
                 // 让右子树进入下一轮循环的处理流程
                 // 注意：这里不是直接处理右子树，而是让右子树在下一轮循环中
                 // 按照"左-根-右"的顺序被处理
