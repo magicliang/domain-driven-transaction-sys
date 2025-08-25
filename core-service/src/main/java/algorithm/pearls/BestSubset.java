@@ -1,6 +1,8 @@
 package algorithm.pearls;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 解决实数和的子集问题：判断是否存在大小为k的子集，其和不超过目标值t。
@@ -137,6 +139,129 @@ public class BestSubset {
         double tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
+    }
+
+    /**
+     * 判断是否存在k元子集，其元素之和不超过t
+     *
+     * @param nums n元实数集合
+     * @param t 目标和上限
+     * @param k 子集大小
+     * @return 是否存在满足条件的k元子集
+     */
+    public static boolean existsKSubsetWithSumLE(double[] nums, double t, int k) {
+        if (nums == null || nums.length < k || k <= 0) {
+            return false;
+        }
+
+        List<Double> currentSubset = new ArrayList<>();
+        return backtrack(nums, 0, k, t, currentSubset, 0.0);
+    }
+
+    /**
+     * 回溯算法核心
+     *
+     * @param nums 原数组
+     * @param start 当前考虑的起始位置
+     * @param k 目标子集大小
+     * @param t 目标和上限
+     * @param currentSubset 当前已选择的元素
+     * @param currentSum 当前已选择元素的和
+     * @return 是否找到满足条件的子集
+     */
+    private static boolean backtrack(double[] nums, int start, int k, double t,
+            List<Double> currentSubset, double currentSum) {
+        // 基础情况1：已选择k个元素
+        if (currentSubset.size() == k) {
+            return currentSum <= t;
+        }
+
+        // 基础情况2：剩余元素不够选择
+        if (start >= nums.length || currentSubset.size() + (nums.length - start) < k) {
+            return false;
+        }
+
+        // 剪枝：如果当前和已经超过t，且还需要选择元素，则不可能满足条件
+        // 注意：由于元素可能是负数，这个剪枝需要谨慎使用
+        // if (currentSum > t) return false;
+
+        // 选择性剪枝：如果即使选择最小的剩余元素也会超过t
+        if (currentSum > t && allRemainingElementsPositive(nums, start)) {
+            return false;
+        }
+
+        // 尝试选择当前元素
+        for (int i = start; i < nums.length; i++) {
+            // 剪枝：如果剩余元素不足以组成k个元素的子集
+            if (currentSubset.size() + (nums.length - i) < k) {
+                break;
+            }
+
+            currentSubset.add(nums[i]);
+            if (backtrack(nums, i + 1, k, t, currentSubset, currentSum + nums[i])) {
+                return true;
+            }
+            currentSubset.remove(currentSubset.size() - 1);
+        }
+
+        return false;
+    }
+
+    /**
+     * 辅助方法：判断从start开始的所有剩余元素是否都为正数
+     */
+    private static boolean allRemainingElementsPositive(double[] nums, int start) {
+        for (int i = start; i < nums.length; i++) {
+            if (nums[i] < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 获取满足条件的k元子集（如果存在）
+     *
+     * @param nums n元实数集合
+     * @param t 目标和上限
+     * @param k 子集大小
+     * @return 满足条件的k元子集，如果不存在则返回null
+     */
+    public static List<Double> findKSubsetWithSumLE(double[] nums, double t, int k) {
+        if (nums == null || nums.length < k || k <= 0) {
+            return null;
+        }
+
+        List<Double> currentSubset = new ArrayList<>();
+        if (findBacktrack(nums, 0, k, t, currentSubset, 0.0)) {
+            return new ArrayList<>(currentSubset);
+        }
+        return null;
+    }
+
+    private static boolean findBacktrack(double[] nums, int start, int k, double t,
+            List<Double> currentSubset, double currentSum) {
+        if (currentSubset.size() == k) {
+            return currentSum <= t;
+        }
+
+        if (start >= nums.length || currentSubset.size() + (nums.length - start) < k) {
+            return false;
+        }
+
+        for (int i = start; i < nums.length; i++) {
+            if (currentSubset.size() + (nums.length - i) < k) {
+                break;
+            }
+
+            currentSubset.add(nums[i]);
+            if (findBacktrack(nums, i + 1, k, t, currentSubset, currentSum + nums[i])) {
+                return true;
+            }
+            currentSubset.remove(currentSubset.size() - 1);
+        }
+
+        return false;
     }
 
 }
