@@ -1,9 +1,10 @@
 package algorithm.basicds;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
+import java.util.Map;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -15,6 +16,155 @@ import java.util.Stack;
  *         date: 2025-08-12 21:21
  */
 public class BTree {
+
+    public static class Node {
+
+        int val;
+        Node left;
+        Node right;
+
+        Node() {
+        }
+
+        Node(int val) {
+            this.val = val;
+        }
+
+        Node(int val, Node left, Node right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+
+        /**
+         * 链式设置左子节点
+         */
+        public Node left(int val) {
+            this.left = new Node(val);
+            return this.left;
+        }
+
+        /**
+         * 链式设置右子节点
+         */
+        public Node right(int val) {
+            this.right = new Node(val);
+            return this.right;
+        }
+
+        /**
+         * 链式设置左子节点为已有节点
+         */
+        public Node left(Node node) {
+            this.left = node;
+            return this;
+        }
+
+        /**
+         * 链式设置右子节点为已有节点
+         */
+        public Node right(Node node) {
+            this.right = node;
+            return this;
+        }
+
+        /**
+         * 返回父节点，用于链式调用的回溯
+         */
+        public Node up() {
+            // 注意：这里需要外部维护父节点引用，简化实现中返回this
+            return this;
+        }
+    }
+
+    /**
+     * 二叉树构建器 - 提供可读性强的构造方式
+     */
+    public static class TreeBuilder {
+
+        private final Node root;
+
+        public TreeBuilder(int rootVal) {
+            this.root = new Node(rootVal);
+        }
+
+        public static TreeBuilder create(int rootVal) {
+            return new TreeBuilder(rootVal);
+        }
+
+        /**
+         * 设置左子树
+         * 示例：left(2).left(4).right(5)
+         */
+        public TreeBuilder left(int val) {
+            root.left = new Node(val);
+            return this;
+        }
+
+        /**
+         * 设置右子树
+         * 示例：right(3).left(6).right(7)
+         */
+        public TreeBuilder right(int val) {
+            root.right = new Node(val);
+            return this;
+        }
+
+        /**
+         * 设置左子树为已有节点
+         */
+        public TreeBuilder left(Node node) {
+            root.left = node;
+            return this;
+        }
+
+        /**
+         * 设置右子树为已有节点
+         */
+        public TreeBuilder right(Node node) {
+            root.right = node;
+            return this;
+        }
+
+        /**
+         * 设置左子树为子构建器
+         */
+        public TreeBuilder left(TreeBuilder leftBuilder) {
+            root.left = leftBuilder.build();
+            return this;
+        }
+
+        /**
+         * 设置右子树为子构建器
+         */
+        public TreeBuilder right(TreeBuilder rightBuilder) {
+            root.right = rightBuilder.build();
+            return this;
+        }
+
+        /**
+         * 获取根节点
+         */
+        public Node build() {
+            return root;
+        }
+
+        /**
+         * 链式设置左子节点并返回子构建器
+         */
+        public TreeBuilder leftChild(int val) {
+            root.left = new Node(val);
+            return new TreeBuilder(val);
+        }
+
+        /**
+         * 链式设置右子节点并返回子构建器
+         */
+        public TreeBuilder rightChild(int val) {
+            root.right = new Node(val);
+            return new TreeBuilder(val);
+        }
+    }
 
     /**
      * 快速创建树的工具方法
@@ -506,185 +656,78 @@ public class BTree {
         return result;
     }
 
-    public List<Integer> postOrderNonRecursive2(Node root) {
-        List<Integer> result = new ArrayList<>();
-        if (root == null) {
-            return result;
+    /**
+     * 根据前序遍历和中序遍历构建二叉树
+     *
+     * 算法原理：
+     * 前序遍历的第一个元素是根节点，中序遍历中根节点左侧是左子树，右侧是右子树
+     * 通过递归构建左右子树
+     *
+     * @param preorder 前序遍历数组
+     * @param inorder 中序遍历数组
+     * @return 构建好的二叉树根节点
+     *
+     *         时间复杂度：O(n) - 每个节点只处理一次
+     *         空间复杂度：O(n) - 哈希表存储和递归栈空间
+     */
+    public Node buildTree(int[] preorder, int[] inorder) {
+        Map<Integer, Integer> inorderMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            // 倒序 v k 到 k v
+            inorderMap.put(inorder[i], i);
         }
 
-        Node current = root;
-        Node lastVisited = null;
-        Stack<Node> stack = new Stack<>();
-
-        while (current != null || !stack.isEmpty()) {
-            if (current != null) {
-                stack.push(current);
-                current = current.left;
-            } else {
-                current = stack.peek();
-                // 要提防自己的右子树被重复处理
-                if (current.right != null && lastVisited != current.right) {
-                    // 先处理右子树，这里让它push完了
-                    current = current.right;
-                } else {
-                    // 弹出一个节点，证明没有右子树要处理了，可能右子树为空，也可能本身是右子树，也可能右子树被处理了
-                    current = stack.pop();
-                    result.add(current.val);
-                    // 已经处理过了
-                    lastVisited = current;
-                }
-
-            }
-        }
-        return result;
-    }
-
-    public static class Node {
-
-        int val;
-        Node left;
-        Node right;
-
-        Node() {
-        }
-
-        Node(int val) {
-            this.val = val;
-        }
-
-        Node(int val, Node left, Node right) {
-            this.val = val;
-            this.left = left;
-            this.right = right;
-        }
-
-        /**
-         * 链式设置左子节点
-         */
-        public Node left(int val) {
-            this.left = new Node(val);
-            return this.left;
-        }
-
-        /**
-         * 链式设置右子节点
-         */
-        public Node right(int val) {
-            this.right = new Node(val);
-            return this.right;
-        }
-
-        /**
-         * 链式设置左子节点为已有节点
-         */
-        public Node left(Node node) {
-            this.left = node;
-            return this;
-        }
-
-        /**
-         * 链式设置右子节点为已有节点
-         */
-        public Node right(Node node) {
-            this.right = node;
-            return this;
-        }
-
-        /**
-         * 返回父节点，用于链式调用的回溯
-         */
-        public Node up() {
-            // 注意：这里需要外部维护父节点引用，简化实现中返回this
-            return this;
-        }
+        // 从根节点开始处理，i为0意味着当前子树的根节点是preorder[0]，l和r的当前值意味着当前涉及的子树范围在全部 inorderMap 范围内
+        Node root = dfsConstructTree(preorder, inorderMap, 0, 0, inorder.length - 1);
+        return root;
     }
 
     /**
-     * 二叉树构建器 - 提供可读性强的构造方式
+     * 深度优先搜索构建二叉树的递归辅助方法
+     *
+     * 算法原理：
+     * 1. 前序遍历的第一个元素是当前子树的根节点
+     * 2. 在中序遍历中找到该根节点的位置，可将中序遍历分为左子树和右子树
+     * 3. 根据左子树的节点数，确定前序遍历中左右子树的起始位置
+     *
+     * 参数说明：
+     *
+     * @param preorder 前序遍历数组
+     * @param inorderMap 中序遍历值到索引的映射，用于快速查找根节点位置
+     * @param i 当前子树根节点在前序遍历中的索引
+     * @param l 当前子树在中序遍历中的左边界（包含）
+     * @param r 当前子树在中序遍历中的右边界（包含）
+     * @return 构建好的子树根节点
+     *
+     *         时间复杂度：O(n) - 每个节点只处理一次
+     *         空间复杂度：O(h) - 递归栈深度，h为树高
+     *
+     *         递归过程详解：
+     *         1. 终止条件：当右边界小于左边界时，表示子树为空
+     *         2. 创建根节点：使用前序遍历中索引i处的值
+     *         3. 找到根节点在中序遍历中的位置m
+     *         4. 计算左子树的大小：m - l
+     *         5. 递归构建左子树：前序遍历从i+1开始，中序遍历区间[l, m-1]
+     *         6. 递归构建右子树：前序遍历从i+1+(m-l)开始，中序遍历区间[m+1, r]
      */
-    public static class TreeBuilder {
+    private Node dfsConstructTree(int[] preorder, Map<Integer, Integer> inorderMap, int i, int l, int r) {
+        // 可以认为 inorderMap、l、r 都是为了在 inorder 的数据里移动而存在的，i是 preorder 的索引。
+        // 所以前序遍历提供根节点，后序遍历提供子树
 
-        private final Node root;
-
-        public TreeBuilder(int rootVal) {
-            this.root = new Node(rootVal);
+        // 子树区间为空时终止
+        if (r - l < 0) {
+            return null;
         }
 
-        public static TreeBuilder create(int rootVal) {
-            return new TreeBuilder(rootVal);
-        }
+        Node root = new Node(preorder[i]);
+        int m = inorderMap.get(preorder[i]);
 
-        /**
-         * 设置左子树
-         * 示例：left(2).left(4).right(5)
-         */
-        public TreeBuilder left(int val) {
-            root.left = new Node(val);
-            return this;
-        }
+        // 计算左子树的大小
+        int leftSize = m - l;
 
-        /**
-         * 设置右子树
-         * 示例：right(3).left(6).right(7)
-         */
-        public TreeBuilder right(int val) {
-            root.right = new Node(val);
-            return this;
-        }
+        root.left = dfsConstructTree(preorder, inorderMap, i + 1, l, m - 1);
+        root.right = dfsConstructTree(preorder, inorderMap, i + 1 + leftSize, m + 1, r);
 
-        /**
-         * 设置左子树为已有节点
-         */
-        public TreeBuilder left(Node node) {
-            root.left = node;
-            return this;
-        }
-
-        /**
-         * 设置右子树为已有节点
-         */
-        public TreeBuilder right(Node node) {
-            root.right = node;
-            return this;
-        }
-
-        /**
-         * 设置左子树为子构建器
-         */
-        public TreeBuilder left(TreeBuilder leftBuilder) {
-            root.left = leftBuilder.build();
-            return this;
-        }
-
-        /**
-         * 设置右子树为子构建器
-         */
-        public TreeBuilder right(TreeBuilder rightBuilder) {
-            root.right = rightBuilder.build();
-            return this;
-        }
-
-        /**
-         * 获取根节点
-         */
-        public Node build() {
-            return root;
-        }
-
-        /**
-         * 链式设置左子节点并返回子构建器
-         */
-        public TreeBuilder leftChild(int val) {
-            root.left = new Node(val);
-            return new TreeBuilder(val);
-        }
-
-        /**
-         * 链式设置右子节点并返回子构建器
-         */
-        public TreeBuilder rightChild(int val) {
-            root.right = new Node(val);
-            return new TreeBuilder(val);
-        }
+        return root;
     }
 }
