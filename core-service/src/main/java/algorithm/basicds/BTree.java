@@ -669,8 +669,28 @@ public class BTree {
      *
      *         时间复杂度：O(n) - 每个节点只处理一次
      *         空间复杂度：O(n) - 哈希表存储和递归栈空间
+     * @throws IllegalArgumentException 如果输入数组无效或包含重复值
      */
     public Node buildTree(int[] preorder, int[] inorder) {
+        // 参数校验
+        if (preorder == null || inorder == null || preorder.length != inorder.length) {
+            return null;
+        }
+
+        if (preorder.length == 0) {
+            return null;
+        }
+
+        // 检查是否有重复值
+        Map<Integer, Integer> valueCount = new HashMap<>();
+        for (int val : inorder) {
+            valueCount.put(val, valueCount.getOrDefault(val, 0) + 1);
+            if (valueCount.get(val) > 1) {
+                throw new IllegalArgumentException(
+                        "buildTree方法不支持重复值，请使用buildTreeWithDuplicates方法处理包含重复值的情况");
+            }
+        }
+
         Map<Integer, Integer> inorderMap = new HashMap<>();
         for (int i = 0; i < inorder.length; i++) {
             // 倒序 v k 到 k v
@@ -719,14 +739,141 @@ public class BTree {
             return null;
         }
 
+        // 检查索引边界
+        if (i < 0 || i >= preorder.length) {
+            return null;
+        }
+
         Node root = new Node(preorder[i]);
-        int m = inorderMap.get(preorder[i]);
+        Integer m = inorderMap.get(preorder[i]);
+
+        // 如果找不到对应的索引，返回null
+        if (m == null) {
+            return null;
+        }
+
+        // 检查中序索引是否在有效范围内
+        if (m < l || m > r) {
+            return null;
+        }
 
         // 计算左子树的大小
         int leftSize = m - l;
 
+        // 检查右子树的起始索引是否越界
+        int rightStartIndex = i + 1 + leftSize;
+        if (rightStartIndex >= preorder.length && m + 1 <= r) {
+            // 如果右子树应该存在但索引越界，返回null
+            return null;
+        }
+
         root.left = dfsConstructTree(preorder, inorderMap, i + 1, l, m - 1);
-        root.right = dfsConstructTree(preorder, inorderMap, i + 1 + leftSize, m + 1, r);
+        root.right = dfsConstructTree(preorder, inorderMap, rightStartIndex, m + 1, r);
+
+        return root;
+    }
+
+    /**
+     * 根据前序遍历和中序遍历构建二叉树（支持重复值版本）
+     *
+     * 算法原理：
+     * 前序遍历的第一个元素是根节点，中序遍历中根节点左侧是左子树，右侧是右子树
+     * 由于允许重复值，不能使用HashMap进行快速查找，需要使用线性搜索
+     *
+     * 为什么需要这个方法：
+     * 1. 原有的buildTree方法使用HashMap存储值到索引的映射，当存在重复值时，后面的值会覆盖前面的值
+     * 2. 这会导致无法正确识别根节点在中序遍历中的位置，从而构建错误的树结构
+     * 3. 线性搜索虽然时间复杂度较高(O(n²))，但能正确处理重复值的情况
+     *
+     * @param preorder 前序遍历数组
+     * @param inorder 中序遍历数组
+     * @return 构建好的二叉树根节点
+     *
+     *         时间复杂度：O(n²) - 每个节点需要线性搜索根节点位置
+     *         空间复杂度：O(h) - 递归栈深度，h为树高
+     */
+    public Node buildTreeWithDuplicates(int[] preorder, int[] inorder) {
+        // 参数校验
+        if (preorder == null || inorder == null || preorder.length != inorder.length) {
+            return null;
+        }
+
+        if (preorder.length == 0) {
+            return null;
+        }
+
+        // 从根节点开始处理，i为0意味着当前子树的根节点是preorder[0]
+        // l和r的当前值意味着当前涉及的子树范围在全部inorder数组范围内
+        Node root = dfsConstructTreeWithDuplicates(preorder, inorder, 0, 0, inorder.length - 1);
+        return root;
+    }
+
+    /**
+     * 深度优先搜索构建二叉树的递归辅助方法（支持重复值版本）
+     *
+     * 算法原理：
+     * 1. 前序遍历的第一个元素是当前子树的根节点
+     * 2. 在中序遍历中找到该根节点的位置，将数组分为左子树和右子树
+     * 3. 由于允许重复值，使用线性搜索找到根节点位置
+     * 4. 根据左子树的节点数，确定前序遍历中左右子树的起始位置
+     *
+     * 关键理解：
+     * - 对于普通二叉树（非二叉搜索树），重复值是允许的
+     * - 前序遍历的第一个元素总是当前子树的根节点
+     * - 在中序遍历中，根节点左侧是左子树，右侧是右子树
+     * - 即使有重复值，这个分割逻辑仍然成立
+     *
+     * 参数说明：
+     *
+     * @param preorder 前序遍历数组
+     * @param inorder 中序遍历数组
+     * @param preIndex 当前子树根节点在前序遍历中的索引
+     * @param inStart 当前子树在中序遍历中的左边界（包含）
+     * @param inEnd 当前子树在中序遍历中的右边界（包含）
+     * @return 构建好的子树根节点
+     *
+     *         时间复杂度：O(n²) - 每个节点需要线性搜索根节点位置
+     *         空间复杂度：O(h) - 递归栈深度，h为树高
+     */
+    private Node dfsConstructTreeWithDuplicates(int[] preorder, int[] inorder, int preIndex, int inStart, int inEnd) {
+        // 子树区间为空时终止
+        if (inStart > inEnd) {
+            return null;
+        }
+
+        // 当前子树的根节点值
+        int rootValue = preorder[preIndex];
+        Node root = new Node(rootValue);
+
+        // 在中序遍历的当前区间内找到根节点的位置
+        // 对于重复值，我们使用第一个匹配的位置作为根节点
+        // 这是因为在构建树时，前序遍历的顺序决定了根节点的位置
+        int rootIndex = -1;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == rootValue) {
+                rootIndex = i;
+                break;
+            }
+        }
+
+        // 如果找不到根节点（理论上不应该发生，除非输入无效）
+        if (rootIndex == -1) {
+            throw new IllegalArgumentException(
+                    "Invalid input: root value " + rootValue + " not found in inorder array");
+        }
+
+        // 计算左子树的大小
+        int leftSize = rootIndex - inStart;
+
+        // 递归构建左子树
+        // 左子树的前序遍历起始位置：preIndex + 1
+        // 左子树的中序遍历区间：[inStart, rootIndex - 1]
+        root.left = dfsConstructTreeWithDuplicates(preorder, inorder, preIndex + 1, inStart, rootIndex - 1);
+
+        // 递归构建右子树
+        // 右子树的前序遍历起始位置：preIndex + 1 + leftSize
+        // 右子树的中序遍历区间：[rootIndex + 1, inEnd]
+        root.right = dfsConstructTreeWithDuplicates(preorder, inorder, preIndex + 1 + leftSize, rootIndex + 1, inEnd);
 
         return root;
     }

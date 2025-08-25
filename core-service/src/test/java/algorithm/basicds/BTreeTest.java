@@ -1,6 +1,8 @@
 package algorithm.basicds;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import algorithm.basicds.BTree.Node;
@@ -1650,5 +1652,332 @@ class BTreeTest {
 
         // 验证结果正确性
         assertEquals(Arrays.asList(4, 5, 2, 6, 7, 3, 1), nonRecursivePost);
+    }
+
+    /**
+     * 测试使用HashMap的构建方法（原有实现）- 无重复值情况
+     * 验证原有的buildTree方法在无重复值情况下的正确性
+     */
+    @Test
+    void testBuildTreeWithHashMapNoDuplicates() {
+        // 测试用例：无重复值的简单树
+        // 前序遍历：1,2,4,5,3,6,7
+        // 中序遍历：4,2,5,1,6,3,7
+        // 树结构：
+        //       1
+        //     /   \
+        //    2     3
+        //   / \   / \
+        //  4   5 6   7
+        int[] preorder = {1, 2, 4, 5, 3, 6, 7};
+        int[] inorder = {4, 2, 5, 1, 6, 3, 7};
+
+        BTree tree = new BTree();
+        Node root = tree.buildTree(preorder, inorder);
+
+        // 验证构建的树结构
+        assertEquals(1, root.val);
+        assertEquals(2, root.left.val);
+        assertEquals(3, root.right.val);
+        assertEquals(4, root.left.left.val);
+        assertEquals(5, root.left.right.val);
+        assertEquals(6, root.right.left.val);
+        assertEquals(7, root.right.right.val);
+
+        // 验证遍历结果
+        List<Integer> preOrderResult = tree.preOrder(root);
+        assertEquals(Arrays.asList(1, 2, 4, 5, 3, 6, 7), preOrderResult);
+
+        List<Integer> inOrderResult = tree.midOrder(root);
+        assertEquals(Arrays.asList(4, 2, 5, 1, 6, 3, 7), inOrderResult);
+    }
+
+    /**
+     * 测试使用HashMap的构建方法（原有实现）- 边界情况
+     * 验证原有的buildTree方法在边界情况下的正确性
+     */
+    @Test
+    void testBuildTreeWithHashMapEdgeCases() {
+        BTree tree = new BTree();
+
+        // 测试空数组
+        Node emptyRoot = tree.buildTree(new int[]{}, new int[]{});
+        assertNull(emptyRoot);
+
+        // 测试单节点
+        Node singleRoot = tree.buildTree(new int[]{1}, new int[]{1});
+        assertNotNull(singleRoot);
+        assertEquals(1, singleRoot.val);
+        assertNull(singleRoot.left);
+        assertNull(singleRoot.right);
+
+        // 测试左斜树
+        int[] leftPreorder = {1, 2, 3};
+        int[] leftInorder = {3, 2, 1};
+        Node leftRoot = tree.buildTree(leftPreorder, leftInorder);
+        assertEquals(1, leftRoot.val);
+        assertEquals(2, leftRoot.left.val);
+        assertEquals(3, leftRoot.left.left.val);
+
+        // 测试右斜树
+        int[] rightPreorder = {1, 2, 3};
+        int[] rightInorder = {1, 2, 3};
+        Node rightRoot = tree.buildTree(rightPreorder, rightInorder);
+        assertEquals(1, rightRoot.val);
+        assertEquals(2, rightRoot.right.val);
+        assertEquals(3, rightRoot.right.right.val);
+    }
+
+    /**
+     * 测试支持重复值的构建方法 - 简单重复值情况
+     * 验证buildTreeWithDuplicates方法能正确处理重复值
+     */
+    @Test
+    void testBuildTreeWithDuplicatesSimple() {
+        // 测试用例：包含重复值的简单树
+        // 前序遍历：1,2,1,3
+        // 中序遍历：2,1,1,3
+        // 树结构：
+        //       1
+        //     /   \
+        //    2     1
+        //           \
+        //            3
+        int[] preorder = {1, 2, 1, 3};
+        int[] inorder = {2, 1, 1, 3};
+
+        BTree tree = new BTree();
+        Node root = tree.buildTreeWithDuplicates(preorder, inorder);
+
+        // 验证构建的树结构
+        assertNotNull(root);
+        assertEquals(1, root.val);
+        assertEquals(2, root.left.val);
+        assertEquals(1, root.right.val);
+        assertEquals(3, root.right.right.val);
+        assertNull(root.right.left);
+
+        // 验证遍历结果
+        List<Integer> preOrderResult = tree.preOrder(root);
+        assertEquals(Arrays.asList(1, 2, 1, 3), preOrderResult);
+
+        List<Integer> inOrderResult = tree.midOrder(root);
+        assertEquals(Arrays.asList(2, 1, 1, 3), inOrderResult);
+    }
+
+    /**
+     * 测试支持重复值的构建方法 - 复杂重复值情况
+     * 验证buildTreeWithDuplicates方法能处理更复杂的重复值情况
+     */
+    @Test
+    void testBuildTreeWithDuplicatesComplex() {
+        // 测试用例：包含多个重复值的复杂树
+        // 树结构：
+        //       3
+        //     /   \
+        //    9     3
+        //   /     / \
+        //  20    15  7
+        // 前序遍历：3,9,20,3,15,7
+        // 中序遍历：20,9,3,15,3,7
+        int[] preorder = {3, 9, 20, 3, 15, 7};
+        int[] inorder = {20, 9, 3, 15, 3, 7};
+
+        BTree tree = new BTree();
+        Node root = tree.buildTreeWithDuplicates(preorder, inorder);
+
+        // 验证构建的树结构
+        assertNotNull(root);
+        assertEquals(3, root.val);
+        assertEquals(9, root.left.val);
+        assertEquals(3, root.right.val);
+        assertEquals(20, root.left.left.val);
+        assertEquals(15, root.right.left.val);
+        assertEquals(7, root.right.right.val);
+
+        // 验证遍历结果
+        List<Integer> preOrderResult = tree.preOrder(root);
+        assertEquals(Arrays.asList(3, 9, 20, 3, 15, 7), preOrderResult);
+
+        List<Integer> inOrderResult = tree.midOrder(root);
+        assertEquals(Arrays.asList(20, 9, 3, 15, 3, 7), inOrderResult);
+    }
+
+    /**
+     * 测试支持重复值的构建方法 - 所有节点值相同
+     * 验证buildTreeWithDuplicates方法能处理所有节点值相同的情况
+     */
+    @Test
+    void testBuildTreeWithDuplicatesAllSame() {
+        // 测试用例：所有节点值相同
+        // 前序遍历：1,1,1,1
+        // 中序遍历：1,1,1,1
+        // 树结构：右斜树
+        //   1
+        //    \
+        //     1
+        //      \
+        //       1
+        //        \
+        //         1
+        int[] preorder = {1, 1, 1, 1};
+        int[] inorder = {1, 1, 1, 1};
+
+        BTree tree = new BTree();
+        Node root = tree.buildTreeWithDuplicates(preorder, inorder);
+
+        // 验证构建的树结构
+        assertNotNull(root);
+        assertEquals(1, root.val);
+        assertNull(root.left);
+        assertEquals(1, root.right.val);
+        assertNull(root.right.left);
+        assertEquals(1, root.right.right.val);
+        assertNull(root.right.right.left);
+        assertEquals(1, root.right.right.right.val);
+
+        // 验证遍历结果
+        List<Integer> preOrderResult = tree.preOrder(root);
+        assertEquals(Arrays.asList(1, 1, 1, 1), preOrderResult);
+
+        List<Integer> inOrderResult = tree.midOrder(root);
+        assertEquals(Arrays.asList(1, 1, 1, 1), inOrderResult);
+    }
+
+    /**
+     * 测试支持重复值的构建方法 - 边界情况
+     * 验证buildTreeWithDuplicates方法在边界情况下的正确性
+     */
+    @Test
+    void testBuildTreeWithDuplicatesEdgeCases() {
+        BTree tree = new BTree();
+
+        // 测试空数组
+        Node emptyRoot = tree.buildTreeWithDuplicates(new int[]{}, new int[]{});
+        assertNull(emptyRoot);
+
+        // 测试单节点
+        Node singleRoot = tree.buildTreeWithDuplicates(new int[]{1}, new int[]{1});
+        assertNotNull(singleRoot);
+        assertEquals(1, singleRoot.val);
+        assertNull(singleRoot.left);
+        assertNull(singleRoot.right);
+
+        // 测试两节点重复值
+        int[] preorder = {1, 1};
+        int[] inorder = {1, 1};
+        Node twoNodeRoot = tree.buildTreeWithDuplicates(preorder, inorder);
+        assertEquals(1, twoNodeRoot.val);
+        assertEquals(1, twoNodeRoot.right.val);
+        assertNull(twoNodeRoot.left);
+    }
+
+    /**
+     * 对比测试：两套实现在无重复值情况下结果应一致
+     * 验证两套实现对于无重复值输入产生相同结果
+     */
+    @Test
+    void testCompareTwoImplementationsNoDuplicates() {
+        // 测试用例：无重复值的标准树
+        int[] preorder = {1, 2, 4, 5, 3, 6, 7};
+        int[] inorder = {4, 2, 5, 1, 6, 3, 7};
+
+        BTree tree = new BTree();
+
+        // 使用HashMap版本构建
+        Node rootHashMap = tree.buildTree(preorder, inorder);
+
+        // 使用重复值版本构建
+        Node rootDuplicates = tree.buildTreeWithDuplicates(preorder, inorder);
+
+        // 验证两棵树结构相同
+        assertNotNull(rootHashMap);
+        assertNotNull(rootDuplicates);
+
+        // 验证遍历结果一致
+        List<Integer> preOrderHashMap = tree.preOrder(rootHashMap);
+        List<Integer> preOrderDuplicates = tree.preOrder(rootDuplicates);
+        assertEquals(preOrderHashMap, preOrderDuplicates);
+
+        List<Integer> inOrderHashMap = tree.midOrder(rootHashMap);
+        List<Integer> inOrderDuplicates = tree.midOrder(rootDuplicates);
+        assertEquals(inOrderHashMap, inOrderDuplicates);
+    }
+
+    /**
+     * 测试HashMap版本在重复值情况下的行为
+     * 验证原有的buildTree方法在重复值情况下可能产生的问题
+     */
+    @Test
+    void testHashMapVersionWithDuplicatesBehavior() {
+        // 测试用例：包含重复值的情况
+        // 前序遍历：1,2,1,3
+        // 中序遍历：2,1,1,3
+        int[] preorder = {1, 2, 1, 3};
+        int[] inorder = {2, 1, 1, 3};
+
+        BTree tree = new BTree();
+
+        // 使用支持重复值的版本构建
+        Node root = tree.buildTreeWithDuplicates(preorder, inorder);
+
+        // 验证构建结果
+        assertNotNull(root);
+        assertEquals(1, root.val);
+        assertEquals(2, root.left.val);
+        assertEquals(1, root.right.val);
+        assertEquals(3, root.right.right.val);
+
+        // 验证遍历结果
+        List<Integer> preOrderResult = tree.preOrder(root);
+        assertEquals(Arrays.asList(1, 2, 1, 3), preOrderResult);
+
+        List<Integer> inOrderResult = tree.midOrder(root);
+        assertEquals(Arrays.asList(2, 1, 1, 3), inOrderResult);
+    }
+
+    /**
+     * 验证测试：确保buildTreeWithDuplicates方法能正确处理重复值
+     * 使用简单且明确的测试用例
+     */
+    @Test
+    void testBuildTreeWithDuplicatesValidation() {
+        // 测试用例1：简单重复值
+        // 树结构：  1
+        //         / \
+        //        2   1
+        // 前序：[1,2,1]
+        // 中序：[2,1,1]
+        int[] preorder1 = {1, 2, 1};
+        int[] inorder1 = {2, 1, 1};
+
+        BTree tree = new BTree();
+        Node root1 = tree.buildTreeWithDuplicates(preorder1, inorder1);
+
+        assertNotNull(root1);
+        assertEquals(1, root1.val);
+        assertEquals(2, root1.left.val);
+        assertEquals(1, root1.right.val);
+
+        // 验证遍历结果
+        assertEquals(Arrays.asList(1, 2, 1), tree.preOrder(root1));
+        assertEquals(Arrays.asList(2, 1, 1), tree.midOrder(root1));
+
+        // 测试用例2：所有值相同
+        // 树结构：  1
+        //           \
+        //            1
+        //             \
+        //              1
+        int[] preorder2 = {1, 1, 1};
+        int[] inorder2 = {1, 1, 1};
+
+        Node root2 = tree.buildTreeWithDuplicates(preorder2, inorder2);
+        assertNotNull(root2);
+        assertEquals(1, root2.val);
+        assertNull(root2.left);
+        assertEquals(1, root2.right.val);
+        assertNull(root2.right.left);
+        assertEquals(1, root2.right.right.val);
     }
 }
