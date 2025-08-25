@@ -46,6 +46,12 @@ public class Arrangement {
         System.out.println("测试用例6 - 空数组的全排列: " + arrange(nums6));
     }
 
+    /**
+     * 生成给定数组的所有不重复全排列
+     *
+     * @param nums 输入的整数数组，可能包含重复元素
+     * @return 所有不重复的全排列结果列表
+     */
     public static List<List<Integer>> arrange(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
         if (nums == null || nums.length == 0) {
@@ -61,6 +67,14 @@ public class Arrangement {
         return result;
     }
 
+    /**
+     * 回溯算法的核心实现
+     *
+     * @param nums 原始输入数组
+     * @param used 标记每个元素是否已被使用的布尔数组
+     * @param current 当前正在构建的排列
+     * @param result 存储所有完整排列的结果列表
+     */
     private static void backtrack(int[] nums, boolean[] used, List<Integer> current, List<List<Integer>> result) {
         // 终止条件：当前排列长度等于数组长度
         if (current.size() == nums.length) {  // 这是一个剪枝
@@ -97,7 +111,16 @@ public class Arrangement {
         }
     }
 
-    /* 回溯算法：全排列 II */
+    /**
+     * 回溯算法：全排列 II
+     * 回溯算法的另一种实现方式
+     * 使用状态列表而非全局变量来传递当前状态
+     *
+     * @param state 当前构建的排列状态
+     * @param choices 原始选择数组
+     * @param selected 标记哪些索引已被选择的布尔数组
+     * @param res 存储结果的列表
+     */
     static void backtrack(List<Integer> state, int[] choices, boolean[] selected, List<List<Integer>> res) {
         // 当状态长度等于元素数量时，记录解
         if (state.size() == choices.length) {
@@ -123,9 +146,18 @@ public class Arrangement {
         }
     }
 
-    /* 全排列 II */
+    /**
+     * 全排列II的入口方法
+     * 提供与arrange方法相同的功能，但使用不同的实现方式
+     *
+     * @param nums 输入的整数数组
+     * @return 所有不重复的全排列
+     */
     static List<List<Integer>> permutationsII(int[] nums) {
         List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
         backtrack(new ArrayList<>(), nums, new boolean[nums.length], res);
         return res;
     }
