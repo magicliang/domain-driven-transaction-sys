@@ -3,7 +3,7 @@ package algorithm.basicds;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Stack;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -468,6 +468,7 @@ public class BTree {
         // lastVisited：记录上次访问的节点，用于判断右子树是否已经处理
         // 这个变量的作用是：当我们回到一个节点时，能知道它的右子树是否已经处理过
         // 如果lastVisited == 当前节点的右子节点，说明右子树已处理完，可以处理当前节点
+        // 这个指针的存在提示我们，默认我们要先处理自己的孩子再处理自己，但是等到我们二次访问自己的时候，可以通过这类设计表达孩子是不是被访问过了。
         Node lastVisited = null;
 
         // 探索和回溯如果没有做完，不退出循环
@@ -489,7 +490,7 @@ public class BTree {
                     // 右子树存在且还没处理过 → 转向右子树继续探索
                     current = right;
                 } else {
-                    // 如果探索过右子树，则可以处理当前根了
+                    // 如果探索过右子树，则可以处理当前根了：没有右子树要处理了，可能右子树为空，也可能本身是右子树，也可能右子树被处理了
                     // 注意处理是一种消费，此时要弹出
                     top = stack.pop();
                     result.add(top.val);
@@ -502,6 +503,39 @@ public class BTree {
             }
         }
 
+        return result;
+    }
+
+    public List<Integer> postOrderNonRecursive2(Node root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+
+        Node current = root;
+        Node lastVisited = null;
+        Stack<Node> stack = new Stack<>();
+
+        while (current != null || !stack.isEmpty()) {
+            if (current != null) {
+                stack.push(current);
+                current = current.left;
+            } else {
+                current = stack.peek();
+                // 要提防自己的右子树被重复处理
+                if (current.right != null && lastVisited != current.right) {
+                    // 先处理右子树，这里让它push完了
+                    current = current.right;
+                } else {
+                    // 弹出一个节点，证明没有右子树要处理了，可能右子树为空，也可能本身是右子树，也可能右子树被处理了
+                    current = stack.pop();
+                    result.add(current.val);
+                    // 已经处理过了
+                    lastVisited = current;
+                }
+
+            }
+        }
         return result;
     }
 
