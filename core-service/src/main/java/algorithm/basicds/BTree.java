@@ -19,9 +19,9 @@ public class BTree {
 
     public static class Node {
 
-        int val;
-        Node left;
-        Node right;
+        public int val;
+        public Node left;
+        public Node right;
 
         Node() {
         }
