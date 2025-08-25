@@ -35,7 +35,7 @@ public class Arrangement {
         System.out.println("测试用例4 - 数组 [1,2,3,4] 的全排列数量: " + result4.size());
         System.out.println("测试用例4 - 前5个排列: " + result4.subList(0, Math.min(5, result4.size())));
 
-        // 测试用例5：包含重复元素，如果要去除重复元素，要有一个横跨所有函数的
+        // 测试用例5：包含重复元素，如果要去除重复元素，要有一个横跨所有函数的去重方法
         int[] nums5 = {1, 1, 2};
         System.out.println("测试用例5 - 数组 [1,1,2] 的全排列: " + arrange(nums5));
 
@@ -71,6 +71,7 @@ public class Arrangement {
         // 选择列表：遍历所有未被使用的元素
 
         // 这个列表可以过滤掉本轮用过的元素，如果全局有n个元素（比如2个1），那么剪枝过后，结果数量会/n。比如 [1,1,2] 原本输出6个排列，现在只剩下3个
+        // 跨层之间的重复仍然是可能存在的，但是本层里面的多个重复选择会塌缩到一个选择
         Set<Integer> duplicated = new HashSet<>();
         for (int i = 0; i < nums.length; i++) {
             // 这是一个全路径剪枝和本轮剪枝结合的做法
