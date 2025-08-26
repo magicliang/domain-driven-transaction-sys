@@ -12,6 +12,14 @@ package algorithm.dp;
  */
 public class GridMinPath {
 
+    /**
+     * 使用深度优先搜索计算从左上角到(i,j)位置的最小路径和
+     *
+     * @param grid 二维网格数组
+     * @param i 当前行索引
+     * @param j 当前列索引
+     * @return 从(0,0)到(i,j)的最小路径和
+     */
     int minPathSumDFS(int[][] grid, int i, int j) {
         // 若为左上角单元格，则终止搜索
         if (i == 0 && j == 0) {
@@ -34,7 +42,6 @@ public class GridMinPath {
 
     /**
      * 计算从左上角到右下角的最小路径和
-     *
      * @param grid 二维网格，每个格子包含非负整数
      * @return 最小路径和
      */
@@ -46,5 +53,5 @@ public class GridMinPath {
         int n = grid[0].length;
         return minPathSumDFS(grid, m - 1, n - 1);
     }
-
+    
 }
