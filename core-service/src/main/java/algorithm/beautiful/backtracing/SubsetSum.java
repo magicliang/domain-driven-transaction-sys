@@ -33,6 +33,13 @@ public class SubsetSum {
             return result;
         }
 
+        // 验证输入，防止无限递归
+        for (int num : nums) {
+            if (num <= 0) {
+                throw new IllegalArgumentException("输入数组必须只包含正整数，避免无限递归");
+            }
+        }
+
         // 在回溯框架里，有时候 states 和 states 是可以合并的
         List<Integer> states = new ArrayList<>();
         backtrack(nums, target, states, 0, result);
