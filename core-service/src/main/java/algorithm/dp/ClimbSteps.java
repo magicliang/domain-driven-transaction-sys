@@ -207,7 +207,7 @@ public class ClimbSteps {
      */
     public int dpClimbWithAfterEffect(int n) {
         if (n == 1 || n == 2) {
-            return 1; // 不许跳2阶
+            return 1; // 不许连跳2次1阶
         }
 
         // dp 代表的是累加值，总共有n+1级台阶，从1开始必须有 n+1 个数。每个数有 2 种状态，从 1 开始就是 3 个元素的子数组。
