@@ -2,6 +2,7 @@ package algorithm.beautiful.backtracing;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -90,4 +91,80 @@ public class SubsetSum {
 
     }
 
+    /**
+     * 寻找数组中所有和为指定目标值的子集（不重复使用元素，避免重复组合）
+     *
+     * @param nums 输入整数数组，可能包含重复元素
+     * @param target 目标和值
+     * @return 所有满足条件的子集列表，每个子集是一个整数列表
+     * @example 输入: nums = [2,3,6,7], target = 7
+     *         输出: [[2,5], [7]]  // 假设数组包含5
+     * @note 该方法不重复使用数组中的元素（每个位置的元素最多使用一次）
+     * @note 通过排序和跳过重复元素来避免产生重复的组合
+     * @note 时间复杂度: O(2^n)，其中n是数组长度
+     * @note 空间复杂度: O(n)用于递归栈空间
+     */
+    public List<List<Integer>> subsetSumNoDuplicate(int[] nums, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (null == nums || nums.length == 0) {
+            return result;
+        }
+
+        // 直接在开头避免负数的无限递归
+        for (int num : nums) {
+            if (num <= 0) {
+                throw new IllegalArgumentException("输入数组必须只包含正整数，避免无限递归");
+            }
+        }
+
+        // 要去重要保持单调有序
+        Arrays.sort(nums);
+        backtrackNoDuplicate(nums, target, new ArrayList<>(), 0, result);
+
+        return result;
+    }
+
+    /**
+     * 不重复使用元素的子集和回溯算法
+     *
+     * @param nums 已排序的输入数组
+     * @param target 剩余目标和
+     * @param states 当前已选择的元素
+     * @param start 起始搜索位置，避免重复使用前面的元素
+     * @param result 存储结果的列表
+     * @algorithm 回溯算法：
+     *         1. 当target为0时，找到有效解
+     *         2. 从start位置开始遍历，避免重复使用元素
+     *         3. 跳过重复元素以避免重复解
+     *         4. 递归搜索后续元素
+     */
+    private void backtrackNoDuplicate(int[] nums, int target, List<Integer> states, int start,
+            List<List<Integer>> result) {
+        if (target == 0) {
+            result.add(new ArrayList<>(states));
+            // 结尾剪枝
+            return;
+        }
+
+        final int length = nums.length;
+        // 从start开始，确保不重复使用前面的元素
+        for (int i = start; i < length; i++) {
+            // 跳过重复元素，避免重复解
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            // 作负值剪枝
+            if (target - nums[i] < 0) {
+                continue;
+            }
+
+            states.add(nums[i]);
+
+            // 传入i+1确保不重复使用当前元素
+            backtrackNoDuplicate(nums, target - nums[i], states, i + 1, result);
+
+            states.remove(states.size() - 1);
+        }
+    }
 }

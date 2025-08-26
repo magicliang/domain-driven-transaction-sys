@@ -1,7 +1,7 @@
 package algorithm.beautiful.backtracing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * SubsetSum类的测试用例
- * 测试子集和问题的各种场景
+ * SubsetSum类的测试类
+ * 测试subsetSumNoDuplicate方法的各种场景
  */
-class SubsetSumTest {
+public class SubsetSumTest {
 
     private SubsetSum subsetSum;
 
@@ -24,121 +24,149 @@ class SubsetSumTest {
     }
 
     /**
-     * 测试基本功能：正常输入情况
+     * 测试subsetSumNoDuplicate基本功能：不重复使用元素
      */
     @Test
-    void testSubsetSumINaiveBasic() {
+    void testSubsetSumNoDuplicateBasic() {
         int[] nums = {2, 3, 6, 7};
         int target = 7;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
 
-        assertEquals(4, result.size());
-
-        // 验证结果包含[7]
+        // 期望结果：[[7]]
+        assertEquals(1, result.size());
         assertTrue(result.contains(Collections.singletonList(7)));
+    }
 
-        // 验证结果包含[2,2,3]
+    /**
+     * 测试subsetSumNoDuplicate处理重复元素：避免重复组合
+     */
+    @Test
+    void testSubsetSumNoDuplicateWithDuplicates() {
+        int[] nums = {2, 2, 3, 3, 6, 7};
+        int target = 7;
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
+
+        // 期望结果：[[7], [2,2,3]] 每个组合只出现一次
+        assertEquals(2, result.size());
+        assertTrue(result.contains(Collections.singletonList(7)));
         assertTrue(result.contains(Arrays.asList(2, 2, 3)));
     }
 
     /**
-     * 测试空数组输入
+     * 测试subsetSumNoDuplicate：多个有效解
      */
     @Test
-    void testSubsetSumINaiveEmptyArray() {
+    void testSubsetSumNoDuplicateMultipleSolutions() {
+        int[] nums = {1, 2, 3, 4, 5};
+        int target = 5;
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
+
+        // 期望结果：[[5], [1,4], [2,3]]
+        assertEquals(3, result.size());
+        assertTrue(result.contains(Collections.singletonList(5)));
+        assertTrue(result.contains(Arrays.asList(1, 4)));
+        assertTrue(result.contains(Arrays.asList(2, 3)));
+    }
+
+    /**
+     * 测试subsetSumNoDuplicate：空数组
+     */
+    @Test
+    void testSubsetSumNoDuplicateEmptyArray() {
         int[] nums = {};
         int target = 5;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
 
         assertTrue(result.isEmpty());
     }
 
     /**
-     * 测试null输入
+     * 测试subsetSumNoDuplicate：null输入
      */
     @Test
-    void testSubsetSumINaiveNullInput() {
+    void testSubsetSumNoDuplicateNullInput() {
         int[] nums = null;
         int target = 5;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
 
         assertTrue(result.isEmpty());
     }
 
     /**
-     * 测试无法达到目标值的情况
+     * 测试subsetSumNoDuplicate：无解情况
      */
     @Test
-    void testSubsetSumINaiveNoSolution() {
+    void testSubsetSumNoDuplicateNoSolution() {
         int[] nums = {2, 4, 6};
         int target = 5;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
 
         assertTrue(result.isEmpty());
     }
 
     /**
-     * 测试包含重复元素的情况
+     * 测试subsetSumNoDuplicate：单元素匹配
      */
     @Test
-    void testSubsetSumINaiveWithDuplicates() {
-        int[] nums = {2, 2, 3};
-        int target = 7;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
-
-        // 期望结果：[[2,2,3]]，但可能有重复
-        assertTrue(result.size() >= 1);
-        assertTrue(result.contains(Arrays.asList(2, 2, 3)));
-    }
-
-    /**
-     * 测试单元素数组
-     */
-    @Test
-    void testSubsetSumINaiveSingleElement() {
+    void testSubsetSumNoDuplicateSingleElement() {
         int[] nums = {5};
         int target = 5;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
 
         assertEquals(1, result.size());
         assertTrue(result.contains(Collections.singletonList(5)));
     }
 
     /**
-     * 测试需要多个相同元素的情况
+     * 测试subsetSumNoDuplicate：包含负数（应抛出异常）
      */
     @Test
-    void testSubsetSumINaiveMultipleSameElements() {
-        int[] nums = {3};
-        int target = 9;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+    void testSubsetSumNoDuplicateNegativeNumbers() {
+        int[] nums = {-1, 2, 3};
+        int target = 5;
 
-        // 期望结果：[[3,3,3]]
-        assertEquals(1, result.size());
-        assertTrue(result.contains(Arrays.asList(3, 3, 3)));
+        assertThrows(IllegalArgumentException.class, () -> {
+            subsetSum.subsetSumNoDuplicate(nums, target);
+        });
     }
 
     /**
-     * 测试大数值情况（使用正数避免无限递归）
+     * 测试subsetSumNoDuplicate：包含零（应抛出异常）
      */
     @Test
-    void testSubsetSumINaiveLargeNumbers() {
-        int[] nums = {10, 20, 30};
-        int target = 50;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+    void testSubsetSumNoDuplicateContainsZero() {
+        int[] nums = {0, 2, 3};
+        int target = 5;
 
-        // 期望结果：[[10,10,10,10,10], [10,10,10,20], [10,20,20], [20,30]]
-        assertFalse(result.isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> {
+            subsetSum.subsetSumNoDuplicate(nums, target);
+        });
     }
 
     /**
-     * 测试目标值为0且数组不含0的情况（安全版本）
+     * 测试subsetSumNoDuplicate：复杂重复元素场景
      */
     @Test
-    void testSubsetSumINaiveTargetZeroSafe() {
+    void testSubsetSumNoDuplicateComplexDuplicates() {
+        int[] nums = {1, 1, 1, 2, 2, 3};
+        int target = 4;
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
+
+        // 期望结果：[[1,3], [1,1,2], [2,2]] 每个组合只出现一次
+        assertEquals(3, result.size());
+        assertTrue(result.contains(Arrays.asList(1, 3)));
+        assertTrue(result.contains(Arrays.asList(1, 1, 2)));
+        assertTrue(result.contains(Arrays.asList(2, 2)));
+    }
+
+    /**
+     * 测试subsetSumNoDuplicate：目标值为0
+     */
+    @Test
+    void testSubsetSumNoDuplicateTargetZero() {
         int[] nums = {1, 2, 3};
         int target = 0;
-        List<List<Integer>> result = subsetSum.subsetSumINaive(nums, target);
+        List<List<Integer>> result = subsetSum.subsetSumNoDuplicate(nums, target);
 
         // 空子集的和为0
         assertEquals(1, result.size());
