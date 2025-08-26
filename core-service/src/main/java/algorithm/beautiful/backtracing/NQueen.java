@@ -151,24 +151,26 @@ public class NQueen {
         // 遍历当前行的所有列
         for (int col = 0; col < n; col++) {
             // 2b. 剪枝：检查是否与已放置的皇后冲突
-            if (cols[col] || diags1[row - col + n - 1] || diags2[row + col]) {
+            final int coordination1 = row - col + n - 1;
+            final int coordination2 = row + col;
+            if (cols[col] || diags1[coordination1] || diags2[coordination2]) {
                 continue; // 冲突，跳过此列，尝试下一列
             }
 
             // 2c. 如果不冲突，执行放置皇后操作
             // i. 更新占用标记
-            diags1[row - col + n - 1] = diags2[row + col] = cols[col] = true;
+            diags1[coordination1] = diags2[coordination2] = cols[col] = true;
             // ii. 在棋盘上放置皇后
             combinations.get(row).set(col, "Q");
 
-            // iii. 递归处理下一行
+            // iii. 递归处理下一行。在这里收窄区间帮我们提前做好部分剪枝了。
             backtrack(n, row + 1, cols, diags1, diags2, combinations, result);
 
             // iv. 回溯：撤销当前行的操作，以便尝试其他列
             // 将棋盘恢复
             combinations.get(row).set(col, "*");
             // 取消占用标记
-            diags1[row - col + n - 1] = diags2[row + col] = cols[col] = false;
+            diags1[coordination1] = diags2[coordination2] = cols[col] = false;
         }
         // 当前行所有列都尝试完毕，返回上一层
     }
