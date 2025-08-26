@@ -48,18 +48,26 @@ public class SubsetSum {
     }
 
     /**
-     * 回溯算法核心实现
+     * 回溯算法核心实现 - 允许重复选择元素的子集和求解
      *
-     * @param nums 输入整数数组
-     * @param target 剩余需要达到的目标和
-     * @param states 当前已选择的元素列表
+     * @param nums 输入整数数组，允许包含重复元素
+     * @param target 剩余需要达到的目标和值
+     * @param states 当前已选择的元素列表，表示当前路径状态
      * @param total 当前已选择元素的总和
-     * @param result 存储所有满足条件的子集结果
-     * @algorithm 回溯算法：
-     *         1. 如果当前和等于目标值，记录结果
-     *         2. 如果当前和超过目标值，剪枝返回
-     *         3. 遍历所有元素，允许重复选择
-     *         4. 递归探索所有可能组合
+     * @param result 存储所有满足条件的子集结果列表
+     * @implNote 实现细节：
+     *         - 使用深度优先搜索(DFS)遍历所有可能的组合
+     *         - 允许重复使用数组中的元素（通过不更新start索引实现）
+     *         - 在进入递归前进行剪枝，避免无效搜索
+     *         - 使用回溯模板：选择→递归→撤销选择
+     * @algorithm 回溯算法步骤：
+     *         1. 终止条件：当total等于target时，找到有效解
+     *         2. 剪枝条件：当total超过target时，停止当前路径搜索
+     *         3. 选择阶段：遍历所有元素，允许重复选择
+     *         4. 递归探索：对每个选择进行深度优先搜索
+     *         5. 撤销选择：回溯到上一步状态，继续探索其他可能性
+     * @timeComplexity O(n ^ m) 其中n是数组长度，m是target/min(nums)的近似值
+     * @spaceComplexity O(m) 递归栈的最大深度
      */
     void backtrack(int[] nums, int target, List<Integer> states, int total, List<List<Integer>> result) {
 
@@ -125,18 +133,28 @@ public class SubsetSum {
     }
 
     /**
-     * 不重复使用元素的子集和回溯算法
+     * 不重复使用元素的子集和回溯算法实现
      *
-     * @param nums 已排序的输入数组
-     * @param target 剩余目标和
-     * @param states 当前已选择的元素
-     * @param start 起始搜索位置，避免重复使用前面的元素
-     * @param result 存储结果的列表
-     * @algorithm 回溯算法：
-     *         1. 当target为0时，找到有效解
-     *         2. 从start位置开始遍历，避免重复使用元素
-     *         3. 跳过重复元素以避免重复解
-     *         4. 递归搜索后续元素
+     * @param nums 已排序的输入整数数组，必须预先排序以支持重复元素去重
+     * @param target 剩余需要达到的目标和值
+     * @param states 当前已选择的元素列表，表示当前路径状态
+     * @param start 起始搜索位置索引，确保不重复使用前面的元素
+     * @param result 存储所有满足条件的子集结果列表
+     * @implNote 实现细节：
+     *         - 使用排序后的数组来支持重复元素的去重处理
+     *         - 通过start参数控制元素使用范围，避免重复使用
+     *         - 在同一层级跳过重复值，避免产生重复解
+     *         - 利用排序特性进行负值剪枝，提前终止无效搜索
+     * @algorithm 回溯算法步骤：
+     *         1. 终止条件：当target减至0时，找到有效解
+     *         2. 选择范围：从start位置开始遍历，避免重复使用元素
+     *         3. 去重处理：跳过同一层级的重复元素
+     *         4. 剪枝优化：利用排序特性，提前终止不可能的路径
+     *         5. 递归探索：对每个有效选择进行深度优先搜索
+     *         6. 回溯撤销：移除最后选择的元素，继续探索其他可能性
+     * @timeComplexity O(2 ^ n) 其中n是数组长度，每个元素都有选或不选两种选择
+     * @spaceComplexity O(n) 递归栈的最大深度，最坏情况下为数组长度
+     * @see #subsetSumNoDuplicateCombination(int[], int) 公有方法调用此私有方法
      */
     private void backtrackNoDuplicateCombination(int[] nums, int target, List<Integer> states, int start,
             List<List<Integer>> result) {
@@ -192,6 +210,32 @@ public class SubsetSum {
         return result;
     }
 
+    /**
+     * 不重复使用元素的子集和回溯算法实现（与subsetSumNoDuplicateCombination功能相同）
+     *
+     * @param nums 已排序的输入整数数组，必须预先排序以支持重复元素去重
+     * @param target 剩余需要达到的目标和值
+     * @param states 当前已选择的元素列表，表示当前路径状态
+     * @param start 起始搜索位置索引，确保不重复使用前面的元素
+     * @param result 存储所有满足条件的子集结果列表
+     * @implNote 实现细节：
+     *         - 此实现与{@link #backtrackNoDuplicateCombination}方法功能完全相同
+     *         - 使用排序后的数组来支持重复元素的去重处理
+     *         - 通过start参数控制元素使用范围，避免重复使用
+     *         - 在同一层级跳过重复值，避免产生重复解
+     *         - 利用排序特性进行负值剪枝，提前终止无效搜索
+     * @algorithm 回溯算法步骤：
+     *         1. 终止条件：当target减至0时，找到有效解
+     *         2. 选择范围：从start位置开始遍历，避免重复使用元素
+     *         3. 去重处理：跳过同一层级的重复元素（i > start && nums[i] == nums[i-1]）
+     *         4. 剪枝优化：利用排序特性，当target - nums[i] < 0时提前终止
+     *         5. 递归探索：对每个有效选择进行深度优先搜索
+     *         6. 回溯撤销：移除最后选择的元素，继续探索其他可能性
+     * @timeComplexity O(2 ^ n) 其中n是数组长度，每个元素都有选或不选两种选择
+     * @spaceComplexity O(n) 递归栈的最大深度，最坏情况下为数组长度
+     * @see #subsetSumNoDuplicateElements(int[], int) 公有方法调用此私有方法
+     * @see #backtrackNoDuplicateCombination(int[], int, List, int, List) 功能相同的方法
+     */
     private void backtrackNoDuplicateElements(int[] nums, int target, List<Integer> states, int start,
             List<List<Integer>> result) {
         if (target == 0) {
