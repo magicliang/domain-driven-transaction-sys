@@ -192,19 +192,19 @@ class ClimbStepsTest {
     @Test
     @DisplayName("dpClimbWithAfterEffect - 正常情况 n=4")
     void testDpClimbWithAfterEffect_N4() {
-        assertEquals(3, climbSteps.dpClimbWithAfterEffect(4));
+        assertEquals(2, climbSteps.dpClimbWithAfterEffect(4));
     }
 
     @Test
     @DisplayName("dpClimbWithAfterEffect - 正常情况 n=5")
     void testDpClimbWithAfterEffect_N5() {
-        assertEquals(4, climbSteps.dpClimbWithAfterEffect(5));
+        assertEquals(3, climbSteps.dpClimbWithAfterEffect(5));
     }
 
     @Test
     @DisplayName("dpClimbWithAfterEffect - 正常情况 n=6")
     void testDpClimbWithAfterEffect_N6() {
-        assertEquals(6, climbSteps.dpClimbWithAfterEffect(6));
+        assertEquals(4, climbSteps.dpClimbWithAfterEffect(6));
     }
 
     @ParameterizedTest
@@ -213,13 +213,13 @@ class ClimbStepsTest {
             "1, 1",
             "2, 1",
             "3, 2",
-            "4, 3",
-            "5, 4",
-            "6, 6",
-            "7, 9",
-            "8, 13",
-            "9, 19",
-            "10, 28"
+            "4, 2",
+            "5, 3",
+            "6, 4",
+            "7, 5",
+            "8, 7",
+            "9, 9",
+            "10, 12"
     })
     void testDpClimbWithAfterEffect_MultipleValues(int n, int expected) {
         assertEquals(expected, climbSteps.dpClimbWithAfterEffect(n));
@@ -268,23 +268,23 @@ class ClimbStepsTest {
             "1, 1",
             "2, 1",
             "3, 2",
-            "4, 3",
-            "5, 4",
-            "6, 6",
-            "7, 9",
-            "8, 13",
-            "9, 19",
-            "10, 28",
-            "11, 41",
-            "12, 60",
-            "13, 88",
-            "14, 129",
-            "15, 189",
-            "16, 277",
-            "17, 406",
-            "18, 595",
-            "19, 872",
-            "20, 1278"
+            "4, 2",
+            "5, 3",
+            "6, 4",
+            "7, 5",
+            "8, 7",
+            "9, 9",
+            "10, 12",
+            "11, 16",
+            "12, 21",
+            "13, 28",
+            "14, 37",
+            "15, 49",
+            "16, 65",
+            "17, 86",
+            "18, 114",
+            "19, 151",
+            "20, 200"
     })
     void testConstrainedMethod(int n, int expected) {
         assertEquals(expected, climbSteps.dpClimbWithAfterEffect(n));
