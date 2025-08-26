@@ -35,7 +35,7 @@ public class SubsetSum {
 
         // 在回溯框架里，有时候 states 和 states 是可以合并的
         List<Integer> states = new ArrayList<>();
-        backtrack(nums, target, states, result);
+        backtrack(nums, target, states, 0, result);
         return result;
     }
 
@@ -45,6 +45,7 @@ public class SubsetSum {
      * @param nums 输入整数数组
      * @param target 剩余需要达到的目标和
      * @param states 当前已选择的元素列表
+     * @param total 当前已选择元素的总和
      * @param result 存储所有满足条件的子集结果
      * @algorithm 回溯算法：
      *         1. 如果当前和等于目标值，记录结果
@@ -52,40 +53,34 @@ public class SubsetSum {
      *         3. 遍历所有元素，允许重复选择
      *         4. 递归探索所有可能组合
      */
-    void backtrack(int[] nums, int target, List<Integer> states, List<List<Integer>> result) {
-        if (sum(states) == target) {
+    void backtrack(int[] nums, int target, List<Integer> states, int total, List<List<Integer>> result) {
+
+        // 只处理等于的情况
+        if (total == target) {
             result.add(new ArrayList<>(states));
             return;
-        } else if (sum(states) > target) {
-            // 找不到也退出，停止回溯剪枝
-            return;
         }
+
+        // 添加深度限制防止无限递归
+//        if (states.size() > 100) {  // 或其他合理限制
+//            return;
+//        }
 
         // 因为可以重复取值，所以每一轮循环都不校验 used 的纵向使用，而允许全嵌套
         for (int num : nums) {
+            // 在进入选择前剪枝，和在下一个递归里剪枝的结果是一样的
+            if (total + num > target) {
+                continue;
+            }
             // 选择即记录
+            total += num;
             states.add(num);
-            backtrack(nums, target, states, result);
+            backtrack(nums, target, states, total, result);
             // 撤销选择即记录
             states.remove(states.size() - 1);
+            total -= num;
         }
 
     }
 
-    /**
-     * 计算整数列表的和
-     *
-     * @param choices 整数列表
-     * @return 列表中所有整数的和，空列表返回0
-     */
-    int sum(List<Integer> choices) {
-        int sum = 0;
-        if (null == choices) {
-            return sum;
-        }
-        for (Integer choice : choices) {
-            sum += choice;
-        }
-        return sum;
-    }
 }
