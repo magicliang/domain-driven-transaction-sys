@@ -136,8 +136,9 @@ public class ClimbSteps {
      */
     public int dpClimb(int n) {
         if (n <= 0) {
-            return 0;
+            throw new IllegalArgumentException(""); // 或者根据需求抛出IllegalArgumentException
         }
+
         if (n == 1) {
             return 1;
         }
@@ -206,6 +207,10 @@ public class ClimbSteps {
      * @since 1.0
      */
     public int dpClimbWithAfterEffect(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException(""); // 或者根据需求抛出IllegalArgumentException
+        }
+
         if (n == 1 || n == 2) {
             return 1; // 不许连跳2次1阶
         }
