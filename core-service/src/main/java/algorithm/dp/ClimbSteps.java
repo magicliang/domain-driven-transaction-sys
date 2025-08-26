@@ -14,25 +14,30 @@ public class ClimbSteps {
 
     /**
      * 使用记忆化搜索（自顶向下动态规划）解决爬楼梯问题
-     * 
+     *
      * 问题描述：假设你正在爬楼梯。需要n阶你才能到达楼顶。
      * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
-     * 
+     *
      * 示例：
      * - n = 1: 只有一种方法 (1)
      * - n = 2: 两种方法 (1+1, 2)
      * - n = 3: 三种方法 (1+1+1, 1+2, 2+1)
      * - n = 4: 五种方法 (1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2)
-     * 
+     *
      * 时间复杂度：O(n) - 每个子问题只计算一次
      * 空间复杂度：O(n) - 记忆化数组和递归栈空间
-     * 
+     *
      * @param n 楼梯的总阶数，必须是正整数
      * @return 到达楼顶的不同方法数
+     * @throws IllegalArgumentException 当n小于等于0时抛出
+     * @apiNote 该方法使用记忆化技术优化递归，避免了指数级的时间复杂度
+     * @implNote 内部使用深度优先搜索配合记忆化数组实现
+     * @see #dfsMemoization(int, int[])
+     * @see #dpClimb(int)
      */
     public int memoizationClimb(int n) {
         if (n <= 0) {
-            return 0; // 或者根据需求抛出IllegalArgumentException
+            throw new IllegalArgumentException(""); // 或者根据需求抛出IllegalArgumentException
         }
         // 使用这种 n + 1 数组会让系统从 1 开始遍历
         int[] mem = new int[n + 1];
@@ -41,14 +46,14 @@ public class ClimbSteps {
 
     /**
      * 深度优先搜索 + 记忆化的核心实现
-     * 
+     *
      * 状态转移方程：f(n) = f(n-1) + f(n-2)
      * 解释：到达第n阶楼梯的方法数 = 从n-1阶爬1步上来的方法数 + 从n-2阶爬2步上来的方法数
-     * 
+     *
      * 边界条件：
      * - f(1) = 1 (只有一种方法：爬1阶)
      * - f(2) = 2 (两种方法：1+1 或 直接爬2阶)
-     * 
+     *
      * 记忆化原理：使用数组mem缓存已计算的结果，避免重复计算
      *
      * 数学分析：每一层i的重复调用次数为fib(n-i+1)
@@ -87,10 +92,13 @@ public class ClimbSteps {
      *
      * 因此，记忆化技术将时间复杂度从指数级O(2^n)降低到线性级O(n)，
      * 因为每个f(i)只需要计算一次，后续fib(n-i+1)-1次重复调用都可以直接返回缓存结果。
-     * 
+     *
      * @param n 当前需要计算的楼梯阶数
      * @param mem 记忆化数组，存储已计算的结果
      * @return 到达第n阶楼梯的方法数
+     * @implSpec 该方法采用懒加载策略，只在需要时才计算子问题
+     * @implNote 数组索引从1开始，mem[0]未使用
+     * @since 1.0
      */
     private int dfsMemoization(int n, int[] mem) {
         // 设计思想：每一层其实会被重复调用 fib(n-i+1)次，所以只要第一次调用，然后缓存，剩下的重复调用都不触发递归而直接返回就赢了
@@ -112,12 +120,19 @@ public class ClimbSteps {
 
     /**
      * 迭代法实现（自底向上动态规划）
-     * 
+     *
      * 时间复杂度：O(n)
      * 空间复杂度：O(1) - 只使用常数个变量
-     * 
+     *
      * @param n 楼梯的总阶数
      * @return 到达楼顶的不同方法数
+     * @throws IllegalArgumentException 当n小于等于0时返回0
+     * @apiNote 这是最优化的实现，空间复杂度为O(1)
+     * @implSpec 使用滚动数组技术，只保留前两个状态
+     * @implNote 相比记忆化搜索，避免了递归栈的开销
+     * @since 1.0
+     * @see #memoizationClimb(int)
+     * @see <a href="https://leetcode-cn.com/problems/climbing-stairs/">LeetCode 70. 爬楼梯</a>
      */
     public int dpClimb(int n) {
         if (n <= 0) {
@@ -142,4 +157,73 @@ public class ClimbSteps {
 
         return current;
     }
+
+    /**
+     * 带约束爬楼梯
+     *
+     * <p>给定一个共有 {@code n} 阶的楼梯，你每步可以上 1 阶或者 2 阶，
+     * 但不能连续两轮跳 1 阶，请问有多少种方案可以爬到楼顶？
+     * 状态转移方程：
+     * dp(n, 1) 意味着当前是n阶，再前一步是跳了1阶。
+     * dp(n, 2) 意味着当前是n阶，再前一步是跳了2阶。
+     * 不能连续跳1，则意味着1阶前面必然是2阶
+     *
+     * dp(n, 1) = dp(n-1, 2) // 子问题几乎可以直接传递给父问题
+     * dp(n, 2) = dp(n-2, 1) + dp(n-2, 2) // 等式左边的2意味着上一轮的问题是 n-2 而不是 n-1
+     * dp(n) = dp(n, 1) + dp(n, 2) // 这种带约束的，dp方程是可以下拆的
+     * 状态方程
+     *
+     * @param n 楼梯的总阶数，必须为正整数
+     * @return 在约束条件下的不同方法数
+     * @throws IllegalArgumentException 当n小于等于0时返回0
+     * @apiNote 这是一个典型的带约束的动态规划问题，需要维护两个状态
+     * @implSpec 使用二维数组dp[i][j]，其中j=1表示最后一步跳1阶，j=2表示最后一步跳2阶
+     * @implNote 数组大小为[n+1][3]，索引从1开始，dp[0]未使用
+     * @see <a href="https://leetcode-cn.com/problems/climbing-stairs/">相关变种问题</a>
+     *
+     *         <p><b>示例：</b></p>
+     *         <pre>{@code
+     *         n = 1: 1种方法 (1)
+     *         n = 2: 1种方法 (2) - 不能连续跳1，所以(1,1)不合法
+     *         n = 3: 2种方法 (1,2) 和 (2,1)
+     *         n = 4: 3种方法 (2,2), (1,2,1), (2,1,2)
+     *         }</pre>
+     *
+     *         <p><b>状态定义：</b></p>
+     *         <ul>
+     *           <li>dp[i][1]：到达第i阶，且最后一步跳1阶的方法数</li>
+     *           <li>dp[i][2]：到达第i阶，且最后一步跳2阶的方法数</li>
+     *         </ul>
+     *
+     *         <p><b>边界条件：</b></p>
+     *         <ul>
+     *           <li>dp[1][1] = 1, dp[1][2] = 0</li>
+     *           <li>dp[2][1] = 0, dp[2][2] = 1</li>
+     *         </ul>
+     *
+     *         <p><b>时间复杂度：</b>O(n)</p>
+     *         <p><b>空间复杂度：</b>O(n)</p>
+     * @since 1.0
+     */
+    public int dpClimbWithAfterEffect(int n) {
+        if (n == 1 || n == 2) {
+            return 1; // 不许跳2阶
+        }
+
+        // dp 代表的是累加值，总共有n+1级台阶，从1开始必须有 n+1 个数。每个数有 2 种状态，从 1 开始就是 3 个元素的子数组。
+        int[][] dp = new int[n + 1][3];
+        dp[1][1] = 1;
+        dp[1][2] = 0;
+        dp[2][1] = 0; // 不能连续跳 1，所以这个初始值为 0
+        dp[2][2] = 1;
+
+        for (int i = 3; i <= n; i++) {
+            // 易错的点，忘记给 i 赋值，直接给 n 赋值
+            dp[i][1] = dp[i - 1][2];
+            dp[i][2] = dp[i - 2][1] + dp[i - 2][2];
+        }
+
+        return dp[n][1] + dp[n][2];
+    }
+
 }
