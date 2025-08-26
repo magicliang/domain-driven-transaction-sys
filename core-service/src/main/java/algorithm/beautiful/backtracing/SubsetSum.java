@@ -52,7 +52,7 @@ public class SubsetSum {
      *         3. 遍历所有元素，允许重复选择
      *         4. 递归探索所有可能组合
      */
-    private void backtrack(int[] nums, int target, List<Integer> states, List<List<Integer>> result) {
+    void backtrack(int[] nums, int target, List<Integer> states, List<List<Integer>> result) {
         if (sum(states) == target) {
             result.add(new ArrayList<>(states));
             return;
@@ -78,7 +78,7 @@ public class SubsetSum {
      * @param choices 整数列表
      * @return 列表中所有整数的和，空列表返回0
      */
-    private int sum(List<Integer> choices) {
+    int sum(List<Integer> choices) {
         int sum = 0;
         if (null == choices) {
             return sum;
