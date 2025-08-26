@@ -181,6 +181,7 @@ public class SubsetSum {
             }
         }
 
+        // 易错的点：要去重要保持单调有序
         Arrays.sort(nums);
         backtrackNoDuplicateElements(nums, target, new ArrayList<>(), 0, result);
 
@@ -191,27 +192,26 @@ public class SubsetSum {
             List<List<Integer>> result) {
         if (target == 0) {
             result.add(new ArrayList<>(states));
-            // 结尾剪枝
             return;
         }
 
         final int length = nums.length;
         for (int i = start; i < length; i++) {
-            // 不可再减
+            // 跳过重复元素，避免重复解
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            // 作负值剪枝
             if (target - nums[i] < 0) {
                 continue;
             }
+
             states.add(nums[i]);
-
-            // 跳过重复区间
-            int j = i + 1;
-            while (j < length && nums[j - 1] == nums[j]) {
-                j++;
-            }
-            backtrackNoDuplicateElements(nums, target - nums[i], states, j, result);
-
+            // 此处是 i + 1，不是 i 了
+            // 修改递归值是类似 twosum 的改法
+            backtrackNoDuplicateElements(nums, target - nums[i], states, i + 1, result);
             states.remove(states.size() - 1);
         }
-
     }
 }
