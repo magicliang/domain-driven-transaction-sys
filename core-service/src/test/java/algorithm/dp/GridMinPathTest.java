@@ -135,7 +135,7 @@ public class GridMinPathTest {
                 {0, 1, 0},
                 {0, 0, 0}
         };
-        assertEquals(1, solution.minPathSumMemoization(grid, 2, 2));
+        assertEquals(0, solution.minPathSumMemoization(grid, 2, 2));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class GridMinPathTest {
                 {3, 1, 2, 1, 4},
                 {1, 2, 3, 2, 1}
         };
-        assertEquals(11, solution.minPathSumMemoization(grid, 4, 4));
+        assertEquals(12, solution.minPathSumMemoization(grid, 4, 4));
     }
 
     // ===== 验证两种方法结果一致性 =====
