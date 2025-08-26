@@ -189,6 +189,27 @@ public class SubsetSum {
         }
     }
 
+    /**
+     * 寻找数组中所有和为指定目标值的子集（不重复使用元素，避免重复组合）
+     *
+     * @param nums 输入整数数组，可能包含重复元素
+     * @param target 目标和值
+     * @return 所有满足条件的子集列表，每个子集是一个整数列表
+     * @implNote 方法命名说明：
+     *         - "NoDuplicateElements"指的是避免重复使用同一个位置的元素（每个元素最多使用一次）
+     *         - 但允许数组中存在重复值，并通过排序和跳过机制避免产生重复的组合结果
+     *         - 与{@link #subsetSumNoDuplicateCombination}方法功能完全相同，只是命名不同
+     * @example 输入: nums = [1,1,2,5], target = 4
+     *         输出: [[1,1,2]]  // 两个1来自不同位置，但值相同
+     * @example 输入: nums = [2,3,6,7], target = 7
+     *         输出: [[7]]  // 只有一个7可用
+     * @note 该方法与{@link #subsetSumNoDuplicateCombination}实现逻辑完全一致
+     * @note 方法命名中的"Elements"强调元素不重复使用，而非值不重复
+     * @note 通过排序和跳过机制处理数组中的重复值，避免产生重复的组合
+     * @note 时间复杂度: O(2^n)，其中n是数组长度
+     * @note 空间复杂度: O(n)用于递归栈空间
+     * @see #subsetSumNoDuplicateCombination(int[], int) 功能相同的方法
+     */
     public List<List<Integer>> subsetSumNoDuplicateElements(int[] nums, int target) {
         List<List<Integer>> result = new ArrayList<>();
         if (null == nums || nums.length == 0) {
@@ -205,6 +226,10 @@ public class SubsetSum {
         // 易错的点：要去重要保持单调有序
         // 排序是后续跳过重复元素的前提条件
         Arrays.sort(nums);
+
+        // 初始化回溯过程
+        // 创建一个空的states列表来跟踪当前路径的选择
+        // 从索引0开始搜索，确保可以访问所有元素
         backtrackNoDuplicateElements(nums, target, new ArrayList<>(), 0, result);
 
         return result;
