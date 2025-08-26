@@ -150,11 +150,13 @@ public class SubsetSum {
         // 从start开始，确保不重复使用前面的元素
         for (int i = start; i < length; i++) {
             // 跳过重复元素，避免重复解
+            // 关键：i > start 确保只在同一层级跳过重复，不影响不同层级的相同值
             if (i > start && nums[i] == nums[i - 1]) {
                 continue;
             }
 
             // 作负值剪枝
+            // 由于数组已排序，后续元素更大，可以提前终止
             if (target - nums[i] < 0) {
                 continue;
             }
@@ -162,6 +164,7 @@ public class SubsetSum {
             states.add(nums[i]);
 
             // 传入i+1确保不重复使用当前元素
+            // 关键：i+1 确保每个元素只使用一次
             backtrackNoDuplicateCombination(nums, target - nums[i], states, i + 1, result);
 
             states.remove(states.size() - 1);
@@ -182,6 +185,7 @@ public class SubsetSum {
         }
 
         // 易错的点：要去重要保持单调有序
+        // 排序是后续跳过重复元素的前提条件
         Arrays.sort(nums);
         backtrackNoDuplicateElements(nums, target, new ArrayList<>(), 0, result);
 
@@ -198,11 +202,13 @@ public class SubsetSum {
         final int length = nums.length;
         for (int i = start; i < length; i++) {
             // 跳过重复元素，避免重复解
+            // 关键：只在同一层级跳过重复，不影响不同层级的相同值
             if (i > start && nums[i] == nums[i - 1]) {
                 continue;
             }
 
             // 作负值剪枝
+            // 由于数组已排序，后续元素更大，可以提前终止循环
             if (target - nums[i] < 0) {
                 continue;
             }
@@ -210,6 +216,7 @@ public class SubsetSum {
             states.add(nums[i]);
             // 此处是 i + 1，不是 i 了
             // 修改递归值是类似 twosum 的改法
+            // 关键：i+1 确保每个元素只使用一次，避免重复使用
             backtrackNoDuplicateElements(nums, target - nums[i], states, i + 1, result);
             states.remove(states.size() - 1);
         }
