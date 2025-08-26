@@ -211,8 +211,11 @@ public class ClimbSteps {
             throw new IllegalArgumentException(""); // 或者根据需求抛出IllegalArgumentException
         }
 
-        if (n == 1 || n == 2) {
-            return 1; // 不许连跳2次1阶
+        if (n == 1) {
+            return 1; // 只有(1)一种方法
+        }
+        if (n == 2) {
+            return 1; // 只有(2)一种方法，不能是(1,1)
         }
 
         // dp 代表的是累加值，总共有n+1级台阶，从1开始必须有 n+1 个数。每个数有 2 种状态，从 1 开始就是 3 个元素的子数组。
