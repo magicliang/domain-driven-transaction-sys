@@ -5,7 +5,7 @@ package algorithm.dp;
  * project name: domain-driven-transaction-sys
  *
  * description: 网格最小路径和的问题
- *
+ * 在这个问题里，i 都是行，j 都是列
  * @author magicliang
  *
  *         date: 2025-08-26 20:58
@@ -104,6 +104,52 @@ public class GridMinPath {
         int left = minPathSumMemoization(grid, i, j - 1, dp);
         // 缓存计算结果：取上方和左方的最小值加上当前格子的值
         dp[i][j] = Math.min(left, up) + grid[i][j];
+
+        return dp[i][j];
+    }
+
+    /**
+     * 使用动态规划计算从左上角到(i,j)位置的最小路径和
+     *
+     * 算法原理：
+     * 1. 创建dp数组存储从(0,0)到每个位置的最小路径和
+     * 2. 初始化边界：第一行只能向右走，第一列只能向下走
+     * 3. 状态转移：dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+     *
+     * 时间复杂度：O(m*n)，需要遍历整个网格
+     * 空间复杂度：O(m*n)，用于存储dp数组
+     *
+     * @param grid 二维网格数组
+     * @param i 目标行索引
+     * @param j 目标列索引
+     * @return 从(0,0)到(i,j)的最小路径和
+     */
+    int minPathSumDp(int[][] grid, int i, int j) {
+        // 若为左上角单元格，则终止搜索
+        if (i == 0 && j == 0) {
+            return grid[0][0];
+        }
+        // 若行列索引越界，则返回 +∞ 代价
+        if (i < 0 || j < 0) {
+            return Integer.MAX_VALUE;
+        }
+        int[][] dp = new int[i + 1][j + 1];
+        // 初始化边界条件。
+
+        // 易错的点：只能绕开 grid[0][0]，其他全不能绕开
+        for (int a = 1; a <= j; a++) {
+            dp[0][a] = dp[0][a - 1] + grid[0][a];
+        }
+        for (int b = 1; b <= i; b++) {
+            dp[b][0] = dp[b - 1][0] + grid[b][0];
+        }
+
+        // 这里仍然是一个组合搜索问题：双层循环的点都从1开始，恰好能绕开00
+        for (int m = 1; m <= i; m++) {
+            for (int n = 1; n <= j; n++) {
+                dp[m][n] = Math.min(dp[m - 1][n], dp[m][n - 1]) + grid[m][n];
+            }
+        }
 
         return dp[i][j];
     }
