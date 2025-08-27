@@ -2,9 +2,7 @@ package algorithm.beautiful.backtracing;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * project name: domain-driven-transaction-sys
@@ -105,9 +103,23 @@ class Permutation1 {
         return result;
     }
 
+    /**
+     * 回溯算法生成全排列
+     *
+     * 时间复杂度：O(n! × n)
+     * - 生成所有排列的数量为 n!
+     * - 每个排列需要 O(n) 时间复制到结果列表中
+     * - 总时间复杂度为 O(n! × n)
+     *
+     * 空间复杂度：O(n)
+     * - 递归调用栈的最大深度为 n
+     * - used 数组需要 O(n) 空间
+     * - path 列表需要 O(n) 空间
+     * - 不计算结果存储空间，辅助空间复杂度为 O(n)
+     */
     public static void backtracing(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> result) {
         // 在找到特定的组合以后，在此处剪枝
-        if (path.size() == nums.length - 1) { // 提前返回是剪枝，“快排好”是一种翻煎饼式的剪枝
+        if (path.size() == nums.length) { // 提前返回是剪枝，"快排好"是一种翻煎饼式的剪枝
             // 这个复制深拷贝是为了上方的撤销决策的时候能够不影响输出数据，是必要的空间复杂度
             List<Integer> temp = new ArrayList<>(path);
             result.add(temp);
@@ -126,8 +138,7 @@ class Permutation1 {
             path.add(nums[i]);
             used[i] = true;
             backtracing(nums, used, path, result);
-
-            // 把本空间的选择从路径中移除
+            // 撤销决策
             path.remove(path.size() - 1);
             used[i] = false;
         }
@@ -143,40 +154,43 @@ class Permutation2 {
             return result;
         }
 
-        // 尽量基于原地操作的swap排序法，基于子数组区间的解法
-        backtracing(nums, result, 0);
+        // 要有一个全局变量，延伸已经做出的选择
+        List<Integer> path = new ArrayList<>();
+
+        // 如果学翻饼问题，这里可以把 used, path, result 放到一个 init 方法里初始化为本实例的成员，现在为了和lc一致，继续使用方法参数传递的方法来解决这个问题
+        backtracing(nums, 0, path, result);
 
         return result;
     }
 
-    /**
-     * 通过把每一个当前主数组的每一个元素交换到开头，制造一个子空间，然后仍然让原数组可以原地工作
-     *
-     * @param nums 原始数组
-     * @param result 结果集
-     * @param layer 最重要的参数，当前要决策的层数
-     */
-    public static void backtracing(int[] nums, List<List<Integer>> result, int layer) {
-        if (layer == nums.length - 1) {
-            result.add(Arrays.stream(nums).boxed().collect(Collectors.toList()));
+    public static void backtracing(int[] nums, int start, List<Integer> path, List<List<Integer>> result) {
+        // 在找到特定的组合以后，在此处剪枝
+        if (path.size() == nums.length) { // 提前返回是剪枝，"快排好"是一种翻煎饼式的剪枝
+            // 这个复制深拷贝是为了上方的撤销决策的时候能够不影响输出数据，是必要的空间复杂度
+            List<Integer> temp = new ArrayList<>(path);
+            result.add(temp);
             return;
         }
 
-        // 比如如果是0，则本层就是想办法把所有这个数组的子区间和index0进行交换
-        for (int i = layer; i < nums.length; i++) { // 注意  i = layer 是必须的，如果 i 是 layer + 1，则循环就会少一个乘数，类似阶乘少了最高阶
-            swap(nums, layer, i);
-            backtracing(nums, result, layer + 1);// i == layer，而不是 layer+1，意味着本layer 作为起点的 tracing 也是需要加入递归的
-            swap(nums, i, layer);
-        }
+        // 如果不剪枝，则把当前的探索空间取出来遍历，current意味着当前探索空间是底基层
 
+        // 从球盒模型出发，假设 current 是当前盒子
+        for (int i = start; i < nums.length; i++) {
+            // 把本空间的选择加入路径
+            path.add(nums[i]);
+            // 交换元素，将当前元素移到已处理部分的末尾
+            swap(nums, start, i);
+            backtracing(nums, start + 1, path, result);
+            // 撤销决策
+            path.remove(path.size() - 1);
+            // 恢复原始顺序
+            swap(nums, start, i);
+        }
     }
 
-    private static void swap(int[] nums, int from, int to) {
-        if (from == to) {
-            return;
-        }
-        int temp = nums[from];
-        nums[from] = nums[to];
-        nums[to] = temp;
+    private static void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 }
