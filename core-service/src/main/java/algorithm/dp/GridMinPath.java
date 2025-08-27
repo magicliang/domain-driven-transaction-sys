@@ -359,7 +359,15 @@ public class GridMinPath {
         if (i < 0 || j < 0) {
             return Integer.MAX_VALUE;
         }
+
+        // 创建DP数组，dp[i][j]表示从(0,0)到(i,j)的最小路径和（不是移动代价）
         int[][] dp = new int[i + 1][j + 1];
+
+        // 关键认知：dp[0][0] = grid[0][0] 是必须的
+        // 因为dp存储的是"路径和"，从(0,0)到(0,0)的路径和就是grid[0][0]本身
+        // 即使没有移动，路径仍然经过了起点格子，所以要计算它的值
+        dp[0][0] = grid[0][0];
+
         // 初始化边界条件。
 
         // 易错的点：只能绕开 grid[0][0]，其他全不能绕开
@@ -380,4 +388,38 @@ public class GridMinPath {
         return dp[i][j];
     }
 
+
+    public int minPathSumDPCompOptimized(int[][] grid, int i, int j) {
+        if (i == 0 && j == 0) {
+            return grid[0][0];
+        }
+        // 若行列索引越界，则返回 +∞ 代价
+        if (i < 0 || j < 0) {
+            return Integer.MAX_VALUE;
+        }
+
+        // 使用一维数组优化空间，currentRowDp[j]表示当前行中从(0,0)到(当前行,j)的最小路径和
+        int[] currentRowDp = new int[j + 1];
+
+        // 关键认知：currentRowDp[0] = grid[0][0] 是必须的
+        // 这里存储的是路径和，不是移动代价，从(0,0)到(0,0)的路径和就是grid[0][0]
+        currentRowDp[0] = grid[0][0];
+
+        // 初始化 row 0
+        for (int k = 1; k <= j; k++) {
+            currentRowDp[k] = currentRowDp[k - 1] + grid[0][k];
+        }
+
+        // 还是要有2重循环，时间复杂度不变，只能减空间复杂度
+        for (int l = 1; l <= i; l++) {
+            // 把这一行的单一移动点给更新了
+            currentRowDp[0] = currentRowDp[0] + grid[l][0];
+            for (int m = 1; m <= j; m++) {
+                // 这里有个假设，在赋值以前，currentRowDp[m] 是上一行的值，但是 currentRowDp[m - 1] 是本行已经被更新了列的值
+                currentRowDp[m] = Math.min(currentRowDp[m], currentRowDp[m - 1]) + grid[l][m];
+            }
+        }
+
+        return currentRowDp[j];
+    }
 }
