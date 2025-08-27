@@ -2,13 +2,73 @@ package algorithm.dp;
 
 
 /**
- * project name: domain-driven-transaction-sys
+ * 爬楼梯问题的动态规划解决方案
+ * <p>
+ * 这是一个经典的动态规划问题，也是斐波那契数列的变种应用。
+ * 问题描述：假设你正在爬楼梯，需要n阶你才能到达楼顶。
+ * 每次你可以爬1或2个台阶，求有多少种不同的方法可以爬到楼顶。
+ * </p>
  *
- * description: 爬楼梯
+ * <p>
+ * <strong>问题分析：</strong><br>
+ * 这是一个典型的"最优子结构"问题：
+ * <ul>
+ *   <li>到达第n阶的方法数 = 到达第(n-1)阶的方法数 + 到达第(n-2)阶的方法数</li>
+ *   <li>状态转移方程：f(n) = f(n-1) + f(n-2)</li>
+ *   <li>边界条件：f(1) = 1, f(2) = 2</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * <strong>解决方案对比：</strong>
+ * <table border="1">
+ *   <tr>
+ *     <th>方法</th>
+ *     <th>时间复杂度</th>
+ *     <th>空间复杂度</th>
+ *     <th>特点</th>
+ *   </tr>
+ *   <tr>
+ *     <td>朴素递归</td>
+ *     <td>O(2^n)</td>
+ *     <td>O(n)</td>
+ *     <td>存在大量重复计算</td>
+ *   </tr>
+ *   <tr>
+ *     <td>记忆化搜索</td>
+ *     <td>O(n)</td>
+ *     <td>O(n)</td>
+ *     <td>自顶向下，避免重复计算</td>
+ *   </tr>
+ *   <tr>
+ *     <td>动态规划</td>
+ *     <td>O(n)</td>
+ *     <td>O(1)</td>
+ *     <td>自底向上，空间最优</td>
+ *   </tr>
+ * </table>
+ * </p>
+ *
+ * <p>
+ * <strong>扩展问题：</strong>
+ * <ul>
+ *   <li>带约束的爬楼梯：不能连续两次跳1阶</li>
+ *   <li>多步爬楼梯：每次可以爬1、2或3个台阶</li>
+ *   <li>最小代价爬楼梯：每个台阶有不同的代价</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * <strong>数学背景：</strong><br>
+ * 本问题的解实际上是斐波那契数列的变种：
+ * F(1)=1, F(2)=2, F(n)=F(n-1)+F(n-2) (n≥3)
+ * </p>
  *
  * @author magicliang
- *
- *         date: 2025-08-26 16:10
+ * @version 1.0
+ * @since 2025-08-26
+ * @see <a href="https://leetcode-cn.com/problems/climbing-stairs/">LeetCode 70. 爬楼梯</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci number - Wikipedia</a>
  */
 public class ClimbSteps {
 

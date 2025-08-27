@@ -1,36 +1,87 @@
 package algorithm.sort;
 
 /**
- * project name: domain-driven-transaction-sys
+ * 快速排序算法实现类
+ * <p>
+ * 快速排序是一种高效的分治排序算法，由C.A.R. Hoare在1960年提出。
+ * 其核心思想是选择一个"基准"(pivot)元素，通过一趟排序将待排记录分隔成独立的两部分，
+ * 其中一部分记录的关键字均比另一部分的关键字小，然后分别对这两部分记录继续进行排序，
+ * 以达到整个序列有序。
+ * </p>
  *
- * description: 快速排序实现
- * 使用递归分治策略，通过 pivot 分割区间，逐步将每个元素归位
+ * <p>
+ * <strong>算法特点：</strong>
+ * <ul>
+ *   <li>分治策略：将大问题分解为小问题递归解决</li>
+ *   <li>原地排序：空间复杂度O(log n)，仅使用递归栈空间</li>
+ *   <li>不稳定排序：相等元素的相对位置可能改变</li>
+ *   <li>平均性能优秀：期望时间复杂度O(n log n)</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * <strong>实现方案：</strong>
+ * <ul>
+ *   <li>Lomuto分区方案：逻辑清晰，以末尾元素为pivot</li>
+ *   <li>Hoare分区方案：交换次数更少，性能更优</li>
+ *   <li>三数取中法：避免最坏情况，提高平均性能</li>
+ *   <li>尾递归优化：控制递归深度，防止栈溢出</li>
+ * </ul>
+ * </p>
  *
  * @author magicliang
- *
- *         date: 2025-08-21 16:00
+ * @version 1.0
+ * @since 2025-08-21
+ * @see <a href="https://en.wikipedia.org/wiki/Quicksort">Quicksort - Wikipedia</a>
  */
 public class QuickSort {
 
     /**
-     /**
      * 快速排序入口方法：对整个数组进行原地快速排序
-     * 使用递归分治策略，通过 pivot 分割区间，逐步将每个元素归位
+     * <p>
+     * 使用递归分治策略，通过 pivot 分割区间，逐步将每个元素归位。
+     * 这是最基础的快速排序实现，使用Lomuto分区方案。
+     * </p>
      *
-     * 时间复杂度：
-     * - 最好情况：O(n log n) - 每次分区都能将数组平均分成两部分
-     * - 平均情况：O(n log n) - 随机选择基准元素的期望性能
-     * - 最坏情况：O(n²) - 每次分区都极不平衡（如已排序数组选择首/末元素作为基准）
+     * <p>
+     * <strong>算法复杂度分析：</strong>
+     * </p>
+     * <ul>
+     *   <li><strong>时间复杂度：</strong>
+     *     <ul>
+     *       <li>最好情况：O(n log n) - 每次分区都能将数组平均分成两部分</li>
+     *       <li>平均情况：O(n log n) - 随机选择基准元素的期望性能</li>
+     *       <li>最坏情况：O(n²) - 每次分区都极不平衡（如已排序数组选择首/末元素作为基准）</li>
+     *     </ul>
+     *   </li>
+     *   <li><strong>空间复杂度：</strong>
+     *     <ul>
+     *       <li>最好情况：O(log n) - 递归调用栈深度为 log n</li>
+     *       <li>最坏情况：O(n) - 递归调用栈深度为 n（退化为链式递归）</li>
+     *       <li>平均情况：O(log n) - 期望递归深度为 log n</li>
+     *     </ul>
+     *   </li>
+     * </ul>
      *
-     * 空间复杂度：
-     * - 最好情况：O(log n) - 递归调用栈深度为 log n
-     * - 最坏情况：O(n) - 递归调用栈深度为 n（退化为链式递归）
-     * - 平均情况：O(log n) - 期望递归深度为 log n
+     * <p>
+     * <strong>复杂度证明：</strong><br>
+     * 设T(n)为排序n个元素的时间复杂度，分区操作需要O(n)时间，则：
+     * <ul>
+     *   <li>最好情况：T(n) = 2T(n/2) + O(n)，根据主定理得T(n) = O(n log n)</li>
+     *   <li>最坏情况：T(n) = T(n-1) + O(n)，递推得T(n) = O(n²)</li>
+     *   <li>平均情况：期望分区比例为1:1，故平均复杂度为O(n log n)</li>
+     * </ul>
+     * </p>
      *
-     * @param arr 待排序的整型数组（允许 null 或空）
-     * @return 排序后的原数组（null 或已排序）
+     * @param arr 待排序的整型数组（允许 null 或空数组）
+     * @return 排序后的原数组引用（对于null输入返回null）
+     * @throws ArrayIndexOutOfBoundsException 当数组为null时调用arr.length会抛出此异常
      */
     public static int[] quickSort(int[] arr) {
+        // 边界检查：null数组无法获取长度，会抛出异常
+        if (arr == null) {
+            return null;
+        }
         // 将全局排序委托给区间版本：[0, length-1]
         return quickSort(arr, 0, arr.length - 1);
     }
@@ -293,12 +344,42 @@ public class QuickSort {
     }
 
     /**
-     * 另一种 partition 方法
+     * Hoare分区方案的分区操作
+     * <p>
+     * 这是由快速排序发明者C.A.R. Hoare提出的原始分区方案，
+     * 相比Lomuto方案具有更少的交换次数，在实践中性能更优。
+     * </p>
      *
-     * @param arr
-     * @param begin
-     * @param end
-     * @return
+     * <p>
+     * <strong>算法流程：</strong>
+     * <ol>
+     *   <li>选择区间起始元素作为pivot</li>
+     *   <li>使用双指针从两端向中间扫描</li>
+     *   <li>左指针寻找大于等于pivot的元素</li>
+     *   <li>右指针寻找小于等于pivot的元素</li>
+     *   <li>交换找到的元素，继续扫描直到指针相遇</li>
+     *   <li>将pivot交换到最终位置</li>
+     * </ol>
+     * </p>
+     *
+     * <p>
+     * <strong>关键设计要点：</strong>
+     * <ul>
+     *   <li>选择左端元素为pivot时，必须先从右端开始扫描</li>
+     *   <li>这样确保最终相遇位置的元素小于等于pivot</li>
+     *   <li>避免了将大于pivot的元素交换到起始位置的错误</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * <strong>时间复杂度：</strong> O(n) - 需要扫描整个区间<br>
+     * <strong>空间复杂度：</strong> O(1) - 仅使用常数额外空间
+     * </p>
+     *
+     * @param arr 待分区的数组
+     * @param begin 分区区间的起始索引（包含）
+     * @param end 分区区间的结束索引（包含）
+     * @return pivot元素的最终位置索引
      */
     static int partition2(int[] arr, int begin, int end) {
         if (begin == end) {
