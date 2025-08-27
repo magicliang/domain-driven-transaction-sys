@@ -211,7 +211,68 @@ public class GridMinPathTest {
         assertEquals(12, solution.minPathSumDp(grid, 4, 4));
     }
 
-    // ===== 验证三种方法结果一致性 =====
+    // ===== 新增的空间优化动态规划方法测试 =====
+
+    @Test
+    public void testDpOptimizedBasic3x3Grid() {
+        int[][] grid = {
+                {1, 3, 1},
+                {1, 5, 1},
+                {4, 2, 1}
+        };
+        assertEquals(7, solution.minPathSumDPCompOptimized(grid, 2, 2));
+    }
+
+    @Test
+    public void testDpOptimizedSingleCell() {
+        int[][] grid = {{5}};
+        assertEquals(5, solution.minPathSumDPCompOptimized(grid, 0, 0));
+    }
+
+    @Test
+    public void testDpOptimizedTopLeftCorner() {
+        int[][] grid = {
+                {1, 2, 3},
+                {4, 5, 6}
+        };
+        assertEquals(1, solution.minPathSumDPCompOptimized(grid, 0, 0));
+    }
+
+    @Test
+    public void testDpOptimizedEdgeCases() {
+        int[][] grid = {
+                {1, 2, 3},
+                {4, 5, 6},
+                {7, 8, 9}
+        };
+        // 测试边界位置
+        assertEquals(6, solution.minPathSumDPCompOptimized(grid, 0, 2)); // 第一行最后一个
+        assertEquals(12, solution.minPathSumDPCompOptimized(grid, 2, 0)); // 第一列最后一个
+    }
+
+    @Test
+    public void testDpOptimizedWithZeros() {
+        int[][] grid = {
+                {0, 0, 0},
+                {0, 1, 0},
+                {0, 0, 0}
+        };
+        assertEquals(0, solution.minPathSumDPCompOptimized(grid, 2, 2));
+    }
+
+    @Test
+    public void testDpOptimizedLargeGrid() {
+        int[][] grid = {
+                {1, 3, 1, 2, 1},
+                {1, 5, 1, 3, 2},
+                {4, 2, 1, 1, 3},
+                {3, 1, 2, 1, 4},
+                {1, 2, 3, 2, 1}
+        };
+        assertEquals(12, solution.minPathSumDPCompOptimized(grid, 4, 4));
+    }
+
+    // ===== 验证四种方法结果一致性 =====
 
     @Test
     public void testConsistencyBetweenAllMethods() {
@@ -223,12 +284,36 @@ public class GridMinPathTest {
         int m = grid.length;
         int n = grid[0].length;
 
-        // 验证三种方法结果一致
+        // 验证四种方法结果一致
         int dfsResult = solution.minPathSumDFS(grid, m - 1, n - 1);
         int memoResult = solution.minPathSumMemoization(grid, m - 1, n - 1);
         int dpResult = solution.minPathSumDp(grid, m - 1, n - 1);
+        int dpOptimizedResult = solution.minPathSumDPCompOptimized(grid, m - 1, n - 1);
 
         assertEquals(dfsResult, memoResult);
         assertEquals(memoResult, dpResult);
+        assertEquals(dpResult, dpOptimizedResult);
+    }
+
+    @Test
+    public void testConsistencyWithComplexGrid() {
+        int[][] grid = {
+                {1, 4, 7, 11, 15},
+                {2, 5, 8, 12, 16},
+                {3, 6, 9, 13, 17},
+                {10, 14, 18, 19, 20}
+        };
+        int m = grid.length;
+        int n = grid[0].length;
+
+        // 验证四种方法在复杂网格上结果一致
+        int dfsResult = solution.minPathSumDFS(grid, m - 1, n - 1);
+        int memoResult = solution.minPathSumMemoization(grid, m - 1, n - 1);
+        int dpResult = solution.minPathSumDp(grid, m - 1, n - 1);
+        int dpOptimizedResult = solution.minPathSumDPCompOptimized(grid, m - 1, n - 1);
+
+        assertEquals(dfsResult, memoResult);
+        assertEquals(memoResult, dpResult);
+        assertEquals(dpResult, dpOptimizedResult);
     }
 }

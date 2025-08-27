@@ -390,6 +390,66 @@ public class GridMinPath {
     }
 
 
+    /**
+     * 使用空间优化的动态规划计算从左上角到(i,j)位置的最小路径和
+     * <p>
+     * 这是对标准动态规划算法的空间优化版本，使用滚动数组技术将空间复杂度从O(m×n)降低到O(min(m,n))。
+     * 该方法特别适用于处理大规模网格或内存受限的环境。
+     * </p>
+     *
+     * <p>
+     * <strong>算法原理：</strong><br>
+     * 滚动数组优化基于以下观察：
+     * <ul>
+     *   <li>计算dp[i][j]时，只需要dp[i-1][j]（上方）和dp[i][j-1]（左方）的值</li>
+     *   <li>不需要保存整个二维DP表，只需要保存当前行的状态</li>
+     *   <li>从左到右更新当前行时，左方的值已经是当前行的最新值，上方的值是上一行的旧值</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * <strong>空间优化技巧：</strong>
+     * <ul>
+     *   <li><strong>一维数组复用：</strong>使用一维数组currentRowDp[j]表示当前处理行的状态</li>
+     *   <li><strong>原地更新：</strong>从左到右更新数组，利用更新前后的值分别代表上方和左方</li>
+     *   <li><strong>状态转移：</strong>currentRowDp[j] = min(currentRowDp[j], currentRowDp[j-1]) + grid[i][j]</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * <strong>复杂度分析：</strong>
+     * <ul>
+     *   <li><strong>时间复杂度：O(m×n)</strong> - 仍需遍历整个网格，与标准DP相同</li>
+     *   <li><strong>空间复杂度：O(min(m,n))</strong> - 只需要一维数组，大幅减少空间使用</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * <strong>适用场景：</strong>
+     * <ul>
+     *   <li>大规模网格：当网格很大时，空间优化效果显著</li>
+     *   <li>内存受限：嵌入式系统或内存紧张的环境</li>
+     *   <li>生产环境：需要高效利用内存资源的场景</li>
+     * </ul>
+     * </p>
+     *
+     * @param grid 二维网格数组，包含非负整数
+     * @param i 目标行索引
+     * @param j 目标列索引
+     * @return 从(0,0)到(i,j)的最小路径和
+     * @example <pre>
+     *         GridMinPath solver = new GridMinPath();
+     *         int[][] grid = {
+     *             {1, 3, 1},
+     *             {1, 5, 1},
+     *             {4, 2, 1}
+     *         };
+     *         int result = solver.minPathSumDPCompOptimized(grid, 2, 2); // 返回 7
+     *         // 使用O(3)空间而非O(9)空间完成计算
+     *         </pre>
+     * @see #minPathSumDp(int[][], int, int)
+     * @since 1.0
+     */
     public int minPathSumDPCompOptimized(int[][] grid, int i, int j) {
         if (i == 0 && j == 0) {
             return grid[0][0];
@@ -407,17 +467,20 @@ public class GridMinPath {
         // 这里存储的是路径和，不是移动代价，从(0,0)到(0,0)的路径和就是grid[0][0]
         currentRowDp[0] = grid[0][0];
 
-        // 初始化 row 0
+        // 初始化第0行：只能向右移动，路径和累加
         for (int k = 1; k <= j; k++) {
             currentRowDp[k] = currentRowDp[k - 1] + grid[0][k];
         }
 
-        // 还是要有2重循环，时间复杂度不变，只能减空间复杂度
+        // 逐行处理：时间复杂度不变，只优化空间复杂度
         for (int l = 1; l <= i; l++) {
-            // 把这一行的单一移动点给更新了
+            // 更新当前行第0列：只能向下移动，路径和累加
             currentRowDp[0] = currentRowDp[0] + grid[l][0];
+            
+            // 处理当前行其余列：可以从上方或左方到达
             for (int m = 1; m <= j; m++) {
-                // 这里有个假设，在赋值以前，currentRowDp[m] 是上一行的值，但是 currentRowDp[m - 1] 是本行已经被更新了列的值
+                // 关键技巧：更新前currentRowDp[m]是上一行的值，currentRowDp[m-1]是当前行已更新的值
+                // 这样就同时获得了上方和左方的最小路径和
                 currentRowDp[m] = Math.min(currentRowDp[m], currentRowDp[m - 1]) + grid[l][m];
             }
         }
