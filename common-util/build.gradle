@@ -1,7 +1,7 @@
 ext {
     // 双引号才能解析这个变量
-    // jacksonVersion = '2.17.2'
-    set('jacksonVersion', "2.17.2")
+    // jacksonVersion = '2.18.2'
+    set('jacksonVersion', "2.18.2")
 }
 
 
@@ -18,6 +18,8 @@ dependencies {
     // 注意，collections 和 commons-lang3 是不一样的 lib
     // https://mvnrepository.com/artifact/commons-collections/commons-collections
     api 'commons-collections:commons-collections:3.2.2'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    api "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     api "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
