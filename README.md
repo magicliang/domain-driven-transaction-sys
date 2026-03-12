@@ -15,7 +15,7 @@
 - **持久层**: 
   - Spring Data JPA
   - MyBatis 2.3.2
-  - H2 / MySQL / MariaDB
+  - MySQL / MariaDB
 - **测试框架**: JUnit 5.9.3
 - **日志**: Log4j2
 - **可观测性**: OpenTelemetry 2.10.0
@@ -79,6 +79,138 @@ domain-driven-transaction-sys
 
 # 使用通配符运行测试
 ./gradlew test --tests com.magicliang.transaction.sys.DomainDrivenTransactionSysApplicationIntegrationTest.*test*
+```
+
+## 数据库 Profile 说明
+
+项目通过 Spring Profile 机制支持多种数据库接入方式，通过 `application.yml` 中的 `spring.profiles.active` 切换，或在启动参数中指定 `--spring.profiles.active=xxx`。
+
+### Profile 总览
+
+| Profile | 数据库类型 | 适用环节 | 是否需要外部数据库 | 前置条件 |
+|---|---|---|---|---|
+| `local-tc-dev` (默认) | MariaDB (Docker 容器) | 本地开发、集成测试 | 否 | 安装并运行 Docker 或 Podman |
+| `local-mariadb4j-dev` | MariaDB (嵌入式二进制) | 本地开发、集成测试 | 否 | 仅支持 x86 架构 |
+| `local-mysql-dev` | MySQL 8.0+ | 本地开发 | 是 | 本地安装并启动 MySQL |
+| `staging` | 由部署环境提供 | 预发环境 | 是 | 环境数据库连接配置 |
+| `prod` | 由部署环境提供 | 生产环境 | 是 | 环境数据库连接配置 |
+
+### 自包含 Profile（无需配置外部数据库连接）
+
+以下 Profile 内置了数据库的完整生命周期管理，启动时自动创建数据库、执行 DDL，开发者无需手动安装或配置任何数据库：
+
+**`local-tc-dev`（推荐，默认激活）**
+- 通过 Testcontainers 自动启动 MariaDB 10.11 Docker 容器
+- 支持所有芯片架构（ARM64/AMD64/x86_64）和操作系统
+- 容器运行时支持 **Docker Desktop** 和 **Podman**
+- 自动创建 `test_master` 和 `test_slave1` 双数据库，执行 `sql/mysql/schema.ddl` 初始化
+- 数据库初始化由 `EmbeddedTestcontainersDbConfig` 手动管理（`spring.sql.init.mode=never`），不依赖 Spring Boot 自动初始化
+- 首次运行自动拉取镜像（约 400MB），后续使用缓存
+
+**`local-mariadb4j-dev`**
+- 通过 mariadb4j 在 JVM 进程内解压并启动 MariaDB 原生二进制
+- 在端口 4306（master）和 4307（slave）启动两个独立实例
+- 仅支持 x86_64 架构，ARM 芯片（Apple Silicon 等）不可用
+- 无需 Docker，无需安装任何数据库
+
+### 外部数据库 Profile（需要配置数据库连接属性）
+
+以下 Profile 需要开发者自行准备数据库实例，并在配置中提供正确的连接信息：
+
+**`local-mysql-dev`**
+- 连接本地运行的 MySQL 8.0+ 实例
+- 需要在 `application.yml` 中配置 `spring.datasource.master.jdbc-url`、`username`、`password` 等属性
+- 需要手动创建数据库和执行 DDL
+- 配置类：`DataSourceConfig.java`，通过 `@ConfigurationProperties` 绑定属性
+
+**`staging` / `prod`**
+- 由部署环境（K8s ConfigMap、环境变量等）提供数据库连接配置
+- 项目中不包含具体的数据源配置，需由运维或部署流程注入
+
+### 使用 Docker Desktop 运行（推荐）
+
+安装 Docker Desktop 后，无需额外配置，直接运行：
+
+```bash
+# 使用默认 Profile（local-tc-dev）
+./gradlew test
+
+# 启动应用
+./gradlew bootRun
+```
+
+### 使用 Podman 运行（macOS/Linux 替代方案）
+
+如果使用 Podman 替代 Docker，需要额外配置：
+
+**1. 安装并启动 Podman**
+
+```bash
+# macOS
+brew install podman
+podman machine init
+podman machine start
+```
+
+**2. 配置 Testcontainers 使用 Podman socket**
+
+创建 `~/.testcontainers.properties`：
+
+```properties
+docker.host=unix:///var/folders/<your-path>/podman/podman-machine-default-api.sock
+ryuk.container.privileged=true
+testcontainers.reuse.enable=true
+```
+
+获取实际 socket 路径：
+
+```bash
+podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}'
+```
+
+**3. 配置镜像加速（可选，网络受限时使用）**
+
+编辑 Podman 虚拟机内的 `/etc/containers/registries.conf`：
+
+```bash
+podman machine ssh
+sudo vi /etc/containers/registries.conf
+```
+
+添加镜像加速配置：
+
+```toml
+[[registry]]
+location = "docker.io"
+[[registry.mirror]]
+location = "docker.m.daocloud.io"
+```
+
+**4. 运行测试**
+
+```bash
+# 设置 DOCKER_HOST 环境变量指向 Podman socket
+export DOCKER_HOST="unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')"
+export TESTCONTAINERS_RYUK_DISABLED=true
+
+# 运行测试
+./gradlew test
+
+# 或一行命令
+DOCKER_HOST="unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')" \
+  TESTCONTAINERS_RYUK_DISABLED=true \
+  ./gradlew test
+```
+
+### 切换 Profile
+
+```bash
+# 使用默认 Profile（local-tc-dev，需要 Docker/Podman）
+./gradlew test
+
+# 指定其他 Profile
+./gradlew test -Dspring.profiles.active=local-mariadb4j-dev
+./gradlew bootRun -Dspring.profiles.active=local-mysql-dev
 ```
 
 ## 架构设计
@@ -146,7 +278,7 @@ test {
 
 ### 功能实现
 
-- [ ] 梳理 Gradle Task,完善集成测试和单元测试用例
+- [ ] 梳理 Gradle Task，完善集成测试和单元测试用例
 - [ ] 实现 Spring WebFlux Reactor Controller
 - [ ] 引入 mariadb4j 用于集成测试
 - [ ] 脚本 Docker 化,准备 MySQL + K8s 集群

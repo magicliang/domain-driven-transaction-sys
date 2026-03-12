@@ -1,6 +1,5 @@
 package com.magicliang.transaction.sys;
 
-import ch.vorburger.mariadb4j.springboot.autoconfigure.DataSourceAutoConfiguration;
 import com.magicliang.transaction.sys.biz.shared.event.ApplicationEvents;
 import com.magicliang.transaction.sys.biz.shared.handler.BaseHandler;
 import com.magicliang.transaction.sys.biz.shared.request.HandlerRequest;
@@ -50,7 +49,10 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author magicliang
  */
 @Slf4j
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(excludeName = {
+        "ch.vorburger.mariadb4j.springboot.autoconfigure.DataSourceAutoConfiguration",
+        "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration"
+})
 @SpringBootTest(classes = {DomainDrivenTransactionSysApplicationIntegrationTest.class})
 public class DomainDrivenTransactionSysApplicationIntegrationTest {
 

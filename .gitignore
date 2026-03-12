@@ -72,3 +72,4 @@ out/
 # git rm -r --cached .jpb
 .jpb/
 /.vscode/settings.json
+.qoder/rules/code-auto-collection.md

@@ -5,7 +5,7 @@ spring:
   profiles:
     # Spring 的 Profile 机制是为了隔离不同环境中的配置，参考：https://docs.spring.io/spring-boot/docs/2.6.2/reference/html/features.html#features.profiles
     # active: "@active-profile@"
-    active: local-mariadb4j-dev
+    active: local-tc-dev
   # 数据库配置
   autoconfigure:
     exclude:
@@ -13,7 +13,7 @@ spring:
       # see: Gradle: ch.vorburger.mariaDB4j:mariaDB4j-springboot:2.4.0 spring.factories
       - ch.vorburger.mariadb4j.springboot.autoconfigure.MariaDB4jSpringConfiguration
       - ch.vorburger.mariadb4j.springboot.autoconfigure.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration
+
   datasource:
     # 无法指定数据源的名称
     # name: masterDataSource
@@ -33,7 +33,7 @@ spring:
   jpa:
     # 打印sql
     show-sql: false
-    # h2 并不强依赖 jpa，这里姑且配一下
+    # 这里姑且配一下
     hibernate:
       # 为了让 hibernate 的自动schema创建被禁用，只使用 spring 的 script-based initialization，要把 ddl-auto 给禁用
       ddl-auto: none
@@ -121,6 +121,33 @@ logging:
 spring:
   config:
     activate:
+      on-profile: local-tc-dev
+  datasource:
+    master:
+      schemaName: test_master
+      userName: test
+      password: test
+      driver-class-name: org.mariadb.jdbc.Driver
+    slave1:
+      schemaName: test_slave1
+      userName: test
+      password: test
+      driver-class-name: org.mariadb.jdbc.Driver
+  sql:
+    init:
+      mode: never
+      schema-locations: sql/mysql/schema.ddl
+      data-locations: sql/mysql/data.sql
+
+common:
+  env: dev
+logging:
+  config: classpath:log4j2/log4j2-offline.xml
+  level.mapperpackagepath: debug # 打印mybatis的sql日志
+---
+spring:
+  config:
+    activate:
       on-profile: local-mysql-dev
   datasource:
     # 如果要配置多数据源，则需要考虑在 datasource 里配置嵌套对象。
@@ -140,75 +167,6 @@ spring:
       pool-name: slave-pool
 common:
   env: dev
-# 日志配置文件位置
-logging:
-  config: classpath:log4j2/log4j2-offline.xml
-  level.mapperpackagepath: debug # 打印mybatis的sql日志
----
-spring:
-  config:
-    activate:
-      # 这个 profile 只能配合 h2 使用，h2 不兼容 MySQL DDL，暂时先不解决这个问题
-      # 不要漏掉空格，不然会报：Reason: org.springframework.core.convert.ConverterNotFoundException: No converter found capable of converting from type [java.lang.String] to type [org.springframework.boot.context.config.ConfigDataProperties$Activate]
-      on-profile: local-h2-dev
-  autoconfigure:
-    exclude:
-      # 全局配置里排除了自动配置的数据源，这里做一个空排除作为 override，就可以继续使用 h2 数据源了
-      - ch.vorburger.mariadb4j.springboot.autoconfigure.MariaDB4jSpringConfiguration
-      - ch.vorburger.mariadb4j.springboot.autoconfigure.DataSourceAutoConfiguration
-  datasource:
-    # 纯内存的 db 如下
-    username: sa
-    password: pppp12345
-    # 这个配置名是高版本 Spring 的配置名，和低版本 Spring  driver-class-name 语义一样
-    driverClassName: org.h2.Driver
-    # to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL ;INIT=runscript from 'classpath:/db.sql'
-    # 文件模式
-    # url: jdbc:h2:file:~/test;mode=mysql
-    # 内存模式
-    url: jdbc:h2:mem:~/test;mode=mysql
-    # 这两个配置在不如 sql.init 的子属性更新
-    # schema: classpath:sql/schema.ddl
-    # data:  classpath:sql/data.sql
-    # 纯内存 db 的 url
-    # url: jdbc:h2:mem:mydb
-
-  # 参考：https://www.cnblogs.com/april-chen/p/11459322.html
-  h2:
-    # http://localhost:8502/h2-console
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        trace: false
-        web-allow-others: false
-  #    master:
-  #      # 注意，整合多数据源时如果使用springboot默认的数据库连接池 Hikari，指定连接数据使用的是 jdbc-url 而不是 url 属性
-  #      jdbc-url: jdbc:mysql://localhost:3306/test1?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false
-  #      username: root
-  #      password: 123456
-  #      driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    # 打印sql
-    show-sql: true
-    # h2 并不强依赖 jpa，这里姑且配一下
-    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-    # 混合使用 hibernate 的 schema change 和 spring 的 schema initialization：This will ensure, that after Hibernate schema creation is performed then additionally schema.sql is read for any additional schema changes and data.sql is executed to populate the database.
-    # defer-datasource-initialization: true
-  sql:
-    init:
-      # 只有使用嵌入式数据库的时候，script-based initialization 才会执行，如果使用 always 则任何情况下 schema 都会被执行。
-      # mode: always
-      # mode: embedded
-      # 配置上这两个文件，则 db 会自动初始化
-      schema-locations: classpath:sql/h2/schema*.ddl
-      data-locations: classpath:sql/h2/data.sql
-
-common:
-  env: test
-  # mockMode: true
-
 # 日志配置文件位置
 logging:
   config: classpath:log4j2/log4j2-offline.xml

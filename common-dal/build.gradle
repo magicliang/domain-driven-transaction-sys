@@ -36,6 +36,10 @@ dependencies {
     // 先不用 testCompile，如果使用 testCompile，需要把数据源的初始化放到 test 这个 source folder下面去
     api("ch.vorburger.mariaDB4j:mariaDB4j-springboot:2.5.3")
 
+    // Testcontainers - 全平台嵌入式数据库方案（通过 Docker 运行真实 MariaDB）
+    api("org.testcontainers:testcontainers:1.19.8")
+    api("org.testcontainers:mariadb:1.19.8")
+
     // TODO：暂时引入苞米豆的依赖
 //    implementation 'com.baomidou:dynamic-datasource-spring-boot-starter:3.5.0'
 
@@ -44,7 +48,7 @@ dependencies {
     api 'com.github.pagehelper:pagehelper:5.3.0'
 
     runtimeOnly 'mysql:mysql-connector-java:5.1.47'
-    runtimeOnly 'com.h2database:h2'
+
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 }
 
