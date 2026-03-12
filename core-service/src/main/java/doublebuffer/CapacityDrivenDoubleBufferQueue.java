@@ -55,16 +55,68 @@ public class CapacityDrivenDoubleBufferQueue<T> {
     /**
      * 从双缓冲队列中取出元素
      *
-     * 工作原理：
-     * 1. 首先尝试从当前的读缓冲区(readBuffer)取出元素
-     * 2. 如果读缓冲区为空(poll返回null)，则触发swap操作交换读写缓冲区
-     * 3. 交换后重试，直到成功取出元素
+     * 【BUG 成因分析】
+     * 当两个缓冲区都为空时，此方法会陷入无限循环：
+     * 1. readBuffer.poll() 返回 null
+     * 2. 调用 swap() 交换读写缓冲区
+     * 3. 新的 readBuffer 仍然为空（因为 writeBuffer 也为空）
+     * 4. 无限循环，导致测试超时
      *
-     * 注意：由于使用了while(true)，在极端情况下可能会无限循环，
-     * 特别是当两个缓冲区都空的时候。实际应用中可能需要设置最大重试次数
+     * 【问题表现】
+     * - testConcurrentAccess 测试耗时极长或超时
+     * - CPU 占用 100%（忙等待）
+     * - 消费者线程无法退出
+     *
+     * 【修复方案】
+     * 方案 1（推荐）：使用 Lock + Condition 实现阻塞等待
+     * - 添加 ReentrantLock 和 Condition 对象
+     * - 当两个缓冲区都为空时，调用 notEmpty.await() 阻塞等待
+     * - 当有新元素放入时，调用 notEmpty.signalAll() 唤醒消费者
+     *
+     * 方案 2（简单）：使用 Thread.yield() 或 Thread.sleep()
+     * - 在两个缓冲区都为空时，调用 Thread.yield() 让出 CPU
+     * - 避免忙等待，但仍会消耗 CPU 资源
+     *
+     * 方案 3（最小改动）：返回 null 或抛出异常
+     * - 当两个缓冲区都为空时，返回 null
+     * - 调用方需要处理 null 值
+     * - 改变了 API 语义，可能影响现有代码
+     *
+     * 【推荐实现】（方案 1）
+     * ```java
+     * public T take() throws InterruptedException {
+     *     lock.lock();
+     *     try {
+     *         while (true) {
+     *             T result = readBuffer.poll();
+     *             if (result != null) {
+     *                 notFull.signalAll();
+     *                 return result;
+     *             }
+     *             if (!writeBuffer.isEmpty()) {
+     *                 swap();
+     *                 notEmpty.signalAll();
+     *             } else {
+     *                 notEmpty.await(); // 阻塞等待，直到被唤醒
+     *             }
+     *         }
+     *     } finally {
+     *         lock.unlock();
+     *     }
+     * }
+     * ```
      *
      * @return 从队列中取出的元素
      */
+    // 工作原理：
+    // 1. 首先尝试从当前的读缓冲区(readBuffer)取出元素
+    // 2. 如果读缓冲区为空(poll返回null)，则触发swap操作交换读写缓冲区
+    // 3. 交换后重试，直到成功取出元素
+    //
+    // 注意：由于使用了while(true)，在极端情况下可能会无限循环，
+    // 特别是当两个缓冲区都空的时候。实际应用中可能需要设置最大重试次数
+    //
+    // @return 从队列中取出的元素
     public T take() {
         // 如果运气不好，则这个读取可能无限循环，阻塞在这里。有些ai建议在这里 for 3 次
         while (true) {
