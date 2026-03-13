@@ -346,26 +346,184 @@ podman build -t domain-driven-transaction-sys:latest -f deploy/docker/Dockerfile
 
 ### K8s 配置工作原理
 
-K8s 部署复用现有的 `local-mysql-dev` Spring Profile，通过环境变量覆盖连接参数：
+#### Profile 与环境的映射
+
+每个 K8s 环境使用各自独立的 Spring Profile，而非共用同一个：
+
+| K8s 环境 | SPRING_PROFILES_ACTIVE | application.yml 中的 profile | 说明 |
+|---------|----------------------|------|------|
+| dev | `local-mysql-dev` | `local-mysql-dev` | 本地 MySQL 开发 profile，与独立运行时相同 |
+| staging | `staging` | `staging` | 预发布环境专用 profile |
+| prod | `prod` | `prod` | 生产环境专用 profile |
+
+`DataSourceConfig.java` 中的 `@Profile({"local-mysql-dev", "staging", "prod"})` 确保在以上三个 profile 激活时都会创建数据源 Bean。
+
+#### 环境变量覆盖机制
+
+K8s 通过 ConfigMap 和 Secret 注入环境变量，覆盖 `application.yml` 中的默认值。Spring Boot 的**松绑定**规则将环境变量自动映射为配置属性（例如 `SPRING_DATASOURCE_MASTER_JDBC_URL` → `spring.datasource.master.jdbc-url`）。
+
+**优先级链**（从高到低）：
+
+```
+K8s Secret 环境变量  >  K8s ConfigMap 环境变量  >  application.yml 中 profile 段的默认值  >  application.yml 主段的默认值
+```
+
+各环境变量的用途：
 
 | 环境变量 | 来源 | 用途 |
 |---------|------|------|
-| `SPRING_PROFILES_ACTIVE` | ConfigMap | 激活 `local-mysql-dev` profile |
-| `SPRING_DATASOURCE_MASTER_JDBC_URL` | ConfigMap | 主库连接串（指向 K8s 内部 `mariadb-svc:3306`） |
-| `SPRING_DATASOURCE_SLAVE1_JDBC_URL` | ConfigMap | 从库连接串 |
-| `SPRING_DATASOURCE_MASTER_PASSWORD` | Secret | 主库密码 |
-| `SPRING_DATASOURCE_SLAVE1_PASSWORD` | Secret | 从库密码 |
-| `JAVA_OPTS` | ConfigMap | JVM 参数 |
+| `SPRING_PROFILES_ACTIVE` | ConfigMap | 激活对应环境的 Spring Profile |
+| `SPRING_DATASOURCE_MASTER_JDBC_URL` | ConfigMap | 主库 JDBC 连接串（指向 K8s 内部 `mariadb-svc:3306`） |
+| `SPRING_DATASOURCE_MASTER_USERNAME` | ConfigMap | 主库用户名 |
+| `SPRING_DATASOURCE_MASTER_PASSWORD` | Secret | 主库密码（base64 编码存储） |
+| `SPRING_DATASOURCE_SLAVE1_JDBC_URL` | ConfigMap | 从库 JDBC 连接串 |
+| `SPRING_DATASOURCE_SLAVE1_USERNAME` | ConfigMap | 从库用户名 |
+| `SPRING_DATASOURCE_SLAVE1_PASSWORD` | Secret | 从库密码（base64 编码存储） |
+| `JAVA_OPTS` | ConfigMap | JVM 参数（-Xms/-Xmx 等） |
 | `COMMON_ENV` | ConfigMap | 业务环境标识 |
 | `LOGGING_CONFIG` | ConfigMap | 日志配置路径 |
 
-`DataSourceConfig.java` 中的 `@ConfigurationProperties(prefix="spring.datasource.master")` 支持 Spring Boot 的松绑定规则，K8s 环境变量 `SPRING_DATASOURCE_MASTER_JDBC_URL` 自动映射为 `spring.datasource.master.jdbc-url`。
+#### MariaDB 数据库初始化
 
-MariaDB 数据库初始化利用官方镜像的 `/docker-entrypoint-initdb.d/` 机制：首次启动（PVC 为空）时自动执行 ConfigMap 中的 SQL 脚本创建 `test_master` 和 `test_slave1` 数据库并执行 schema.ddl。
+MariaDB 数据库初始化利用官方镜像的 `/docker-entrypoint-initdb.d/` 机制：首次启动（PVC 为空）时自动执行 ConfigMap（`02-mariadb-init-configmap.yaml`）中的 SQL 脚本，按文件名顺序执行：
+
+1. `00-create-databases.sql` — 创建 `test_master` 和 `test_slave1` 数据库
+2. `01-schema.sql` — 在两个数据库中执行 schema.ddl 建表
+3. `02-data.sql` — 插入初始数据
+
+PVC 非空时（非首次启动），初始化脚本不会重复执行。
+
+### K8s 环境配置修改指南
+
+以下是各种常见配置修改场景的操作方法。所有修改完成后重新 apply 即可生效：
+
+```bash
+kubectl apply -f deploy/k8s/<env>/
+```
+
+#### 修改数据库密码
+
+**步骤 1**: 生成新密码的 base64 编码：
+
+```bash
+echo -n '你的新密码' | base64
+```
+
+**步骤 2**: 同时修改两个 Secret 文件（MariaDB root 密码和应用连接密码必须一致）：
+
+- `deploy/k8s/<env>/01-mariadb-secret.yaml` — 修改 `MARIADB_ROOT_PASSWORD`
+- `deploy/k8s/<env>/07-app-secret.yaml` — 修改 `SPRING_DATASOURCE_MASTER_PASSWORD` 和 `SPRING_DATASOURCE_SLAVE1_PASSWORD`
+
+**步骤 3**: 重启 Pod 使新密码生效：
+
+```bash
+kubectl rollout restart deployment/mariadb -n ddts-<env>
+kubectl rollout restart deployment/ddts-app -n ddts-<env>
+```
+
+> **注意**: 如果 MariaDB 的 PVC 已经初始化过，仅修改 `01-mariadb-secret.yaml` 中的密码不会改变数据库中已有的 root 密码。需要手动进入容器执行 `ALTER USER` 或删除 PVC 重建。
+
+#### 修改 JDBC 连接参数
+
+编辑 `deploy/k8s/<env>/06-app-configmap.yaml`，修改 `SPRING_DATASOURCE_MASTER_JDBC_URL` 和 `SPRING_DATASOURCE_SLAVE1_JDBC_URL` 的值。
+
+常见调整项（均在 JDBC URL 查询参数中）：
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `socketTimeout` | 10000 | 数据库操作超时（ms），高延迟环境可增大 |
+| `connectTimeout` | 5000 | 连接建立超时（ms） |
+| `useSSL` | false | K8s 集群内部通信，默认关闭 SSL |
+| `useCompression` | true | 启用压缩，减少网络传输量 |
+
+如需连接外部数据库（非 K8s 内 MariaDB），将 `mariadb-svc:3306` 替换为外部地址：
+
+```yaml
+SPRING_DATASOURCE_MASTER_JDBC_URL: "jdbc:mysql://external-db.example.com:3306/test_master?..."
+```
+
+#### 修改 JVM 参数
+
+编辑 `deploy/k8s/<env>/06-app-configmap.yaml`，修改 `JAVA_OPTS` 字段：
+
+```yaml
+JAVA_OPTS: "-Xms1g -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+```
+
+> **注意**: JVM 最大堆内存（`-Xmx`）不应超过 `08-app-deployment.yaml` 中 `resources.limits.memory` 的 70%，否则 Pod 可能被 OOMKilled。
+
+#### 修改应用资源配额
+
+编辑 `deploy/k8s/<env>/08-app-deployment.yaml`，修改 `resources` 段：
+
+```yaml
+resources:
+  requests:
+    memory: "1Gi"    # 最低保证内存
+    cpu: "500m"      # 最低保证 CPU（1000m = 1核）
+  limits:
+    memory: "2Gi"    # 内存上限，超过会 OOMKill
+    cpu: "2000m"     # CPU 上限
+```
+
+修改副本数：
+```yaml
+spec:
+  replicas: 3        # 调整 Pod 副本数
+```
+
+#### 修改数据库初始化 SQL
+
+编辑 `deploy/k8s/<env>/02-mariadb-init-configmap.yaml`。该 ConfigMap 包含三个 SQL 文件：
+
+- `00-create-databases.sql` — 创建数据库（一般不需要改）
+- `01-schema.sql` — 表结构 DDL（修改表结构时更新此处）
+- `02-data.sql` — 初始数据（修改初始化数据时更新此处）
+
+> **注意**: 修改初始化 SQL 只影响**新创建**的环境（PVC 为空时）。已有环境需要手动进入 MariaDB 执行变更 SQL，或者销毁环境后重建：
+>
+> ```bash
+> ./deploy/scripts/env-start.sh <env> --destroy
+> ./deploy/scripts/env-start.sh <env>
+> ```
+
+#### 修改日志级别
+
+编辑 `deploy/k8s/<env>/06-app-configmap.yaml`，修改 `LOGGING_CONFIG`：
+
+```yaml
+# 线下（详细日志 + mybatis SQL）
+LOGGING_CONFIG: "classpath:log4j2/log4j2-offline.xml"
+
+# 线上（精简日志）
+LOGGING_CONFIG: "classpath:log4j2/log4j2-online.xml"
+```
+
+#### 添加自定义 Spring Boot 属性
+
+任何 Spring Boot 配置属性都可以通过 ConfigMap 环境变量注入。命名规则：
+
+```
+配置属性: spring.datasource.hikari.maximum-pool-size
+环境变量: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+```
+
+转换规则：`.` → `_`，`-` → `_`，全部大写。
+
+在 `06-app-configmap.yaml` 的 `data` 段添加即可：
+
+```yaml
+data:
+  # ... 现有配置 ...
+  SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "50"
+  SERVER_TOMCAT_THREADS_MAX: "300"
+```
 
 ### 与 IDEA 开发的兼容性
 
-K8s 部署不修改任何现有代码。IDEA 中继续使用默认的 `local-tc-dev` profile 启动 `DomainDrivenTransactionSysApplication`，Testcontainers 自动管理临时 MariaDB 容器，数据不持久化，行为与此前完全一致。
+K8s 部署不影响本地开发工作流。IDEA 中继续使用默认的 `local-tc-dev` profile 启动 `DomainDrivenTransactionSysApplication`，Testcontainers 自动管理临时 MariaDB 容器，数据不持久化，行为与此前完全一致。
+
+`DataSourceConfig.java` 中的 `@Profile({"local-mysql-dev", "staging", "prod"})` 不影响 `local-tc-dev` profile — 后者的数据源由 `EmbeddedTestcontainersDbConfig` 单独管理。
 
 ### 常用 kubectl 命令
 
