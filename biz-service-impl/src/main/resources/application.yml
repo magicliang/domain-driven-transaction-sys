@@ -173,11 +173,23 @@ logging:
   level.mapperpackagepath: debug # 打印mybatis的sql日志
 ---
 spring:
-  # 替代配置
-  # profiles:
   config:
     activate:
       on-profile: staging
+  datasource:
+    master:
+      # K8s 环境下由 ConfigMap/Secret 的环境变量覆盖（SPRING_DATASOURCE_MASTER_JDBC_URL 等）
+      jdbc-url: jdbc:mysql://mariadb-svc:3306/test_master?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: changeme
+      pool-name: master-pool
+    slave1:
+      jdbc-url: jdbc:mysql://mariadb-svc:3306/test_slave1?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: changeme
+      pool-name: slave-pool
 common:
   env: staging
 ---
@@ -185,5 +197,19 @@ spring:
   config:
     activate:
       on-profile: prod
+  datasource:
+    master:
+      # K8s 环境下由 ConfigMap/Secret 的环境变量覆盖（SPRING_DATASOURCE_MASTER_JDBC_URL 等）
+      jdbc-url: jdbc:mysql://mariadb-svc:3306/test_master?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: changeme
+      pool-name: master-pool
+    slave1:
+      jdbc-url: jdbc:mysql://mariadb-svc:3306/test_slave1?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: changeme
+      pool-name: slave-pool
 common:
   env: prod

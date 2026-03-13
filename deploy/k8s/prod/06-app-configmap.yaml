@@ -7,7 +7,7 @@ metadata:
     app: ddts-app
     environment: prod
 data:
-  SPRING_PROFILES_ACTIVE: "local-mysql-dev"
+  SPRING_PROFILES_ACTIVE: "prod"
   SPRING_DATASOURCE_MASTER_JDBC_URL: "jdbc:mysql://mariadb-svc:3306/test_master?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=false&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&allowMultiQueries=true&socketTimeout=10000&rewriteBatchedStatements=true&useCompression=true&connectTimeout=5000&maxRows=0&useUnicode=true&useDynamicCharsetInfo=false"
   SPRING_DATASOURCE_MASTER_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
   SPRING_DATASOURCE_MASTER_USERNAME: "root"

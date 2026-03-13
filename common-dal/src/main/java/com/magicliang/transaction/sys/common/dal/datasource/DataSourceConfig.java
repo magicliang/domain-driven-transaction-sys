@@ -30,7 +30,7 @@ public class DataSourceConfig {
      *
      * @return masterDataSource
      */
-    @Profile("local-mysql-dev")
+    @Profile({"local-mysql-dev", "staging", "prod"})
     @Bean(name = "dataSource", destroyMethod = "close")
     @ConfigurationProperties(prefix = "spring.datasource.master")
     @Primary
@@ -44,7 +44,7 @@ public class DataSourceConfig {
      *
      * @return slaveDataSource
      */
-    @Profile("local-mysql-dev")
+    @Profile({"local-mysql-dev", "staging", "prod"})
     @Bean(name = "slaveDataSource1", destroyMethod = "close")
     @ConfigurationProperties(prefix = "spring.datasource.slave1")
     public DataSource slaveDataSource1() {
