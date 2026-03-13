@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ddts-dev
+  labels:
+    app.kubernetes.io/part-of: domain-driven-transaction-sys
+    environment: dev

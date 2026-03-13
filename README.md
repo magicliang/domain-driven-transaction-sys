@@ -213,6 +213,179 @@ DOCKER_HOST="unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanS
 ./gradlew bootRun -Dspring.profiles.active=local-mysql-dev
 ```
 
+## Docker + K8s 部署
+
+项目支持通过 Docker 容器化 + Kubernetes 集群化部署，使用 **Podman** 替代 Docker、**minikube** 作为本地 K8s 环境。支持 dev / staging / prod 三套独立环境，每个环境拥有独立的 MariaDB 数据库（持久化存储）和独立的 Java 应用 Pod。
+
+### 部署架构概览
+
+```
+┌─────────────── minikube cluster ───────────────────┐
+│                                                     │
+│  ┌─── ddts-dev ─────────────────────────────────┐  │
+│  │  MariaDB Pod (10.11) ◄── App Pod (JDK 8)    │  │
+│  │     PVC 1Gi               1 replica          │  │
+│  │     ClusterIP:3306        LoadBalancer:8502   │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                     │
+│  ┌─── ddts-staging ─────────────────────────────┐  │
+│  │  MariaDB Pod ◄── App Pod                     │  │
+│  │     PVC 5Gi       1 replica                  │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                     │
+│  ┌─── ddts-prod ────────────────────────────────┐  │
+│  │  MariaDB Pod ◄── App Pod                     │  │
+│  │     PVC 20Gi      2 replicas                 │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+         │ minikube tunnel
+         ▼
+   localhost:8502
+```
+
+### 部署文件目录结构
+
+```
+deploy/
+├── docker/
+│   └── Dockerfile                          # 两阶段构建（JDK 8 编译 → JRE 8 运行）
+├── k8s/
+│   ├── dev/                                # dev 环境 K8s 清单
+│   │   ├── 00-namespace.yaml               # 命名空间 ddts-dev
+│   │   ├── 01-mariadb-secret.yaml          # MariaDB root 密码
+│   │   ├── 02-mariadb-init-configmap.yaml  # 数据库初始化 SQL（schema.ddl）
+│   │   ├── 03-mariadb-pvc.yaml             # 持久化卷声明（1Gi）
+│   │   ├── 04-mariadb-deployment.yaml      # MariaDB 10.11 Deployment
+│   │   ├── 05-mariadb-service.yaml         # MariaDB ClusterIP Service
+│   │   ├── 06-app-configmap.yaml           # Spring Boot 环境变量配置
+│   │   ├── 07-app-secret.yaml              # 数据库连接密码
+│   │   ├── 08-app-deployment.yaml          # Java 应用 Deployment
+│   │   └── 09-app-service.yaml             # 应用 LoadBalancer Service
+│   ├── staging/                            # staging 环境（同结构，更大资源配额）
+│   └── prod/                               # prod 环境（同结构，2副本，最大配额）
+└── scripts/
+    ├── env-init.sh                         # 一键安装工具链
+    └── env-start.sh                        # 一键启动/销毁/查看环境
+```
+
+### 快速部署
+
+#### 1. 安装基础工具
+
+`env-init.sh` 会自动检测操作系统（macOS/Linux），幂等安装 JDK 8、Podman、kubectl、minikube，并启动 minikube 集群：
+
+```bash
+./deploy/scripts/env-init.sh
+```
+
+支持的系统和包管理器：
+- **macOS**: Homebrew (`brew`)
+- **Debian/Ubuntu**: APT (`apt`)
+- **RHEL/Fedora/CentOS**: DNF/YUM (`dnf`/`yum`)
+
+已安装的工具会自动跳过，脚本可重复执行。
+
+#### 2. 启动环境
+
+`env-start.sh` 会自动构建 Docker 镜像、加载到 minikube、部署 K8s 清单、等待就绪、启动 LoadBalancer tunnel：
+
+```bash
+# 启动 dev 环境
+./deploy/scripts/env-start.sh dev
+
+# 启动 staging 环境
+./deploy/scripts/env-start.sh staging
+
+# 启动 prod 环境
+./deploy/scripts/env-start.sh prod
+```
+
+启动完成后，脚本会打印访问地址（通常为 `http://127.0.0.1:8502`）。
+
+#### 3. 查看环境状态
+
+```bash
+./deploy/scripts/env-start.sh dev --status
+```
+
+输出包括 Pod 运行状态、Service 信息、PVC 使用情况。
+
+#### 4. 销毁环境
+
+```bash
+./deploy/scripts/env-start.sh dev --destroy
+```
+
+会删除整个 namespace 及其所有资源（包括持久化数据）。
+
+### 三套环境参数差异
+
+| 参数 | dev | staging | prod |
+|------|-----|---------|------|
+| Namespace | `ddts-dev` | `ddts-staging` | `ddts-prod` |
+| PVC 容量 | 1Gi | 5Gi | 20Gi |
+| MariaDB 内存 | 256Mi-512Mi | 512Mi-1Gi | 1Gi-2Gi |
+| App 副本数 | 1 | 1 | 2 |
+| JVM 参数 | `-Xms256m -Xmx512m` | `-Xms512m -Xmx1g` | `-Xms1g -Xmx2g` |
+| App 内存 | 512Mi-768Mi | 768Mi-1.5Gi | 1.5Gi-3Gi |
+| 日志配置 | log4j2-offline.xml | log4j2-online.xml | log4j2-online.xml |
+
+### Dockerfile 说明
+
+采用两阶段构建优化镜像大小和构建缓存：
+
+- **Stage 1 (builder)**: 基于 `eclipse-temurin:8-jdk`，使用项目自带的 `gradlew` 编译 bootJar。构建配置文件优先复制以利用 Docker 层缓存——源码变更不会重新下载依赖。
+- **Stage 2 (runtime)**: 基于 `eclipse-temurin:8-jre`，仅包含运行时。以非 root 用户 `app` 运行，暴露端口 8502。
+
+手动构建镜像：
+
+```bash
+podman build -t domain-driven-transaction-sys:latest -f deploy/docker/Dockerfile .
+```
+
+### K8s 配置工作原理
+
+K8s 部署复用现有的 `local-mysql-dev` Spring Profile，通过环境变量覆盖连接参数：
+
+| 环境变量 | 来源 | 用途 |
+|---------|------|------|
+| `SPRING_PROFILES_ACTIVE` | ConfigMap | 激活 `local-mysql-dev` profile |
+| `SPRING_DATASOURCE_MASTER_JDBC_URL` | ConfigMap | 主库连接串（指向 K8s 内部 `mariadb-svc:3306`） |
+| `SPRING_DATASOURCE_SLAVE1_JDBC_URL` | ConfigMap | 从库连接串 |
+| `SPRING_DATASOURCE_MASTER_PASSWORD` | Secret | 主库密码 |
+| `SPRING_DATASOURCE_SLAVE1_PASSWORD` | Secret | 从库密码 |
+| `JAVA_OPTS` | ConfigMap | JVM 参数 |
+| `COMMON_ENV` | ConfigMap | 业务环境标识 |
+| `LOGGING_CONFIG` | ConfigMap | 日志配置路径 |
+
+`DataSourceConfig.java` 中的 `@ConfigurationProperties(prefix="spring.datasource.master")` 支持 Spring Boot 的松绑定规则，K8s 环境变量 `SPRING_DATASOURCE_MASTER_JDBC_URL` 自动映射为 `spring.datasource.master.jdbc-url`。
+
+MariaDB 数据库初始化利用官方镜像的 `/docker-entrypoint-initdb.d/` 机制：首次启动（PVC 为空）时自动执行 ConfigMap 中的 SQL 脚本创建 `test_master` 和 `test_slave1` 数据库并执行 schema.ddl。
+
+### 与 IDEA 开发的兼容性
+
+K8s 部署不修改任何现有代码。IDEA 中继续使用默认的 `local-tc-dev` profile 启动 `DomainDrivenTransactionSysApplication`，Testcontainers 自动管理临时 MariaDB 容器，数据不持久化，行为与此前完全一致。
+
+### 常用 kubectl 命令
+
+```bash
+# 查看 Pod 状态
+kubectl get pods -n ddts-dev
+
+# 查看应用日志
+kubectl logs -n ddts-dev -l app=ddts-app -f
+
+# 查看 Service（获取外部 IP）
+kubectl get svc -n ddts-dev
+
+# 进入 MariaDB 容器
+kubectl exec -it -n ddts-dev deploy/mariadb -- mysql -uroot -p
+
+# 端口转发（不用 tunnel 的替代方案）
+kubectl port-forward -n ddts-dev svc/ddts-app-svc 8502:8502
+```
+
 ## 架构设计
 
 ### SOFA 分层架构
@@ -273,7 +446,7 @@ test {
 
 ### 架构优化
 
-- [ ] 评估是否将服务改造为 K8s 微服务架构
+- [x] 评估是否将服务改造为 K8s 微服务架构
 - [ ] 引入更多最佳实践到开源项目
 
 ### 功能实现
@@ -281,7 +454,7 @@ test {
 - [ ] 梳理 Gradle Task，完善集成测试和单元测试用例
 - [ ] 实现 Spring WebFlux Reactor Controller
 - [ ] 引入 mariadb4j 用于集成测试
-- [ ] 脚本 Docker 化,准备 MySQL + K8s 集群
+- [x] 脚本 Docker 化,准备 MySQL + K8s 集群
 - [ ] Mock 支付环节
 - [ ] 补充模型设计和系统分层文档
 - [ ] 实现线程池开源化

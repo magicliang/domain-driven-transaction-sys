@@ -1,0 +1,221 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-init-scripts
+  namespace: ddts-staging
+  labels:
+    app: mariadb
+    environment: staging
+data:
+  00-create-databases.sql: |
+    CREATE DATABASE IF NOT EXISTS `test_master`
+      CHARACTER SET utf8mb4
+      COLLATE utf8mb4_unicode_ci;
+    CREATE DATABASE IF NOT EXISTS `test_slave1`
+      CHARACTER SET utf8mb4
+      COLLATE utf8mb4_unicode_ci;
+
+  01-schema.sql: |
+    USE `test_master`;
+
+    DROP TABLE IF EXISTS `tb_trans_pay_order`;
+    CREATE TABLE `tb_trans_pay_order`
+    (
+        `id`                        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增物理主键，单表唯一',
+        `gmt_created`               DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+        `gmt_modified`              DATETIME               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '最后修改时间',
+        `pay_order_no`              BIGINT(20) UNSIGNED NOT NULL COMMENT '支付订单号，业务主键，全局唯一',
+        `sys_code`                  VARCHAR(255) NOT NULL  DEFAULT '' COMMENT '支付订单来源系统',
+        `biz_identify_no`           VARCHAR(255) NOT NULL COMMENT '业务标识码',
+        `biz_unique_no`             VARCHAR(255) NOT NULL COMMENT '上游业务号',
+        `money`                     BIGINT(20) UNSIGNED NOT NULL COMMENT '支付单金额，单位为分',
+        `pay_channel_type`          INT(6) NOT NULL COMMENT '支付通道类型，1 支付宝 2 微信支付',
+        `target_account_type`       INT(6) NOT NULL COMMENT '目标账户类型，1 银行卡 2 账户余额',
+        `accounting_entry`          INT(6) NOT NULL COMMENT '会计账目条目 1 借 debit 2 贷 credit',
+        `gmt_accepted_time`         DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '受理时间',
+        `gmt_payment_begin_time`    DATETIME COMMENT '支付时间',
+        `gmt_payment_success_time`  DATETIME COMMENT '支付成功时间',
+        `gmt_payment_failure_time`  DATETIME COMMENT '支付失败时间',
+        `gmt_payment_closed_time`   DATETIME COMMENT '支付关闭时间',
+        `gmt_payment_bounced_time`  DATETIME COMMENT '支付退票时间',
+        `status`                    INT(6) NOT NULL COMMENT '支付状态',
+        `version`                   INT(20) UNSIGNED NOT NULL DEFAULT 1 COMMENT '版本',
+        `memo`                      VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '支付备注',
+        `channel_payment_trace_no`  VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付通道的支付流水号',
+        `channel_dishonor_trace_no` VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付通道的退票流水号',
+        `channel_error_code`        VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付错误码',
+        `business_entity`           VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付主体',
+        `notify_uri`                VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '通知地址',
+        `extend_info`               VARCHAR(2048) NOT NULL DEFAULT '' COMMENT '扩展信息，平台能力抽象',
+        `biz_info`                  VARCHAR(2048) NOT NULL DEFAULT '' COMMENT '扩展信息，业务能力抽象',
+        `env`                       INT(6) UNSIGNED NOT NULL COMMENT '环境',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`),
+        UNIQUE KEY `uniq_biz_request` (`biz_unique_no`, `biz_identify_no`),
+        KEY `idx_status_modified` (`status`, `gmt_modified`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付订单，领域聚合根';
+
+    DROP TABLE IF EXISTS `tb_trans_bank_card_suborder`;
+    CREATE TABLE `tb_trans_bank_card_suborder`
+    (
+        `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `gmt_created`     DATETIME              DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        `gmt_modified`    DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+        `pay_order_no`    BIGINT(20) UNSIGNED NOT NULL,
+        `to_bank_account` VARCHAR(255) NOT NULL DEFAULT '',
+        `account_type`    INT(6) NOT NULL,
+        `name`            VARCHAR(255) NOT NULL DEFAULT '',
+        `bank_id`         INT(20) UNSIGNED,
+        `branch_id`       INT(20) UNSIGNED,
+        `city_id`         INT(20) UNSIGNED,
+        `branch_name`     VARCHAR(255) NOT NULL DEFAULT '',
+        `to_branch_no`    VARCHAR(255) NOT NULL DEFAULT '',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='银行卡子订单';
+
+    DROP TABLE IF EXISTS `tb_trans_alipay_suborder`;
+    CREATE TABLE `tb_trans_alipay_suborder`
+    (
+        `id`            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `gmt_created`   DATETIME              DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        `gmt_modified`  DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+        `pay_order_no`  BIGINT(20) UNSIGNED NOT NULL,
+        `to_account_no` VARCHAR(255) NOT NULL DEFAULT '',
+        `name`          VARCHAR(255) NOT NULL DEFAULT '',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付宝子订单';
+
+    DROP TABLE IF EXISTS `tb_trans_channel_request`;
+    CREATE TABLE `tb_trans_channel_request`
+    (
+        `id`                 BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `gmt_created`        DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        `gmt_modified`       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+        `pay_order_no`       BIGINT(20) UNSIGNED NOT NULL,
+        `request_type`       INT(6) UNSIGNED NOT NULL,
+        `biz_identify_no`    VARCHAR(255) NOT NULL,
+        `biz_unique_no`      VARCHAR(255) NOT NULL,
+        `request_params`     TEXT,
+        `request_response`   TEXT,
+        `callback_params`    TEXT,
+        `request_exception`  TEXT,
+        `gmt_next_execution` DATETIME,
+        `retry_count`        BIGINT(20) UNSIGNED NOT NULL,
+        `request_addr`       VARCHAR(255) NOT NULL,
+        `status`             INT(6) UNSIGNED NOT NULL,
+        `close_reason`       INT(6) UNSIGNED,
+        `gmt_last_execution` DATETIME,
+        `env`                INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_request` (`pay_order_no`, `request_type`),
+        KEY `unq_biz_request` (`biz_unique_no`, `biz_identify_no`),
+        KEY `idx_next_execution_status` (`gmt_next_execution`,`status`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付请求表';
+
+    -- Repeat schema for slave database
+    USE `test_slave1`;
+
+    DROP TABLE IF EXISTS `tb_trans_pay_order`;
+    CREATE TABLE `tb_trans_pay_order`
+    (
+        `id`                        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增物理主键，单表唯一',
+        `gmt_created`               DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+        `gmt_modified`              DATETIME               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '最后修改时间',
+        `pay_order_no`              BIGINT(20) UNSIGNED NOT NULL COMMENT '支付订单号，业务主键，全局唯一',
+        `sys_code`                  VARCHAR(255) NOT NULL  DEFAULT '' COMMENT '支付订单来源系统',
+        `biz_identify_no`           VARCHAR(255) NOT NULL COMMENT '业务标识码',
+        `biz_unique_no`             VARCHAR(255) NOT NULL COMMENT '上游业务号',
+        `money`                     BIGINT(20) UNSIGNED NOT NULL COMMENT '支付单金额，单位为分',
+        `pay_channel_type`          INT(6) NOT NULL COMMENT '支付通道类型，1 支付宝 2 微信支付',
+        `target_account_type`       INT(6) NOT NULL COMMENT '目标账户类型，1 银行卡 2 账户余额',
+        `accounting_entry`          INT(6) NOT NULL COMMENT '会计账目条目 1 借 debit 2 贷 credit',
+        `gmt_accepted_time`         DATETIME               DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '受理时间',
+        `gmt_payment_begin_time`    DATETIME COMMENT '支付时间',
+        `gmt_payment_success_time`  DATETIME COMMENT '支付成功时间',
+        `gmt_payment_failure_time`  DATETIME COMMENT '支付失败时间',
+        `gmt_payment_closed_time`   DATETIME COMMENT '支付关闭时间',
+        `gmt_payment_bounced_time`  DATETIME COMMENT '支付退票时间',
+        `status`                    INT(6) NOT NULL COMMENT '支付状态',
+        `version`                   INT(20) UNSIGNED NOT NULL DEFAULT 1 COMMENT '版本',
+        `memo`                      VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '支付备注',
+        `channel_payment_trace_no`  VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付通道的支付流水号',
+        `channel_dishonor_trace_no` VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付通道的退票流水号',
+        `channel_error_code`        VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付错误码',
+        `business_entity`           VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '支付主体',
+        `notify_uri`                VARCHAR(255)  NOT NULL DEFAULT '' COMMENT '通知地址',
+        `extend_info`               VARCHAR(2048) NOT NULL DEFAULT '' COMMENT '扩展信息，平台能力抽象',
+        `biz_info`                  VARCHAR(2048) NOT NULL DEFAULT '' COMMENT '扩展信息，业务能力抽象',
+        `env`                       INT(6) UNSIGNED NOT NULL COMMENT '环境',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`),
+        UNIQUE KEY `uniq_biz_request` (`biz_unique_no`, `biz_identify_no`),
+        KEY `idx_status_modified` (`status`, `gmt_modified`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付订单，领域聚合根';
+
+    DROP TABLE IF EXISTS `tb_trans_bank_card_suborder`;
+    CREATE TABLE `tb_trans_bank_card_suborder`
+    (
+        `id`              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `gmt_created`     DATETIME              DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        `gmt_modified`    DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+        `pay_order_no`    BIGINT(20) UNSIGNED NOT NULL,
+        `to_bank_account` VARCHAR(255) NOT NULL DEFAULT '',
+        `account_type`    INT(6) NOT NULL,
+        `name`            VARCHAR(255) NOT NULL DEFAULT '',
+        `bank_id`         INT(20) UNSIGNED,
+        `branch_id`       INT(20) UNSIGNED,
+        `city_id`         INT(20) UNSIGNED,
+        `branch_name`     VARCHAR(255) NOT NULL DEFAULT '',
+        `to_branch_no`    VARCHAR(255) NOT NULL DEFAULT '',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='银行卡子订单';
+
+    DROP TABLE IF EXISTS `tb_trans_alipay_suborder`;
+    CREATE TABLE `tb_trans_alipay_suborder`
+    (
+        `id`            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `gmt_created`   DATETIME              DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        `gmt_modified`  DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+        `pay_order_no`  BIGINT(20) UNSIGNED NOT NULL,
+        `to_account_no` VARCHAR(255) NOT NULL DEFAULT '',
+        `name`          VARCHAR(255) NOT NULL DEFAULT '',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_no` (`pay_order_no`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付宝子订单';
+
+    DROP TABLE IF EXISTS `tb_trans_channel_request`;
+    CREATE TABLE `tb_trans_channel_request`
+    (
+        `id`                 BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `gmt_created`        DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        `gmt_modified`       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+        `pay_order_no`       BIGINT(20) UNSIGNED NOT NULL,
+        `request_type`       INT(6) UNSIGNED NOT NULL,
+        `biz_identify_no`    VARCHAR(255) NOT NULL,
+        `biz_unique_no`      VARCHAR(255) NOT NULL,
+        `request_params`     TEXT,
+        `request_response`   TEXT,
+        `callback_params`    TEXT,
+        `request_exception`  TEXT,
+        `gmt_next_execution` DATETIME,
+        `retry_count`        BIGINT(20) UNSIGNED NOT NULL,
+        `request_addr`       VARCHAR(255) NOT NULL,
+        `status`             INT(6) UNSIGNED NOT NULL,
+        `close_reason`       INT(6) UNSIGNED,
+        `gmt_last_execution` DATETIME,
+        `env`                INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uniq_pay_order_request` (`pay_order_no`, `request_type`),
+        KEY `unq_biz_request` (`biz_unique_no`, `biz_identify_no`),
+        KEY `idx_next_execution_status` (`gmt_next_execution`,`status`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='支付请求表';
+
+  02-data.sql: |
+    USE `test_master`;
+    -- Seed data placeholder
+
+    USE `test_slave1`;
+    -- Seed data placeholder
