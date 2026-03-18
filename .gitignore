@@ -22,7 +22,6 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-
 #vim
 *.swp
 
@@ -73,3 +72,8 @@ out/
 .jpb/
 /.vscode/settings.json
 .qoder/rules/code-auto-collection.md
+
+# Ignore .qoder directory except repowiki
+.qoder/*
+!.qoder/repowiki/
+!.qoder/repowiki/**
