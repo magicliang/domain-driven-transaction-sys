@@ -70,10 +70,16 @@ out/
 
 # git rm -r --cached .jpb
 .jpb/
-/.vscode/settings.json
+# VS Code
+.vscode/
+
+# Qoder
 .qoder/rules/code-auto-collection.md
 
 # Ignore .qoder directory except repowiki
 .qoder/*
 !.qoder/repowiki/
 !.qoder/repowiki/**
+
+# Specstory
+.specstory/
