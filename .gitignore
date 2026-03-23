@@ -68,6 +68,10 @@ gradle-app.setting
 # 任意日志输出
 out/
 
+# 编译输出目录
+bin/
+**/bin/
+
 # git rm -r --cached .jpb
 .jpb/
 # VS Code
