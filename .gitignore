@@ -87,3 +87,15 @@ bin/
 
 # Specstory
 .specstory/
+/.claude/
+/.agent/
+/.codebuddy/
+/.codex/
+/.crush/
+/.gemini/
+/.github/
+/.iflow/
+/.opencode/
+/.qoder/
+/.qwen/
+/.trae/
